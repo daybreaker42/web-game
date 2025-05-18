@@ -1,0 +1,69 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+li {
+    list-style: none;
+}
+
+/* 벽돌 깨기 게임 스타일 */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+    transition: background-color 0.3s;
+}
+
+h1 {
+    color: #2c3e50;
+    text-align: center;
+    margin: 20px 0;
+    font-size: 2.5em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#game-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.score-info {
+    display: flex;
+    justify-content: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.score-info span {
+    margin: 0 15px;
+    background-color: #fff;
+    padding: 8px 15px;
+    border-radius: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#score, #lives {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 850px) {
+    canvas {
+        width: 100%;
+        height: auto;
+    }
+    
+    .controls {
+        flex-direction: column;
+    }
+    
+    button {
+        margin: 5px 0;
+    }
+}

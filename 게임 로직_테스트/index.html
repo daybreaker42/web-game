@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Game</title>
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+    
+        .container {
+            max-width: 800px;
+            text-align: center;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+    
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+    
+        p {
+            margin-bottom: 30px;
+            font-size: 18px;
+            line-height: 1.6;
+            color: #555;
+        }
+    
+        .game-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 18px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.3s;
+            margin: 10px;
+        }
+    
+        .game-button:hover {
+            background-color: #45a049;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Web Game 포털에 오신 것을 환영합니다!</h1>
+        <p>당신을 위한 재미있는 웹 게임을 준비했습니다. 아래 버튼을 클릭하여 게임을 시작하세요!</p>
+    
+        <a href="game.html" class="game-button">벽돌 깨기 게임 시작</a>
+    </div>
+    <script src="./script.js"></script>
+</body>
+
+</html>

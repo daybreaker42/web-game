@@ -1,0 +1,79 @@
+<!-- filepath: d:\Documents\학교 수업\2-1\웹프로그래밍\web-game\game.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>벽돌 깨기 게임</title>
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        
+        #game-container {
+            position: relative;
+            margin: 20px auto;
+        }
+        
+        canvas {
+            background: #333;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: block;
+        }
+        
+        .controls {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            margin: 0 10px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .score-info {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>벽돌 깨기 게임</h1>
+    
+    <div class="score-info">
+        <span>점수: <span id="score">0</span></span>
+        <span style="margin-left: 20px;">남은 생명: <span id="lives">3</span></span>
+    </div>
+    
+    <div id="game-container">
+        <canvas id="gameCanvas" width="800" height="500"></canvas>
+    </div>
+    
+    <div class="controls">
+        <button id="startButton">게임 시작</button>
+        <button id="pauseButton">일시 정지</button>
+        <button id="restartButton">다시 시작</button>
+    </div>
+    
+    <script src="./script.js"></script>
+</body>
+</html>
