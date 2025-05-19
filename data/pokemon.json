@@ -1,0 +1,22 @@
+{
+    "list":[
+        {
+            "name":"Bulbasaur",
+            "type":"Grass/Poison",
+            "height":"0.7m",
+            "weight":"6.9kg"
+        },
+        {
+            "name":"Charmander",
+            "type":"Fire",
+            "height":"0.6m",
+            "weight":"8.5kg"
+        },
+        {
+            "name":"Squirtle",
+            "type":"Water",
+            "height":"0.5m",
+            "weight":"9.0kg"
+        }
+    ]
+}
