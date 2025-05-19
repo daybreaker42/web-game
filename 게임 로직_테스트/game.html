@@ -13,7 +13,8 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background-color: #f0f0f0;
+            background-color: #1e1e1e; /* 다크 모드 배경색으로 변경 */
+            color: #ffffff; /* 텍스트 색상을 흰색으로 변경하여 가독성 확보 */
             font-family: Arial, sans-serif;
         }
         
@@ -54,6 +55,14 @@
             font-size: 18px;
             margin-bottom: 10px;
         }
+        .score-info span {
+            margin-right: 20px;
+            background-color: #4CAF50;
+        }
+        .score-info #score, .score-info #lives {
+            color: #FFD700; /* 점수 색상 변경 */
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -74,6 +83,8 @@
         <button id="restartButton">다시 시작</button>
     </div>
     
+    <script src="./utils.js"></script>
+    <script src="./models/brick.js"></script>
     <script src="./script.js"></script>
 </body>
 </html>
