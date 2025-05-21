@@ -111,6 +111,10 @@ function keyDownHandler(e) {
     } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
         leftPressed = true;
     }
+    else if (e.code === 'Space') {
+        togglePause();  // 스페이스바로 일시정지 토글
+    }
+
 }
 
 function keyUpHandler(e) {
@@ -237,7 +241,16 @@ function drawLives() {
 }
 
 // 메시지 표시
-function showMessage(text, type) {
+// 메시지 엘리먼트를 전역 변수로 추적
+let persistentMessageElement = null;
+
+function showMessage(text, type, persistent = false) {
+    // 이미 존재하는 메시지 제거
+    if (persistentMessageElement) {
+        persistentMessageElement.remove();
+        persistentMessageElement = null;
+    }
+
     const messageElement = document.createElement('div');
     messageElement.textContent = text;
     messageElement.style.position = 'absolute';
@@ -249,24 +262,45 @@ function showMessage(text, type) {
     messageElement.style.fontSize = '24px';
     messageElement.style.fontWeight = 'bold';
     messageElement.style.zIndex = '100';
-
-    if (type === 'success') {
-        messageElement.style.backgroundColor = 'rgba(76, 175, 80, 0.9)';
-    } else {
-        messageElement.style.backgroundColor = 'rgba(244, 67, 54, 0.9)';
-    }
-
     messageElement.style.color = 'white';
+    messageElement.style.backgroundColor =
+        type === 'success' ? 'rgba(76, 175, 80, 0.9)' : 'rgba(244, 67, 54, 0.9)';
+
     document.getElementById('game-container').appendChild(messageElement);
 
-    setTimeout(() => {
-        messageElement.remove();
-    }, 3000);
+    if (persistent) {
+        // 전역 변수에 저장하여 나중에 제거할 수 있게 함
+        persistentMessageElement = messageElement;
+    } else {
+        setTimeout(() => {
+            messageElement.remove();
+        }, 3000);
+    }
+}
+function togglePause() {
+    if (isGameRunning) {
+        isPaused = !isPaused;
+        if (isPaused) {
+            cancelAnimationFrame(animationFrame);
+            showMessage('게임 일시정지', 'success', true); // <- 지속 메시지
+        } else {
+            lastTime = performance.now(); // 현재 시간으로 lastTime 초기화
+            animationFrame = requestAnimationFrame(update);
+
+            // 일시정지 메시지 제거
+            if (persistentMessageElement) {
+                persistentMessageElement.remove();
+                persistentMessageElement = null;
+            }
+
+            showMessage('게임 재개', 'success'); // 재개 메시지는 자동 제거됨
+        }
+    }
 }
 
+
 // MARK: 프레임 업데이트
-function update() {
-    const currentTime = performance.now();
+function update(currentTime = 0) {
     // 시간 기반 애니메이션: 프레임 간 경과 시간 계산
     const deltaTime = currentTime - lastTime;
 
@@ -407,22 +441,7 @@ function startGame() {
     }
 }
 
-// MARK: 일시정지 토글
-function togglePause() {
-    if (isGameRunning) {
-        isPaused = !isPaused;
-        if (isPaused) {
-            // 게임 일시정지 시 애니메이션 프레임 취소
-            cancelAnimationFrame(animationFrame);
-            showMessage('게임 일시정지', 'success');
-        } else {
-            // 게임 재개 시 시간 초기화 후 애니메이션 프레임 다시 요청
-            lastTime = performance.now();
-            animationFrame = requestAnimationFrame(update);
-            showMessage('게임 재개', 'success');
-        }
-    }
-}
+
 
 // 게임 재시작
 function restartGame() {
