@@ -1,22 +1,18 @@
 {
-    "list":[
-        {
-            "name":"Bulbasaur",
-            "type":"Grass/Poison",
-            "height":"0.7m",
-            "weight":"6.9kg"
-        },
-        {
-            "name":"Charmander",
-            "type":"Fire",
-            "height":"0.6m",
-            "weight":"8.5kg"
-        },
-        {
-            "name":"Squirtle",
-            "type":"Water",
-            "height":"0.5m",
-            "weight":"9.0kg"
-        }
-    ]
+"0": {
+    "name": "이상해씨",
+    "type": 0
+},
+"1": {
+    "name": "파이리",
+    "type": 1
+},
+"100": {
+    "name": "피카츄",
+    "type": 2
+},
+"101": {
+    "name": "팽도리",
+    "type": 3
+}
 }
