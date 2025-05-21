@@ -265,7 +265,8 @@ function showMessage(text, type) {
 }
 
 // MARK: 프레임 업데이트
-function update(currentTime = 0) {
+function update() {
+    const currentTime = performance.now();
     // 시간 기반 애니메이션: 프레임 간 경과 시간 계산
     const deltaTime = currentTime - lastTime;
 
@@ -382,7 +383,7 @@ function startGame() {
         lives = TOTAL_LIVES;
 
         // 시간 기반 애니메이션 변수 초기화
-        lastTime = 0;
+        lastTime = performance.now();
 
         // 게임 상태 초기화
         document.getElementById('score').textContent = score;
@@ -406,7 +407,7 @@ function startGame() {
     }
 }
 
-// 일시정지 토글
+// MARK: 일시정지 토글
 function togglePause() {
     if (isGameRunning) {
         isPaused = !isPaused;
@@ -416,7 +417,7 @@ function togglePause() {
             showMessage('게임 일시정지', 'success');
         } else {
             // 게임 재개 시 시간 초기화 후 애니메이션 프레임 다시 요청
-            lastTime = 0;
+            lastTime = performance.now();
             animationFrame = requestAnimationFrame(update);
             showMessage('게임 재개', 'success');
         }
