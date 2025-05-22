@@ -47,16 +47,19 @@ function startFromTitle(e) {
 
   setTimeout(() => {
     hide(qs("#title"));
-    const mainMenu = qs("#main-menu");
-    show(mainMenu);
-    setTimeout(() => {
-      mainMenu.classList.add("show-fade");
-    }, 30);
+    showMainMenuWithFade();
     try {
       qs("#bgm").play();
     } catch (e) {}
   }, 1100);
 }
+
+function showMainMenuWithFade() {
+    const mainMenu = qs("#main-menu");
+    mainMenu.classList.add("slow-fade")
+    show(mainMenu);
+}
+  
 
 // ===== 메인 메뉴 → 모드 메뉴 =====
 qs("#btn-play").onclick = () => {
@@ -66,7 +69,9 @@ qs("#btn-play").onclick = () => {
 // 뒤로가기(모드) → 메인 메뉴
 qs("#btn-back-to-main-menu").onclick = () => {
   hide(qs("#mode-menu"));
-  show(qs("#main-menu"));
+  const mainMenu = qs("#main-menu");
+  mainMenu.classList.remove("slow-fade");
+  show(mainMenu);
 };
 
 // ===== 모드 → 난이도 =====
