@@ -29,35 +29,35 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 function startFromTitle(e) {
+  try {
+    qs("#start-sfx").currentTime = 0;
+    qs("#start-sfx").play();
+  } catch (err) {}
+
+  // 빠른 플래시 2회
+  const pressAny = qs(".press-any");
+  pressAny.classList.remove("flash-twice", "noblink");
+  void pressAny.offsetWidth;
+  pressAny.classList.add("flash-twice");
+
+  setTimeout(() => {
+    const title = document.getElementById("title");
+    title.classList.add("fadeout");
+  }, 300);
+
+  setTimeout(() => {
+    hide(qs("#title"));
+    const mainMenu = qs("#main-menu");
+    show(mainMenu);
+    setTimeout(() => {
+      mainMenu.classList.add("show-fade");
+    }, 30);
     try {
-      qs("#start-sfx").currentTime = 0;
-      qs("#start-sfx").play();
-    } catch (err) {}
-  
-    // 빠른 플래시 2회
-    const pressAny = qs(".press-any");
-    pressAny.classList.remove("flash-twice", "noblink");
-    void pressAny.offsetWidth;
-    pressAny.classList.add("flash-twice");
-  
-    setTimeout(() => {
-      const title = document.getElementById('title');
-      title.classList.add("fadeout");
-    }, 300);
-  
-    setTimeout(() => {
-      hide(qs("#title"));
-      const mainMenu = qs("#main-menu");
-      show(mainMenu);
-      setTimeout(() => {
-        mainMenu.classList.add("show-fade");
-      }, 30);
-      try {
-        qs("#bgm").play();
-      } catch (e) {}
-    }, 1100);
-  }
-  
+      qs("#bgm").play();
+    } catch (e) {}
+  }, 1100);
+}
+
 // ===== 메인 메뉴 → 모드 메뉴 =====
 qs("#btn-play").onclick = () => {
   hide(qs("#main-menu"));
@@ -118,7 +118,6 @@ qs("#bgm-volume").addEventListener("input", (e) => {
   bgm.volume = bgmVolume;
 });
 bgm.volume = bgmVolume;
-
 
 // ===== 난이도 선택 후 분기 =====
 qsa(".btn-level").forEach((btn) => {
