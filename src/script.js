@@ -95,7 +95,7 @@ qs("#modal-close").onclick = () => qs("#options-modal").close();
 
 // SFX/BGM 볼륨
 let sfxVolume = 0.5,
-    bgmVolume = 0.5;
+  bgmVolume = 0.5;
 const bgm = qs("#bgm");
 const clickSfx = qs("#click-sfx");
 const startSfx = qs("#start-sfx");
@@ -185,14 +185,13 @@ function startGame(mode, diff) {
   // TODO: 캔버스, 실제 게임 화면 등 연결
 }
 
-document.querySelectorAll('button').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const sfx = document.getElementById('click-sfx');
-      if (sfx) {
-        sfx.currentTime = 0;
-        sfx.volume = sfxVolume; // ← 볼륨 항상 최신값 반영
-        sfx.play();
-      }
-    });
+document.querySelectorAll("button").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const sfx = document.getElementById("click-sfx");
+    if (sfx) {
+      sfx.currentTime = 0;
+      sfx.volume = sfxVolume; // ← 볼륨 항상 최신값 반영
+      sfx.play();
+    }
   });
-  
+});
