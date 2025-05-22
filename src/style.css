@@ -1,9 +1,233 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+@import url("./fonts.css");
+
+:root {
+    --bg: #ffffff;
+    --fg: #000000;
+    --accent: rgb(255, 0, 0);
+    font-family: "DOSGothic", sans-serif;
+    --font-size: 1.4rem;
+    --img-logo: url("../assets/images/logo.png");
+    --img-title-bg: url("../assets/images/background/title_dark.jpg");
+    --img-menu-bg: url("../assets/images/background/title_light.jpg");
+  }
+  
+body {
+  font-family: "DOSGothic", sans-serif;
+  min-height: 100vh;
+  min-width: 100vw;
+  background: var(--bg);
+  color: var(--fg);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-li {
-    list-style: none;
+#game-root {
+  width: 800px;
+  height: 600px;
+  background: var(--fg) center/cover;
+  /* box-shadow: 0 0 40px #0008; */
+  position: relative;
+  overflow: hidden;
+  display: flex;
+}
+
+.screen {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: transparent;
+}
+
+/* ------------------ Common Styles ------------------ */
+
+.hidden {
+    display: none !important;
+  }
+
+.pixel-box {
+font-family: "DOSGothic", monospace;
+font-weight: bold;
+font-size: 1.4rem;
+background: #e7e7e7;
+color: #101010;
+border: 3px solid #222;
+border-radius: 2px;
+box-shadow:
+    0 2px 0 #999,
+    0 0 0 2px #fff inset;
+letter-spacing: 0.06em;
+text-shadow: 1px 1px 0 #fff, 0 0 2px #aaa;
+padding: 0.65rem 1.2rem;
+outline: none;
+image-rendering: pixelated;
+}
+  
+.pixel-box--large { font-size: 1.4rem; padding: 0.7rem 1.8rem; }
+.pixel-box--small { font-size: 1rem;  padding: 0.4rem 0.8rem;  }
+.pixel-box--menu { width:300px; font-size: 1.4rem; padding: 0.7rem 1.8rem;}
+
+
+/* ------------------ Title Screen ------------------ */
+
+.logo.show {
+  opacity: 1;
+}
+
+.press-any.show {
+  opacity: 1;
+}
+
+.logo {
+  width: 500px;
+  height: 200px;
+  margin: 0 auto 1rem auto;
+  background: var(--img-logo) center/contain no-repeat;
+}
+
+#title {
+  opacity: 1;
+  transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--img-title-bg) center/cover;
+}
+
+#title.fadeout {
+    animation: retro-fadeout 0.45s steps(1) 1 forwards;
+    opacity: 1 !important; /* 트랜지션 대신 애니메이션 */
+}
+
+.press-any {
+    font-size: 2rem;
+    color: #fff;
+    /* text-shadow: 0 2px 8px black; */
+    animation: blink 1.2s step-end infinite;
+    margin-top: 1.6rem;
+  }
+@keyframes blink {
+50% {
+    opacity: 0;
+}
+}
+
+.press-any.flash-twice {
+animation: retro-btn-blink 0.29s steps(2) 1;
+}
+
+@keyframes retro-btn-blink {
+    0%   { color: #222; filter: none; }
+    20%  { color: #fff; filter: brightness(2) drop-shadow(0 0 6px #fff); }
+    40%  { color: #0f0; filter: contrast(2) brightness(2) blur(0.3px); }
+    60%  { color: #fff; filter: grayscale(1) blur(1px); }
+    100% { color: #222; filter: none; }
+  }
+
+/* ------------------ Menu ------------------ */
+
+.menu {
+  gap: 1.4rem;
+}
+
+#main-menu {
+  opacity: 0;
+  transition: opacity 1.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--img-menu-bg) center/cover;
+}
+
+#main-menu.show-fade {
+  opacity: 1;
+}
+
+#mode-menu {
+background: var(--img-menu-bg) center/cover;
+}
+
+#level-menu {
+background: var(--img-menu-bg) center/cover;
+}
+  
+/* ------------------ Buttons ------------------ */
+
+button, .btn-options, dialog[open] {
+    /* 꼭 필요한 속성만 중복, 나머지는 .pixel-box에만 작성 */
+    transition: none;
+    position: relative;
+  }
+  
+  button:active, .btn-options:active {
+    background: #b8b8b8;
+    color: #444;
+    box-shadow: 0 0 0 #999, 0 0 0 2px #ccc inset;
+    border-color: #000;
+    transform: translate(2px, 2px) scale(0.98);
+    filter: brightness(0.92) contrast(1.2);
+  }
+  
+  
+button.back {
+  background: #333;
+  color: #fff;
+  font-size: 1rem;
+  position: static;
+  align-self: flex-start;
+  margin-top: 1rem;
+  margin-left: 1.2rem;
+  padding: 0.6rem 1.4rem;
+}
+
+/* ------------------ Story Screen ------------------ */
+
+#story-screen {
+    background: var(--bg);
+  }  
+
+#story-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: flex-start;
+}
+#story-illustration {
+  flex: 1 1 70%;
+  width: 100%;
+  background: url("img/story1.jpg") center/contain no-repeat;
+}
+#story-textbox {
+  position: relative;
+  padding: 1rem 2rem;
+  background: rgba(0, 0, 0, 0.7);
+  min-height: 100px;
+  width: 100%;
+  box-sizing: border-box;
+}
+#btn-skip {
+  position: absolute;
+  bottom: 0.7rem;
+  left: 0.7rem;
+  padding: 0.3rem 0.8rem;
+  background: #444;
+  color: var(--fg);
+  font-size: 0.9rem;
+}
+
+dialog[open] {
+  border: none;
+  padding: 1.8rem;
+  background: var(--fg);
+  color: var(--bg);
+}
+dialog label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+dialog input[type="range"] {
+  width: 150px;
 }
