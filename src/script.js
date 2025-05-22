@@ -8,14 +8,8 @@ document.addEventListener("keydown", startFromTitle, { once: true });
 document.addEventListener("click", startFromTitle, { once: true });
 
 window.addEventListener("DOMContentLoaded", () => {
-  const fadeinWrap = document.getElementById("fadein-wrap");
   const logo = document.querySelector(".logo");
   const pressAny = document.querySelector(".press-any");
-
-  // 0.5초 후 전체 페이드인
-  setTimeout(() => {
-    fadeinWrap.classList.add("fadein-show");
-  }, 500);
 
   // 2초 후 로고 보이기
   setTimeout(() => {
@@ -55,11 +49,10 @@ function startFromTitle(e) {
 }
 
 function showMainMenuWithFade() {
-    const mainMenu = qs("#main-menu");
-    mainMenu.classList.add("slow-fade")
-    show(mainMenu);
+  const mainMenu = qs("#main-menu");
+  mainMenu.classList.add("slow-fade");
+  show(mainMenu);
 }
-  
 
 // ===== 메인 메뉴 → 모드 메뉴 =====
 qs("#btn-play").onclick = () => {
@@ -124,69 +117,89 @@ qs("#bgm-volume").addEventListener("input", (e) => {
 });
 bgm.volume = bgmVolume;
 
+const storyBgmPath = "../assets/sounds/story.mp3";
+let prevBgmSrc = bgm.src;
+
+function playStoryBgm() {
+    prevBgmSrc = bgm.src; // 기존 배경음 저장
+    bgm.pause();
+    bgm.src = storyBgmPath;
+    bgm.load();
+    bgm.currentTime = 0;
+    // play는 load 이벤트 이후에!
+    bgm.oncanplaythrough = () => {
+      bgm.play();
+    };
+  }
+
 // ===== 난이도 선택 후 분기 =====
 qsa(".btn-level").forEach((btn) => {
   btn.onclick = () => {
-    const diff = btn.dataset.diff;
-    if (selectedMode === "story") startStoryMode(diff);
-    else startScoreMode(diff);
+    const level = btn.dataset.level;
+    if (selectedMode === "story") startStoryMode(level);
+    else startScoreMode(level);
   };
 });
 
 // ===== 스토리 진행 =====
-const storyImages = ["img/story1.jpg", "img/story2.jpg", "img/story3.jpg"];
-const storyLines = [
-  "…먼 옛날, 평화로운 왕국에 재앙이 닥쳤다.",
-  "주인공은 왕의 부름을 받아, 마왕성을 향해 떠나는데…",
-  "모험이 지금 시작된다!",
-];
+let storyScript = window.story_intro || [];
+let selectedStoryLevel = null;
 
-function startStoryMode(diff) {
+function startStoryMode(level) {
   hide(qs("#level-menu"));
   show(qs("#story-screen"));
-  runStory(0, diff);
+  currentStoryIndex = 0;
+  currentLineIndex = 0;
+  selectedStoryLevel = level;
+  playStoryBgm();
+  showStoryLine();
 }
 
-function runStory(index, diff) {
-  if (index >= storyLines.length) {
-    endStoryReturnToTitle();
+function showStoryLine() {
+  if (currentStoryIndex >= storyScript.length) {
+    // 스토리 다 보면 본게임 시작
+    startGame('story', selectedStoryLevel);
     return;
   }
-  qs("#story-line").textContent = storyLines[index];
+  const chapter = storyScript[currentStoryIndex];
+  const lines = chapter.lines;
+
+  if (currentLineIndex >= lines.length) {
+    currentStoryIndex++;
+    currentLineIndex = 0;
+    showStoryLine();
+    return;
+  }
+
   qs("#story-illustration").style.backgroundImage =
-    `url("${storyImages[index]}")`;
-
-  // advance on click anywhere in story-screen (except Skip)
-  const next = (e) => {
-    // Skip버튼 클릭 시 무시 (아래 핸들러에서 처리)
-    if (e.target.id === "btn-skip") return;
-    qs("#story-screen").removeEventListener("click", next);
-    runStory(index + 1, diff);
-  };
-  qs("#story-screen").addEventListener("click", next, { once: true });
+    `url('../assets/images/story/${chapter.image}.jpg')`;
+  qs("#story-line").textContent = lines[currentLineIndex];
 }
 
-// Skip 클릭시도 타이틀로 복귀
-qs("#btn-skip").onclick = () => endStoryReturnToTitle();
+// 스토리 화면 클릭: 다음 줄 진행
+qs("#story-screen").onclick = function (e) {
+  if (e.target.id === "btn-skip") return;
+  currentLineIndex++;
+  showStoryLine();
+};
 
-function endStoryReturnToTitle() {
-  hide(qs("#story-screen"));
-  show(qs("#title"));
-  // 타이틀 화면으로 돌아갈 때 'Press any button...' 리스너 재설정
-  document.addEventListener("keydown", startFromTitle, { once: true });
-  document.addEventListener("click", startFromTitle, { once: true });
+// 스킵: 스토리 즉시 종료 → 본게임 바로 시작
+qs("#btn-skip").onclick = () => {
+  startGame('story', selectedStoryLevel);
+};
+
+// 본게임 시작(자리표시자)
+function startGame(mode, level) {
+  restoreBgm();
+  alert(`Game starts!\nMode: ${mode}\nLevel: ${level ?? "default"}`);
+  // TODO: 게임 화면 연결
 }
 
+  
 // ===== 스코어 어택 =====
-function startScoreMode(diff) {
+function startScoreMode(level) {
   hide(qs("#level-menu"));
-  startGame("score", diff);
-}
-
-// ===== 본 게임 시작 (자리표시자) =====
-function startGame(mode, diff) {
-  alert(`Game starts!\nMode: ${mode}\nDifficulty: ${diff ?? "default"}`);
-  // TODO: 캔버스, 실제 게임 화면 등 연결
+  startGame("score", level);
 }
 
 document.querySelectorAll("button").forEach((btn) => {
