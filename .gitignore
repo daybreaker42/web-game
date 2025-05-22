@@ -1,3 +1,6 @@
 기타/
 node_modules/
 package-lock.json
+sample
+.DS_Store
+src/data/
