@@ -1,0 +1,32 @@
+{
+  "story_mode": {
+    "easy": [
+      { "rank": 1, "name": "AAA", "score": 5020, "date": "2025-05-23 18:25" },
+      { "rank": 2, "name": "BBB", "score": 4900, "date": "2025-05-22 09:11" },
+      { "rank": 3, "name": "YON", "score": 4880, "date": "2025-05-21 21:54" }
+    ],
+    "normal": [
+      { "rank": 1, "name": "CCC", "score": 7350, "date": "2025-05-22 14:44" },
+      { "rank": 2, "name": "AAA", "score": 7100, "date": "2025-05-20 23:32" },
+      { "rank": 3, "name": "BOT", "score": 7000, "date": "2025-05-19 08:02" }
+    ],
+    "hard": [
+      { "rank": 1, "name": "YOU", "score": 8200, "date": "2025-05-23 01:04" },
+      { "rank": 2, "name": "DAN", "score": 8030, "date": "2025-05-22 22:41" }
+    ]
+  },
+  "score_attack_mode": {
+    "easy": [
+      { "rank": 1, "name": "AAA", "score": 11000, "date": "2025-05-23 17:37" },
+      { "rank": 2, "name": "BOT", "score": 10950, "date": "2025-05-22 13:13" }
+    ],
+    "normal": [
+      { "rank": 1, "name": "YON", "score": 13250, "date": "2025-05-21 12:54" },
+      { "rank": 2, "name": "AAA", "score": 13100, "date": "2025-05-20 07:01" }
+    ],
+    "hard": [
+      { "rank": 1, "name": "DAN", "score": 21000, "date": "2025-05-23 03:24" },
+      { "rank": 2, "name": "YOU", "score": 20550, "date": "2025-05-22 18:10" }
+    ]
+  }
+}
