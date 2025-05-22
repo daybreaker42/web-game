@@ -1,21 +1,34 @@
 @import url("./fonts.css");
 
-:root {
-    --bg: #ffffff;
-    --fg: #000000;
-    --accent: rgb(255, 0, 0);
-    font-family: "DOSGothic", sans-serif;
-    --font-size: 1.4rem;
-    --img-logo: url("../assets/images/logo.png");
-    --img-title-bg: url("../assets/images/background/title_dark.jpg");
-    --img-menu-bg: url("../assets/images/background/title_light.jpg");
-  }
-  
-body {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: "DOSGothic", sans-serif;
+  font-weight: normal;
+  color: var(--fg);
+}
+
+:root {
+  --bg: #ffffff;
+  --bg-dark: #000000;
+  --fg: #000000;
+  --accent: rgb(255, 0, 0);
+  font-family: "DOSGothic", sans-serif;
+  --font-size: 1.4rem;
+  --img-logo: url("../assets/images/logo.png");
+  --img-title-bg: url("../assets/images/background/title_dark.jpg");
+  --img-menu-bg: url("../assets/images/background/title_light.jpg");
+}
+
+body {
   min-height: 100vh;
   min-width: 100vw;
-  background: var(--bg);
+  background: #20203f;
+  /* TODO: GBA 프레임 이미지 넣을지 결정하기 */
+  /* background: url("../assets/images/gba_frame.png") center/cover; */
   color: var(--fg);
   margin: 0;
   display: flex;
@@ -26,8 +39,9 @@ body {
 #game-root {
   width: 800px;
   height: 600px;
-  background: var(--fg) center/cover;
-  /* box-shadow: 0 0 40px #0008; */
+  background: var(--bg-dark) center/cover;
+  border: #000 solid 4px;
+  border-bottom: #000 solid 10px; /* DEBUG: border-bottom만 잘리는 현상 */
   position: relative;
   overflow: hidden;
   display: flex;
@@ -50,31 +64,108 @@ body {
 /* ------------------ Common Styles ------------------ */
 
 .hidden {
-    display: none !important;
-  }
+  display: none !important;
+}
 
 .pixel-box {
-font-family: "DOSGothic", monospace;
-font-weight: bold;
-font-size: 1.4rem;
-background: #e7e7e7;
-color: #101010;
-border: 3px solid #222;
-border-radius: 2px;
-box-shadow:
+  font-family: "DOSGothic", monospace;
+  font-weight: normal;
+  font-size: 1.4rem;
+  background: #e7e7e7;
+  color: #101010;
+  border: 3px solid #222;
+  border-radius: 2px;
+  box-shadow:
     0 2px 0 #999,
     0 0 0 2px #fff inset;
-letter-spacing: 0.06em;
-text-shadow: 1px 1px 0 #fff, 0 0 2px #aaa;
-padding: 0.65rem 1.2rem;
-outline: none;
-image-rendering: pixelated;
+  letter-spacing: 0.06em;
+  text-shadow:
+    1px 1px 0 #fff,
+    0 0 2px #aaa;
+  padding: 0.65rem 1.2rem;
+  outline: none;
+  image-rendering: pixelated;
 }
-  
-.pixel-box--large { font-size: 1.4rem; padding: 0.7rem 1.8rem; }
-.pixel-box--small { font-size: 1rem;  padding: 0.4rem 0.8rem;  }
-.pixel-box--menu { width:300px; font-size: 1.4rem; padding: 0.7rem 1.8rem;}
 
+.pixel-box--large {
+  font-size: 1.4rem;
+  padding: 0.7rem 1.8rem;
+}
+.pixel-box--small {
+  font-size: 1rem;
+  padding: 0.4rem 0.8rem;
+}
+.pixel-box--menu {
+  width: 300px;
+  font-size: 1.4rem;
+  padding: 0.7rem 1.8rem;
+}
+
+/* ------------------ Animations ------------------ */
+
+@keyframes retro-fadeout {
+  0% {
+    opacity: 0;
+  }
+  33% {
+    opacity: 0.3;
+  }
+  66% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes retro-fadein {
+  0% {
+    opacity: 0;
+  }
+  33% {
+    opacity: 0.3;
+  }
+  66% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes retro-fast-fade {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+@keyframes retro-flashing-blink {
+  0% {
+    color: #222;
+    filter: none;
+  }
+  20% {
+    color: #fff;
+    filter: brightness(2) drop-shadow(0 0 6px #fff);
+  }
+  40% {
+    color: #0f0;
+    filter: contrast(2) brightness(2) blur(0.3px);
+  }
+  60% {
+    color: #fff;
+    filter: grayscale(1) blur(1px);
+  }
+  100% {
+    color: #222;
+    filter: none;
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
 
 /* ------------------ Title Screen ------------------ */
 
@@ -100,77 +191,67 @@ image-rendering: pixelated;
 }
 
 #title.fadeout {
-    animation: retro-fadeout 0.45s steps(1) 1 forwards;
-    opacity: 1 !important; /* 트랜지션 대신 애니메이션 */
+  animation: retro-fadeout 0.6s steps(3, end) 1;
+  opacity: 1 !important; /* 트랜지션 대신 애니메이션 */
 }
 
 .press-any {
-    font-size: 2rem;
-    color: #fff;
-    /* text-shadow: 0 2px 8px black; */
-    animation: blink 1.2s step-end infinite;
-    margin-top: 1.6rem;
-  }
-@keyframes blink {
-50% {
-    opacity: 0;
-}
+  font-size: 2rem;
+  color: #fff;
+  /* text-shadow: 0 2px 8px black; */
+  animation: blink 1.2s step-end infinite;
+  margin-top: 1.6rem;
 }
 
 .press-any.flash-twice {
-animation: retro-btn-blink 0.29s steps(2) 1;
+  animation: retro-flashing-blink 0.29s steps(2) 1;
 }
-
-@keyframes retro-btn-blink {
-    0%   { color: #222; filter: none; }
-    20%  { color: #fff; filter: brightness(2) drop-shadow(0 0 6px #fff); }
-    40%  { color: #0f0; filter: contrast(2) brightness(2) blur(0.3px); }
-    60%  { color: #fff; filter: grayscale(1) blur(1px); }
-    100% { color: #222; filter: none; }
-  }
 
 /* ------------------ Menu ------------------ */
 
 .menu {
   gap: 1.4rem;
+  /* animation: retro-fast-fade 0.17s steps(2, end) 1; */
 }
 
 #main-menu {
-  opacity: 0;
-  transition: opacity 1.3s cubic-bezier(0.4, 0, 0.2, 1);
-  background: var(--img-menu-bg) center/cover;
+    opacity: 1;
+    background: var(--img-menu-bg) center/cover;
 }
-
-#main-menu.show-fade {
-  opacity: 1;
+#main-menu.slow-fade {
+  animation: retro-fadein 0.6s steps(3, end) 1;
 }
 
 #mode-menu {
-background: var(--img-menu-bg) center/cover;
+  background: var(--img-menu-bg) center/cover;
 }
 
 #level-menu {
-background: var(--img-menu-bg) center/cover;
+  background: var(--img-menu-bg) center/cover;
 }
-  
+
 /* ------------------ Buttons ------------------ */
 
-button, .btn-options, dialog[open] {
-    /* 꼭 필요한 속성만 중복, 나머지는 .pixel-box에만 작성 */
-    transition: none;
-    position: relative;
-  }
-  
-  button:active, .btn-options:active {
-    background: #b8b8b8;
-    color: #444;
-    box-shadow: 0 0 0 #999, 0 0 0 2px #ccc inset;
-    border-color: #000;
-    transform: translate(2px, 2px) scale(0.98);
-    filter: brightness(0.92) contrast(1.2);
-  }
-  
-  
+button,
+.btn-options,
+dialog[open] {
+  /* 꼭 필요한 속성만 중복, 나머지는 .pixel-box에만 작성 */
+  transition: none;
+  position: relative;
+}
+
+button:active,
+.btn-options:active {
+  background: #b8b8b8;
+  color: #444;
+  box-shadow:
+    0 0 0 #999,
+    0 0 0 2px #ccc inset;
+  border-color: #000;
+  transform: translate(2px, 2px) scale(0.98);
+  filter: brightness(0.92) contrast(1.2);
+}
+
 button.back {
   background: #333;
   color: #fff;
@@ -185,8 +266,8 @@ button.back {
 /* ------------------ Story Screen ------------------ */
 
 #story-screen {
-    background: var(--bg);
-  }  
+  background: var(--bg);
+}
 
 #story-screen {
   display: flex;
@@ -217,12 +298,10 @@ button.back {
   font-size: 0.9rem;
 }
 
-dialog[open] {
-  border: none;
-  padding: 1.8rem;
-  background: var(--fg);
-  color: var(--bg);
+dialog {
+  width: 400px;
 }
+
 dialog label {
   display: flex;
   justify-content: space-between;
@@ -230,4 +309,15 @@ dialog label {
 }
 dialog input[type="range"] {
   width: 150px;
+}
+dialog::backdrop {
+  background: transparent;
+}
+
+#modal-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-size: 0.9rem;
+  padding: 0.3rem 0.8rem;
 }
