@@ -1,17 +1,89 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=800, initial-scale=1.0" />
+    <title>The Lost Pokemons</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="game-root">
+      <!-- Title Screen-->
+      <section id="title" class="screen">
+        <div class="logo" alt="Game Logo"></div>
+        <p class="press-any">Press any button to start</p>
+      </section>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Game</title>
-    <link rel="stylesheet" href="./style.css">
-</head>
+      <!-- Main menu Screen-->
+      <section id="main-menu" class="menu screen hidden">
+        <button id="btn-play">Play Game</button>
+        <button id="btn-ranking">High Ranking</button>
+        <button class="gear-btn" title="Options">Options</button>
+      </section>
 
-<body>
-    <h1>Welcome to the Web Game</h1>
-    <p>Hello world!</p>
-    <script src="./script.js"></script>
-</body>
+      <!-- Select mode Screen-->
+      <section id="mode-menu" class="menu screen hidden">
+        <button id="btn-story">Story Mode</button>
+        <button id="btn-score">Score Attack Mode</button>
+        <button id="btn-back-to-main-menu" class="back">뒤로가기</button>
+      </section>
 
+      <!-- Select Level Screen-->
+      <section id="level-menu" class="menu screen hidden">
+        <h2>Select Level</h2>
+        <button class="btn-level" data-diff="easy">Easy</button>
+        <button class="btn-level" data-diff="normal">Normal</button>
+        <button class="btn-level" data-diff="hard">Hard</button>
+        <button id="btn-back-to-mode-menu" class="back">뒤로가기</button>
+      </section>
+
+      <!-- Story Screen-->
+      <section id="story-screen" class="screen hidden">
+        <div id="story-illustration"></div>
+        <div id="story-textbox">
+          <p id="story-line"></p>
+          <button id="btn-skip" class="skip">Skip</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- Option modal -->
+    <dialog id="options-modal">
+      <h3>Options</h3>
+      <label>
+        Sound Effect&nbsp;Volume
+        <input
+          type="range"
+          id="sfx-volume"
+          min="0"
+          max="1"
+          step="0.01"
+          value="0.5"
+        />
+      </label>
+      <label>
+        BGM&nbsp;Volume
+        <input
+          type="range"
+          id="bgm-volume"
+          min="0"
+          max="1"
+          step="0.01"
+          value="0.5"
+        />
+      </label>
+      <button id="modal-close">Close</button>
+    </dialog>
+
+    <!-- Sound -->
+    <audio id="bgm" src="../assets/sounds/title.mp3" autoplay loop></audio>
+    <audio
+      id="start-sfx"
+      src="../assets/sounds/press_any_button.mp3"
+      preload="auto"
+    ></audio>
+    <audio id="click-sfx" src="../assets/sounds/click.wav" preload="auto"></audio>
+
+    <script src="script.js"></script>
+  </body>
 </html>
