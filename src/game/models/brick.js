@@ -20,7 +20,7 @@ class Brick{
         ctx.fillRect(this.x, this.y, this.width, this.height);
     }
 
-    isHit(ball){
+    isBrickHit(ball) {
         // 원형 공과 사각형 벽돌의 정확한 충돌 감지 로직 구현
         // 1. 공의 중심에서 가장 가까운 벽돌 상의 점 찾기
         // x - 벽돌의 왼쪽 끝~오른쪽 끝 범위 내에서 x와 가장 가까운 점

@@ -153,7 +153,7 @@ function collisionDetection() {
             const b = bricks[c][r];
             if (b.status === 1) {
                 // 활성화된 벽돌에 대해서만 충돌 감지
-                if (b.isHit(ball)) {
+                if (b.isBrickHit(ball)) {
                     // 겹침 영역 계산을 통한 방향 감지
                     const overlapLeft = ball.x + ball.radius - b.x;
                     const overlapRight = b.x + BRICK_WIDTH - (ball.x - ball.radius);
