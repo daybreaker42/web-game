@@ -1,11 +1,10 @@
 // ================================================================
 //                         [헬퍼 함수 / 쿼리]
 // ================================================================
-const qs  = (sel) => document.querySelector(sel);
+const qs = (sel) => document.querySelector(sel);
 const qsa = (sel) => [...document.querySelectorAll(sel)];
 const hide = (el) => el.classList.add("hidden");
 const show = (el) => el.classList.remove("hidden");
-
 
 // ================================================================
 //                    [타이틀 → 메인 메뉴 진입]
@@ -17,33 +16,24 @@ window.addEventListener("DOMContentLoaded", () => {
   const logo = document.querySelector(".logo");
   const pressAny = document.querySelector(".press-any");
 
-  // 2초 후 로고 보이기
   setTimeout(() => {
     logo.classList.add("show");
   }, 2000);
 
-  // 3초 후 press any button 보이기
   setTimeout(() => {
     pressAny.classList.add("show");
   }, 3000);
 });
 
 function startFromTitle(e) {
-  try {
-    qs("#start-sfx").currentTime = 0;
-    qs("#start-sfx").play();
-  } catch (err) {}
+    setTimeout(() => {
+        playSfx(SFX.START);
+    }, 80);
 
-  // 빠른 플래시 2회
   const pressAny = qs(".press-any");
   pressAny.classList.remove("flash-twice", "noblink");
   void pressAny.offsetWidth;
   pressAny.classList.add("flash-twice");
-
-  setTimeout(() => {
-    const title = document.getElementById("title");
-    title.classList.add("fadeout");
-  }, 300);
 
   setTimeout(() => {
     hide(qs("#title"));
@@ -56,10 +46,9 @@ function startFromTitle(e) {
 
 function showMainMenuWithFade() {
   const mainMenu = qs("#main-menu");
-  mainMenu.classList.add("slow-fade");
+  mainMenu.classList.add("fade-in");
   show(mainMenu);
 }
-
 
 // ================================================================
 //                  [메인 메뉴 <-> 모드 메뉴]
@@ -72,10 +61,9 @@ qs("#btn-play").onclick = () => {
 qs("#btn-back-to-main-menu").onclick = () => {
   hide(qs("#mode-menu"));
   const mainMenu = qs("#main-menu");
-  mainMenu.classList.remove("slow-fade");
+  mainMenu.classList.remove("fade-in");
   show(mainMenu);
 };
-
 
 // ================================================================
 //                   [모드 메뉴 <-> 난이도 메뉴]
@@ -96,6 +84,17 @@ qs("#btn-back-to-mode-menu").onclick = () => {
   show(qs("#mode-menu"));
 };
 
+// ================================================================
+//              [난이도 메뉴 -> 스토리 모드 / 스코어 모드]
+// ================================================================
+
+qsa(".btn-level").forEach((btn) => {
+  btn.onclick = () => {
+    const level = btn.dataset.level;
+    if (selectedMode === "story") startStoryGameMode(level);
+    else startScoreMode(level);
+  };
+});
 
 // ================================================================
 //                          [옵션 모달]
@@ -108,11 +107,11 @@ document
   .forEach((btn) => (btn.onclick = openOptions));
 qs("#modal-close").onclick = () => qs("#options-modal").close();
 
-
 // ================================================================
 //                      [SFX / BGM 볼륨 설정]
 // ================================================================
-let sfxVolume = 0.5, bgmVolume = 0.5;
+let sfxVolume = 0.5,
+  bgmVolume = 0.5;
 const bgm = qs("#bgm");
 const clickSfx = qs("#click-sfx");
 const startSfx = qs("#start-sfx");
@@ -136,6 +135,14 @@ qs("#bgm-volume").addEventListener("input", (e) => {
 });
 bgm.volume = bgmVolume;
 
+// ================================================================
+//                            [게임 시작]
+// ================================================================
+function startGame(mode, level) {
+  restoreBgm();
+  alert(`Game starts!\nMode: ${mode}\nLevel: ${level ?? "default"}`);
+  // TODO: 게임 화면 연결
+}
 
 // ================================================================
 //                           [스토리 모드]
@@ -283,35 +290,57 @@ function restoreBgm() {
   };
 }
 
-// ================================================================
-//                       [게임 시작]
-// ================================================================
-function startGame(mode, level) {
-  restoreBgm();
-  alert(`Game starts!\nMode: ${mode}\nLevel: ${level ?? "default"}`);
-  // TODO: 게임 화면 연결
-}
-
 
 // ================================================================
-//                      [스코어 어택 모드]
+//                       [Sound Effect]
 // ================================================================
-function startScoreMode(level) {
-  hide(qs("#level-menu"));
-  startGame("score", level);
-}
+const SFX = {
+    BUTTON:   "button-click.wav",
+    START:   "title-start.mp3",
+    STORY:   "story-next.wav",
+};
 
+function getSfxPath(name) {
+    return `../assets/sounds/${name}`;
+  }
+  
+  function playSfx(path, volume = sfxVolume) {
+    path = getSfxPath(path);
+    const audio = new Audio(path);
+    audio.volume = volume;
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+  }
+  
+  
 
-// ================================================================
-//                       [버튼 SFX 효과]
-// ================================================================
 document.querySelectorAll("button").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    const sfx = document.getElementById("click-sfx");
-    if (sfx) {
-      sfx.currentTime = 0;
-      sfx.volume = sfxVolume; // ← 볼륨 항상 최신값 반영
-      sfx.play();
-    }
-  });
+btn.addEventListener("click", () => playSfx(SFX.BUTTON));
 });
+  
+function playStorySfx() {
+playSfx(SFX.STORY);
+}
+  
+// ================================================================
+//                       [Skip 모달]
+// ================================================================
+const skipModal = qs("#confirm-skip-modal");
+const btnYes = qs("#skip-confirm-yes");
+const btnNo = qs("#skip-confirm-no");
+
+qs("#btn-skip").onclick = () => {
+  skipModal.showModal();
+};
+
+btnYes.onclick = () => {
+  skipModal.close();
+  hide(qs("#story-screen"));
+  startGameForStage(stageIdx, selectedStoryLevel);
+};
+
+btnNo.onclick = () => {
+  skipModal.close();
+};
+
+// ESC키, 바깥 클릭으로도 닫힘(기본 dialog 동작)
