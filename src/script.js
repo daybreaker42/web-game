@@ -138,7 +138,124 @@ bgm.volume = bgmVolume;
 
 
 // ================================================================
-//                   [BGM: 스토리/기본 전환]
+//                           [스토리 모드]
+// ================================================================
+
+window.story_stages = [
+  window.story_intro,
+  window.story_stage1_clear,
+  window.story_stage2_clear,
+  window.story_stage3_begin,
+  window.story_stage3_clear,
+];
+
+let selectedStoryLevel = null;
+let stageIdx = 0;
+let storyScript = [];
+let currentStoryIndex = 0;
+let currentLineIndex = 0;
+
+function startStoryGameMode(level) {
+  selectedStoryLevel = level;
+  stageIdx = 0;
+  proceedToStage(stageIdx);
+}
+
+function proceedToStage(idx) {
+  // 1. 스토리부터 보여주기
+  storyScript = window.story_stages[idx] || [];
+  currentStoryIndex = 0;
+  currentLineIndex = 0;
+  playStoryBgm();
+  showStoryScreen();
+  showStoryLine();
+}
+
+let prevIllustrationPath = null;
+
+function showStoryLine() {
+    if (currentStoryIndex >= storyScript.length) {
+      hide(qs("#story-screen"));
+      startGameForStage(stageIdx, selectedStoryLevel);
+      return;
+    }
+    const chapter = storyScript[currentStoryIndex];
+    const lines = chapter.lines;
+  
+    if (currentLineIndex >= lines.length) {
+      currentStoryIndex++;
+      currentLineIndex = 0;
+      showStoryLine();
+      return;
+    }
+  
+    playStorySfx();
+  
+    const illustration = qs("#story-illustration");
+    const newPath = `url('../assets/images/story/${chapter.image}.png')`;
+  
+    // 달라질 때만 효과
+    if (prevIllustrationPath !== newPath) {
+      illustration.classList.remove("fade-in");
+      void illustration.offsetWidth; // 트리거
+      illustration.classList.add("fade-in");
+      prevIllustrationPath = newPath;
+    }
+    illustration.style.backgroundImage = newPath;
+  
+    qs("#story-line").textContent = lines[currentLineIndex];
+  }
+  
+
+function showStoryScreen() {
+  hide(qs("#level-menu"));
+  show(qs("#story-screen"));
+}
+
+qs("#story-screen").onclick = function (e) {
+  if (e.target.id === "btn-skip")
+    return;
+  currentLineIndex++;
+  showStoryLine();
+};
+
+qs("#btn-skip").onclick = () => {
+  hide(qs("#story-screen"));
+  startGameForStage(stageIdx, selectedStoryLevel);
+};
+
+// **스테이지별 본게임**
+function startGameForStage(idx, level) {
+  restoreBgm();
+  alert(`Stage ${idx + 1} 게임 시작!\n레벨: ${level}`);
+  setTimeout(() => {
+    nextStage();
+  }, 1500);
+}
+
+function nextStage() {
+  stageIdx++;
+  if (stageIdx < window.story_stages.length) {
+    proceedToStage(stageIdx);
+  } else {
+    alert("모든 스테이지 클리어! 타이틀로 돌아갑니다.");
+    hide(qs("#story-screen"));
+    show(qs("#title"));
+    document.addEventListener("keydown", startFromTitle, { once: true });
+    document.addEventListener("click", startFromTitle, { once: true });
+  }
+}
+
+// ================================================================
+//                      [스코어 어택 모드]
+// ================================================================
+function startScoreMode(level) {
+  hide(qs("#level-menu"));
+  startGame("score", level);
+}
+
+// ================================================================
+//                          [BGM]
 // ================================================================
 const storyBgmPath = "../assets/sounds/story.mp3";
 let prevBgmSrc = bgm.src;
