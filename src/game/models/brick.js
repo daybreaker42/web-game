@@ -6,7 +6,7 @@
  * - bool isHit(ball): 공과의 충돌을 감지하는 메서드
  */
 class Brick{
-    constructor(x, y, width, height, color){
+    constructor(x, y, width, height, color) {
         this.x = x;
         this.y = y;
         this.width = width;
