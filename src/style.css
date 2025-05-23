@@ -181,17 +181,11 @@ body {
 
 /* ------------------ Title Screen ------------------ */
 
-.logo.show {
-  opacity: 1;
-}
-
-.press-any.show {
-  opacity: 1;
-}
-
 .logo {
-  width: 500px;
-  height: 200px;
+  position: relative;
+  top: -50px;
+  width: 550px;
+  height: 250px;
   margin: 0 auto 1rem auto;
   background: var(--img-logo) center/contain no-repeat;
 }
@@ -203,15 +197,25 @@ body {
 }
 
 .press-any {
+  position: relative;
+  top: -50px;
   font-size: 2rem;
   color: #fff;
   /* text-shadow: 0 2px 8px black; */
   animation: blink 1.2s step-end infinite;
-  margin-top: 1.6rem;
+  margin: 0;
 }
 
 .press-any.flash-twice {
   animation: retro-flashing-blink 0.29s steps(2) 1;
+}
+
+.logo.show {
+  opacity: 1;
+}
+
+.press-any.show {
+  opacity: 1;
 }
 
 /* ------------------ Menu ------------------ */
