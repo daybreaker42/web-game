@@ -143,15 +143,13 @@ class GameManager {
         if (startButton) startButton.addEventListener('click', () => this.startGame());
         if (pauseButton) pauseButton.addEventListener('click', () => this.togglePause());
         if (restartButton) restartButton.addEventListener('click', () => this.restartGame());
-    }
-
-    /**
+    }    /**
      * 키보드 입력 처리
      */
     keyDownHandler(e) {
-        if (e.key === 'Right' || e.key === 'ArrowRight') {
+        if (e.key === 'Right' || e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
             this.keys.rightPressed = true;
-        } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
+        } else if (e.key === 'Left' || e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
             this.keys.leftPressed = true;
         } else if (e.code === 'Space') {
             this.keys.spacePressed = true;
@@ -160,9 +158,9 @@ class GameManager {
     }
 
     keyUpHandler(e) {
-        if (e.key === 'Right' || e.key === 'ArrowRight') {
+        if (e.key === 'Right' || e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
             this.keys.rightPressed = false;
-        } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
+        } else if (e.key === 'Left' || e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
             this.keys.leftPressed = false;
         } else if (e.code === 'Space') {
             this.keys.spacePressed = false;

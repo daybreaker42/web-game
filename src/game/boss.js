@@ -64,14 +64,49 @@ class BossGame extends GameManager {
         // 스페이스바 발사 기능 제거 - 자동 발사로 변경
     }
 
-    keyUpHandler(e) {
-        super.keyUpHandler(e); // 부모 클래스의 기본 처리 먼저 수행
+    /**
+     * 키보드 키 눌림 이벤트 처리 (WASD 키 지원 추가)
+     * @param {KeyboardEvent} e - 키보드 이벤트
+     */
+    keyDownHandler(e) {
+        // 부모 클래스의 기본 키 처리 호출
+        super.keyDownHandler(e);
 
-        // 보스전 전용 키 처리
-        if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
-            this.keys.upPressed = false;
-        } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
-            this.keys.downPressed = false;
+        // WASD 키 지원 추가
+        if (e.key === 'w' || e.key === 'W' || e.key === 'ArrowUp') {
+            this.keys.upPressed = true; // W키로 앞으로 가속
+        }
+        if (e.key === 's' || e.key === 'S' || e.key === 'ArrowDown') {
+            this.keys.downPressed = true; // S키로 뒤로 가속
+        }
+        if (e.key === 'a' || e.key === 'A' || e.key === 'ArrowLeft') {
+            this.keys.leftPressed = true; // A키로 좌회전
+        }
+        if (e.key === 'd' || e.key === 'D' || e.key === 'ArrowRight') {
+            this.keys.rightPressed = true; // D키로 우회전
+        }
+    }
+
+    /**
+     * 키보드 키 해제 이벤트 처리 (WASD 키 지원 추가)
+     * @param {KeyboardEvent} e - 키보드 이벤트
+     */
+    keyUpHandler(e) {
+        // 부모 클래스의 기본 키 처리 호출
+        super.keyUpHandler(e);
+
+        // WASD 키 지원 추가
+        if (e.key === 'w' || e.key === 'W' || e.key === 'ArrowUp') {
+            this.keys.upPressed = false; // W키 해제
+        }
+        if (e.key === 's' || e.key === 'S' || e.key === 'ArrowDown') {
+            this.keys.downPressed = false; // S키 해제
+        }
+        if (e.key === 'a' || e.key === 'A' || e.key === 'ArrowLeft') {
+            this.keys.leftPressed = false; // A키 해제
+        }
+        if (e.key === 'd' || e.key === 'D' || e.key === 'ArrowRight') {
+            this.keys.rightPressed = false; // D키 해제
         }
     }
 
