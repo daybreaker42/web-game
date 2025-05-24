@@ -45,8 +45,7 @@
             border-radius: 5px;
             margin: 0 10px;
             transition: background-color 0.3s;
-        }
-          button:hover {
+        }        button:hover {
             background-color: #45a049;
         }
         
@@ -121,10 +120,9 @@
         let currentGameMode = 'brick'; // 기본값: 벽돌깨기
         let currentGame = null;
 
-        // DOM 요소들
+            // DOM 요소들 (game.js에서 이미 선언된 canvas 사용)
         const brickModeButton = document.getElementById('brickModeButton');
-        const bossModeButton = document.getElementById('bossModeButton');
-        const canvas = document.getElementById('gameCanvas');
+            const bossModeButton = document.getElementById('bossModeButton');
 
         // 모드 버튼 이벤트 리스너
         brickModeButton.addEventListener('click', () => {
@@ -148,18 +146,13 @@
             // 버튼 스타일 업데이트
             brickModeButton.classList.toggle('active', mode === 'brick');
             bossModeButton.classList.toggle('active', mode === 'boss');
+
             // 새로운 게임 인스턴스 생성
             if (mode === 'brick') {
-                // BrickGame 인스턴스 생성
-                currentGame = new BrickGame(canvas);
-                currentGame.setGameInfo({
-                    mode: 'brick',
-                    level: 'normal',
-                    stage: 1
-                });
-                currentGame.animationFrame = requestAnimationFrame((time) => currentGame.update(time));
+                // 기존 벽돌깨기 함수들 사용
+                initBricks();
             } else if (mode === 'boss') {
-                // BossGame 인스턴스 생성
+                // BossGame 인스턴스 생성 (GameManager 기반)
                 currentGame = new BossGame(canvas);
                 currentGame.setGameInfo({
                     mode: 'boss',
