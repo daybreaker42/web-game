@@ -1,4 +1,36 @@
 
+// ========== item.js ==========
+window.item = [
+    {
+        "name": "normal-potion",
+        "effect": {
+            "type": "heal",
+            "amount": 20
+        }
+    },
+    {
+        "name": "super-potion",
+        "effect": {
+            "type": "heal",
+            "amount": 20
+        }
+    },
+    {
+        "name": "hyper-potion",
+        "effect": {
+            "type": "heal",
+            "amount": 60
+        }
+    },
+    {
+        "name": "full-potion",
+        "effect": {
+            "type": "heal",
+            "amount": 100
+        }
+    }
+];
+
 // ========== pokemon.js ==========
 window.pokemon = {
   "0": {"name": "이상해씨", "type": 0},
@@ -105,7 +137,9 @@ window.pokemon = {
   "101": {"name": "바닐프티", "type": 4},
   "102": {"name": "에몽가", "type": 2},
   "103": {"name": "코고미", "type": 4},
-  "104": {"name": "프리지오", "type": 4}
+  "104": {"name": "프리지오", "type": 4},
+  "105": {"name": "피카츄", "type": 2},
+  "106": {"name": "팽도리", "type": 3}
 };
 
 // ========== scoreboard.js ==========
