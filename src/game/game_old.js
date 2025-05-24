@@ -1,14 +1,20 @@
-/**
- * BrickGame class
- * - GameManager를 상속받아 벽돌깨기 게임을 구현
- * - 공과 패들, 벽돌들의 상호작용을 처리
- */
-class BrickGame extends GameManager {
-    constructor(canvas) {
-        super(canvas);
-        
-        // MARK: 벽돌깨기 전용 설정
-        this.leftBrick = 0;
+// 게임 캔버스 및 컨텍스트 설정
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+let animationFrame = null;
+
+// 시간 기반 애니메이션을 위한 변수
+let lastTime = 0;
+const FPS = 60;
+const FRAME_DELAY = 1000 / FPS; // 목표 프레임당 시간 (ms)
+
+// #region 게임 상태 변수
+const TOTAL_LIVES = 300;
+let score = 0;
+let lives = TOTAL_LIVES;
+let isGameRunning = false;
+let isPaused = false;
+let leftBrick = 0;
 
 // 공 변수
 const BALL_SPEED = 5;
