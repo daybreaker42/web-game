@@ -104,9 +104,9 @@
     <div id="game-container">
         <canvas id="gameCanvas" width="800" height="533"></canvas>
         <div class="controls">
-            <button id="startButton" tabindex="-1">게임 시작</button>
-            <button id="pauseButton" tabindex="-1">일시 정지</button>
-            <button id="restartButton" tabindex="-1">다시 시작</button>
+            <button id="startButton">게임 시작</button>
+            <button id="pauseButton">일시 정지</button>
+            <button id="restartButton">다시 시작</button>
             </div>
     </div>
     <script src="../data.js"></script>
@@ -119,10 +119,9 @@
         // 게임 모드 선택 관리
         let currentGameMode = 'brick'; // 기본값: 벽돌깨기
         let currentGame = null;
-
-            // DOM 요소들 (game.js에서 이미 선언된 canvas 사용)
+                const canvas = document.getElementById('gameCanvas'); // canvas 요소를 script 태그 상단으로 이동
         const brickModeButton = document.getElementById('brickModeButton');
-            const bossModeButton = document.getElementById('bossModeButton');
+                const bossModeButton = document.getElementById('bossModeButton'); // bossModeButton 정의 추가
 
         // 모드 버튼 이벤트 리스너
         brickModeButton.addEventListener('click', () => {
@@ -135,38 +134,31 @@
 
         // 게임 모드 전환 함수
         function switchGameMode(mode) {
-            // 현재 실행 중인 게임 정지
-            if (currentGame && currentGame.animationFrame) {
+            if (currentGame && typeof currentGame.endGame === 'function') { // 현재 실행 중인 게임이 있고, endGame 메서드가 있다면 호출
                 currentGame.endGame();
             }
 
-            // 모드 업데이트
             currentGameMode = mode;
-
-            // 버튼 스타일 업데이트
             brickModeButton.classList.toggle('active', mode === 'brick');
             bossModeButton.classList.toggle('active', mode === 'boss');
 
-            // 새로운 게임 인스턴스 생성
             if (mode === 'brick') {
-                // 기존 벽돌깨기 함수들 사용
-                initBricks();
+                currentGame = new BrickGame(canvas);
+                currentGame.setGameInfo({ mode: 'brick', level: 'normal', stage: 1 });
             } else if (mode === 'boss') {
-                // BossGame 인스턴스 생성 (GameManager 기반)
                 currentGame = new BossGame(canvas);
-                currentGame.setGameInfo({
-                    mode: 'boss',
-                    level: 'normal',
-                    stage: 4
-                });
-                currentGame.animationFrame = requestAnimationFrame((time) => currentGame.update(time));
+                currentGame.setGameInfo({ mode: 'boss', level: 'normal', stage: 4 });
+            }
+            // 게임 시작은 사용자가 "게임 시작" 버튼을 눌렀을 때 GameManager의 startGame에 의해 처리됩니다.
+            // UI(점수, 생명)는 currentGame.startGame() 내부 또는 setGameInfo 후 GameManager에서 업데이트합니다.
+            if (currentGame && typeof currentGame.updateUI === 'function') {
+                currentGame.updateUI(); // 모드 변경 시 초기 UI 반영
             }
         }
 
         // 페이지 로드 시 초기화
         document.addEventListener('DOMContentLoaded', function () {
-            // 기본 모드(벽돌깨기)로 초기화
-            switchGameMode('brick');
+            switchGameMode('brick'); // 기본 모드로 초기화
         });
     </script>
 </body>
