@@ -153,26 +153,43 @@ class BrickGame extends GameManager {
                 }
             }
         }
-    }
-    
-    /**
+    }    /**
      * 충돌 감지
      */
     collisionDetection() {
         for (let c = 0; c < this.brickColumnCount; c++) {
             for (let r = 0; r < this.brickRowCount; r++) {
-                const brick = this.bricks[c][r];
-                if (brick && brick.status === 1) {
-                    // 공이 벽돌 범위 안에 있는지 확인
-                    if (this.ball.x > brick.x && 
-                        this.ball.x < brick.x + this.BRICK_WIDTH && 
-                        this.ball.y > brick.y && 
-                        this.ball.y < brick.y + this.BRICK_HEIGHT) {
-                        
-                        this.ball.speedY = -this.ball.speedY;
-                        brick.status = 0; // 벽돌 제거
-                        this.score += 10;
-                        this.leftBrick--;
+                const b = this.bricks[c][r];
+                if (b && b.status === 1) {
+                    // 활성화된 벽돌에 대해서만 충돌 감지
+                    if (b.isBrickHit(this.ball)) {
+                        // 겹침 영역 계산을 통한 방향 감지
+                        const overlapLeft = this.ball.x + this.ball.radius - b.x;
+                        const overlapRight = b.x + this.BRICK_WIDTH - (this.ball.x - this.ball.radius);
+                        const overlapTop = this.ball.y + this.ball.radius - b.y;
+                        const overlapBottom = b.y + this.BRICK_HEIGHT - (this.ball.y - this.ball.radius);
+
+                        // 가장 작은 겹침이 발생한 방향이 충돌 방향
+                        const minOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
+
+                        if (minOverlap === overlapLeft || minOverlap === overlapRight) {
+                            this.ball.speedX = -this.ball.speedX; // 좌/우 충돌
+                        } else {
+                            this.ball.speedY = -this.ball.speedY; // 상/하 충돌
+                        }
+
+                        b.status = 0; // 벽돌 부서짐
+                        this.score += 10; // 점수 추가
+                        this.leftBrick--; // 남은 벽돌 수 감소
+
+                        // 점수 업데이트
+                        document.getElementById('score').textContent = this.score;
+
+                        // 모든 벽돌을 부쉈는지 확인
+                        let result = this.checkWin();
+
+                        // 한 프레임에 하나의 벽돌만 처리
+                        return result;
                     }
                 }
             }

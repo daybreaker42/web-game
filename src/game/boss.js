@@ -41,11 +41,10 @@ class BossGame extends GameManager {
             bulletSpeed: 3
         };
 
-        // MARK: 총알 시스템
-        this.playerBullets = []; // 플레이어가 발사한 총알
+        // MARK: 총알 시스템        this.playerBullets = []; // 플레이어가 발사한 총알
         this.bossBullets = []; // 보스가 발사한 탄막
         this.playerLastShotTime = 0;
-        this.playerShotCooldown = 200; // 0.2초마다 발사 가능
+        this.playerShotCooldown = 500; // 0.5초마다 자동 발사
 
         // MARK: 추가 키 설정
         this.keys.upPressed = false;
@@ -56,16 +55,13 @@ class BossGame extends GameManager {
      * 키보드 입력 처리 오버라이드
      */
     keyDownHandler(e) {
-        super.keyDownHandler(e); // 부모 클래스의 기본 처리 먼저 수행
-
-        // 보스전 전용 키 처리
+        super.keyDownHandler(e); // 부모 클래스의 기본 처리 먼저 수행        // 보스전 전용 키 처리
         if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
             this.keys.upPressed = true;
         } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
             this.keys.downPressed = true;
-        } else if (e.code === 'Space') {
-            this.shootPlayerBullet(); // 스페이스바로 총알 발사
         }
+        // 스페이스바 발사 기능 제거 - 자동 발사로 변경
     }
 
     keyUpHandler(e) {
@@ -117,12 +113,13 @@ class BossGame extends GameManager {
         this.drawPlayerBullets();
         this.drawBossBullets();
         this.drawHealthBars();
-    }
-
-    /**
+    }    /**
      * 플레이어 업데이트
      */
     updatePlayer(timeMultiplier) {
+        // 자동 발사 처리
+        this.shootPlayerBullet();
+
         // 회전 처리
         if (this.keys.leftPressed) {
             this.player.rotation -= this.player.rotationSpeed * timeMultiplier;
