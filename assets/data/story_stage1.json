@@ -1,7 +1,26 @@
 [
     {
-      "id": 1,
-      "image": "stage1_clear_1",
+        "id": 1,
+      "image": "stage1_1",
+        "lines": [
+          "피카츄!!!!"
+        ]
+      },
+      {
+        "id": 2,
+      "CRT_style": true,
+
+        "image": "stage1_2",
+        "lines": [
+          "!",
+          "빛이...?!"
+        ]
+      },
+    {
+      "id": 3,
+
+      "image": "stage1_3",
+      "sfx": "capsule-open.wav",
       "lines": [
         "(장면: 어두운 구조물 내부, 붉은 경고등이 천천히 꺼지며 닫힌 캡슐이 열린다. 안에서 피카츄가 조심스럽게 걸어나온다.)",
         "“피카츄...? 정말 너 맞지...?”",
@@ -10,8 +29,8 @@
       ]
     },
     {
-      "id": 2,
-      "image": "stage1_clear_2",
+      "id": 4,
+      "image": "stage1_4",
       "lines": [
         "이 장치는 단순한 감금 장치가 아니었어.",
         "피카츄를 다치지 않게 보호하는 듯한, 이상할 정도로 세심한 구조.",
@@ -24,8 +43,9 @@
       ]
     },
     {
-      "id": 3,
-      "image": "stage1_clear_3",
+      "id": 5,
+      "CRT_style": true,
+      "image": "stage1_3",
       "lines": [
         "[기록 038] :: 대상 포획 완료 - 피카츄",
         "관계 강도: 매우 높음",
@@ -40,8 +60,9 @@
       ]
     },
     {
-      "id": 4,
-      "image": "stage1_clear_4",
+      "id": 6,
+      "CRT_style": true,
+      "image": "stage1_4",
       "lines": [
         "[감정 로그 01]",
         "…그들은 서로를 지키려 했다",
