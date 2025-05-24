@@ -7,7 +7,7 @@ const hide = (el) => el.classList.add("hidden");
 const show = (el) => el.classList.remove("hidden");
 
 // ================================================================
-//                    [타이틀 → 메인 메뉴 진입]
+//                    [타이틀 -> 메인 메뉴 진입]
 // ================================================================
 document.addEventListener("keydown", startFromTitle, { once: true });
 document.addEventListener("click", startFromTitle, { once: true });
@@ -41,7 +41,7 @@ function startFromTitle(e) {
   setTimeout(() => {
     hide(qs("#title"));
     showMainMenu();
-    playBgmTitle();
+    playBgm(BGM.TITLE);
     startCloudAnimation();
   }, 1100);
 }
@@ -98,6 +98,19 @@ qsa(".btn-level").forEach((btn) => {
   };
 });
 
+function startGameStoryMode(level) {
+  stopCloudAnimation();
+  hide(qs("#level-menu"));
+  selectedLevel = level;
+  stageListIdx = 0;
+  proceedToStage(stageListIdx);
+}
+
+function startGameScoreMode(level) {
+  hide(qs("#level-menu"));
+  startGame("score", level);
+}
+
 // ================================================================
 //                          [옵션 모달]
 // ================================================================
@@ -141,7 +154,7 @@ bgm.volume = bgmVolume;
 //                            [게임 시작]
 // ================================================================
 function startGame(mode, level) {
-  playBgmTitle();
+  playBgm(BGM.GAME);
   alert(`Game starts!\nMode: ${mode}\nLevel: ${level ?? "default"}`);
   // TODO: 게임 화면 연결
 }
@@ -164,19 +177,11 @@ let storyScript = [];
 let storySceneIdx = 0;
 let currentLineIndex = 0;
 
-function startGameStoryMode(level) {
-stopCloudAnimation();
-    hide(qs("#level-menu"));
-  selectedLevel = level;
-  stageListIdx = 0;
-  proceedToStage(stageListIdx);
-}
-
 function proceedToStage(idx) {
   storyScript = window.story_scripts[idx] || [];
   storySceneIdx = 0;
   currentLineIndex = 0;
-  playBgmStory();
+  playBgm(BGM.STORY);
   showStoryScreen();
   showStoryScenes();
 }
@@ -348,7 +353,6 @@ qs("#btn-skip").onclick = () => {
 
 // **스테이지별 본게임**
 function startGameForStage(idx, level) {
-  playBgmTitle();
   alert(
     `Stage ${idx + 1} 게임 시작!\n레벨: ${level}\n(아직 구현되지 않음. 자동 진행)`,
   );
@@ -373,33 +377,25 @@ function nextStage() {
 }
 
 // ================================================================
-//                      [스코어 어택 모드]
-// ================================================================
-function startGameScoreMode(level) {
-  hide(qs("#level-menu"));
-  startGame("score", level);
-}
-
-// ================================================================
 //                          [BGM]
 // ================================================================
-const titleBgmPath = "../assets/sounds/title.mp3";
-const storyBgmPath = "../assets/sounds/story.mp3";
 
-function playBgmStory() {
-  bgm.pause();
-  bgm.src = storyBgmPath;
-  bgm.load();
-  bgm.currentTime = 0;
-  bgm.oncanplaythrough = function handler() {
-    bgm.play();
-    bgm.oncanplaythrough = null;
-  };
+const BGM = {
+  TITLE: "title.mp3",
+  STORY: "story.mp3",
+  GAME: "game.mp3",
+  ENDING: "ending.mp3",
+  CREDITS: "credits.mp3",
+  INTRO: "intro.mp3",
+};
+
+function getBgmPath(name) {
+  return `../assets/sounds/bgm/${name}`;
 }
 
-function playBgmTitle() {
+function playBgm(name) {
   bgm.pause();
-  bgm.src = titleBgmPath;
+  bgm.src = getBgmPath(name);
   bgm.load();
   bgm.currentTime = 0;
   bgm.oncanplaythrough = function handler() {
@@ -421,7 +417,7 @@ const SFX = {
 };
 
 function getSfxPath(name) {
-  return `../assets/sounds/${name}`;
+  return `../assets/sounds/sfx/${name}`;
 }
 
 function playSfx(path, volume = sfxVolume) {
@@ -435,10 +431,6 @@ function playSfx(path, volume = sfxVolume) {
 document.querySelectorAll("button").forEach((btn) => {
   btn.addEventListener("click", () => playSfx(SFX.BUTTON));
 });
-
-function playStorySfx() {
-  playSfx(SFX.STORY);
-}
 
 // ================================================================
 //                       [Skip 모달]
