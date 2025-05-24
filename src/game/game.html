@@ -46,9 +46,32 @@
             margin: 0 10px;
             transition: background-color 0.3s;
         }
-        
-        button:hover {
+          button:hover {
             background-color: #45a049;
+        }
+        
+        .mode-selection {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .mode-button {
+            padding: 15px 30px;
+            font-size: 18px;
+            margin: 0 15px;
+            background-color: #2196F3;
+        }
+        
+        .mode-button:hover {
+            background-color: #1976D2;
+        }
+        
+        .mode-button.active {
+            background-color: #FF9800;
+        }
+        
+        .mode-button.active:hover {
+            background-color: #F57C00;
         }
         
         .score-info {
@@ -66,7 +89,13 @@
     </style>
 </head>
 <body>
-    <h1>벽돌 깨기 게임</h1>
+    <h1>게임 모드 선택</h1>
+    
+    <!-- 게임 모드 선택 -->
+    <div class="mode-selection">
+        <button id="brickModeButton" class="mode-button active">벽돌깨기 게임</button>
+        <button id="bossModeButton" class="mode-button">보스전</button>
+    </div>
     
     <div class="score-info">
         <span>점수: <span id="score">0</span></span>
@@ -81,9 +110,71 @@
             <button id="restartButton" tabindex="-1">다시 시작</button>
             </div>
     </div>
-    <script src="../src/data.js"></script>
+    <script src="../data.js"></script>
     <script src="./utils.js"></script>
     <script src="./models/brick.js"></script>
+    <script src="./models/gameManager.js"></script>
     <script src="./game.js"></script>
+    <script src="./boss.js"></script>
+    <script>
+        // 게임 모드 선택 관리
+        let currentGameMode = 'brick'; // 기본값: 벽돌깨기
+        let currentGame = null;
+
+        // DOM 요소들
+        const brickModeButton = document.getElementById('brickModeButton');
+        const bossModeButton = document.getElementById('bossModeButton');
+        const canvas = document.getElementById('gameCanvas');
+
+        // 모드 버튼 이벤트 리스너
+        brickModeButton.addEventListener('click', () => {
+            switchGameMode('brick');
+        });
+
+        bossModeButton.addEventListener('click', () => {
+            switchGameMode('boss');
+        });
+
+        // 게임 모드 전환 함수
+        function switchGameMode(mode) {
+            // 현재 실행 중인 게임 정지
+            if (currentGame && currentGame.animationFrame) {
+                currentGame.endGame();
+            }
+
+            // 모드 업데이트
+            currentGameMode = mode;
+
+            // 버튼 스타일 업데이트
+            brickModeButton.classList.toggle('active', mode === 'brick');
+            bossModeButton.classList.toggle('active', mode === 'boss');
+            // 새로운 게임 인스턴스 생성
+            if (mode === 'brick') {
+                // BrickGame 인스턴스 생성
+                currentGame = new BrickGame(canvas);
+                currentGame.setGameInfo({
+                    mode: 'brick',
+                    level: 'normal',
+                    stage: 1
+                });
+                currentGame.animationFrame = requestAnimationFrame((time) => currentGame.update(time));
+            } else if (mode === 'boss') {
+                // BossGame 인스턴스 생성
+                currentGame = new BossGame(canvas);
+                currentGame.setGameInfo({
+                    mode: 'boss',
+                    level: 'normal',
+                    stage: 4
+                });
+                currentGame.animationFrame = requestAnimationFrame((time) => currentGame.update(time));
+            }
+        }
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function () {
+            // 기본 모드(벽돌깨기)로 초기화
+            switchGameMode('brick');
+        });
+    </script>
 </body>
 </html>
