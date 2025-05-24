@@ -8,87 +8,90 @@
   </head>
   <body>
     <div id="game-root">
-      <div id="game-root">
-        <!-- Title Screen-->
-        <section id="title" class="screen">
-          <div class="logo" alt="Game Logo"></div>
-          <p class="press-any">Press any button to start</p>
-        </section>
+      <!-- Title Screen-->
+      <section id="title" class="screen">
+        <div class="logo" alt="Game Logo"></div>
+        <p class="press-any">Press any button to start</p>
+      </section>
 
-        <!-- Main menu Screen-->
-        <section id="main-menu" class="menu screen hidden">
-          <button class="pixel-box pixel-box--menu" id="btn-play">
-            게임하기
-          </button>
-          <button class="pixel-box pixel-box--menu" id="btn-ranking">
-            랭킹보기
-          </button>
-          <button class="pixel-box pixel-box--menu btn-options" title="Options">
-            환경설정
-          </button>
-        </section>
+      <!-- Main menu Screen-->
+      <section id="main-menu" class="menu screen hidden">
+        <button class="pixel-box pixel-box--menu" id="btn-play">
+          게임하기
+        </button>
+        <button class="pixel-box pixel-box--menu" id="btn-ranking">
+          랭킹보기
+        </button>
+        <button class="pixel-box pixel-box--menu btn-options" title="Options">
+          환경설정
+        </button>
+      </section>
 
-        <!-- Select mode Screen-->
-        <section id="mode-menu" class="menu screen hidden">
-          <button class="pixel-box pixel-box--menu" id="btn-story">
-            스토리 모드
-          </button>
-          <button class="pixel-box pixel-box--menu" id="btn-score">
-            점수 모드
-          </button>
-          <button
-            class="pixel-box pixel-box--menu"
-            id="btn-back-to-main-menu"
-            class="back"
-          >
-            뒤로가기
-          </button>
-        </section>
+      <!-- Select mode Screen-->
+      <section id="mode-menu" class="menu screen hidden">
+        <button class="pixel-box pixel-box--menu" id="btn-story">
+          스토리 모드
+        </button>
+        <button class="pixel-box pixel-box--menu" id="btn-score">
+          점수 모드
+        </button>
+        <button
+          class="pixel-box pixel-box--menu"
+          id="btn-back-to-main-menu"
+          class="back"
+        >
+          뒤로가기
+        </button>
+      </section>
 
-        <!-- Select Level Screen-->
-        <section id="level-menu" class="menu screen hidden">
-          <h2>난이도를 선택하세요</h2>
-          <button class="pixel-box pixel-box--menu btn-level" data-level="easy">
-            쉬움
-          </button>
-          <button
-            class="pixel-box pixel-box--menu btn-level"
-            data-level="normal"
-          >
-            보통
-          </button>
-          <button class="pixel-box pixel-box--menu btn-level" data-level="hard">
-            어려움
-          </button>
-          <button
-            class="pixel-box pixel-box--menu"
-            id="btn-back-to-mode-menu"
-            class="back"
-          >
-            뒤로가기
-          </button>
-        </section>
+      <!-- Select Level Screen-->
+      <section id="level-menu" class="menu screen hidden">
+        <h2>난이도를 선택하세요</h2>
+        <button class="pixel-box pixel-box--menu btn-level" data-level="easy">
+          쉬움
+        </button>
+        <button class="pixel-box pixel-box--menu btn-level" data-level="normal">
+          보통
+        </button>
+        <button class="pixel-box pixel-box--menu btn-level" data-level="hard">
+          어려움
+        </button>
+        <button
+          class="pixel-box pixel-box--menu"
+          id="btn-back-to-mode-menu"
+          class="back"
+        >
+          뒤로가기
+        </button>
+      </section>
 
-        <!-- Story Screen-->
-        <section id="story-screen" class="screen hidden">
-          <div id="story-illustration"></div>
-          <div id="story-textbox">
-            <span id="story-line"></span>
-            <button id="btn-skip">스킵</button>
-          </div>
-        </section>
-      </div>
+      <!-- Story Screen-->
+      <section id="story-screen" class="screen hidden">
+        <div id="story-illustration"></div>
+        <button id="btn-skip">> Skip</button>
+        <div id="story-textbox">
+          <span id="story-line"></span>
+          <span class="story-next-indicator">▼</span>
+        </div>
+      </section>
     </div>
 
     <!-- Confirm skip modal -->
     <dialog id="confirm-skip-modal" class="pixel-box">
-        <div style="padding:12px; text-align:center">
-          정말로 스킵하시겠습니까?<br/>
-          <button id="skip-confirm-yes" class="pixel-box" style="margin:10px 4px;">네</button>
-          <button id="skip-confirm-no" class="pixel-box" style="margin:10px 4px;">아니오</button>
-        </div>
-      </dialog>
-      
+      <div style="padding: 12px; text-align: center">
+        정말로 스킵하시겠습니까?<br />
+        <button
+          id="skip-confirm-yes"
+          class="pixel-box"
+          style="margin: 10px 4px"
+        >
+          네
+        </button>
+        <button id="skip-confirm-no" class="pixel-box" style="margin: 10px 4px">
+          아니오
+        </button>
+      </div>
+    </dialog>
 
     <!-- Option modal -->
     <dialog class="pixel-box" id="options-modal">

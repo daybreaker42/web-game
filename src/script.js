@@ -221,23 +221,28 @@ function showStoryScenes() {
 }
 
 function showStorySceneNormal(scene, onDone) {
-  // 이미지 표시
   qs("#story-illustration").style.backgroundImage =
     `url('../assets/images/story/${scene.image}.png')`;
 
-  // 한 줄씩 차례로 출력 (다음 줄로 넘기면 advanceLine 호출)
+  const indicator = qs(".story-next-indicator");
   let idx = 0;
   function advanceLine() {
     if (idx < scene.lines.length) {
       qs("#story-line").textContent = scene.lines[idx];
-      // 클릭 시 advanceLine 호출
+      playSfx(SFX.STORY);
+      if (indicator) {
+        indicator.classList.add("hidden");
+        setTimeout(() => {
+          indicator.classList.remove("hidden");
+        }, 50);
+      }
+
       qs("#story-screen").onclick = function (e) {
         if (e.target.id === "btn-skip") return;
         idx++;
         advanceLine();
       };
     } else {
-      // 한 챕터 끝: 클릭 이벤트 해제, 콜백 호출
       qs("#story-screen").onclick = null;
       if (onDone) onDone();
     }
