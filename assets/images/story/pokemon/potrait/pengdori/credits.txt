@@ -1,1 +1,0 @@
-2020-10-07 17:58:44.554751	CHUNSOFT	CUR	Unspecified	Normal,Happy,Pain,Angry,Worried,Sad,Crying,Shouting,Teary-Eyed,Determined,Joyous,Inspired,Surprised,Dizzy,Sigh,Stunned
