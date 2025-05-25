@@ -252,11 +252,36 @@ function showStorySceneIlustration(scene) {
   }
 }
 
-function showStorySceneNormal(scene, onDone) {
-  showStorySceneIlustration(scene);
+function showStoryPotrait(scene) {
+  const potraitEl = qs("#story-potrait");
+  const storyLine = qs("#story-line");
+  if (scene.potrait) {
+    potraitEl.classList.remove("hidden");
+    let folder = scene.potrait;
+    let potraitType = scene.potrait_type || "Normal";
+    potraitEl.style.background = `url('../assets/images/story/potrait/${folder}/${potraitType}.png') center/contain no-repeat`;
+    storyLine.classList.add("with-potrait");
+  } else {
+    potraitEl.classList.add("hidden");
+    storyLine.classList.remove("with-potrait");
+    potraitEl.style.background = "";
+  }
+}
 
+function showStorySceneNormal(scene, onDone) {
+  if (scene.image) showStorySceneIlustration(scene);
+  showStoryPotrait(scene);
   const indicator = qs(".story-next-indicator");
   let idx = 0;
+
+  if (scene.lines.length === 0) {
+    qs("#story-textbox").classList.add("hidden");
+    if (onDone) onDone();
+    return;
+  } else {
+    qs("#story-textbox").classList.remove("hidden");
+  }
+
   function advanceLine() {
     if (idx < scene.lines.length) {
       qs("#story-line").textContent = scene.lines[idx];
