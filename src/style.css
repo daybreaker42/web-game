@@ -317,13 +317,24 @@ button.back {
   white-space: pre-line;
   text-align: left;
 }
+.story-next-indicator {
+  position: absolute;
+  right: 20px;
+  bottom: 8px;
+  font-size: 1.5em; /* 크기 조절 */
+  color: #222; /* 색상 */
+  pointer-events: none; /* 클릭 방지 */
+  user-select: none;
+  opacity: 0.85; /* 연하게 하고 싶다면 */
+}
+
 #btn-skip {
   position: absolute;
-  right: 14px;
-  bottom: 10px;
+  left: 30px;
+  top: 20px;
   margin-top: 12px;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 1.3rem;
   padding: 4px 14px;
   border: 1.5px solid #111;
   background: #fff;
