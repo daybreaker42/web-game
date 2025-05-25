@@ -1,41 +1,35 @@
 [
     {
-      "id": 1,
-      "image": "stage1_1",
+      "image": "stage1-pikachu-in-capsule",
       "lines": [
         "피카츄!!!!"
       ]
     },
     {
-      "id": 2,
       "sfx": "bright.mp3",
-      "image": "stage1_2",
+      "image": "stage1-pikachu-in-capsule-bright",
       "lines": [
         "!",
         "빛이...?!"
       ]
     },
     {
-      "id": 3,
       "delay": 3,
       "sfx": "capsule-open.wav",
       "lines": []
     },
     {
-      "id": 4,
       "sfx": "footfall.mp3",
       "lines": [
         "(발소리가 들려...)"
       ]
     },
     {
-      "id": 5,
       "lines": [
         "“피카츄...? 정말 너 맞지...?”"
       ]
     },
     {
-      "id": 6,
       "potrait": "pikachu",
       "potrait_type": "Teary-Eyed",
       "lines": [
@@ -43,33 +37,30 @@
       ]
     },
     {
-      "id": 7,
-      "image": "stage1_7",
       "lines": [
         "“미안... 기다리게 해서. 다시는 널 혼자 두지 않을게.”"
       ]
     },
     {
-      "id": 8,
       "sfx": "together.mp3",
-      "image": "pikachu_together",
+      "image": "pikachu-together",
       "image_width": 250,
       "lines": [
         "* 피카츄를 사용할 수 있게 되었다!"
       ]
     },
     {
-        "id": 9,
         "lines": [
+            "피카츄를 찾아서 다행이야.",
             "그건 그렇고..."
         ]
       },
     {
-      "id": 10,
-      "image": "stage1_10",
+      "image": "stage1-opened-capsule",
       "bgm": "hum.mp3",
       "lines": [
-        "이 장치는 단순한 감금 장치가 아니야.",
+        "“이 장치... 피카츄를 가두기 위한 건가?”",
+        "이 장치는 단순한 감금 장치가 아닌 것 같아.",
         "피카츄를 다치지 않게 보호하는 듯한, 이상할 정도로 세심한 구조.",
         "그리고 주변엔... 감시 장비, 기록 장치, 분석 자료들.",
         "누군가가...",
@@ -80,7 +71,6 @@
       ]
     },
     {
-      "id": 11,
       "CRT_style": true,
       "lines": [
         "[기록 038] :: 대상 포획 완료 - 피카츄",
