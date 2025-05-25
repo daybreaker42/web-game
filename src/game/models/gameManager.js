@@ -19,6 +19,9 @@ class GameManager {
         this.lastTime = 0;
         this.isGameRunning = false;
         this.isPaused = false;
+        this.gameStartTime = 0;     // 게임 시작 시간 저장
+        let pauseStartTime = 0;     // 일시정지했을때 시간 멈추기 용
+        let totalPauseDuration = 0; // 일시정지한 시간
 
         // MARK: 게임 정보
         this.mode = null;
@@ -40,6 +43,7 @@ class GameManager {
         // MARK: 공통 게임 오브젝트들
         this.ball = null;
         this.paddle = null;
+        this.BALL_SPEED = 5; // 공의 기본 속도
 
         // MARK: 메시지 시스템
         this.persistentMessageElement = null;
@@ -107,11 +111,10 @@ class GameManager {
         this.ball = {
             x: this.canvas.width / 2,
             y: this.canvas.height - 30,
-            speedX: Math.sqrt(5), // 기본 공 속도
-            speedY: -Math.sqrt(5),
+            speedX: 0,
+            speedY: -this.BALL_SPEED,
             radius: 10,
-            color: '#ffeb3b',
-            baseSpeed: 5
+            color: '#ffeb3b'
         };
 
         // 패들 초기화
@@ -246,9 +249,13 @@ class GameManager {
         if (this.isGameRunning) {
             this.isPaused = !this.isPaused;
             if (this.isPaused) {
+                this.pauseStartTime = performance.now();
                 cancelAnimationFrame(this.animationFrame);
                 this.showMessage('게임 일시정지', 'success', true);
             } else {
+                // 일시정지 해제 시 - 일시정지 지속 시간 계산하여 누적
+                const pauseEndTime = performance.now();
+                this.totalPauseDuration += pauseEndTime - this.pauseStartTime;
                 this.lastTime = performance.now();
                 this.animationFrame = requestAnimationFrame((time) => this.update(time));
 
@@ -276,6 +283,7 @@ class GameManager {
             this.score = 0;
             this.lives = this.totalLives;
             this.lastTime = performance.now();
+            this.gameStartTime = performance.now();
 
             // 게임 오브젝트 초기화
             this.initializeGameObjects();
@@ -321,6 +329,27 @@ class GameManager {
         const timeMultiplier = deltaTime / this.FRAME_DELAY;
 
         if (this.isGameRunning && !this.isPaused) {
+            // 남은 시간 (ms)
+            const elapsedTime = currentTime - gameStartTime - totalPauseDuration;
+            const timeLeft = Math.max(0, 120000 - elapsedTime);
+
+            // 분과 초 계산
+            const minutes = Math.floor(timeLeft / 60000);
+            const seconds = Math.floor((timeLeft % 60000) / 1000);
+
+            // 화면에 표시 (두자리 숫자 포맷)
+            document.getElementById('timer').textContent =
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            // 시간 초과 시 게임 종료 처리
+            if (timeLeft <= 0) {
+                showMessage('시간 초과! 게임 종료', 'error');
+                isGameRunning = false;
+                cancelAnimationFrame(animationFrame);
+                return;
+            }
+            // 이하 기존 게임 로직 계속...
+
             // 캔버스 초기화
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
