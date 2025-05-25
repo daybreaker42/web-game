@@ -31,6 +31,7 @@
     },
     {
       "id": 3,
+      "CRT_style": true,
       "image": "stage2_3",
       "lines": [
         "[기록 053] :: 대상 포획 완료 - 팽도리",

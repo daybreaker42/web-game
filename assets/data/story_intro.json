@@ -1,6 +1,14 @@
 [
     {
+        "id": 0,
+        "sfx": "pikachu.ogg",
+        "delay": 2,
+        "lines": [
+        ]
+      },
+    {
       "id": 1,
+      "bgm": "intro.mp3",
       "image": "intro_1",
       "lines": [
         "혹시 포켓몬이라고 알아?",
