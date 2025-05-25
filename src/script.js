@@ -11,6 +11,7 @@ const show = (el) => el.classList.remove("hidden");
 // ================================================================
 document.addEventListener("keydown", startFromTitle, { once: true });
 document.addEventListener("click", startFromTitle, { once: true });
+let started = false;
 
 window.addEventListener("DOMContentLoaded", () => {
   const logo = document.querySelector(".logo");
@@ -26,9 +27,11 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 function startFromTitle(e) {
-    setTimeout(() => {
-        playSfx(SFX.START);
-    }, 80);
+if (started) return;
+    started = true;
+  setTimeout(() => {
+    playSfx(SFX.START);
+  }, 80);
 
   const pressAny = qs(".press-any");
   pressAny.classList.remove("flash-twice", "noblink");

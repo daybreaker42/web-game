@@ -2,9 +2,14 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 let animationFrame = null;
-
+// 충돌 플래그 추가
+let firstPaddleHit = false;
+let gameStartTime = 0;  //(게임 시작 시간 저장)
 // 시간 기반 애니메이션을 위한 변수
 let lastTime = 0;
+
+let pauseStartTime = 0;//일시정지했을때 시간 멈추기 용용
+let totalPauseDuration = 0;// 일시정지한 시간간
 const FPS = 60;
 const FRAME_DELAY = 1000 / FPS; // 목표 프레임당 시간 (ms)
 
@@ -158,7 +163,7 @@ function collisionDetection() {
                     const overlapLeft = ball.x + ball.radius - b.x;
                     const overlapRight = b.x + BRICK_WIDTH - (ball.x - ball.radius);
                     const overlapTop = ball.y + ball.radius - b.y;
-                        const overlapBottom = b.y + BRICK_HEIGHT - (ball.y - ball.radius);
+                    const overlapBottom = b.y + BRICK_HEIGHT - (ball.y - ball.radius);
 
                     // 가장 작은 겹침이 발생한 방향이 충돌 방향
                     const minOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
@@ -277,23 +282,30 @@ function showMessage(text, type, persistent = false) {
         }, 3000);
     }
 }
+
 function togglePause() {
     if (isGameRunning) {
         isPaused = !isPaused;
         if (isPaused) {
+            // 일시정지 시작 시점 기록
+            pauseStartTime = performance.now();
+
             cancelAnimationFrame(animationFrame);
-            showMessage('게임 일시정지', 'success', true); // <- 지속 메시지
+            showMessage('게임 일시정지', 'success', true);
         } else {
-            lastTime = performance.now(); // 현재 시간으로 lastTime 초기화
+            // 일시정지 해제 시점 - 일시정지 지속시간 계산하여 누적
+            const pauseEndTime = performance.now();
+            totalPauseDuration += (pauseEndTime - pauseStartTime);
+
+            lastTime = performance.now();
+
             animationFrame = requestAnimationFrame(update);
 
-            // 일시정지 메시지 제거
             if (persistentMessageElement) {
                 persistentMessageElement.remove();
                 persistentMessageElement = null;
             }
-
-            showMessage('게임 재개', 'success'); // 재개 메시지는 자동 제거됨
+            showMessage('게임 재개', 'success');
         }
     }
 }
@@ -301,108 +313,109 @@ function togglePause() {
 
 // MARK: 프레임 업데이트
 function update(currentTime = 0) {
-    // 시간 기반 애니메이션: 프레임 간 경과 시간 계산
     const deltaTime = currentTime - lastTime;
 
-    // 목표 FPS에 맞게 프레임 제한
     if (deltaTime < FRAME_DELAY) {
         animationFrame = requestAnimationFrame(update);
         return;
     }
 
-    // 시간 업데이트
     lastTime = currentTime - (deltaTime % FRAME_DELAY);
-
-    // 프레임 속도 계산을 위한 시간 계수
     const timeMultiplier = deltaTime / FRAME_DELAY;
 
     if (isGameRunning && !isPaused) {
-        // 캔버스 초기화
+        // 남은 시간 (ms)
+        const elapsedTime = currentTime - gameStartTime - totalPauseDuration;
+        const timeLeft = Math.max(0, 120000 - elapsedTime);
+
+        // 분과 초 계산
+        const minutes = Math.floor(timeLeft / 60000);
+        const seconds = Math.floor((timeLeft % 60000) / 1000);
+
+        // 화면에 표시 (두자리 숫자 포맷)
+        document.getElementById('timer').textContent =
+            `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+        // 시간 초과 시 게임 종료 처리
+        if (timeLeft <= 0) {
+            showMessage('시간 초과! 게임 종료', 'error');
+            isGameRunning = false;
+            cancelAnimationFrame(animationFrame);
+            return;
+        }
+
+        // 이하 기존 게임 로직 계속...
+
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // 게임 요소 그리기
         drawBricks();
         drawBall();
         drawPaddle();
         drawScore();
         drawLives();
 
-        // 벽돌과의 충돌 감지
         let result = collisionDetection();
         if (result) {
-            // 모든 벽돌을 부쉈다면
-            // 애니메이션 프레임 취소
             cancelAnimationFrame(animationFrame);
             return;
         }
 
-        // 벽 반사 처리 (좌우 벽)
         if (ball.x + ball.speedX > canvas.width - ball.radius || ball.x + ball.speedX < 0 + ball.radius) {
             ball.speedX = -ball.speedX;
         }
 
-        // 천장 반사 처리
         if (ball.y + ball.speedY < 0 + ball.radius) {
             ball.speedY = -ball.speedY;
-        } 
+        }
 
         if (isHit(ball, paddle.x, paddle.y, paddle.width, paddle.height)) {
-        // 패들에 맞는지 확인
-        // 공이 패들에 부딪히면 위로 튕김
-            let ySign = ball.speedY > 0 ? -1 : 1;   // 현재 속도가 양수이면 -1, 음수이면 1
-
-            // 패들의 위치에 따라 X 속도 조정 (더 역동적인 게임플레이)
             const paddleCenter = paddle.x + paddle.width / 2;
             const ballDistFromCenter = ball.x - paddleCenter;
 
-            // 패들 중앙에서 떨어진 거리에 따라 X 속도 조절
             ball.speedX = ballDistFromCenter * 0.15;
-            // x방향 속도 최대, 최소값 지정
             ball.speedX = Math.min(ball.speedX, BALL_SPEED * 0.9);
             ball.speedX = Math.max(ball.speedX, -BALL_SPEED * 0.9);
 
-            // 바뀐 X값에 따라 Y값 조정
             ball.speedY = -Math.sqrt(BALL_SPEED * BALL_SPEED - ball.speedX * ball.speedX);
         }
 
         if (ball.y + ball.speedY > canvas.height - ball.radius) {
-            // 바닥에 부딫힌 경우
             lives--;
             document.getElementById('lives').textContent = lives;
 
             if (lives === 0) {
                 showMessage('게임 오버!', 'error');
                 isGameRunning = false;
-                cancelAnimationFrame(animationFrame); // 게임 오버 시 애니메이션 중단
+                cancelAnimationFrame(animationFrame);
                 return;
             } else {
-                // 공 위치 재설정
                 ball.x = canvas.width / 2;
                 ball.y = canvas.height - 30;
-                ball.speedX = BALL_SPEED;
+                ball.speedX = 0;
                 ball.speedY = -BALL_SPEED;
             }
-
         }
 
-        // 패들 이동 처리 - 시간 기반으로 수정
         if (rightPressed && paddle.x < canvas.width - paddle.width) {
             paddle.x += 7 * timeMultiplier;
         } else if (leftPressed && paddle.x > 0) {
             paddle.x -= 7 * timeMultiplier;
         }
 
-        // 공 이동 - 시간 기반으로 수정
         ball.x += ball.speedX * timeMultiplier;
         ball.y += ball.speedY * timeMultiplier;
     }
 
-    // 게임이 실행 중이고 일시정지 상태가 아닐 때만 다음 애니메이션 프레임 요청
     if (isGameRunning) {
         animationFrame = requestAnimationFrame(update);
     }
 }
-
+function resetBall() {
+    ball.x = canvas.width / 2;
+    ball.y = canvas.height - 30;
+    ball.speedX = 0;
+    ball.speedY = -BALL_SPEED;
+}
 // MARK: 게임 시작
 function startGame() {
     if (!isGameRunning) {
@@ -418,7 +431,7 @@ function startGame() {
 
         // 시간 기반 애니메이션 변수 초기화
         lastTime = performance.now();
-
+        gameStartTime = performance.now();  // 게임 시작 시간 기록
         // 게임 상태 초기화
         document.getElementById('score').textContent = score;
         document.getElementById('lives').textContent = lives;
@@ -429,8 +442,8 @@ function startGame() {
         // 공과 패들 위치 초기화
         ball.x = canvas.width / 2;
         ball.y = canvas.height - 30;
-        ball.speedX = Math.sqrt(BALL_SPEED);
-        ball.speedY = -Math.sqrt(BALL_SPEED);
+        ball.speedX = 0; // X 속도는 0으로 시작 (직선 위 방향)
+        ball.speedY = -BALL_SPEED; // 위로 향하는 일정한 속도
         paddle.x = (canvas.width - paddle.width) / 2;
 
         // 애니메이션 프레임 시작
