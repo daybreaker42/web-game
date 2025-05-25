@@ -303,7 +303,8 @@ button.back {
 #story-illustration {
   flex: 1 1 70%;
   width: 100%;
-  background: var(--story-sample) center/contain no-repeat;
+  background: url("") center/contain no-repeat;
+  /* background: var(--story-sample) center/contain no-repeat; */
 }
 #story-illustration.fade-in {
   animation: retro-fade-in-slow 0.8s steps(3, end) 1;
