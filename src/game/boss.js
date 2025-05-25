@@ -38,7 +38,9 @@ class BossGame extends GameManager {
             color: '#ff0000',
             lastAttackTime: 0,
             attackCooldown: 1000, // 1초마다 공격
-            bulletSpeed: 3
+            bulletSpeed: 3,
+            name: '뮤츠',
+            description: '전설의 포켓몬, 강력한 정신 공격을 사용합니다.'
         };
 
         // MARK: 총알 시스템        this.playerBullets = []; // 플레이어가 발사한 총알
@@ -111,7 +113,7 @@ class BossGame extends GameManager {
     }
 
     /**
-     * 게임별 초기화
+     * MARK: 게임별 초기화
      */
     initializeGame() {
         // 플레이어 초기 위치 설정
@@ -148,8 +150,10 @@ class BossGame extends GameManager {
         this.drawPlayerBullets();
         this.drawBossBullets();
         this.drawHealthBars();
-    }    /**
-     * 플레이어 업데이트
+    }
+
+    /**
+     * MARK: 플레이어 업데이트
      */
     updatePlayer(timeMultiplier) {
         // 자동 발사 처리
@@ -196,7 +200,7 @@ class BossGame extends GameManager {
     }
 
     /**
-     * 플레이어 총알 발사
+     * MARK: 플레이어 총알 발사
      */
     shootPlayerBullet() {
         const currentTime = performance.now();
@@ -235,7 +239,7 @@ class BossGame extends GameManager {
     }
 
     /**
-     * 보스 업데이트
+     * MARK: 보스 업데이트
      */
     updateBoss(timeMultiplier) {
         const currentTime = performance.now();
@@ -248,7 +252,7 @@ class BossGame extends GameManager {
     }
 
     /**
-     * 보스 탄막 발사
+     * MARK: 보스 탄막 발사
      */
     shootBossBullets() {
         const bulletCount = 8; // 8방향으로 탄막 발사
@@ -268,7 +272,7 @@ class BossGame extends GameManager {
     }
 
     /**
-     * 보스 탄막 업데이트
+     * MARK: 보스 탄막 업데이트
      */
     updateBossBullets(timeMultiplier) {
         for (let i = this.bossBullets.length - 1; i >= 0; i--) {
@@ -287,7 +291,7 @@ class BossGame extends GameManager {
     }
 
     /**
-     * 충돌 감지
+     * MARK: 충돌 감지
      */
     checkCollisions() {
         // 플레이어 총알과 보스 충돌
@@ -327,7 +331,7 @@ class BossGame extends GameManager {
     }
 
     /**
-     * 게임 종료 조건 확인
+     * MARK: 게임 종료 조건 확인
      */
     checkGameEnd() {
         // 보스 체력이 0 이하이면 승리
@@ -346,7 +350,7 @@ class BossGame extends GameManager {
     }
 
     /**
-     * 플레이어 그리기
+     * MARK: 플레이어 그리기
      */
     drawPlayer() {
         this.ctx.save();
@@ -370,7 +374,7 @@ class BossGame extends GameManager {
     }
 
     /**
-     * 보스 그리기
+     * MARK: 보스 그리기
      */
     drawBoss() {
         this.ctx.fillStyle = this.boss.color;
@@ -393,7 +397,7 @@ class BossGame extends GameManager {
     }
 
     /**
-     * 플레이어 총알 그리기
+     * MARK: 플레이어 총알 그리기
      */
     drawPlayerBullets() {
         this.playerBullets.forEach(bullet => {
@@ -405,7 +409,7 @@ class BossGame extends GameManager {
     }
 
     /**
-     * 보스 탄막 그리기
+     * MARK: 보스 탄막 그리기
      */
     drawBossBullets() {
         this.bossBullets.forEach(bullet => {
@@ -417,7 +421,7 @@ class BossGame extends GameManager {
     }
 
     /**
-     * 체력바 그리기
+     * MARK: 체력바 그리기
      */
     drawHealthBars() {
         // 보스 체력바
