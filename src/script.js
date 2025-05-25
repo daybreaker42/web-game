@@ -100,6 +100,7 @@ qsa(".btn-level").forEach((btn) => {
 
 function startGameStoryMode(level) {
   stopCloudAnimation();
+  stopBgm();
   hide(qs("#level-menu"));
   selectedLevel = level;
   stageListIdx = 0;
@@ -164,7 +165,7 @@ function startGame(mode, level) {
 // ================================================================
 
 window.story_scripts = [
-  //   window.story_intro,
+  window.story_intro,
   window.story_stage1,
   window.story_stage2,
   window.story_stage3,
@@ -175,15 +176,22 @@ let selectedLevel = null;
 let stageListIdx = 0;
 let storyScript = [];
 let storySceneIdx = 0;
-let currentLineIndex = 0;
 
 function proceedToStage(idx) {
   storyScript = window.story_scripts[idx] || [];
   storySceneIdx = 0;
   currentLineIndex = 0;
-  playBgm(BGM.STORY);
   showStoryScreen();
   showStoryScenes();
+}
+
+function playSceneAudio(scene) {
+  if (scene.bgm) {
+    playBgm(scene.bgm);
+  }
+  if (scene.sfx) {
+    playSfx(scene.sfx);
+  }
 }
 
 const STORY_SCENE_TYPES = {
@@ -197,32 +205,55 @@ let prevStorySceneType = STORY_SCENE_TYPES.NORMAL;
 // storySceneIdx: 현재 씬 index
 function showStoryScenes() {
   if (storySceneIdx >= storyScript.length) {
-    // 스크립트 끝 (게임 시작 등)
-    console.log("스크립트 끝에 도달. 게임 시작");
     hide(qs("#story-screen"));
     startGameForStage(stageListIdx, selectedLevel);
     return;
   }
   const scene = storyScript[storySceneIdx];
 
-  // 어떤 타입인지 판별
-  if (scene.CRT_style) {
-    showStorySceneConsole(scene, nextScene);
-  } else if (scene.flashback) {
-    showStorySceneFlashback(scene, nextScene);
+  playSceneAudio(scene);
+  qs("#story-line").textContent = "";
+  qs("#story-illustration").style.backgroundImage = "none";
+
+  if (scene.delay) {
+    setTimeout(() => {
+      runScene();
+    }, scene.delay * 1000);
   } else {
-    showStorySceneNormal(scene, nextScene);
+    runScene();
   }
 
+  function runScene() {
+    if (scene.CRT_style) {
+      showStorySceneConsole(scene, nextScene);
+    } else if (scene.flashback) {
+      showStorySceneFlashback(scene, nextScene);
+    } else {
+      showStorySceneNormal(scene, nextScene);
+    }
+  }
   function nextScene() {
     storySceneIdx++;
     showStoryScenes();
   }
 }
 
+function showStorySceneIlustration(scene) {
+  const storyIlustration = qs("#story-illustration");
+  storyIlustration.classList.remove("fade-in"); // 1. 클래스 제거
+  void storyIlustration.offsetWidth; // 2. 리플로우 강제(애니메이션 리셋 트릭)
+  storyIlustration.classList.add("fade-in"); // 3. 다시 추가 → 항상 애니메이션 재생
+  storyIlustration.style.backgroundImage = `url('../assets/images/story/${scene.image}.png')`;
+
+  if (scene.image_width) {
+    storyIlustration.style.width = `${scene.image_width}px`;
+  } else {
+    storyIlustration.style.width = "100%";
+  }
+}
+
 function showStorySceneNormal(scene, onDone) {
-  qs("#story-illustration").style.backgroundImage =
-    `url('../assets/images/story/${scene.image}.png')`;
+  showStorySceneIlustration(scene);
 
   const indicator = qs(".story-next-indicator");
   let idx = 0;
@@ -263,9 +294,10 @@ function showStorySceneConsole(scene, onDone) {
 
   let idx = 0;
 
+  stopBgm();
   if (storyScreen) {
     storyScreen.classList.add("crt-off-anim");
-    SFX.CRT_ON && playSfx(SFX.CRT_ON);
+    playSfx(SFX.CRT_ON);
   }
 
   setTimeout(() => {
@@ -345,19 +377,10 @@ function showStoryScreen() {
   show(qs("#story-screen"));
 }
 
-qs("#story-screen").onclick = function (e) {
-  if (e.target.id === "btn-skip") return;
-  currentLineIndex++;
-  showStoryLine();
-};
-
-qs("#btn-skip").onclick = () => {
-  hide(qs("#story-screen"));
-  startGameForStage(stageListIdx, selectedLevel);
-};
-
 // **스테이지별 본게임**
 function startGameForStage(idx, level) {
+  stopBgm();
+  hide(qs("#story-screen"));
   alert(
     `Stage ${idx + 1} 게임 시작!\n레벨: ${level}\n(아직 구현되지 않음. 자동 진행)`,
   );
@@ -396,6 +419,13 @@ const BGM = {
 
 function getBgmPath(name) {
   return `../assets/sounds/bgm/${name}`;
+}
+
+function stopBgm() {
+  bgm.pause();
+  bgm.src = "";
+  bgm.load();
+  bgm.currentTime = 0;
 }
 
 function playBgm(name) {
