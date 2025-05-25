@@ -330,7 +330,7 @@ class GameManager {
 
         if (this.isGameRunning && !this.isPaused) {
             // 남은 시간 (ms)
-            const elapsedTime = currentTime - gameStartTime - totalPauseDuration;
+            const elapsedTime = currentTime - this.gameStartTime - this.totalPauseDuration;
             const timeLeft = Math.max(0, 120000 - elapsedTime);
 
             // 분과 초 계산
