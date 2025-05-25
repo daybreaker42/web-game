@@ -31,7 +31,7 @@ function startFromTitle(e) {
   started = true;
   setTimeout(() => {
     playSfx(SFX.START);
-  }, 80);
+  }, 0);
 
   const pressAny = qs(".press-any");
   pressAny.classList.remove("flash-twice", "noblink");
@@ -71,6 +71,7 @@ qs("#btn-back-to-main-menu").onclick = () => {
 //                   [모드 메뉴 <-> 난이도 메뉴]
 // ================================================================
 let selectedMode = null;
+
 qs("#btn-story").onclick = () => chooseMode("story");
 qs("#btn-score").onclick = () => chooseMode("score");
 
@@ -108,8 +109,7 @@ function startGameStoryMode(level) {
 }
 
 function startGameScoreMode(level) {
-  hide(qs("#level-menu"));
-  startGame("score", level);
+  alert("미구현");
 }
 
 // ================================================================
