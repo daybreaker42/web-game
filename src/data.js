@@ -223,22 +223,19 @@ window.story_ending = [
 // ========== story_intro.js ==========
 window.story_intro = [
     {
-        "id": -1,
         "sfx": "pikachu.ogg",
         "delay": 2,
         "lines": [
         ]
       },
     {
-        "id": 0,
         "lines": [
             "..."
         ]
       },
     {
-      "id": 1,
       "bgm": "intro.mp3",
-      "image": "intro_1",
+      "image": "intro-what-is-pokemon",
       "lines": [
         "혹시 포켓몬이라고 알아?",
         "포켓몬이 뭐냐면 말이야, 이 세상에서 제일 신기한 생물이야.",
@@ -248,8 +245,7 @@ window.story_intro = [
       ]
     },
     {
-      "id": 2,
-      "image": "intro_2",
+      "image": "intro-harmony",
       "lines": [
         "그들은 사람과 함께 살아가고,",
         "사람은 그들과 함께 살아가.",
@@ -259,10 +255,27 @@ window.story_intro = [
       ]
     },
     {
-      "id": 3,
-      "image": "intro_3",
+      "image": "intro-journey",
       "lines": [
-        "내 친구들, 피카츄와 팽도리와 함께 여행을 떠났어.",
+        "내 친구들, 피카츄와 팽도리와 함께 여행을 떠났어."
+      ]
+    },
+    {
+      "image": "intro-journey",
+
+        "potrait": "pikachu",
+        "potrait_type": "Happy",
+        "lines": ["피카피카!"]
+    },
+    {
+      "image": "intro-journey",
+        "potrait": "pengdori",
+        "potrait_type": "Joyous",
+        "lines": ["도리도리"]
+    },
+    {
+      "image": "intro-journey",
+        "lines": [
         "10살이 되면 포켓몬과 함께 여행을 떠나는 것,\n그게 우리 마을 전통이거든!",
         "이상하다고? 뭐, 너희 마을과는 다를 수도 있지.",
         "아무튼",
@@ -270,12 +283,10 @@ window.story_intro = [
         "우리가 함께 걸은 길엔\n언제나 발자국이 세 쌍 있었지.",
         "그렇게 여행을 하던 어느 날,",
         "우리는 한 마을에 도착했고,\n그곳에서 며칠 머무르기로 했어.",
-        "그런데..."
-      ]
+        "그런데..."]
     },
     {
-      "id": 4,
-      "image": "intro_4",
+      "image": "intro-quiet-village",
       "lines": [
         "바로 다음 날 아침,",
         "그 마을에 있던 포켓몬들이 모두 사라져버렸어.",
@@ -285,8 +296,7 @@ window.story_intro = [
       ]
     },
     {
-      "id": 5,
-      "image": "intro_5",
+      "image": "intro-rumors",
       "lines": [
         "“포켓몬들이… 전부 사라졌대. 사람 곁에서 흔적도 없이.”",
         "“어떤 조직이 납치했다고 하더라고. 거래용이래.”",
@@ -296,8 +306,7 @@ window.story_intro = [
       ]
     },
     {
-      "id": 6,
-      "image": "intro_6",
+      "image": "intro-sleeping-friends",
       "lines": [
         "...솔직히 말하자면, ",
         "나와 상관 없는 일이었다면\n그저 그런 사건으로 넘겼을 지도 몰라.",
@@ -306,8 +315,7 @@ window.story_intro = [
       ]
     },
     {
-      "id": 7,
-      "image": "intro_7",
+      "image": "intro-missing-friends",
       "lines": [
         "...사라져 버렸어.",
         "흔적도 하나 안 남기고.",
@@ -316,7 +324,6 @@ window.story_intro = [
       ]
     },
     {
-      "id": 8,
       "lines": [
         "대체 누가, 왜 이런 짓을 벌인 건진\n나로썬 모르겠어.",
         "하지만 그게 누구든, 어떤 목적이든 상관없어.",
@@ -324,8 +331,7 @@ window.story_intro = [
       ]
     },
     {
-      "id": 9,
-      "image": "intro_9",
+      "image": "intro-smiling-friends",
       "lines": [
         "난 내 친구들을 반드시 되찾고 말겠어.",
         "...",
@@ -340,42 +346,36 @@ window.story_intro = [
 // ========== story_stage1.js ==========
 window.story_stage1 = [
     {
-      "id": 1,
-      "image": "stage1_1",
+      "image": "stage1-pikachu-in-capsule",
       "lines": [
         "피카츄!!!!"
       ]
     },
     {
-      "id": 2,
       "sfx": "bright.mp3",
-      "image": "stage1_2",
+      "image": "stage1-pikachu-in-capsule-bright",
       "lines": [
         "!",
         "빛이...?!"
       ]
     },
     {
-      "id": 3,
       "delay": 3,
       "sfx": "capsule-open.wav",
       "lines": []
     },
     {
-      "id": 4,
       "sfx": "footfall.mp3",
       "lines": [
         "(발소리가 들려...)"
       ]
     },
     {
-      "id": 5,
       "lines": [
         "“피카츄...? 정말 너 맞지...?”"
       ]
     },
     {
-      "id": 6,
       "potrait": "pikachu",
       "potrait_type": "Teary-Eyed",
       "lines": [
@@ -383,30 +383,25 @@ window.story_stage1 = [
       ]
     },
     {
-      "id": 7,
-      "image": "stage1_7",
       "lines": [
         "“미안... 기다리게 해서. 다시는 널 혼자 두지 않을게.”"
       ]
     },
     {
-      "id": 8,
       "sfx": "together.mp3",
-      "image": "pikachu_together",
+      "image": "pikachu-together",
       "image_width": 250,
       "lines": [
         "* 피카츄를 사용할 수 있게 되었다!"
       ]
     },
     {
-        "id": 9,
         "lines": [
             "그건 그렇고..."
         ]
       },
     {
-      "id": 10,
-      "image": "stage1_10",
+      "image": "stage1-opened-capsule",
       "bgm": "hum.mp3",
       "lines": [
         "이 장치는 단순한 감금 장치가 아니야.",
@@ -420,7 +415,6 @@ window.story_stage1 = [
       ]
     },
     {
-      "id": 11,
       "CRT_style": true,
       "lines": [
         "[기록 038] :: 대상 포획 완료 - 피카츄",
@@ -443,7 +437,6 @@ window.story_stage1 = [
 // ========== story_stage2.js ==========
 window.story_stage2 = [
     {
-      "id": 1,
       "image": "stage2_1",
       "lines": [
         "(장면: 얼음 동굴 깊숙한 실험 구역, 차가운 증기가 서린 캡슐 안. 팽도리가 눈을 감은 채 조용히 웅크리고 있다.)",
@@ -461,7 +454,6 @@ window.story_stage2 = [
       ]
     },
     {
-      "id": 2,
       "image": "stage2_2",
       "lines": [
         "이 시설은 아까와는 또 달랐어.",
@@ -473,7 +465,6 @@ window.story_stage2 = [
       ]
     },
     {
-      "id": 3,
       "CRT_style": true,
       "image": "stage2_3",
       "lines": [
@@ -520,14 +511,12 @@ window.story_stage2 = [
 // ========== story_stage3.js ==========
 window.story_stage3 = [
     {
-      "id": 1,
       "image": "stage3_1",
       "lines": [
         "(장면: 고대 유적 내부, 거대한 투명 캡슐과 떠다니는 실험 기계들. 그 중심에서 뮤츠가 등장한다.)"
       ]
     },
     {
-      "id": 2,
       "image": "stage3_2",
       "lines": [
         "뮤츠",
@@ -538,7 +527,6 @@ window.story_stage3 = [
       ]
     },
     {
-      "id": 3,
       "image": "stage3_3",
       "lines": [
         "주인공",
@@ -549,7 +537,6 @@ window.story_stage3 = [
       ]
     },
     {
-      "id": 4,
       "image": "stage3_4",
       "lines": [
         "뮤츠 (고요하게)",
