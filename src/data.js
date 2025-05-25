@@ -230,7 +230,7 @@ window.story_intro = [
       },
     {
         "lines": [
-            "..."
+            "있잖아,"
         ]
       },
     {
@@ -360,9 +360,9 @@ window.story_stage1 = [
       ]
     },
     {
-      "delay": 3,
+      "delay": 2,
       "sfx": "capsule-open.wav",
-      "lines": []
+      "lines": ["..."]
     },
     {
       "sfx": "footfall.mp3",
@@ -370,6 +370,13 @@ window.story_stage1 = [
         "(발소리가 들려...)"
       ]
     },
+    {
+        "potrait": "pikachu",
+        "potrait_type": "Normal",
+        "lines": [
+          "피카...?"
+        ]
+      },
     {
       "lines": [
         "“피카츄...? 정말 너 맞지...?”"
@@ -379,12 +386,38 @@ window.story_stage1 = [
       "potrait": "pikachu",
       "potrait_type": "Teary-Eyed",
       "lines": [
-        "피카!!!"
+        "피....피카!!!"
       ]
     },
     {
+    "sfx": "cloth-rustle.mp3",
+    "lines": [
+        "* 피카츄가 당신에게 달려와 안긴다."
+    ]
+    },
+    {
+    "potrait": "pikachu",
+    "potrait_type": "Crying",
+    "lines": [
+        "피카츄! 피카츄!"
+    ]
+    },
+    {
+    "lines": [
+        "“정말... 너를 찾았어.”"
+    ]
+    },
+    {
+    "potrait": "pikachu",
+    "potrait_type": "Teary-Eyed",
+    "lines": [
+        "피카... 피카츄..."
+    ]
+    },
+
+    {
       "lines": [
-        "“미안... 기다리게 해서. 다시는 널 혼자 두지 않을게.”"
+        "“미안... 기다리게 해서.다시는 널 혼자 두지 않을게.”"
       ]
     },
     {
@@ -397,6 +430,7 @@ window.story_stage1 = [
     },
     {
         "lines": [
+            "피카츄를 찾아서 다행이야.",
             "그건 그렇고..."
         ]
       },
@@ -404,7 +438,8 @@ window.story_stage1 = [
       "image": "stage1-opened-capsule",
       "bgm": "hum.mp3",
       "lines": [
-        "이 장치는 단순한 감금 장치가 아니야.",
+        "“이 장치... 피카츄를 가두기 위한 건가?”",
+        "이 장치는 단순한 감금 장치가 아닌 것 같아.",
         "피카츄를 다치지 않게 보호하는 듯한, 이상할 정도로 세심한 구조.",
         "그리고 주변엔... 감시 장비, 기록 장치, 분석 자료들.",
         "누군가가...",

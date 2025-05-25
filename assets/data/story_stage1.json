@@ -2,7 +2,7 @@
     {
       "image": "stage1-pikachu-in-capsule",
       "lines": [
-        "피카츄!!!!"
+        "“피카츄!!!!”"
       ]
     },
     {
@@ -14,9 +14,9 @@
       ]
     },
     {
-      "delay": 3,
+      "delay": 2,
       "sfx": "capsule-open.wav",
-      "lines": []
+      "lines": ["..."]
     },
     {
       "sfx": "footfall.mp3",
@@ -24,6 +24,13 @@
         "(발소리가 들려...)"
       ]
     },
+    {
+        "potrait": "pikachu",
+        "potrait_type": "Normal",
+        "lines": [
+          "피카...?"
+        ]
+      },
     {
       "lines": [
         "“피카츄...? 정말 너 맞지...?”"
@@ -33,12 +40,38 @@
       "potrait": "pikachu",
       "potrait_type": "Teary-Eyed",
       "lines": [
-        "피카!!!"
+        "피....피카!!!"
       ]
     },
     {
+    "sfx": "cloth-rustle.mp3",
+    "lines": [
+        "* 피카츄가 당신에게 달려와 안긴다."
+    ]
+    },
+    {
+    "potrait": "pikachu",
+    "potrait_type": "Crying",
+    "lines": [
+        "피카츄! 피카츄!"
+    ]
+    },
+    {
+    "lines": [
+        "“정말... 너를 찾았어.”"
+    ]
+    },
+    {
+    "potrait": "pikachu",
+    "potrait_type": "Teary-Eyed",
+    "lines": [
+        "피카... 피카츄..."
+    ]
+    },
+
+    {
       "lines": [
-        "“미안... 기다리게 해서. 다시는 널 혼자 두지 않을게.”"
+        "“미안... 기다리게 해서.\n다시는 널 혼자 두지 않을게.”"
       ]
     },
     {
