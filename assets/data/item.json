@@ -1,0 +1,30 @@
+[
+    {
+        "name": "normal-potion",
+        "effect": {
+            "type": "heal",
+            "amount": 20
+        }
+    },
+    {
+        "name": "super-potion",
+        "effect": {
+            "type": "heal",
+            "amount": 20
+        }
+    },
+    {
+        "name": "hyper-potion",
+        "effect": {
+            "type": "heal",
+            "amount": 60
+        }
+    },
+    {
+        "name": "full-potion",
+        "effect": {
+            "type": "heal",
+            "amount": 100
+        }
+    }
+]
