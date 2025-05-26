@@ -59,8 +59,7 @@ qsa(".ranking-tab").forEach((btn) => {
   btn.onclick = () => {
     qsa(".ranking-tab").forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
-    currentMode =
-      btn.dataset.mode === "score" ? "score_mode" : "story_mode";
+    currentMode = btn.dataset.mode === "score" ? "score_mode" : "story_mode";
     renderScoreboard();
   };
 });

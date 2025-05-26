@@ -78,7 +78,7 @@ qs("#btn-ranking").onclick = () => {
 };
 
 qs("#btn-back-to-main").onclick = () => {
-    playBgm(BGM.TITLE);
+  playBgm(BGM.TITLE);
   qs("#ranking-screen").classList.remove("fade-in");
   qs("#ranking-screen").classList.add("fade-out");
   hide(qs("#ranking-screen"));

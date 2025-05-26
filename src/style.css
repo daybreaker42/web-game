@@ -546,8 +546,8 @@ dialog::backdrop {
 
 .ranking-tab,
 .difficulty-tab {
-    width: 120px;
-    height: 40px;
+  width: 120px;
+  height: 40px;
   background: none;
   color: #fff;
   font-family: inherit;
@@ -600,34 +600,33 @@ dialog::backdrop {
   border-bottom: none;
 }
 .ranking-row {
-    display: flex;
-    align-items: center;
-    gap: 22px;
-    margin-bottom: 10px;
-    width: 100%;
-  }
-  
-  .ranking-label {
-    min-width: 68px;
-    font-family: "DOSGothic", monospace;
-    font-size: 1.14em;
-    color: #ffd400;
-    background: linear-gradient(to right, #101010 90%, transparent 100%);
-    padding: 4px 12px 4px 0;
-    letter-spacing: 0.1em;
-    text-align: left;
-    border-radius: 4px;
-    font-weight: bold;
-    text-shadow:
-      1px 1px 2px #000,
-      0 0 2px #fffb;
-    box-shadow: 0 0 2px #1118;
-    border-bottom: 2px dotted #ffd400;
-  }
-  
-  .ranking-mode-tabs,
-  .ranking-difficulty-tabs {
-    display: flex;
-    gap: 14px;
-  }
-  
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.ranking-label {
+  min-width: 68px;
+  font-family: "DOSGothic", monospace;
+  font-size: 1.14em;
+  color: #ffd400;
+  background: linear-gradient(to right, #101010 90%, transparent 100%);
+  padding: 4px 12px 4px 0;
+  letter-spacing: 0.1em;
+  text-align: left;
+  border-radius: 4px;
+  font-weight: bold;
+  text-shadow:
+    1px 1px 2px #000,
+    0 0 2px #fffb;
+  box-shadow: 0 0 2px #1118;
+  border-bottom: 2px dotted #ffd400;
+}
+
+.ranking-mode-tabs,
+.ranking-difficulty-tabs {
+  display: flex;
+  gap: 14px;
+}
