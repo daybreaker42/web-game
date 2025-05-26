@@ -391,8 +391,8 @@ dialog::backdrop {
 
 #modal-close {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  top: 15px;
+  right: 15px;
   font-size: 0.9rem;
   padding: 0.3rem 0.8rem;
 }
