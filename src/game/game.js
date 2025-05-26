@@ -3,6 +3,7 @@
  * - GameManager를 상속받아 벽돌깨기 게임을 구현
  * - 공이 패들과 벽돌에 부딪히며 벽돌을 깨는 게임
  */
+
 class BrickGame extends GameManager {
     constructor(canvas) {
         super(canvas); // GameManager 생성자 호출
@@ -12,8 +13,8 @@ class BrickGame extends GameManager {
         this.leftBrick = 0;
 
         // MARK: 벽돌 관련 설정
-        this.BRICK_WIDTH = 50;
-        this.BRICK_HEIGHT = 50;
+        this.BRICK_WIDTH = 80;
+        this.BRICK_HEIGHT = 80;
         this.BRICK_PADDING = 10;
         this.BRICK_OFFSET_TOP = 60;
         this.BRICK_OFFSET_LEFT = 30;
@@ -25,6 +26,17 @@ class BrickGame extends GameManager {
         const { maxColumns, maxRows } = this.calculateMaxBricks();
         this.brickRowCount = maxRows; // 세로 개수
         this.brickColumnCount = maxColumns; // 가로 개수
+        this.targetPokemonImages = [];
+        this.targetPokemonIndexes = [];
+        // 타입별 색상 매핑
+        this.typeColorMap = {
+            0: '#66BB6A',  // 풀
+            1: '#FF7043',  // 불
+            2: '#FFD54F',  // 전기
+            3: '#4FC3F7',  // 물
+            4: '#81D4FA'   // 얼음
+        };
+        this.totalPokemonCount = 107;
     }
 
     /**
@@ -57,28 +69,71 @@ class BrickGame extends GameManager {
      * 벽돌 배열 초기화
      */
     initBricks() {
+
+        this.targetPokemonIndexes = [];
+        while (this.targetPokemonIndexes.length < 4) {
+            const rand = Math.floor(Math.random() * this.totalPokemonCount);
+            if (!this.targetPokemonIndexes.includes(rand)) {
+                this.targetPokemonIndexes.push(rand);
+            }
+        }
+
+        this.targetPokemonImages = this.targetPokemonIndexes.map(index => `../../assets/images/game/pokemon/${index}.png`);
+
+        const positions = [];
+        for (let c = 0; c < this.brickColumnCount; c++) {
+            for (let r = 0; r < this.brickRowCount; r++) {
+                positions.push({ c, r });
+            }
+        }
+
+        const shuffled = positions.sort(() => Math.random() - 0.5);
+        const targetPositions = shuffled.slice(0, 4);
+
+        // bricks = [];
+        let totalBricks = 0;
         this.bricks = [];
         for (let c = 0; c < this.brickColumnCount; c++) {
             this.bricks[c] = [];
             for (let r = 0; r < this.brickRowCount; r++) {
-                // 벽돌의 색상을 랜덤하게 설정
-                const colors = ['#FF5252', '#FF4081', '#7C4DFF', '#536DFE', '#448AFF', '#40C4FF', '#18FFFF', '#69F0AE', '#B2FF59'];
-                const randomColor = colors[Math.floor(Math.random() * colors.length)];
 
                 // Brick 생성자에 개별 매개변수로 전달
                 const brickX = c * (this.BRICK_WIDTH + this.BRICK_PADDING) + this.BRICK_OFFSET_LEFT;
                 const brickY = r * (this.BRICK_HEIGHT + this.BRICK_PADDING) + this.BRICK_OFFSET_TOP;
+                let isTarget = false;
+                let pokeIdx;
+                const targetIdx = targetPositions.findIndex(pos => pos.c === c && pos.r === r);
+                if(targetIdx !== -1) {
+                    isTarget = true;
+                    pokeIdx = this.targetPokemonIndexes[targetIdx];
+                }else{
+                    do{
+                        pokeIdx = Math.floor(Math.random() * this.totalPokemonCount);
+                    }while(this.targetPokemonIndexes.includes(pokeIdx));
+                }
+
+                const imagePath = `../../assets/images/game/pokemon/${pokeIndex}.png`;
+                const pokeType = window.pokemon?.[pokeIdx]?.type;
+                const slotColor = this.typeColorMap[pokeType] || '#eee';
 
                 this.bricks[c][r] = new Brick(
                     brickX,
                     brickY,
                     this.BRICK_WIDTH,
                     this.BRICK_HEIGHT,
-                    randomColor
+                    pokiIndex,
+                    isTarget,
+                    imagePath
                 );
+                this.bricks[c][r].type = pokeType; // 벽돌 타입 저장
+                this.bricks[c][r].color = slotColor; // 벽돌 색상 저장
+                this.bricks[c][r].status = 1; // 벽돌 활성화 상태
+                totalBricks++; // 총 벽돌 수 증가
             }
         }
-        this.leftBrick = this.brickColumnCount * this.brickRowCount; // 남은 벽돌 수 초기화
+        // this.leftBrick = this.brickColumnCount * this.brickRowCount; // 남은 벽돌 수 초기화
+        this.leftBrick = totalBricks;
+        console.log(`총 생성된 벽돌 수: ${this.leftBrick}`);
     }
 
     /**
@@ -173,11 +228,60 @@ class BrickGame extends GameManager {
                         this.score += 10; // 점수 추가
                         this.leftBrick--; // 남은 벽돌 수 감소
 
+                        if (b.isTarget && targetPokemonIndexes.includes(b.pokeIndex)) {
+                        const imagePath = `../../assets/images/game/pokemon/${b.pokeIndex}.png`;
+                            addPokemonToSlot(imagePath);
+                        }
+
+                        // 🛠 checkWin()은 여기서 호출만 하고
+                        checkWin();
+                        
                         // 한 프레임에 하나의 벽돌만 처리
                         return;
                     }
                 }
             }
+        }
+    }
+
+    addPokemonToSlot(imageSrc) {
+        // 중복 방지: 이미 슬롯에 들어가 있는 경우 무시
+        for (let i = 0; i < 4; i++) {
+            const slot = document.getElementById(`slot-${i}`);
+            const bg = slot.style.backgroundImage;
+
+
+            if (bg.includes(imageSrc)) {
+                return; // 이미 들어있으면 중복 추가 안 함
+            }
+
+        }
+
+        // 빈 슬롯 찾아서 추가
+        for (let i = 0; i < 4; i++) {
+            const slot = document.getElementById(`slot-${i}`);
+            const bg = slot.style.backgroundImage;
+
+            if (!bg || bg === 'none') {
+                slot.style.backgroundImage = `url(${imageSrc})`;
+                slot.style.backgroundSize = 'cover';
+                slot.style.backgroundPosition = 'center';
+                const indexMatch = imageSrc.match(/(\d+)\.png/);
+                if (indexMatch) {
+                    const index = parseInt(indexMatch[1]);
+                    const type = window.pokemon?.[index]?.type;
+                    const color = typeColorMap[type] || '#eee';
+                    slot.style.backgroundColor = color;
+                }
+                return;
+            }
+        }
+    }
+    clearPokemonSlots() {
+        for (let i = 0; i < 4; i++) {
+            const slot = document.getElementById(`slot-${i}`);
+            slot.style.backgroundImage = 'none';
+            slot.style.backgroundColor = 'transparent';  // 혹은 초기 색상으로 지정
         }
     }
 
@@ -230,6 +334,14 @@ class BrickGame extends GameManager {
             }
         }
     }
+
+    /** 
+     * 게임 재시작
+    */
+   restartGame(){
+    this.clearPokemonSlots(); // 슬롯 초기화
+    super.restartGame(); // 부모 클래스의 재시작 메서드 호출
+   }
 }
 
 // 전역 변수로 게임 인스턴스 관리 (game.html에서 사용) - 하위 호환성을 위해 유지
