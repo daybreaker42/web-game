@@ -15,7 +15,7 @@
       { "rank": 2, "name": "DAN", "score": 8030, "date": "2025-05-22 22:41" }
     ]
   },
-  "score_attack_mode": {
+  "score_mode": {
     "easy": [
       { "rank": 1, "name": "AAA", "score": 11000, "date": "2025-05-23 17:37" },
       { "rank": 2, "name": "BOT", "score": 10950, "date": "2025-05-22 13:13" }

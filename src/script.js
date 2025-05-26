@@ -53,18 +53,37 @@ function showMainMenu() {
 }
 
 // ================================================================
-//                  [메인 메뉴 <-> 모드 메뉴]
+//            [메인 메뉴 <-> 플레이 모드 선택 or 랭킹 화면]
 // ================================================================
 qs("#btn-play").onclick = () => {
   hide(qs("#main-menu"));
-  show(qs("#mode-menu"));
+  show(qs("#play-mode-menu"));
 };
-// 뒤로가기(모드) → 메인 메뉴
+
 qs("#btn-back-to-main-menu").onclick = () => {
-  hide(qs("#mode-menu"));
+  hide(qs("#play-mode-menu"));
   const mainMenu = qs("#main-menu");
   mainMenu.classList.remove("fade-in");
   show(mainMenu);
+};
+
+qs("#btn-ranking").onclick = () => {
+  stopCloudAnimation();
+  playBgm(BGM.RANKING);
+  qs("#ranking-screen").classList.remove("fade-out");
+  qs("#ranking-screen").classList.add("fade-in");
+  hide(qs("#main-menu"));
+  show(qs("#ranking-screen"));
+  renderScoreboard();
+};
+
+qs("#btn-back-to-main").onclick = () => {
+    playBgm(BGM.TITLE);
+  qs("#ranking-screen").classList.remove("fade-in");
+  qs("#ranking-screen").classList.add("fade-out");
+  hide(qs("#ranking-screen"));
+  show(qs("#main-menu"));
+  startCloudAnimation();
 };
 
 // ================================================================
@@ -72,19 +91,18 @@ qs("#btn-back-to-main-menu").onclick = () => {
 // ================================================================
 let selectedMode = null;
 
-qs("#btn-story").onclick = () => chooseMode("story");
-qs("#btn-score").onclick = () => chooseMode("score");
+qs("#btn-story").onclick = () => chooseMode("story-mode");
+qs("#btn-score").onclick = () => chooseMode("score-mode");
 
 function chooseMode(mode) {
   selectedMode = mode;
-  hide(qs("#mode-menu"));
+  hide(qs("#play-mode-menu"));
   show(qs("#level-menu"));
 }
 
-// 뒤로가기(난이도) → 모드 메뉴
-qs("#btn-back-to-mode-menu").onclick = () => {
+qs("#btn-back-to-play-mode-menu").onclick = () => {
   hide(qs("#level-menu"));
-  show(qs("#mode-menu"));
+  show(qs("#play-mode-menu"));
 };
 
 // ================================================================
@@ -109,6 +127,7 @@ function startGameStoryMode(level) {
 }
 
 function startGameScoreMode(level) {
+  stopCloudAnimation();
   alert("미구현");
 }
 
@@ -440,6 +459,7 @@ const BGM = {
   ENDING: "ending.mp3",
   CREDITS: "credits.mp3",
   INTRO: "intro.mp3",
+  RANKING: "ranking.mp3",
 };
 
 function getBgmPath(name) {

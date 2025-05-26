@@ -28,7 +28,7 @@
       </section>
 
       <!-- Select mode Screen-->
-      <section id="mode-menu" class="menu screen hidden">
+      <section id="play-mode-menu" class="menu screen hidden">
         <button class="pixel-box pixel-box--menu" id="btn-story">
           스토리 모드
         </button>
@@ -58,7 +58,7 @@
         </button>
         <button
           class="pixel-box pixel-box--menu"
-          id="btn-back-to-mode-menu"
+          id="btn-back-to-play-mode-menu"
           class="back"
         >
           뒤로가기
@@ -76,6 +76,35 @@
         </div>
       </section>
     </div>
+
+    <!-- Ranking screen -->
+    <section id="ranking-screen" class="screen hidden fade-in">
+        <div class="ranking-container">
+            <div class="ranking-row">
+              <div class="ranking-label">모드</div>
+              <div class="ranking-mode-tabs">
+                <button class="ranking-tab active" data-mode="story">스토리</button>
+                <button class="ranking-tab" data-mode="score">스코어</button>
+              </div>
+            </div>
+            <div class="ranking-row">
+              <div class="ranking-label">난이도</div>
+              <div class="ranking-difficulty-tabs">
+                <button class="difficulty-tab active" data-level="easy">쉬움</button>
+                <button class="difficulty-tab" data-level="normal">보통</button>
+                <button class="difficulty-tab" data-level="hard">어려움</button>
+              </div>
+            </div>
+            <div class="scoreboard"></div>
+            <button
+              id="btn-back-to-main"
+              class="pixel-box ranking-back"
+              style="margin-top: 28px"
+            >
+              뒤로가기
+            </button>
+          </div>
+    </section>
 
     <!-- Confirm skip modal -->
     <dialog id="confirm-skip-modal" class="pixel-box">
@@ -139,5 +168,6 @@
     <!-- JS Modules -->
     <script src="data.js"></script>
     <script src="script.js"></script>
+    <script src="ranking.js"></script>
   </body>
 </html>
