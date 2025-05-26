@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>벽돌 깨기 게임</title>
     <link rel="stylesheet" href="./game.css">
-    <!-- 인라인 스타일 태그 제거 - game.css로 이동 완료 -->
 </head>
 <body>
     <h1>게임 모드 선택</h1>
@@ -48,7 +47,7 @@
         // 게임 모드 선택 관리
         let currentGameMode = 'brick'; // 기본값: 벽돌깨기
         let currentGame = null;
-        const canvas = document.getElementById('gameCanvas'); // canvas 요소를 script 태그 상단으로 이동
+                const canvas = document.getElementById('gameCanvas');
         const brickModeButton = document.getElementById('brickModeButton');
         const bossModeButton = document.getElementById('bossModeButton'); // bossModeButton 정의 추가
 
@@ -65,6 +64,7 @@
         function switchGameMode(mode) {
             if (currentGame && typeof currentGame.endGame === 'function') { // 현재 실행 중인 게임이 있고, endGame 메서드가 있다면 호출
                 currentGame.endGame();
+                console.log(`게임 모드 ${currentGameMode} 종료`);
             }
 
             currentGameMode = mode;

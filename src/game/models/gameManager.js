@@ -20,8 +20,8 @@ class GameManager {
         this.isGameRunning = false;
         this.isPaused = false;
         this.gameStartTime = 0;     // 게임 시작 시간 저장
-        let pauseStartTime = 0;     // 일시정지했을때 시간 멈추기 용
-        let totalPauseDuration = 0; // 일시정지한 시간
+        this.pauseStartTime = 0;     // 일시정지했을때 시간 멈추기 용
+        this.totalPauseDuration = 0; // 일시정지한 시간
 
         // MARK: 게임 정보
         this.mode = null;
