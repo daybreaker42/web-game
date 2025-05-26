@@ -218,7 +218,26 @@ const STORY_SCENE_TYPES = {
   CRT_CONSOLE: "crt_console",
   FLASHBACK: "flashback",
 };
+
 let prevStorySceneType = STORY_SCENE_TYPES.NORMAL;
+let prevIlustration = null;
+
+function showStoryIlustration(scene) {
+  if (prevIlustration === scene.image) return;
+
+  const storyIlustration = qs("#story-illustration");
+  storyIlustration.classList.remove("fade-in"); // 1. 클래스 제거
+  void storyIlustration.offsetWidth; // 2. 리플로우 강제(애니메이션 리셋 트릭)
+  storyIlustration.classList.add("fade-in"); // 3. 다시 추가 → 항상 애니메이션 재생
+  storyIlustration.style.backgroundImage = `url('../assets/images/story/${scene.image}.png')`;
+
+  if (scene.image_width) {
+    storyIlustration.style.width = `${scene.image_width}px`;
+  } else {
+    storyIlustration.style.width = "100%";
+  }
+  prevIlustration = scene.image;
+}
 
 // storyScript: 현재 stage의 전체 씬 배열
 // storySceneIdx: 현재 씬 index
@@ -232,7 +251,10 @@ function showStoryScenes() {
 
   playSceneAudio(scene);
   qs("#story-line").textContent = "";
-  qs("#story-illustration").style.backgroundImage = "none";
+  if (prevIlustration != scene.image) {
+    qs("#story-illustration").style.backgroundImage = "none";
+    showStoryIlustration(scene);
+  }
 
   if (scene.delay) {
     setTimeout(() => {
@@ -257,20 +279,6 @@ function showStoryScenes() {
   }
 }
 
-function showStorySceneIlustration(scene) {
-  const storyIlustration = qs("#story-illustration");
-  storyIlustration.classList.remove("fade-in"); // 1. 클래스 제거
-  void storyIlustration.offsetWidth; // 2. 리플로우 강제(애니메이션 리셋 트릭)
-  storyIlustration.classList.add("fade-in"); // 3. 다시 추가 → 항상 애니메이션 재생
-  storyIlustration.style.backgroundImage = `url('../assets/images/story/${scene.image}.png')`;
-
-  if (scene.image_width) {
-    storyIlustration.style.width = `${scene.image_width}px`;
-  } else {
-    storyIlustration.style.width = "100%";
-  }
-}
-
 function showStoryPotrait(scene) {
   const potraitEl = qs("#story-potrait");
   const storyLine = qs("#story-line");
@@ -288,7 +296,7 @@ function showStoryPotrait(scene) {
 }
 
 function showStorySceneNormal(scene, onDone) {
-  if (scene.image) showStorySceneIlustration(scene);
+  if (scene.image) showStoryIlustration(scene);
   showStoryPotrait(scene);
   const indicator = qs(".story-next-indicator");
   let idx = 0;
