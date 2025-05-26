@@ -114,7 +114,7 @@ class BrickGame extends GameManager {
             this.ball.x = this.canvas.width / 2;
             this.ball.y = this.canvas.height - 30;
             this.ball.speedX = 0;
-            this.ball.speedY = this.BALL_SPEED;
+            this.ball.speedY = -this.BALL_SPEED;
         }
 
         // 패들 이동 처리
@@ -126,7 +126,10 @@ class BrickGame extends GameManager {
 
         // 패들과 공 충돌
         if (isHit(this.ball, this.paddle.x, this.paddle.y, this.paddle.width, this.paddle.height)) {
-            this.ball.speedY = -this.ball.speedY;
+            const paddleCenter = this.paddle.x + this.paddle.width / 2;
+            const ballDistFromCenter = this.ball.x - paddleCenter;
+            this.ball.speedX = (ballDistFromCenter / (this.paddle.width / 2)) * this.BALL_SPEED; // 패들 중앙에서의 거리 비율로 속도 조정
+            this.ball.speedY = -Math.sqrt(this.BALL_SPEED ** 2 - this.ball.speedX ** 2); // 공의 속도 조정
         }
 
         // 벽돌과 공 충돌
