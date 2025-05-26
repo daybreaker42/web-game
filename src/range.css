@@ -1,0 +1,70 @@
+/* 공통 */
+input[type="range"] {
+  width: 180px;
+  height: 18px;
+  background: transparent;
+  margin: 8px 0;
+  appearance: none;
+  cursor: pointer;
+}
+
+/* 슬라이더 트랙 */
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 12px;
+  background: repeating-linear-gradient(90deg, #222 0 2px, #666 2px 4px);
+  border: 2px solid #222;
+  border-radius: 4px;
+  box-shadow: 0 0 0 2px #fff inset;
+}
+
+/* 슬라이더 핸들(thumb) */
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #fcfcfc;
+  border: 2px solid #222;
+  border-radius: 3px;
+  box-shadow: 1px 1px 0 0 #999;
+  margin-top: -4px;
+  transition: border 0.2s;
+}
+
+/* 파이어폭스 대응 */
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #fcfcfc;
+  border: 2px solid #222;
+  border-radius: 3px;
+  box-shadow: 1px 1px 0 0 #999;
+  transition: border 0.2s;
+}
+input[type="range"]::-moz-range-track {
+  height: 12px;
+  background: repeating-linear-gradient(90deg, #222 0 2px, #666 2px 4px);
+  border: 2px solid #222;
+  border-radius: 4px;
+  box-shadow: 0 0 0 2px #fff inset;
+}
+
+/* IE 대응 (거의 사용 안 하지만 호환 위해) */
+input[type="range"]::-ms-fill-lower {
+  background: #222;
+}
+input[type="range"]::-ms-fill-upper {
+  background: #666;
+}
+input[type="range"]::-ms-thumb {
+  width: 20px;
+  height: 20px;
+  background: #fcfcfc;
+  border: 2px solid #222;
+  border-radius: 3px;
+  box-shadow: 1px 1px 0 0 #999;
+}
+/* 공통 focus 효과 및 기타 */
+input[type="range"]:focus {
+  outline: none;
+  /* box-shadow: 0 0 0 3px #ff3636; */
+}
