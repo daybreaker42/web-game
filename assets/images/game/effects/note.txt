@@ -1,0 +1,4 @@
+- 포켓몬 스킬에 경우 차후 이펙트 애니메이션 추가될 수 있음
+- 일단은 정지 이미지로 작업
+- candidate
+    - https://bdragon1727.itch.io/free-effect-and-bullet-16x16
