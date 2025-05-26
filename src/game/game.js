@@ -1,474 +1,256 @@
-// 게임 캔버스 및 컨텍스트 설정
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-let animationFrame = null;
-// 충돌 플래그 추가
-let firstPaddleHit = false;
-let gameStartTime = 0;  //(게임 시작 시간 저장)
-// 시간 기반 애니메이션을 위한 변수
-let lastTime = 0;
+/**
+ * BrickGame class
+ * - GameManager를 상속받아 벽돌깨기 게임을 구현
+ * - 공이 패들과 벽돌에 부딪히며 벽돌을 깨는 게임
+ */
+class BrickGame extends GameManager {
+    constructor(canvas) {
+        super(canvas); // GameManager 생성자 호출
 
-let pauseStartTime = 0;//일시정지했을때 시간 멈추기 용용
-let totalPauseDuration = 0;// 일시정지한 시간간
-const FPS = 60;
-const FRAME_DELAY = 1000 / FPS; // 목표 프레임당 시간 (ms)
+        // MARK: 벽돌깨기 전용 설정
+        this.TOTAL_LIVES = 300;
+        this.leftBrick = 0;
 
-// #region 게임 상태 변수
-const TOTAL_LIVES = 300;
-let score = 0;
-let lives = TOTAL_LIVES;
-let isGameRunning = false;
-let isPaused = false;
-let leftBrick = 0;
+        // MARK: 벽돌 관련 설정
+        this.BRICK_WIDTH = 50;
+        this.BRICK_HEIGHT = 50;
+        this.BRICK_PADDING = 10;
+        this.BRICK_OFFSET_TOP = 60;
+        this.BRICK_OFFSET_LEFT = 30;
 
-// 공 변수
-const BALL_SPEED = 5;
-let ball = {
-    x: canvas.width / 2,
-    y: canvas.height - 30,
-    speedX: Math.sqrt(BALL_SPEED),
-    speedY: -Math.sqrt(BALL_SPEED),
-    radius: 10,
-    color: '#ffeb3b'
-};
+        // MARK: 벽돌 배열
+        this.bricks = [];
 
-// 패들 변수
-let paddle = {
-    height: 10,
-    width: 110,
-    x: (canvas.width - 110) / 2,
-    y: canvas.height - 10,
-    color: '#4CAF50'
-};
-let rightPressed = false;
-let leftPressed = false;
+        // MARK: 벽돌 개수 계산 및 설정
+        const { maxColumns, maxRows } = this.calculateMaxBricks();
+        this.brickRowCount = maxRows; // 세로 개수
+        this.brickColumnCount = maxColumns; // 가로 개수
+    }
 
-// 벽돌 관련 변수
-const BRICK_WIDTH = 50;
-const BRICK_HEIGHT = 50;
-const BRICK_PADDING = 10;
-const BRICK_OFFSET_TOP = 60;
-const BRICK_OFFSET_LEFT = 30;
-
-// 캔버스를 채우는 최대 벽돌 개수 계산
-function calculateMaxBricks() {
+    /**
+     * 캔버스를 채우는 최대 벽돌 개수 계산
+     */
+    calculateMaxBricks() {
     // 가로로 들어갈 수 있는 벽돌 수 계산
-    const maxColumns = Math.floor((canvas.width - BRICK_OFFSET_LEFT * 2 + BRICK_PADDING) / (BRICK_WIDTH + BRICK_PADDING));
+        const maxColumns = Math.floor((this.canvas.width - this.BRICK_OFFSET_LEFT * 2 + this.BRICK_PADDING) / (this.BRICK_WIDTH + this.BRICK_PADDING));
 
-    // 세로로 들어갈 수 있는 벽돌 수 계산
-    const maxRows = Math.floor((canvas.height / 2 - BRICK_OFFSET_TOP + BRICK_PADDING) / (BRICK_HEIGHT + BRICK_PADDING));
+        // 세로로 들어갈 수 있는 벽돌 수 계산
+        const maxRows = Math.floor((this.canvas.height / 2 - this.BRICK_OFFSET_TOP + this.BRICK_PADDING) / (this.BRICK_HEIGHT + this.BRICK_PADDING));
 
-    return { maxColumns, maxRows };
-}
+        return { maxColumns, maxRows };
+    }
 
-// 최대 벽돌 개수 계산
-const { maxColumns, maxRows } = calculateMaxBricks();
+    /**
+     * 게임별 초기화 (GameManager 오버라이드)
+     */
+    initializeGame() {
+        // 기본 게임 오브젝트 초기화는 부모에서 처리
+        this.initializeGameObjects();
 
-// 계산된 값으로 벽돌 행/열 개수 설정
-const brickRowCount = maxRows; // 세로 개수
-const brickColumnCount = maxColumns; // 가로 개수
-// #endregion
+        // 벽돌깨기 전용 초기화
+        this.initBricks();
+        this.lives = this.TOTAL_LIVES;
+        this.totalLives = this.TOTAL_LIVES;
+    }
 
-// 벽돌 배열
-let bricks = [];
-// MARK: 벽돌 배열 초기화
-// 벽돌 초기화
-function initBricks() {
-    bricks = [];
-    for (let c = 0; c < brickColumnCount; c++) {
-        bricks[c] = [];
-        for (let r = 0; r < brickRowCount; r++) {
-            // 벽돌의 색상을 랜덤하게 설정
-            const colors = ['#FF5252', '#FF4081', '#7C4DFF', '#536DFE', '#448AFF', '#40C4FF', '#18FFFF', '#69F0AE', '#B2FF59'];
-            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    /**
+     * 벽돌 배열 초기화
+     */
+    initBricks() {
+        this.bricks = [];
+        for (let c = 0; c < this.brickColumnCount; c++) {
+            this.bricks[c] = [];
+            for (let r = 0; r < this.brickRowCount; r++) {
+                // 벽돌의 색상을 랜덤하게 설정
+                const colors = ['#FF5252', '#FF4081', '#7C4DFF', '#536DFE', '#448AFF', '#40C4FF', '#18FFFF', '#69F0AE', '#B2FF59'];
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
 
-            // Brick 생성자에 개별 매개변수로 전달
-            const brickX = c * (BRICK_WIDTH + BRICK_PADDING) + BRICK_OFFSET_LEFT;
-            const brickY = r * (BRICK_HEIGHT + BRICK_PADDING) + BRICK_OFFSET_TOP;
+                // Brick 생성자에 개별 매개변수로 전달
+                const brickX = c * (this.BRICK_WIDTH + this.BRICK_PADDING) + this.BRICK_OFFSET_LEFT;
+                const brickY = r * (this.BRICK_HEIGHT + this.BRICK_PADDING) + this.BRICK_OFFSET_TOP;
 
-            bricks[c][r] = new Brick(
-                brickX,
-                brickY,
-                BRICK_WIDTH,
-                BRICK_HEIGHT,
-                randomColor
-            );
+                this.bricks[c][r] = new Brick(
+                    brickX,
+                    brickY,
+                    this.BRICK_WIDTH,
+                    this.BRICK_HEIGHT,
+                    randomColor
+                );
+            }
         }
-    }
-    leftBrick = brickColumnCount * brickRowCount; // 남은 벽돌 수 초기화
-}
-
-// MARK: 이벤트 리스터 - 키보드 및 마우스
-// 키보드 이벤트 리스너
-document.addEventListener('keydown', keyDownHandler);
-document.addEventListener('keyup', keyUpHandler);
-document.addEventListener('mousemove', mouseMoveHandler);
-
-// 버튼 이벤트 리스너
-document.getElementById('startButton').addEventListener('click', startGame);
-document.getElementById('pauseButton').addEventListener('click', togglePause);
-document.getElementById('restartButton').addEventListener('click', restartGame);
-
-// 키보드 입력 처리
-function keyDownHandler(e) {
-    if (e.key === 'Right' || e.key === 'ArrowRight') {
-        rightPressed = true;
-    } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
-        leftPressed = true;
-    }
-    else if (e.code === 'Space') {
-        togglePause();  // 스페이스바로 일시정지 토글
+        this.leftBrick = this.brickColumnCount * this.brickRowCount; // 남은 벽돌 수 초기화
     }
 
-}
+    /**
+     * 게임별 업데이트 로직 (GameManager 오버라이드)
+     */
+    updateGame(timeMultiplier) {
+        // 공 이동
+        this.ball.x += this.ball.speedX * timeMultiplier;
+        this.ball.y += this.ball.speedY * timeMultiplier;
 
-function keyUpHandler(e) {
-    if (e.key === 'Right' || e.key === 'ArrowRight') {
-        rightPressed = false;
-    } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
-        leftPressed = false;
+        // 좌우 벽 충돌
+        if (this.ball.x + this.ball.radius > this.canvas.width || this.ball.x - this.ball.radius < 0) {
+            this.ball.speedX = -this.ball.speedX;
+        }
+
+        // 상단 벽 충돌
+        if (this.ball.y - this.ball.radius < 0) {
+            this.ball.speedY = -this.ball.speedY;
+        }
+
+        // 하단 벽 충돌 (게임 오버)
+        if (this.ball.y + this.ball.radius > this.canvas.height) {
+            this.lives -= 1; // 생명 감소
+
+            if (this.lives <= 0) {
+                this.isGameClear = false;
+                this.showMessage('게임 오버!', 'error', true);
+                this.endGame();
+                return;
+            }
+
+            // 공 위치 리셋
+            this.ball.x = this.canvas.width / 2;
+            this.ball.y = this.canvas.height - 30;
+            this.ball.speedX = 0;
+            this.ball.speedY = -this.BALL_SPEED;
+        }
+
+        // 패들 이동 처리
+        if (this.keys.rightPressed && this.paddle.x < this.canvas.width - this.paddle.width) {
+            this.paddle.x += 7 * timeMultiplier;
+        } else if (this.keys.leftPressed && this.paddle.x > 0) {
+            this.paddle.x -= 7 * timeMultiplier;
+        }
+
+        // 패들과 공 충돌
+        if (isHit(this.ball, this.paddle.x, this.paddle.y, this.paddle.width, this.paddle.height)) {
+            const paddleCenter = this.paddle.x + this.paddle.width / 2;
+            const ballDistFromCenter = this.ball.x - paddleCenter;
+            this.ball.speedX = (ballDistFromCenter / (this.paddle.width / 2)) * this.BALL_SPEED; // 패들 중앙에서의 거리 비율로 속도 조정
+            this.ball.speedY = -Math.sqrt(this.BALL_SPEED ** 2 - this.ball.speedX ** 2); // 공의 속도 조정
+        }
+
+        // 벽돌과 공 충돌
+        this.collisionDetection();
+
+        // 승리 조건 확인
+        this.checkWin();
+
+        // 모든 객체 그리기
+        this.drawBall();
+        this.drawPaddle();
+        this.drawBricks();
     }
-}
 
-// 마우스 이동 처리
-function mouseMoveHandler(e) {
-    if (isGameRunning && !isPaused) {
-        const OFFSET_LEFT = canvas.getBoundingClientRect().left;
-        const OFFSET_TOP = canvas.getBoundingClientRect().top;
-        const relativeX = e.clientX - OFFSET_LEFT;
-        // 패들이 캔버스 내부에 있도록 제한
-        if (relativeX > 0 && relativeX < canvas.width) {
-            if (relativeX - paddle.width / 2 < 0) {
-                paddle.x = 0;
-            } else if (relativeX + paddle.width / 2 > canvas.width) {
-                paddle.x = canvas.width - paddle.width;
-            } else {
-                // 마우스가 캔버스 안에 있는 경우
-                paddle.x = relativeX - paddle.width / 2;
+    /**
+     * 모든 벽돌에 대해 공과의 충돌을 확인
+     */
+    collisionDetection() {
+        for (let c = 0; c < this.brickColumnCount; c++) {
+            for (let r = 0; r < this.brickRowCount; r++) {
+                const b = this.bricks[c][r];
+                if (b.status === 1) {
+    // 활성화된 벽돌에 대해서만 충돌 감지
+                    if (b.isBrickHit(this.ball)) {
+                    // 겹침 영역 계산을 통한 방향 감지
+                        const overlapLeft = this.ball.x + this.ball.radius - b.x;
+                        const overlapRight = b.x + this.BRICK_WIDTH - (this.ball.x - this.ball.radius);
+                        const overlapTop = this.ball.y + this.ball.radius - b.y;
+                        const overlapBottom = b.y + this.BRICK_HEIGHT - (this.ball.y - this.ball.radius);
+
+                        // 가장 작은 겹침이 발생한 방향이 충돌 방향
+                        const minOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
+
+                        if (minOverlap === overlapLeft || minOverlap === overlapRight) {
+                            this.ball.speedX = -this.ball.speedX; // 좌/우 충돌
+                        } else {
+                            this.ball.speedY = -this.ball.speedY; // 상/하 충돌
+                        }
+
+                        b.status = 0; // 벽돌 부서짐
+                        this.score += 10; // 점수 추가
+                        this.leftBrick--; // 남은 벽돌 수 감소
+
+                        // 한 프레임에 하나의 벽돌만 처리
+                        return;
+                    }
+                }
             }
         }
     }
-}
 
-// MARK: 충돌 감지
-// 모든 벽돌에 대해 공과의 충돌을 확인
-function collisionDetection() {
-    for (let c = 0; c < brickColumnCount; c++) {
-        for (let r = 0; r < brickRowCount; r++) {
-            const b = bricks[c][r];
-            if (b.status === 1) {
-                // 활성화된 벽돌에 대해서만 충돌 감지
-                if (b.isBrickHit(ball)) {
-                    // 겹침 영역 계산을 통한 방향 감지
-                    const overlapLeft = ball.x + ball.radius - b.x;
-                    const overlapRight = b.x + BRICK_WIDTH - (ball.x - ball.radius);
-                    const overlapTop = ball.y + ball.radius - b.y;
-                    const overlapBottom = b.y + BRICK_HEIGHT - (ball.y - ball.radius);
+    /**
+     * 승리 조건 확인
+     */
+    checkWin() {
+    // 모든 벽돌이 부서졌다면
+        if (this.leftBrick === 0) {
+            this.isGameClear = true;
+            this.showMessage('축하합니다! 모든 벽돌을 깨셨습니다!', 'success', true);
+            this.endGame();
+            return true;
+        }
+        return false;
+    }
 
-                    // 가장 작은 겹침이 발생한 방향이 충돌 방향
-                    const minOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
+    /**
+     * 공 그리기
+     */
+    drawBall() {
+        this.ctx.beginPath();
+        this.ctx.arc(this.ball.x, this.ball.y, this.ball.radius, 0, Math.PI * 2);
+        this.ctx.fillStyle = this.ball.color;
+        this.ctx.fill();
+        this.ctx.closePath();
+    }
 
-                    if (minOverlap === overlapLeft || minOverlap === overlapRight) {
-                        ball.speedX = -ball.speedX; // 좌/우 충돌
-                    } else {
-                        ball.speedY = -ball.speedY; // 상/하 충돌
-                    }
+    /**
+     * 패들 그리기
+     */
+    drawPaddle() {
+        this.ctx.beginPath();
+        this.ctx.rect(this.paddle.x, this.paddle.y, this.paddle.width, this.paddle.height);
+        this.ctx.fillStyle = this.paddle.color;
+        this.ctx.fill();
+        this.ctx.closePath();
+    }
 
-                    b.status = 0; // 벽돌 부서짐
-                    score += 10; // 점수 추가
-                    leftBrick--; // 남은 벽돌 수 감소
-
-                    // 점수 업데이트
-                    document.getElementById('score').textContent = score;
-
-                    // 모든 벽돌을 부쉈는지 확인
-                    let result = checkWin();
-
-                    // 한 프레임에 하나의 벽돌만 처리
-                    return result;
+    /**
+     * 벽돌 그리기
+     */
+    drawBricks() {
+        for (let c = 0; c < this.brickColumnCount; c++) {
+            for (let r = 0; r < this.brickRowCount; r++) {
+                if (this.bricks[c][r].status === 1) {
+    // Brick 클래스의 draw 메서드 사용
+                    this.bricks[c][r].draw(this.ctx);
                 }
             }
         }
     }
 }
 
-// MARK: 승리 조건 확인
-function checkWin() {
-    // 모든 벽돌이 부서졌다면
-    if (leftBrick === 0) {
-        showMessage('축하합니다! 모든 벽돌을 깨셨습니다!', 'success');
-        isGameRunning = false;
-        // 승리 시 애니메이션 프레임 취소
-        // cancelAnimationFrame(animationFrame);
-        return true;
-    }
-    return false;
-}
-// MARK: 공과 패들, 벽돌 그리기
-// 공 그리기
-function drawBall() {
-    ctx.beginPath();
-    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-    ctx.fillStyle = ball.color;
-    ctx.fill();
-    ctx.closePath();
-}
+// 전역 변수로 게임 인스턴스 관리 (game.html에서 사용) - 하위 호환성을 위해 유지
+let brickGame = null;
 
-// 패들 그리기
-function drawPaddle() {
-    ctx.beginPath();
-    ctx.rect(paddle.x, paddle.y, paddle.width, paddle.height);
-    ctx.fillStyle = paddle.color;
-    ctx.fill();
-    ctx.closePath();
-}
+// 페이지 로드 시 게임 초기화 (하지만 즉시 시작하지는 않음)
+document.addEventListener('DOMContentLoaded', function () {
+    const canvas = document.getElementById('gameCanvas');
+    if (canvas) {
+        // BrickGame 인스턴스 생성 - 클래스 기반 접근법 사용
+        brickGame = new BrickGame(canvas);
 
-// 벽돌 그리기
-function drawBricks() {
-    for (let c = 0; c < brickColumnCount; c++) {
-        for (let r = 0; r < brickRowCount; r++) {
-            if (bricks[c][r].status === 1) {
-                // Brick 클래스의 draw 메서드 사용
-                bricks[c][r].draw(ctx);
-            }
+        // 게임 정보 설정
+        try {
+            brickGame.setGameInfo({
+                mode: 'brick',
+                level: 'normal',
+                stage: 1
+            });
+        } catch (e) {
+            console.warn('게임 정보 설정 실패:', e.message);
         }
     }
-}
-
-// 점수 그리기
-function drawScore() {
-    document.getElementById('score').textContent = score;
-}
-
-// 남은 생명 그리기
-function drawLives() {
-    document.getElementById('lives').textContent = lives;
-}
-
-// 메시지 표시
-// 메시지 엘리먼트를 전역 변수로 추적
-let persistentMessageElement = null;
-
-function showMessage(text, type, persistent = false) {
-    // 이미 존재하는 메시지 제거
-    if (persistentMessageElement) {
-        persistentMessageElement.remove();
-        persistentMessageElement = null;
-    }
-
-    const messageElement = document.createElement('div');
-    messageElement.textContent = text;
-    messageElement.style.position = 'absolute';
-    messageElement.style.top = '50%';
-    messageElement.style.left = '50%';
-    messageElement.style.transform = 'translate(-50%, -50%)';
-    messageElement.style.padding = '20px';
-    messageElement.style.borderRadius = '10px';
-    messageElement.style.fontSize = '24px';
-    messageElement.style.fontWeight = 'bold';
-    messageElement.style.zIndex = '100';
-    messageElement.style.color = 'white';
-    messageElement.style.backgroundColor =
-        type === 'success' ? 'rgba(76, 175, 80, 0.9)' : 'rgba(244, 67, 54, 0.9)';
-
-    document.getElementById('game-container').appendChild(messageElement);
-
-    if (persistent) {
-        // 전역 변수에 저장하여 나중에 제거할 수 있게 함
-        persistentMessageElement = messageElement;
-    } else {
-        setTimeout(() => {
-            messageElement.remove();
-        }, 3000);
-    }
-}
-
-function togglePause() {
-    if (isGameRunning) {
-        isPaused = !isPaused;
-        if (isPaused) {
-            // 일시정지 시작 시점 기록
-            pauseStartTime = performance.now();
-
-            cancelAnimationFrame(animationFrame);
-            showMessage('게임 일시정지', 'success', true);
-        } else {
-            // 일시정지 해제 시점 - 일시정지 지속시간 계산하여 누적
-            const pauseEndTime = performance.now();
-            totalPauseDuration += (pauseEndTime - pauseStartTime);
-
-            lastTime = performance.now();
-
-            animationFrame = requestAnimationFrame(update);
-
-            if (persistentMessageElement) {
-                persistentMessageElement.remove();
-                persistentMessageElement = null;
-            }
-            showMessage('게임 재개', 'success');
-        }
-    }
-}
-
-
-// MARK: 프레임 업데이트
-function update(currentTime = 0) {
-    const deltaTime = currentTime - lastTime;
-
-    if (deltaTime < FRAME_DELAY) {
-        animationFrame = requestAnimationFrame(update);
-        return;
-    }
-
-    lastTime = currentTime - (deltaTime % FRAME_DELAY);
-    const timeMultiplier = deltaTime / FRAME_DELAY;
-
-    if (isGameRunning && !isPaused) {
-        // 남은 시간 (ms)
-        const elapsedTime = currentTime - gameStartTime - totalPauseDuration;
-        const timeLeft = Math.max(0, 120000 - elapsedTime);
-
-        // 분과 초 계산
-        const minutes = Math.floor(timeLeft / 60000);
-        const seconds = Math.floor((timeLeft % 60000) / 1000);
-
-        // 화면에 표시 (두자리 숫자 포맷)
-        document.getElementById('timer').textContent =
-            `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
-        // 시간 초과 시 게임 종료 처리
-        if (timeLeft <= 0) {
-            showMessage('시간 초과! 게임 종료', 'error');
-            isGameRunning = false;
-            cancelAnimationFrame(animationFrame);
-            return;
-        }
-
-        // 이하 기존 게임 로직 계속...
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        drawBricks();
-        drawBall();
-        drawPaddle();
-        drawScore();
-        drawLives();
-
-        let result = collisionDetection();
-        if (result) {
-            cancelAnimationFrame(animationFrame);
-            return;
-        }
-
-        if (ball.x + ball.speedX > canvas.width - ball.radius || ball.x + ball.speedX < 0 + ball.radius) {
-            ball.speedX = -ball.speedX;
-        }
-
-        if (ball.y + ball.speedY < 0 + ball.radius) {
-            ball.speedY = -ball.speedY;
-        }
-
-        if (isHit(ball, paddle.x, paddle.y, paddle.width, paddle.height)) {
-            const paddleCenter = paddle.x + paddle.width / 2;
-            const ballDistFromCenter = ball.x - paddleCenter;
-
-            ball.speedX = ballDistFromCenter * 0.15;
-            ball.speedX = Math.min(ball.speedX, BALL_SPEED * 0.9);
-            ball.speedX = Math.max(ball.speedX, -BALL_SPEED * 0.9);
-
-            ball.speedY = -Math.sqrt(BALL_SPEED * BALL_SPEED - ball.speedX * ball.speedX);
-        }
-
-        if (ball.y + ball.speedY > canvas.height - ball.radius) {
-            lives--;
-            document.getElementById('lives').textContent = lives;
-
-            if (lives === 0) {
-                showMessage('게임 오버!', 'error');
-                isGameRunning = false;
-                cancelAnimationFrame(animationFrame);
-                return;
-            } else {
-                ball.x = canvas.width / 2;
-                ball.y = canvas.height - 30;
-                ball.speedX = 0;
-                ball.speedY = -BALL_SPEED;
-            }
-        }
-
-        if (rightPressed && paddle.x < canvas.width - paddle.width) {
-            paddle.x += 7 * timeMultiplier;
-        } else if (leftPressed && paddle.x > 0) {
-            paddle.x -= 7 * timeMultiplier;
-        }
-
-        ball.x += ball.speedX * timeMultiplier;
-        ball.y += ball.speedY * timeMultiplier;
-    }
-
-    if (isGameRunning) {
-        animationFrame = requestAnimationFrame(update);
-    }
-}
-function resetBall() {
-    ball.x = canvas.width / 2;
-    ball.y = canvas.height - 30;
-    ball.speedX = 0;
-    ball.speedY = -BALL_SPEED;
-}
-// MARK: 게임 시작
-function startGame() {
-    if (!isGameRunning) {
-        // 이전 애니메이션 프레임이 있다면 취소
-        if (animationFrame) {
-            cancelAnimationFrame(animationFrame);
-        }
-
-        isGameRunning = true;
-        isPaused = false;
-        score = 0;
-        lives = TOTAL_LIVES;
-
-        // 시간 기반 애니메이션 변수 초기화
-        lastTime = performance.now();
-        gameStartTime = performance.now();  // 게임 시작 시간 기록
-        // 게임 상태 초기화
-        document.getElementById('score').textContent = score;
-        document.getElementById('lives').textContent = lives;
-
-        // 벽돌 초기화
-        initBricks();
-
-        // 공과 패들 위치 초기화
-        ball.x = canvas.width / 2;
-        ball.y = canvas.height - 30;
-        ball.speedX = 0; // X 속도는 0으로 시작 (직선 위 방향)
-        ball.speedY = -BALL_SPEED; // 위로 향하는 일정한 속도
-        paddle.x = (canvas.width - paddle.width) / 2;
-
-        // 애니메이션 프레임 시작
-        animationFrame = requestAnimationFrame(update);
-
-        // 시작 메시지
-        showMessage('게임 시작!', 'success');
-    }
-}
-
-
-
-// 게임 재시작
-function restartGame() {
-    // 현재 실행 중인 애니메이션 프레임 취소
-    if (animationFrame) {
-        cancelAnimationFrame(animationFrame);
-    }
-
-    isGameRunning = false;
-    lastTime = 0; // 시간 변수 초기화
-    setTimeout(startGame, 100);
-}
-
-// 초기화 및 게임 루프 시작
-initBricks();
-// 초기 상태에서는 애니메이션을 시작만 하고 게임은 시작하지 않음
-animationFrame = requestAnimationFrame(update);
+});
