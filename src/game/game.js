@@ -101,19 +101,19 @@ class BrickGame extends GameManager {
                 const brickX = c * (this.BRICK_WIDTH + this.BRICK_PADDING) + this.BRICK_OFFSET_LEFT;
                 const brickY = r * (this.BRICK_HEIGHT + this.BRICK_PADDING) + this.BRICK_OFFSET_TOP;
                 let isTarget = false;
-                let pokeIdx;
+                let pokeIndex;
                 const targetIdx = targetPositions.findIndex(pos => pos.c === c && pos.r === r);
                 if(targetIdx !== -1) {
                     isTarget = true;
-                    pokeIdx = this.targetPokemonIndexes[targetIdx];
+                    pokeIndex = this.targetPokemonIndexes[targetIdx];
                 }else{
                     do{
-                        pokeIdx = Math.floor(Math.random() * this.totalPokemonCount);
-                    }while(this.targetPokemonIndexes.includes(pokeIdx));
+                        pokeIndex = Math.floor(Math.random() * this.totalPokemonCount);
+                    } while (this.targetPokemonIndexes.includes(pokeIndex));
                 }
 
                 const imagePath = `../../assets/images/game/pokemon/${pokeIndex}.png`;
-                const pokeType = window.pokemon?.[pokeIdx]?.type;
+                const pokeType = window.pokemon?.[pokeIndex]?.type;
                 const slotColor = this.typeColorMap[pokeType] || '#eee';
 
                 this.bricks[c][r] = new Brick(
@@ -121,7 +121,7 @@ class BrickGame extends GameManager {
                     brickY,
                     this.BRICK_WIDTH,
                     this.BRICK_HEIGHT,
-                    pokiIndex,
+                    pokeIndex,
                     isTarget,
                     imagePath
                 );
@@ -228,13 +228,13 @@ class BrickGame extends GameManager {
                         this.score += 10; // 점수 추가
                         this.leftBrick--; // 남은 벽돌 수 감소
 
-                        if (b.isTarget && targetPokemonIndexes.includes(b.pokeIndex)) {
+                        if (b.isTarget && this.targetPokemonIndexes.includes(b.pokeIndex)) {
                         const imagePath = `../../assets/images/game/pokemon/${b.pokeIndex}.png`;
-                            addPokemonToSlot(imagePath);
+                            this.addPokemonToSlot(imagePath);
                         }
 
                         // 🛠 checkWin()은 여기서 호출만 하고
-                        checkWin();
+                        this.checkWin();
                         
                         // 한 프레임에 하나의 벽돌만 처리
                         return;
@@ -270,7 +270,7 @@ class BrickGame extends GameManager {
                 if (indexMatch) {
                     const index = parseInt(indexMatch[1]);
                     const type = window.pokemon?.[index]?.type;
-                    const color = typeColorMap[type] || '#eee';
+                    const color = this.typeColorMap[type] || '#eee';
                     slot.style.backgroundColor = color;
                 }
                 return;
@@ -348,21 +348,21 @@ class BrickGame extends GameManager {
 let brickGame = null;
 
 // 페이지 로드 시 게임 초기화 (하지만 즉시 시작하지는 않음)
-document.addEventListener('DOMContentLoaded', function () {
-    const canvas = document.getElementById('gameCanvas');
-    if (canvas) {
-        // BrickGame 인스턴스 생성 - 클래스 기반 접근법 사용
-        brickGame = new BrickGame(canvas);
+// document.addEventListener('DOMContentLoaded', function () {
+//     const canvas = document.getElementById('gameCanvas');
+//     if (canvas) {
+//         // BrickGame 인스턴스 생성 - 클래스 기반 접근법 사용
+//         brickGame = new BrickGame(canvas);
 
-        // 게임 정보 설정
-        try {
-            brickGame.setGameInfo({
-                mode: 'brick',
-                level: 'normal',
-                stage: 1
-            });
-        } catch (e) {
-            console.warn('게임 정보 설정 실패:', e.message);
-        }
-    }
-});
+//         // 게임 정보 설정
+//         try {
+//             brickGame.setGameInfo({
+//                 mode: 'brick',
+//                 level: 'normal',
+//                 stage: 1
+//             });
+//         } catch (e) {
+//             console.warn('게임 정보 설정 실패:', e.message);
+//         }
+//     }
+// });
