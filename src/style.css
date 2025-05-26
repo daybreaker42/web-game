@@ -245,7 +245,7 @@ body {
   animation: retro-fade-in-slow 0.8s steps(3, end) 1;
 }
 
-#mode-menu {
+#play-mode-menu {
   background: var(--img-menu-bg) center/cover;
 }
 

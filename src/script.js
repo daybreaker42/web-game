@@ -53,15 +53,15 @@ function showMainMenu() {
 }
 
 // ================================================================
-//                  [메인 메뉴 <-> 모드 메뉴]
+//            [메인 메뉴 <-> 플레이 모드 선택 or 랭킹 화면]
 // ================================================================
 qs("#btn-play").onclick = () => {
   hide(qs("#main-menu"));
-  show(qs("#mode-menu"));
+  show(qs("#play-mode-menu"));
 };
-// 뒤로가기(모드) → 메인 메뉴
+
 qs("#btn-back-to-main-menu").onclick = () => {
-  hide(qs("#mode-menu"));
+  hide(qs("#play-mode-menu"));
   const mainMenu = qs("#main-menu");
   mainMenu.classList.remove("fade-in");
   show(mainMenu);
@@ -77,14 +77,13 @@ qs("#btn-score").onclick = () => chooseMode("score");
 
 function chooseMode(mode) {
   selectedMode = mode;
-  hide(qs("#mode-menu"));
+  hide(qs("#play-mode-menu"));
   show(qs("#level-menu"));
 }
 
-// 뒤로가기(난이도) → 모드 메뉴
-qs("#btn-back-to-mode-menu").onclick = () => {
+qs("#btn-back-to-play-mode-menu").onclick = () => {
   hide(qs("#level-menu"));
-  show(qs("#mode-menu"));
+  show(qs("#play-mode-menu"));
 };
 
 // ================================================================
