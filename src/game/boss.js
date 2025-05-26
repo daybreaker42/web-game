@@ -457,26 +457,26 @@ class BossGame extends GameManager {
 }
 
 // 게임 인스턴스 생성 및 시작 (전역 변수로 설정)
-let bossGame = null;
+// let bossGame = null;
 
-// 페이지 로드 시 게임 초기화
-document.addEventListener('DOMContentLoaded', function () {
-    const canvas = document.getElementById('gameCanvas');
-    if (canvas) {
-        bossGame = new BossGame(canvas);
+// // 페이지 로드 시 게임 초기화
+// document.addEventListener('DOMContentLoaded', function () {
+//     const canvas = document.getElementById('gameCanvas');
+//     if (canvas) {
+//         bossGame = new BossGame(canvas);
 
-        // 게임 정보 설정 (예시)
-        try {
-            bossGame.setGameInfo({
-                mode: 'boss',
-                level: 'normal',
-                stage: 4
-            });
-        } catch (e) {
-            console.error('게임 정보 설정 오류:', e);
-        }
+//         // 게임 정보 설정 (예시)
+//         try {
+//             bossGame.setGameInfo({
+//                 mode: 'boss',
+//                 level: 'normal',
+//                 stage: 4
+//             });
+//         } catch (e) {
+//             console.error('게임 정보 설정 오류:', e);
+//         }
 
-        // 초기 애니메이션 프레임 시작
-        bossGame.animationFrame = requestAnimationFrame((time) => bossGame.update(time));
-    }
-});
+//         // 초기 애니메이션 프레임 시작
+//         bossGame.animationFrame = requestAnimationFrame((time) => bossGame.update(time));
+//     }
+// });

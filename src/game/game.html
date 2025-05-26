@@ -100,15 +100,23 @@
         <span>점수: <span id="score">0</span></span>
         <span style="margin-left: 20px;">남은 생명: <span id="lives">3</span></span>
     </div>
+    <div id="timer">02:00</div>
     
     <div id="game-container">
         <canvas id="gameCanvas" width="800" height="533"></canvas>
         <div class="controls">
-            <button id="startButton">게임 시작</button>
-            <button id="pauseButton">일시 정지</button>
-            <button id="restartButton">다시 시작</button>
-            </div>
+            <button id="startButton" tabindex="-1">게임 시작</button>
+            <button id="pauseButton" tabindex="-1">일시 정지</button>
+            <button id="restartButton" tabindex="-1">다시 시작</button>
+        </div>
     </div>
+    <div id="pokemon-slot-container">
+        <div class="pokemon-slot" id="slot-0"></div>
+        <div class="pokemon-slot" id="slot-1"></div>
+        <div class="pokemon-slot" id="slot-2"></div>
+        <div class="pokemon-slot" id="slot-3"></div>
+    </div>
+    
     <script src="../data.js"></script>
     <script src="./utils.js"></script>
     <script src="./models/brick.js"></script>
@@ -119,9 +127,9 @@
         // 게임 모드 선택 관리
         let currentGameMode = 'brick'; // 기본값: 벽돌깨기
         let currentGame = null;
-                const canvas = document.getElementById('gameCanvas'); // canvas 요소를 script 태그 상단으로 이동
+        const canvas = document.getElementById('gameCanvas'); // canvas 요소를 script 태그 상단으로 이동
         const brickModeButton = document.getElementById('brickModeButton');
-                const bossModeButton = document.getElementById('bossModeButton'); // bossModeButton 정의 추가
+        const bossModeButton = document.getElementById('bossModeButton'); // bossModeButton 정의 추가
 
         // 모드 버튼 이벤트 리스너
         brickModeButton.addEventListener('click', () => {
