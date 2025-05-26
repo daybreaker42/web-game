@@ -67,13 +67,32 @@ qs("#btn-back-to-main-menu").onclick = () => {
   show(mainMenu);
 };
 
+qs("#btn-ranking").onclick = () => {
+  stopCloudAnimation();
+  playBgm(BGM.RANKING);
+  qs("#ranking-screen").classList.remove("fade-out");
+  qs("#ranking-screen").classList.add("fade-in");
+  hide(qs("#main-menu"));
+  show(qs("#ranking-screen"));
+  renderScoreboard();
+};
+
+qs("#btn-back-to-main").onclick = () => {
+    playBgm(BGM.TITLE);
+  qs("#ranking-screen").classList.remove("fade-in");
+  qs("#ranking-screen").classList.add("fade-out");
+  hide(qs("#ranking-screen"));
+  show(qs("#main-menu"));
+  startCloudAnimation();
+};
+
 // ================================================================
 //                   [모드 메뉴 <-> 난이도 메뉴]
 // ================================================================
 let selectedMode = null;
 
-qs("#btn-story").onclick = () => chooseMode("story");
-qs("#btn-score").onclick = () => chooseMode("score");
+qs("#btn-story").onclick = () => chooseMode("story-mode");
+qs("#btn-score").onclick = () => chooseMode("score-mode");
 
 function chooseMode(mode) {
   selectedMode = mode;
@@ -108,6 +127,7 @@ function startGameStoryMode(level) {
 }
 
 function startGameScoreMode(level) {
+  stopCloudAnimation();
   alert("미구현");
 }
 
@@ -439,6 +459,7 @@ const BGM = {
   ENDING: "ending.mp3",
   CREDITS: "credits.mp3",
   INTRO: "intro.mp3",
+  RANKING: "ranking.mp3",
 };
 
 function getBgmPath(name) {
