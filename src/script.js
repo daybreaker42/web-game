@@ -112,7 +112,7 @@ qs("#btn-back-to-play-mode-menu").onclick = () => {
 qsa(".btn-level").forEach((btn) => {
   btn.onclick = () => {
     const level = btn.dataset.level;
-    if (selectedMode === "story") startGameStoryMode(level);
+    if (selectedMode === "story-mode") startGameStoryMode(level);
     else startGameScoreMode(level);
   };
 });
