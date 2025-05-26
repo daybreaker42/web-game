@@ -284,6 +284,8 @@ class GameManager {
             this.lives = this.totalLives;
             this.lastTime = performance.now();
             this.gameStartTime = performance.now();
+            this.pauseStartTime = 0; // pauseStartTime 초기화
+            this.totalPauseDuration = 0; // totalPauseDuration 초기화
 
             // 게임 오브젝트 초기화
             this.initializeGameObjects();
@@ -343,9 +345,9 @@ class GameManager {
 
             // 시간 초과 시 게임 종료 처리
             if (timeLeft <= 0) {
-                showMessage('시간 초과! 게임 종료', 'error');
-                isGameRunning = false;
-                cancelAnimationFrame(animationFrame);
+                this.showMessage('시간 초과! 게임 종료', 'error'); // this 추가
+                this.isGameRunning = false; // this 추가
+                cancelAnimationFrame(this.animationFrame);
                 return;
             }
             // 이하 기존 게임 로직 계속...
