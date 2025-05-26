@@ -277,6 +277,10 @@ class BrickGame extends GameManager {
             }
         }
     }
+
+    /**
+     * 포켓몬 슬롯 초기화
+     */
     clearPokemonSlots() {
         for (let i = 0; i < 4; i++) {
             const slot = document.getElementById(`slot-${i}`);
