@@ -89,16 +89,16 @@ button:hover {
 }
 
 .score-info {
-    font-size: 18px; /* HTML 인라인 스타일에서 이동 */
-    margin-bottom: 10px; /* HTML 인라인 스타일에서 이동 */
+    font-size: 18px;
+    margin-bottom: 10px;
     display: flex;
     justify-content: center;
     font-weight: bold;
 }
 
 .score-info span {
-    margin-right: 20px; /* HTML 인라인 스타일에서 이동 */
-    background-color: #4CAF50; /* HTML 인라인 스타일에서 이동 */
+    margin-right: 20px;
+    background-color: #4CAF50;
     /* 기존 스타일과 통합 */
     padding: 8px 15px;
     border-radius: 20px;
@@ -106,12 +106,12 @@ button:hover {
 }
 
 .score-info span:last-child {
-    margin-left: 20px; /* HTML 인라인 스타일에서 이동 */
+    margin-left: 20px;
     margin-right: 0;
 }
 
 #score, #lives {
-    color: #FFD700; /* HTML 인라인 스타일에서 이동 - 점수 색상 변경 */
+    color: #FFD700; /* 점수 색상 변경 */
     font-weight: bold;
 }
 
