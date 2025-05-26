@@ -11,13 +11,18 @@ li {
 /* 벽돌 깨기 게임 스타일 */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f0f0f0;
-    color: #333;
+    /* 다크 모드 스타일로 업데이트 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #1e1e1e; /* 다크 모드 배경색으로 변경 */
+    color: #ffffff; /* 텍스트 색상을 흰색으로 변경하여 가독성 확보 */
     transition: background-color 0.3s;
 }
 
 h1 {
-    /* color: #2c3e50; */
     text-align: center;
     margin: 20px 0;
     font-size: 2.5em;
@@ -26,29 +31,87 @@ h1 {
 
 #game-container {
     position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    margin: 20px auto; /* HTML 인라인 스타일에서 이동 */
+}
+
+canvas {
+    background: #333; /* HTML 인라인 스타일에서 이동 */
+    border-radius: 5px; /* HTML 인라인 스타일에서 이동 */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* HTML 인라인 스타일에서 이동 */
+    display: block; /* HTML 인라인 스타일에서 이동 */
+}
+
+.controls {
+    margin: 20px 0; /* HTML 인라인 스타일에서 이동 */
+    text-align: center; /* HTML 인라인 스타일에서 이동 */
+    /* 기존 absolute 포지셔닝 스타일 제거하고 HTML 인라인 스타일 적용 */
+}
+
+button {
+    padding: 10px 20px; /* HTML 인라인 스타일에서 이동 */
+    font-size: 16px; /* HTML 인라인 스타일에서 이동 */
+    cursor: pointer; /* HTML 인라인 스타일에서 이동 */
+    border: none; /* HTML 인라인 스타일에서 이동 */
+    background-color: #4CAF50; /* HTML 인라인 스타일에서 이동 */
+    color: white; /* HTML 인라인 스타일에서 이동 */
+    border-radius: 5px; /* HTML 인라인 스타일에서 이동 */
+    margin: 0 10px; /* HTML 인라인 스타일에서 이동 */
+    transition: background-color 0.3s; /* HTML 인라인 스타일에서 이동 */
+}
+
+button:hover {
+    background-color: #45a049; /* HTML 인라인 스타일에서 이동 */
+}
+
+/* 모드 선택 스타일 - HTML 인라인에서 이동 */
+.mode-selection {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.mode-button {
+    padding: 15px 30px;
+    font-size: 18px;
+    margin: 0 15px;
+    background-color: #2196F3;
+}
+
+.mode-button:hover {
+    background-color: #1976D2;
+}
+
+.mode-button.active {
+    background-color: #FF9800;
+}
+
+.mode-button.active:hover {
+    background-color: #F57C00;
 }
 
 .score-info {
+    font-size: 18px; /* HTML 인라인 스타일에서 이동 */
+    margin-bottom: 10px; /* HTML 인라인 스타일에서 이동 */
     display: flex;
     justify-content: center;
-    font-size: 1.2em;
     font-weight: bold;
-    margin-bottom: 15px;
 }
 
 .score-info span {
-    margin: 0 15px;
-    background-color: #fff;
+    margin-right: 20px; /* HTML 인라인 스타일에서 이동 */
+    background-color: #4CAF50; /* HTML 인라인 스타일에서 이동 */
+    /* 기존 스타일과 통합 */
     padding: 8px 15px;
     border-radius: 20px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+.score-info span:last-child {
+    margin-left: 20px; /* HTML 인라인 스타일에서 이동 */
+    margin-right: 0;
+}
+
 #score, #lives {
-    color: #e74c3c;
+    color: #FFD700; /* HTML 인라인 스타일에서 이동 - 점수 색상 변경 */
     font-weight: bold;
 }
 
@@ -67,16 +130,7 @@ h1 {
         margin: 5px 0;
     }
 }
-.controls {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    display: flex;
-    gap: 10px;
-    background-color: rgba(0, 0, 0, 0.4); /* 버튼 배경 반투명 */
-    padding: 10px;
-    border-radius: 10px;
-}
+
 #pokemon-slot-container {
     display: flex;
     justify-content: center;
