@@ -351,7 +351,7 @@ button.ranking-back {
   opacity: 0.85; /* 연하게 하고 싶다면 */
 }
 
-#btn-skip {
+.btn-skip {
   position: absolute;
   left: 30px;
   top: 20px;

@@ -6,11 +6,12 @@
     <title>~The Lost Pokemons~</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="range.css" />
+    <link rel="stylesheet" href="credits.css" />
   </head>
   <body>
     <div id="game-root">
       <!-- Title Screen-->
-      <section id="title" class="screen">
+      <section id="title" class="screen hidden">
         <div class="logo" alt="Game Logo"></div>
         <p class="press-any">Press any button to start</p>
       </section>
@@ -69,45 +70,55 @@
       <!-- Story Screen-->
       <section id="story-screen" class="screen hidden">
         <div id="story-illustration"></div>
-        <button id="btn-skip">> Skip</button>
+        <button id="btn-skip-story" class="btn-skip">> Skip</button>
         <div id="story-textbox" class="hidden">
           <span id="story-potrait" class="hidden"></span>
           <span id="story-line"></span>
           <span class="story-next-indicator">▼</span>
         </div>
       </section>
-    </div>
 
-    <!-- Ranking screen -->
-    <section id="ranking-screen" class="screen hidden fade-in">
-      <div class="ranking-container">
-        <div class="ranking-row">
-          <div class="ranking-label">모드</div>
-          <div class="ranking-mode-tabs">
-            <button class="ranking-tab active" data-mode="story">스토리</button>
-            <button class="ranking-tab" data-mode="score">스코어</button>
+      <!-- Ranking screen -->
+      <section id="ranking-screen" class="screen hidden fade-in">
+        <div class="ranking-container">
+          <div class="ranking-row">
+            <div class="ranking-label">모드</div>
+            <div class="ranking-mode-tabs">
+              <button class="ranking-tab active" data-mode="story">
+                스토리
+              </button>
+              <button class="ranking-tab" data-mode="score">스코어</button>
+            </div>
           </div>
-        </div>
-        <div class="ranking-row">
-          <div class="ranking-label">난이도</div>
-          <div class="ranking-difficulty-tabs">
-            <button class="difficulty-tab active" data-level="easy">
-              쉬움
-            </button>
-            <button class="difficulty-tab" data-level="normal">보통</button>
-            <button class="difficulty-tab" data-level="hard">어려움</button>
+          <div class="ranking-row">
+            <div class="ranking-label">난이도</div>
+            <div class="ranking-difficulty-tabs">
+              <button class="difficulty-tab active" data-level="easy">
+                쉬움
+              </button>
+              <button class="difficulty-tab" data-level="normal">보통</button>
+              <button class="difficulty-tab" data-level="hard">어려움</button>
+            </div>
           </div>
+          <div class="scoreboard"></div>
+          <button
+            id="btn-back-to-main"
+            class="pixel-box ranking-back"
+            style="margin-top: 28px"
+          >
+            뒤로가기
+          </button>
         </div>
-        <div class="scoreboard"></div>
-        <button
-          id="btn-back-to-main"
-          class="pixel-box ranking-back"
-          style="margin-top: 28px"
-        >
-          뒤로가기
-        </button>
-      </div>
-    </section>
+      </section>
+
+      <!-- 엔딩 크레딧 화면 -->
+      <section id="credits-screen" class="screen">
+        <div id="credits-root">
+          <div id="credits-scroll"></div>
+          <button id="btn-skip-credits" class="btn-skip">> Skip</button>
+        </div>
+      </section>
+    </div>
 
     <!-- Confirm skip modal -->
     <dialog id="confirm-skip-modal" class="pixel-box">
@@ -166,15 +177,16 @@
     </section>
 
     <!-- Sound -->
-
     <audio id="crt-type-sfx" preload="auto"></audio>
     <audio id="crt-off-sfx" preload="auto"></audio>
 
     <audio id="bgm" autoplay loop></audio>
     <audio id="sfx" preload="auto"></audio>
     <!-- JS Modules -->
+    <script src="utils.js"></script>
     <script src="data.js"></script>
-    <script src="script.js"></script>
     <script src="ranking.js"></script>
+    <script src="credits.js"></script>
+    <script src="script.js"></script>
   </body>
 </html>

@@ -1,12 +1,4 @@
 // ================================================================
-//                         [헬퍼 함수 / 쿼리]
-// ================================================================
-const qs = (sel) => document.querySelector(sel);
-const qsa = (sel) => [...document.querySelectorAll(sel)];
-const hide = (el) => el.classList.add("hidden");
-const show = (el) => el.classList.remove("hidden");
-
-// ================================================================
 //                    [타이틀 -> 메인 메뉴 진입]
 // ================================================================
 document.addEventListener("keydown", startFromTitle, { once: true });
@@ -17,6 +9,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const logo = document.querySelector(".logo");
   const pressAny = document.querySelector(".press-any");
 
+  showDemoCredits();
   setTimeout(() => {
     logo.classList.add("show");
   }, 2000);
@@ -321,7 +314,7 @@ function showStorySceneNormal(scene, onDone) {
       }
 
       qs("#story-screen").onclick = function (e) {
-        if (e.target.id === "btn-skip") return;
+        if (e.target.id === "btn-skip-story") return;
         idx++;
         advanceLine();
       };
@@ -409,7 +402,7 @@ function showStorySceneFlashback(scene, onDone) {
       qs("#story-line").style.fontStyle = "italic";
       qs("#story-line").style.color = "#999";
       qs("#story-screen").onclick = function (e) {
-        if (e.target.id === "btn-skip") return;
+        if (e.target.id === "btn-skip-story") return;
         idx++;
         advanceLine();
       };
@@ -527,7 +520,7 @@ const skipModal = qs("#confirm-skip-modal");
 const btnYes = qs("#skip-confirm-yes");
 const btnNo = qs("#skip-confirm-no");
 
-qs("#btn-skip").onclick = () => {
+qs("#btn-skip-story").onclick = () => {
   skipModal.showModal();
 };
 
