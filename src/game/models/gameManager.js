@@ -20,8 +20,8 @@ class GameManager {
         this.isGameRunning = false;
         this.isPaused = false;
         this.gameStartTime = 0;     // 게임 시작 시간 저장
-        let pauseStartTime = 0;     // 일시정지했을때 시간 멈추기 용
-        let totalPauseDuration = 0; // 일시정지한 시간
+        this.pauseStartTime = 0;     // 일시정지했을때 시간 멈추기 용
+        this.totalPauseDuration = 0; // 일시정지한 시간
 
         // MARK: 게임 정보
         this.mode = null;
@@ -48,8 +48,8 @@ class GameManager {
         // MARK: 메시지 시스템
         this.persistentMessageElement = null;
 
-        // 이벤트 리스너 바인딩
-        this.bindEventListeners();
+        // 이벤트 리스너 바인딩 // 주석 처리 또는 내용 삭제
+        // this.bindEventListeners(); // 주석 처리: game.html에서 이벤트 리스너를 관리하도록 변경
     }
 
     /**
@@ -128,25 +128,6 @@ class GameManager {
     }
 
     /**
-     * 이벤트 리스너 바인딩
-     */
-    bindEventListeners() {
-        // 키보드 이벤트
-        document.addEventListener('keydown', (e) => this.keyDownHandler(e));
-        document.addEventListener('keyup', (e) => this.keyUpHandler(e));
-
-        // 마우스 이벤트
-        document.addEventListener('mousemove', (e) => this.mouseMoveHandler(e));
-
-        // 버튼 이벤트 (존재하는 경우만)
-        const startButton = document.getElementById('startButton');
-        const pauseButton = document.getElementById('pauseButton');
-        const restartButton = document.getElementById('restartButton');
-
-        if (startButton) startButton.addEventListener('click', () => this.startGame());
-        if (pauseButton) pauseButton.addEventListener('click', () => this.togglePause());
-        if (restartButton) restartButton.addEventListener('click', () => this.restartGame());
-    }    /**
      * 키보드 입력 처리
      */
     keyDownHandler(e) {
@@ -297,7 +278,8 @@ class GameManager {
 
             this.updateUI();
             this.animationFrame = requestAnimationFrame((time) => this.update(time));
-            this.showMessage('게임 시작!', 'success');
+            console.log(`${this.mode} 게임을 시작합니다.`);
+            this.showMessage(`게임 시작!`, 'success');
         }
     }
 
