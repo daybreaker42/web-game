@@ -29,4 +29,10 @@ window.addEventListener("DOMContentLoaded", () => {
   setupOptionModal();
   setupAudioSliders();
   setupButtonSfx();
+  if (!localStorage.getItem("scoreboard")) {
+    setScoreboardData(makeEmptyScoreboard());
+  }
+
+  // DEMO
+  setScoreboardData(DEMO_RANKING_DATA);
 });
