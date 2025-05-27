@@ -1,21 +1,33 @@
 function chooseMode(mode) {
   selectedMode = mode;
   hide(qs("#play-mode-menu"));
-  show(qs("#level-menu"));
+  show(qs("#difficulty-menu"));
 }
 
-function startGameStoryMode(level) {
+// ==================== Start Game Functions ====================
+
+let selectedDifficulty = null;
+
+function startGameStoryMode(difficulty) {
   stopCloudAnimation();
   stopBgm();
-  hide(qs("#level-menu"));
-  selectedLevel = level;
-  stageListIdx = 0;
-  proceedToStage(stageListIdx);
+  hide(qs("#difficulty-menu"));
+  selectedDifficulty = difficulty;
+  proceedToStage(0);
 }
 
-function startGameScoreMode(level) {
+function startGameScoreMode(difficulty) {
+  selectedDifficulty = difficulty;
   stopCloudAnimation();
   alert("미구현");
+}
+
+// ==================== Setup Menu Events ====================
+
+function showMainMenu() {
+  const mainMenu = qs("#main-menu");
+  mainMenu.classList.add("fade-in");
+  show(mainMenu);
 }
 
 function setupMenuEvents() {
@@ -52,15 +64,15 @@ function setupMenuEvents() {
   };
 
   qs("#btn-back-to-play-mode-menu").onclick = () => {
-    hide(qs("#level-menu"));
+    hide(qs("#difficulty-menu"));
     show(qs("#play-mode-menu"));
   };
 
-  qsa(".btn-level").forEach((btn) => {
+  qsa(".btn-difficulty").forEach((btn) => {
     btn.onclick = () => {
-      const level = btn.dataset.level;
-      if (selectedMode === "story-mode") startGameStoryMode(level);
-      else startGameScoreMode(level);
+      const difficulty = btn.dataset.difficulty;
+      if (selectedMode === "story-mode") startGameStoryMode(difficulty);
+      else startGameScoreMode(difficulty);
     };
   });
 }

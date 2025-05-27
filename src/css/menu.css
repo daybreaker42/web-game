@@ -8,10 +8,10 @@
 #play-mode-menu {
   background: var(--img-menu-bg) center/cover;
 }
-#level-menu {
+#difficulty-menu {
   background: var(--img-menu-bg) center/cover;
 }
-#level-menu h2 {
+#difficulty-menu h2 {
   font-size: 1.6rem;
   margin: 0;
   padding: 0.5rem 0;

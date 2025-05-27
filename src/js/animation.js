@@ -22,7 +22,7 @@ function preloadCloudFrames(frameCount, basePath) {
 
 function startCloudAnimation() {
   const root = document.documentElement;
-  const frameCount = 4;
+  const frameCount = 3;
   const basePath = "../assets/images/background/title_";
   let frameIdx = 0;
   let frames = [];
@@ -38,7 +38,7 @@ function startCloudAnimation() {
         root.style.setProperty("--img-menu-bg", `url('${img.src}')`);
       }
       frameIdx = (frameIdx + 1) % frameCount;
-    }, 500);
+    }, 600);
   });
 }
 
