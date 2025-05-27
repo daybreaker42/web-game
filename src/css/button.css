@@ -1,0 +1,29 @@
+button,
+.btn-options,
+dialog[open] {
+  transition: none;
+  position: relative;
+}
+.modal-inner-button {
+  box-shadow: 0 0 0 2px #fff inset;
+}
+button:active,
+.btn-options:active {
+  background: #b8b8b8;
+  color: #444;
+  box-shadow: 0 0 0 #999, 0 0 0 2px #ccc inset;
+  border-color: #000;
+  transform: translate(2px, 2px) scale(0.98);
+  filter: brightness(0.92) contrast(1.2);
+}
+button.ranking-back {
+  background: #444;
+  color: #fff;
+  font-size: 1.2rem;
+  position: static;
+  align-self: flex-start;
+  margin: 0;
+  padding: 0.6rem 1.4rem;
+  text-shadow: 0 0 2px #000;
+  box-shadow: 0 0 0 2px #fff inset;
+}

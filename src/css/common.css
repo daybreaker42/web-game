@@ -1,0 +1,35 @@
+.hidden {
+  display: none !important;
+}
+.pixel-box {
+  font-family: "DOSGothic", monospace;
+  font-weight: normal;
+  font-size: 1.4rem;
+  background: #e7e7e7;
+  color: #101010;
+  border: 3px solid #222;
+  border-radius: 2px;
+  box-shadow:
+    0 2px 0 #999,
+    0 0 0 2px #fff inset;
+  letter-spacing: 0.06em;
+  text-shadow:
+    1px 1px 0 #fff,
+    0 0 2px #aaa;
+  padding: 0.65rem 1.2rem;
+  outline: none;
+  image-rendering: pixelated;
+}
+.pixel-box--large {
+  font-size: 1.4rem;
+  padding: 0.7rem 1.8rem;
+}
+.pixel-box--small {
+  font-size: 1rem;
+  padding: 0.4rem 0.8rem;
+}
+.pixel-box--menu {
+  width: 300px;
+  font-size: 1.4rem;
+  padding: 0.7rem 1.8rem;
+}
