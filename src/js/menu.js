@@ -4,18 +4,30 @@ function chooseMode(mode) {
   show(qs("#difficulty-menu"));
 }
 
+// ==================== Start Game Functions ====================
+
+let selectedDifficulty = null;
+
 function startGameStoryMode(difficulty) {
   stopCloudAnimation();
   stopBgm();
   hide(qs("#difficulty-menu"));
-  selecteddifficulty = difficulty;
-  stageListIdx = 0;
-  proceedToStage(stageListIdx);
+  selectedDifficulty = difficulty;
+  proceedToStage(0);
 }
 
 function startGameScoreMode(difficulty) {
+  selectedDifficulty = difficulty;
   stopCloudAnimation();
   alert("미구현");
+}
+
+// ==================== Setup Menu Events ====================
+
+function showMainMenu() {
+  const mainMenu = qs("#main-menu");
+  mainMenu.classList.add("fade-in");
+  show(mainMenu);
 }
 
 function setupMenuEvents() {
