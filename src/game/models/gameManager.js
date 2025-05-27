@@ -33,6 +33,12 @@ class GameManager {
         this.isGameClear = false;
         this.saved_pokemon = [];
 
+        // MARK: 생명 설정 (모드 및 난이도별) // 주석 추가: 생명 설정 구조화
+        this.livesConfig = {
+            brick: { easy: 300, normal: 300, hard: 300 }, // 주석 추가: 벽돌깨기 모드 생명 (현재는 동일)
+            boss: { easy: 300, normal: 300, hard: 300 }   // 주석 추가: 보스전 모드 생명 (현재는 동일)
+        };
+
         // MARK: 입력 상태
         this.keys = {
             rightPressed: false,
@@ -87,18 +93,20 @@ class GameManager {
      * 레벨에 따른 난이도 설정
      */
     setDifficultyByLevel(level) {
+        const currentModeConfig = this.livesConfig[this.mode] || this.livesConfig.brick; // 현재 모드의 설정을 가져오거나 기본값(brick) 사용
+
         switch (level) {
             case 'easy':
-                this.totalLives = 500;
+                this.totalLives = currentModeConfig.easy; // 주석 수정: 모드별 난이도에 따른 생명 설정
                 break;
             case 'normal':
-                this.totalLives = 300;
+                this.totalLives = currentModeConfig.normal; // 주석 수정: 모드별 난이도에 따른 생명 설정
                 break;
             case 'hard':
-                this.totalLives = 100;
+                this.totalLives = currentModeConfig.hard; // 주석 수정: 모드별 난이도에 따른 생명 설정
                 break;
             default:
-                this.totalLives = 300;
+                this.totalLives = currentModeConfig.normal; // 주석 수정: 기본값으로 normal 난이도 생명 설정
         }
         this.lives = this.totalLives;
     }

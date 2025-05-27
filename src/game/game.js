@@ -9,7 +9,7 @@ class BrickGame extends GameManager {
         super(canvas); // GameManager 생성자 호출
 
         // MARK: 벽돌깨기 전용 설정
-        this.TOTAL_LIVES = 300;
+        // this.TOTAL_LIVES = 300; // 주석 처리 또는 삭제: GameManager에서 관리하도록 변경
         this.leftBrick = 0;
 
         // MARK: 벽돌 관련 설정
@@ -61,8 +61,8 @@ class BrickGame extends GameManager {
 
         // 벽돌깨기 전용 초기화
         this.initBricks();
-        this.lives = this.TOTAL_LIVES;
-        this.totalLives = this.TOTAL_LIVES;
+        // this.lives = this.TOTAL_LIVES; // 주석 처리 또는 삭제: GameManager의 setDifficultyByLevel에서 설정됨
+        this.totalLives = this.lives; // GameManager에서 설정된 lives 값으로 totalLives 동기화 (필요시)
     }
 
     /**
