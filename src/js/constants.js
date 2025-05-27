@@ -1,3 +1,11 @@
+const STORY_SCRIPTS = [
+  window.story_intro,
+  window.story_stage1,
+  window.story_stage2,
+  window.story_stage3,
+  window.story_ending,
+];
+
 const BGM = {
   TITLE: "title.mp3",
   STORY: "story.mp3",
