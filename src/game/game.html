@@ -101,6 +101,8 @@
                         currentGame.startGame();
                     }
                 });
+            } else {
+                console.error('startButton 요소를 찾을 수 없습니다.');
             }
             if (pauseButton) {
                 pauseButton.addEventListener('click', () => {
@@ -108,6 +110,8 @@
                         currentGame.togglePause();
                     }
                 });
+            } else {
+                console.error('pauseButton 요소를 찾을 수 없습니다.');
             }
             if (restartButton) {
                 restartButton.addEventListener('click', () => {
@@ -115,6 +119,8 @@
                         currentGame.restartGame();
                     }
                 });
+            } else {
+                console.error('restartButton 요소를 찾을 수 없습니다.');
             }
 
             // 키보드 및 마우스 이벤트 리스너 설정 (한 번만) // 주석 추가
