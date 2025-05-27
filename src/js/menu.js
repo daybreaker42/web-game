@@ -1,19 +1,19 @@
 function chooseMode(mode) {
   selectedMode = mode;
   hide(qs("#play-mode-menu"));
-  show(qs("#level-menu"));
+  show(qs("#difficulty-menu"));
 }
 
-function startGameStoryMode(level) {
+function startGameStoryMode(difficulty) {
   stopCloudAnimation();
   stopBgm();
-  hide(qs("#level-menu"));
-  selectedLevel = level;
+  hide(qs("#difficulty-menu"));
+  selecteddifficulty = difficulty;
   stageListIdx = 0;
   proceedToStage(stageListIdx);
 }
 
-function startGameScoreMode(level) {
+function startGameScoreMode(difficulty) {
   stopCloudAnimation();
   alert("미구현");
 }
@@ -52,15 +52,15 @@ function setupMenuEvents() {
   };
 
   qs("#btn-back-to-play-mode-menu").onclick = () => {
-    hide(qs("#level-menu"));
+    hide(qs("#difficulty-menu"));
     show(qs("#play-mode-menu"));
   };
 
-  qsa(".btn-level").forEach((btn) => {
+  qsa(".btn-difficulty").forEach((btn) => {
     btn.onclick = () => {
-      const level = btn.dataset.level;
-      if (selectedMode === "story-mode") startGameStoryMode(level);
-      else startGameScoreMode(level);
+      const difficulty = btn.dataset.difficulty;
+      if (selectedMode === "story-mode") startGameStoryMode(difficulty);
+      else startGameScoreMode(difficulty);
     };
   });
 }

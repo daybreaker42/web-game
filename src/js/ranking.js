@@ -2,7 +2,7 @@ const MODES = {
   STORY: "story_mode",
   SCORE: "score_mode",
 };
-const LEVELS = ["easy", "normal", "hard"];
+const DIFFICULTY = ["easy", "normal", "hard"];
 
 const SCOREBOARD_COLUMNS = [
   {
@@ -26,8 +26,8 @@ function makeEmptyScoreboard() {
   const data = {};
   Object.values(MODES).forEach((mode) => {
     data[mode] = {};
-    LEVELS.forEach((level) => {
-      data[mode][level] = [];
+    DIFFICULTY.forEach((difficulty) => {
+      data[mode][difficulty] = [];
     });
   });
   return data;
@@ -42,7 +42,7 @@ function setScoreboardData(data) {
 }
 
 let currentMode = MODES.STORY; // "story_mode" | "score_mode"
-let currentLevel = "easy"; // "easy" | "normal" | "hard"
+let currentDifficulty = "easy"; // "easy" | "normal" | "hard"
 
 qsa(".ranking-tab").forEach((btn) => {
   btn.onclick = () => {
@@ -56,7 +56,7 @@ qsa(".difficulty-tab").forEach((btn) => {
   btn.onclick = () => {
     qsa(".difficulty-tab").forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
-    currentLevel = btn.dataset.level;
+    currentDifficulty = btn.dataset.difficulty;
     renderScoreboard();
   };
 });
@@ -65,8 +65,8 @@ function renderScoreboard() {
   const data = getScoreboardData();
   const board = qs(".scoreboard");
   const rows =
-    data[currentMode] && data[currentMode][currentLevel]
-      ? data[currentMode][currentLevel]
+    data[currentMode] && data[currentMode][currentDifficulty]
+      ? data[currentMode][currentDifficulty]
       : [];
   // 최대 5개만 표시
   const visibleRows = rows.slice(0, 5);
@@ -101,9 +101,9 @@ function renderScoreboard() {
     `;
 }
 
-function addScoreRecord(mode, level, name, score) {
+function addScoreRecord(mode, difficulty, name, score) {
   let data = getScoreboardData();
-  let arr = data[mode][level];
+  let arr = data[mode][difficulty];
   arr.push({
     rank: 0,
     name,
@@ -117,6 +117,6 @@ function addScoreRecord(mode, level, name, score) {
   });
   arr.sort((a, b) => b.score - a.score);
   arr.forEach((r, i) => (r.rank = i + 1));
-  data[mode][level] = arr.slice(0, 5); // 5개만 유지
+  data[mode][difficulty] = arr.slice(0, 5); // 5개만 유지
   setScoreboardData(data);
 }

@@ -5,6 +5,7 @@ function showMainMenu() {
 }
 
 function showStoryScreen() {
-  hide(qs("#level-menu"));
+  console.log("showStoryScreen called");
+  hide(qs("#difficulty-menu"));
   show(qs("#story-screen"));
 }

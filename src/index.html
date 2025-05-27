@@ -46,16 +46,16 @@
         </button>
       </section>
 
-      <!-- Select Level Screen-->
-      <section id="level-menu" class="menu screen hidden">
+      <!-- Select Difficulty Screen-->
+      <section id="difficulty-menu" class="menu screen hidden">
         <h2>난이도를 선택하세요</h2>
-        <button class="pixel-box pixel-box--menu btn-level" data-level="easy">
+        <button class="pixel-box pixel-box--menu btn-difficulty" data-difficulty="easy">
           쉬움
         </button>
-        <button class="pixel-box pixel-box--menu btn-level" data-level="normal">
+        <button class="pixel-box pixel-box--menu btn-difficulty" data-difficulty="normal">
           보통
         </button>
-        <button class="pixel-box pixel-box--menu btn-level" data-level="hard">
+        <button class="pixel-box pixel-box--menu btn-difficulty" data-difficulty="hard">
           어려움
         </button>
         <button
@@ -100,11 +100,11 @@
           <div class="ranking-row">
             <div class="ranking-label">난이도</div>
             <div class="ranking-difficulty-tabs">
-              <button class="difficulty-tab active" data-level="easy">
+              <button class="difficulty-tab active" data-difficulty="easy">
                 쉬움
               </button>
-              <button class="difficulty-tab" data-level="normal">보통</button>
-              <button class="difficulty-tab" data-level="hard">어려움</button>
+              <button class="difficulty-tab" data-difficulty="normal">보통</button>
+              <button class="difficulty-tab" data-difficulty="hard">어려움</button>
             </div>
           </div>
           <div class="scoreboard"></div>
@@ -183,14 +183,15 @@
     <audio id="bgm" autoplay loop></audio>
     <audio id="sfx" preload="auto"></audio>
     <!-- JS Modules -->
-    <script src="data.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/ui.js"></script>
     <script src="js/demo-data.js"></script>
     <script src="js/helpers.js"></script>
     <script src="js/constants.js"></script>
     <script src="js/audio.js"></script>
     <script src="js/animation.js"></script>
-    <script src="js/ui.js"></script>
     <script src="js/story.js"></script>
+    <script src="js/stage.js"></script>
     <script src="js/menu.js"></script>
     <script src="js/options.js"></script>
     <script src="js/ranking.js"></script>
