@@ -11,7 +11,7 @@
   <body>
     <div id="game-root">
       <!-- Title Screen-->
-      <section id="title" class="screen hidden">
+      <section id="title" class="screen">
         <div class="logo" alt="Game Logo"></div>
         <p class="press-any">Press any button to start</p>
       </section>
@@ -111,8 +111,8 @@
         </div>
       </section>
 
-      <!-- 엔딩 크레딧 화면 -->
-      <section id="credits-screen" class="screen">
+      <!-- Ending Credits -->
+      <section id="credits-screen" class="screen hidden">
         <div id="credits-root">
           <div id="credits-scroll"></div>
           <button id="btn-skip-credits" class="btn-skip">> Skip</button>
@@ -183,10 +183,17 @@
     <audio id="bgm" autoplay loop></audio>
     <audio id="sfx" preload="auto"></audio>
     <!-- JS Modules -->
-    <script src="utils.js"></script>
     <script src="data.js"></script>
-    <script src="ranking.js"></script>
-    <script src="credits.js"></script>
-    <script src="script.js"></script>
+    <script src="js/helpers.js"></script>
+    <script src="js/constants.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/animation.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/story.js"></script>
+    <script src="js/menu.js"></script>
+    <script src="js/options.js"></script>
+    <script src="js/ranking.js"></script>
+    <script src="js/credits.js"></script>
+    <script src="js/main.js"></script>
   </body>
 </html>
