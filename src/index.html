@@ -4,10 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=800, initial-scale=1.0" />
     <title>~The Lost Pokemons~</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="range.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="icon" type="image/png" href="../favicon.ico" />
   </head>
   <body>
+    <!-- Game Root -->
     <div id="game-root">
       <!-- Title Screen-->
       <section id="title" class="screen">
@@ -69,45 +70,62 @@
       <!-- Story Screen-->
       <section id="story-screen" class="screen hidden">
         <div id="story-illustration"></div>
-        <button id="btn-skip">> Skip</button>
+        <button id="btn-skip-story" class="btn-skip">> Skip</button>
         <div id="story-textbox" class="hidden">
           <span id="story-potrait" class="hidden"></span>
           <span id="story-line"></span>
           <span class="story-next-indicator">▼</span>
         </div>
       </section>
-    </div>
 
-    <!-- Ranking screen -->
-    <section id="ranking-screen" class="screen hidden fade-in">
-      <div class="ranking-container">
-        <div class="ranking-row">
-          <div class="ranking-label">모드</div>
-          <div class="ranking-mode-tabs">
-            <button class="ranking-tab active" data-mode="story">스토리</button>
-            <button class="ranking-tab" data-mode="score">스코어</button>
-          </div>
+      <!-- CRT console screen -->
+      <section id="crt-console-screen" class="screen hidden">
+        <div class="crt" id="crt-terminal">
+          <pre id="crt-console-text"></pre>
         </div>
-        <div class="ranking-row">
-          <div class="ranking-label">난이도</div>
-          <div class="ranking-difficulty-tabs">
-            <button class="difficulty-tab active" data-level="easy">
-              쉬움
-            </button>
-            <button class="difficulty-tab" data-level="normal">보통</button>
-            <button class="difficulty-tab" data-level="hard">어려움</button>
+      </section>
+
+      <!-- Ranking screen -->
+      <section id="ranking-screen" class="screen hidden fade-in">
+        <div class="ranking-container">
+          <div class="ranking-row">
+            <div class="ranking-label">모드</div>
+            <div class="ranking-mode-tabs">
+              <button class="ranking-tab active" data-mode="story">
+                스토리
+              </button>
+              <button class="ranking-tab" data-mode="score">스코어</button>
+            </div>
           </div>
+          <div class="ranking-row">
+            <div class="ranking-label">난이도</div>
+            <div class="ranking-difficulty-tabs">
+              <button class="difficulty-tab active" data-level="easy">
+                쉬움
+              </button>
+              <button class="difficulty-tab" data-level="normal">보통</button>
+              <button class="difficulty-tab" data-level="hard">어려움</button>
+            </div>
+          </div>
+          <div class="scoreboard"></div>
+          <button
+            id="btn-back-to-main"
+            class="pixel-box ranking-back"
+            style="margin-top: 28px"
+          >
+            뒤로가기
+          </button>
         </div>
-        <div class="scoreboard"></div>
-        <button
-          id="btn-back-to-main"
-          class="pixel-box ranking-back"
-          style="margin-top: 28px"
-        >
-          뒤로가기
-        </button>
-      </div>
-    </section>
+      </section>
+
+      <!-- Ending Credits -->
+      <section id="credits-screen" class="screen hidden">
+        <div id="credits-root">
+          <div id="credits-scroll"></div>
+          <button id="btn-skip-credits" class="btn-skip">> Skip</button>
+        </div>
+      </section>
+    </div>
 
     <!-- Confirm skip modal -->
     <dialog id="confirm-skip-modal" class="pixel-box">
@@ -158,15 +176,7 @@
       <button id="modal-close" class="pixel-box modal-inner-button">X</button>
     </dialog>
 
-    <!-- CRT 콘솔 연출 화면 -->
-    <section id="crt-console-screen" class="screen hidden">
-      <div class="crt" id="crt-terminal">
-        <pre id="crt-console-text"></pre>
-      </div>
-    </section>
-
     <!-- Sound -->
-
     <audio id="crt-type-sfx" preload="auto"></audio>
     <audio id="crt-off-sfx" preload="auto"></audio>
 
@@ -174,7 +184,17 @@
     <audio id="sfx" preload="auto"></audio>
     <!-- JS Modules -->
     <script src="data.js"></script>
-    <script src="script.js"></script>
-    <script src="ranking.js"></script>
+    <script src="js/demo-data.js"></script>
+    <script src="js/helpers.js"></script>
+    <script src="js/constants.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/animation.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/story.js"></script>
+    <script src="js/menu.js"></script>
+    <script src="js/options.js"></script>
+    <script src="js/ranking.js"></script>
+    <script src="js/credits.js"></script>
+    <script src="js/main.js"></script>
   </body>
 </html>

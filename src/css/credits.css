@@ -1,0 +1,75 @@
+#credits-screen.screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none; /* 불투명 오버레이 필요하면 rgba(0,0,0,0.45) 정도 추천 */
+  z-index: 50; /* 게임 내 다른 화면보다 위에 오도록 */
+}
+
+#credits-root {
+  position: relative;
+  width: 70%;
+  height: 100%;
+  background: var(--bg, #181a20);
+  box-shadow: 0 6px 36px rgba(0, 0, 0, 0.37);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 2.5px solid #202840;
+}
+
+#credits-scroll {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  bottom: -100%;
+  will-change: transform;
+  /* 스크롤되는 영역이 패널 내에서 움직임 */
+}
+
+.credit-title {
+  text-align: center;
+  font-size: 2rem;
+  color: var(--accent, #00ffe1);
+  margin: 56px 0 36px 0;
+  letter-spacing: 2px;
+  font-family: "DOSGothic", sans-serif;
+}
+
+.credit-section {
+  margin: 20px 0 16px 0;
+  font-size: 1.22rem;
+  text-align: center;
+}
+
+.credit-section strong {
+  color: var(--accent, #00ffe1);
+}
+#pokemon-list {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin: 26px 0 20px 0;
+}
+.pokemon-img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #222;
+  border: 1.5px solid #333;
+}
+
+#credits-skip-btn {
+  position: absolute;
+  top: 23px;
+  right: 23px;
+  padding: 7px 22px;
+  font-size: 1rem;
+}

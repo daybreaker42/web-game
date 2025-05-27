@@ -1,222 +1,224 @@
+
 // ========== item.js ==========
 window.item = [
-  {
-    name: "normal-potion",
-    effect: {
-      type: "heal",
-      amount: 20,
+    {
+        "name": "normal-potion",
+        "effect": {
+            "type": "heal",
+            "amount": 20
+        }
     },
-  },
-  {
-    name: "super-potion",
-    effect: {
-      type: "heal",
-      amount: 20,
+    {
+        "name": "super-potion",
+        "effect": {
+            "type": "heal",
+            "amount": 20
+        }
     },
-  },
-  {
-    name: "hyper-potion",
-    effect: {
-      type: "heal",
-      amount: 60,
+    {
+        "name": "hyper-potion",
+        "effect": {
+            "type": "heal",
+            "amount": 60
+        }
     },
-  },
-  {
-    name: "full-potion",
-    effect: {
-      type: "heal",
-      amount: 100,
-    },
-  },
+    {
+        "name": "full-potion",
+        "effect": {
+            "type": "heal",
+            "amount": 100
+        }
+    }
 ];
 
 // ========== pokemon.js ==========
 window.pokemon = {
-  0: { name: "이상해씨", type: 0 },
-  1: { name: "파이리", type: 1 },
-  2: { name: "리자드", type: 1 },
-  3: { name: "리자몽", type: 1 },
-  4: { name: "꼬부기", type: 3 },
-  5: { name: "라이츄", type: 2 },
-  6: { name: "고라파덕", type: 3 },
-  7: { name: "가디", type: 1 },
-  8: { name: "윈디", type: 1 },
-  9: { name: "발챙이", type: 3 },
-  10: { name: "포니타", type: 1 },
-  11: { name: "날쌩마", type: 1 },
-  12: { name: "코일", type: 2 },
-  13: { name: "레어코일", type: 2 },
-  14: { name: "쥬레곤", type: 4 },
-  15: { name: "크랩", type: 3 },
-  16: { name: "찌리리공", type: 2 },
-  17: { name: "붐볼", type: 2 },
-  18: { name: "쏘드라", type: 3 },
-  19: { name: "콘치", type: 3 },
-  20: { name: "별가사리", type: 3 },
-  21: { name: "마그마", type: 1 },
-  22: { name: "잉어킹", type: 3 },
-  23: { name: "갸라도스", type: 3 },
-  24: { name: "라프라스", type: 4 },
-  25: { name: "샤미드", type: 3 },
-  26: { name: "쥬피썬더", type: 2 },
-  27: { name: "부스터", type: 1 },
-  28: { name: "프리져", type: 4 },
-  29: { name: "뮤", type: 5 },
-  30: { name: "치코리타", type: 0 },
-  31: { name: "베이리프", type: 0 },
-  32: { name: "브케인", type: 1 },
-  33: { name: "피츄", type: 2 },
-  34: { name: "메리프", type: 2 },
-  35: { name: "전룡", type: 2 },
-  36: { name: "마릴", type: 3 },
-  37: { name: "우파", type: 3 },
-  38: { name: "누오", type: 3 },
-  39: { name: "포푸니", type: 4 },
-  40: { name: "마그마그", type: 1 },
-  41: { name: "꾸꾸리", type: 4 },
-  42: { name: "메꾸리", type: 4 },
-  43: { name: "딜리버드", type: 4 },
-  44: { name: "에레키드", type: 2 },
-  45: { name: "칠색조", type: 1 },
-  46: { name: "세레비", type: 5 },
-  47: { name: "나무지기", type: 0 },
-  48: { name: "나무돌이", type: 0 },
-  49: { name: "아차모", type: 1 },
-  50: { name: "물짱이", type: 3 },
-  51: { name: "연꽃몬", type: 0 },
-  52: { name: "도토링", type: 0 },
-  53: { name: "잎새코", type: 0 },
-  54: { name: "버섯꼬", type: 0 },
-  55: { name: "썬더라이", type: 2 },
-  56: { name: "썬더볼트", type: 2 },
-  57: { name: "플러시", type: 2 },
-  58: { name: "마이농", type: 2 },
-  59: { name: "밀로틱", type: 3 },
-  60: { name: "눈꼬마", type: 4 },
-  61: { name: "얼음귀신", type: 4 },
-  62: { name: "대굴레오", type: 4 },
-  63: { name: "진주몽", type: 3 },
-  64: { name: "레지아이스", type: 4 },
-  65: { name: "모부기", type: 0 },
-  66: { name: "수풀부기", type: 0 },
-  67: { name: "불꽃숭이", type: 1 },
-  68: { name: "파이숭이", type: 1 },
-  69: { name: "초염몽", type: 1 },
-  70: { name: "팽태자", type: 3 },
-  71: { name: "꼬링크", type: 2 },
-  72: { name: "럭시오", type: 2 },
-  73: { name: "꼬몽울", type: 0 },
-  74: { name: "파치리스", type: 2 },
-  75: { name: "브이젤", type: 3 },
-  76: { name: "체리버", type: 0 },
-  77: { name: "무스틈니", type: 0 },
-  78: { name: "눈쓰개", type: 4 },
-  79: { name: "눈설왕", type: 4 },
-  80: { name: "퐆니라", type: 4 },
-  81: { name: "마그마번", type: 1 },
-  82: { name: "글레이시아", type: 4 },
-  83: { name: "맘모꾸리", type: 4 },
-  84: { name: "눈여아", type: 4 },
-  85: { name: "로토무", type: 2 },
-  86: { name: "유크시", type: 5 },
-  87: { name: "아그놈", type: 5 },
-  88: { name: "마나피", type: 3 },
-  89: { name: "쉐이미", type: 5 },
-  90: { name: "뚜꾸리", type: 1 },
-  91: { name: "수댕이", type: 3 },
-  92: { name: "야나프", type: 0 },
-  93: { name: "바오프", type: 1 },
-  94: { name: "줄뮤마", type: 2 },
-  95: { name: "두르보", type: 0 },
-  96: { name: "두르쿤", type: 0 },
-  97: { name: "치릴리", type: 0 },
-  98: { name: "드레디어", type: 0 },
-  99: { name: "달막화", type: 1 },
-  100: { name: "마라카치", type: 0 },
-  101: { name: "바닐프티", type: 4 },
-  102: { name: "에몽가", type: 2 },
-  103: { name: "코고미", type: 4 },
-  104: { name: "프리지오", type: 4 },
-  105: { name: "피카츄", type: 2 },
-  106: { name: "팽도리", type: 3 },
+  "0": {"name": "이상해씨", "type": 0},
+  "1": {"name": "파이리", "type": 1},
+  "2": {"name": "리자드", "type": 1},
+  "3": {"name": "리자몽", "type": 1},
+  "4": {"name": "꼬부기", "type": 3},
+  "5": {"name": "라이츄", "type": 2},
+  "6": {"name": "고라파덕", "type": 3},
+  "7": {"name": "가디", "type": 1},
+  "8": {"name": "윈디", "type": 1},
+  "9": {"name": "발챙이", "type": 3},
+  "10": {"name": "포니타", "type": 1},
+  "11": {"name": "날쌩마", "type": 1},
+  "12": {"name": "코일", "type": 2},
+  "13": {"name": "레어코일", "type": 2},
+  "14": {"name": "쥬레곤", "type": 4},
+  "15": {"name": "크랩", "type": 3},
+  "16": {"name": "찌리리공", "type": 2},
+  "17": {"name": "붐볼", "type": 2},
+  "18": {"name": "쏘드라", "type": 3},
+  "19": {"name": "콘치", "type": 3},
+  "20": {"name": "별가사리", "type": 3},
+  "21": {"name": "마그마", "type": 1},
+  "22": {"name": "잉어킹", "type": 3},
+  "23": {"name": "갸라도스", "type": 3},
+  "24": {"name": "라프라스", "type": 4},
+  "25": {"name": "샤미드", "type": 3},
+  "26": {"name": "쥬피썬더", "type": 2},
+  "27": {"name": "부스터", "type": 1},
+  "28": {"name": "프리져", "type": 4},
+  "29": {"name": "뮤", "type": 5},
+  "30": {"name": "치코리타", "type": 0},
+  "31": {"name": "베이리프", "type": 0},
+  "32": {"name": "브케인", "type": 1},
+  "33": {"name": "피츄", "type": 2},
+  "34": {"name": "메리프", "type": 2},
+  "35": {"name": "전룡", "type": 2},
+  "36": {"name": "마릴", "type": 3},
+  "37": {"name": "우파", "type": 3},
+  "38": {"name": "누오", "type": 3},
+  "39": {"name": "포푸니", "type": 4},
+  "40": {"name": "마그마그", "type": 1},
+  "41": {"name": "꾸꾸리", "type": 4},
+  "42": {"name": "메꾸리", "type": 4},
+  "43": {"name": "딜리버드", "type": 4},
+  "44": {"name": "에레키드", "type": 2},
+  "45": {"name": "칠색조", "type": 1},
+  "46": {"name": "세레비", "type": 5},
+  "47": {"name": "나무지기", "type": 0},
+  "48": {"name": "나무돌이", "type": 0},
+  "49": {"name": "아차모", "type": 1},
+  "50": {"name": "물짱이", "type": 3},
+  "51": {"name": "연꽃몬", "type": 0},
+  "52": {"name": "도토링", "type": 0},
+  "53": {"name": "잎새코", "type": 0},
+  "54": {"name": "버섯꼬", "type": 0},
+  "55": {"name": "썬더라이", "type": 2},
+  "56": {"name": "썬더볼트", "type": 2},
+  "57": {"name": "플러시", "type": 2},
+  "58": {"name": "마이농", "type": 2},
+  "59": {"name": "밀로틱", "type": 3},
+  "60": {"name": "눈꼬마", "type": 4},
+  "61": {"name": "얼음귀신", "type": 4},
+  "62": {"name": "대굴레오", "type": 4},
+  "63": {"name": "진주몽", "type": 3},
+  "64": {"name": "레지아이스", "type": 4},
+  "65": {"name": "모부기", "type": 0},
+  "66": {"name": "수풀부기", "type": 0},
+  "67": {"name": "불꽃숭이", "type": 1},
+  "68": {"name": "파이숭이", "type": 1},
+  "69": {"name": "초염몽", "type": 1},
+  "70": {"name": "팽태자", "type": 3},
+  "71": {"name": "꼬링크", "type": 2},
+  "72": {"name": "럭시오", "type": 2},
+  "73": {"name": "꼬몽울", "type": 0},
+  "74": {"name": "파치리스", "type": 2},
+  "75": {"name": "브이젤", "type": 3},
+  "76": {"name": "체리버", "type": 0},
+  "77": {"name": "무스틈니", "type": 0},
+  "78": {"name": "눈쓰개", "type": 4},
+  "79": {"name": "눈설왕", "type": 4},
+  "80": {"name": "퐆니라", "type": 4},
+  "81": {"name": "마그마번", "type": 1},
+  "82": {"name": "글레이시아", "type": 4},
+  "83": {"name": "맘모꾸리", "type": 4},
+  "84": {"name": "눈여아", "type": 4},
+  "85": {"name": "로토무", "type": 2},
+  "86": {"name": "유크시", "type": 5},
+  "87": {"name": "아그놈", "type": 5},
+  "88": {"name": "마나피", "type": 3},
+  "89": {"name": "쉐이미", "type": 5},
+  "90": {"name": "뚜꾸리", "type": 1},
+  "91": {"name": "수댕이", "type": 3},
+  "92": {"name": "야나프", "type": 0},
+  "93": {"name": "바오프", "type": 1},
+  "94": {"name": "줄뮤마", "type": 2},
+  "95": {"name": "두르보", "type": 0},
+  "96": {"name": "두르쿤", "type": 0},
+  "97": {"name": "치릴리", "type": 0},
+  "98": {"name": "드레디어", "type": 0},
+  "99": {"name": "달막화", "type": 1},
+  "100": {"name": "마라카치", "type": 0},
+  "101": {"name": "바닐프티", "type": 4},
+  "102": {"name": "에몽가", "type": 2},
+  "103": {"name": "코고미", "type": 4},
+  "104": {"name": "프리지오", "type": 4},
+  "105": {"name": "피카츄", "type": 2},
+  "106": {"name": "팽도리", "type": 3}
 };
 
 // ========== scoreboard.js ==========
 window.scoreboard = {
-  story_mode: {
-    easy: [
-      { rank: 1, name: "AAA", score: 5020, date: "2025-05-23 18:25" },
-      { rank: 2, name: "BBB", score: 4900, date: "2025-05-22 09:11" },
-      { rank: 3, name: "YON", score: 4880, date: "2025-05-21 21:54" },
+  "story_mode": {
+    "easy": [
+      { "rank": 1, "name": "AAA", "score": 5020, "date": "2025-05-23 18:25" },
+      { "rank": 2, "name": "BBB", "score": 4900, "date": "2025-05-22 09:11" },
+      { "rank": 3, "name": "YON", "score": 4880, "date": "2025-05-21 21:54" }
     ],
-    normal: [
-      { rank: 1, name: "CCC", score: 7350, date: "2025-05-22 14:44" },
-      { rank: 2, name: "AAA", score: 7100, date: "2025-05-20 23:32" },
-      { rank: 3, name: "BOT", score: 7000, date: "2025-05-19 08:02" },
+    "normal": [
+      { "rank": 1, "name": "CCC", "score": 7350, "date": "2025-05-22 14:44" },
+      { "rank": 2, "name": "AAA", "score": 7100, "date": "2025-05-20 23:32" },
+      { "rank": 3, "name": "BOT", "score": 7000, "date": "2025-05-19 08:02" }
     ],
-    hard: [
-      { rank: 1, name: "YOU", score: 8200, date: "2025-05-23 01:04" },
-      { rank: 2, name: "DAN", score: 8030, date: "2025-05-22 22:41" },
-    ],
+    "hard": [
+      { "rank": 1, "name": "YOU", "score": 8200, "date": "2025-05-23 01:04" },
+      { "rank": 2, "name": "DAN", "score": 8030, "date": "2025-05-22 22:41" }
+    ]
   },
-  score_mode: {
-    easy: [
-      { rank: 1, name: "AAA", score: 11000, date: "2025-05-23 17:37" },
-      { rank: 2, name: "BOT", score: 10950, date: "2025-05-22 13:13" },
+  "score_mode": {
+    "easy": [
+      { "rank": 1, "name": "AAA", "score": 11000, "date": "2025-05-23 17:37" },
+      { "rank": 2, "name": "BOT", "score": 10950, "date": "2025-05-22 13:13" }
     ],
-    normal: [
-      { rank: 1, name: "YON", score: 13250, date: "2025-05-21 12:54" },
-      { rank: 2, name: "AAA", score: 13100, date: "2025-05-20 07:01" },
+    "normal": [
+      { "rank": 1, "name": "YON", "score": 13250, "date": "2025-05-21 12:54" },
+      { "rank": 2, "name": "AAA", "score": 13100, "date": "2025-05-20 07:01" }
     ],
-    hard: [
-      { rank: 1, name: "DAN", score: 21000, date: "2025-05-23 03:24" },
-      { rank: 2, name: "YOU", score: 20550, date: "2025-05-22 18:10" },
-    ],
-  },
-};
+    "hard": [
+      { "rank": 1, "name": "DAN", "score": 21000, "date": "2025-05-23 03:24" },
+      { "rank": 2, "name": "YOU", "score": 20550, "date": "2025-05-22 18:10" }
+    ]
+  }
+}
+;
 
 // ========== story_ending.js ==========
 window.story_ending = [
-  {
-    id: 1,
-    image: "stage3_1",
-    lines: [
-      "뮤츠",
-      "“너와... 네 친구들을 보고 있으면...",
-      "이상하게... 마음이 흔들렸지.”",
-      "",
-      "주인공",
-      "“나는 그저 내 친구들과 여행을 계속 하고 싶었던 것 뿐이야.”",
-      "",
-      "“나의 소중한 일상을 돌려받고 싶었다고.”",
-    ],
-  },
-  {
-    id: 2,
-    image: "stage3_2",
-    lines: [
-      "뮤츠",
-      "“...이제... 알 것 같아.",
-      "진짜 유대라는 것이 뭔지... 친구라는게 뭔지.”",
-      "",
-      "“고맙다.”",
-      "",
-      "뮤츠가 사라짐, 빛 속으로",
-    ],
-  },
-  {
-    id: 3,
-    image: "stage3_3",
-    lines: [
-      "주인공 나레이션",
-      "“모든 포켓몬들이 돌아왔고, 세상은 다시 평화를 되찾았어.",
-      "하지만 난 지금도 때때로, 어딘가에서...",
-      "외롭게 떠도는 그 아이를 떠올려.”",
-      "",
-      "마지막 장면: 별이 빛나는 밤, 언덕 위에서 하늘을 바라보는 뮤츠의 실루엣",
-    ],
-  },
-];
+    {
+      "id": 1,
+      "image": "stage3_1",
+      "lines": [
+        "뮤츠",
+        "“너와... 네 친구들을 보고 있으면...",
+        "이상하게... 마음이 흔들렸지.”",
+        "",
+        "주인공",
+        "“나는 그저 내 친구들과 여행을 계속 하고 싶었던 것 뿐이야.”",
+        "",
+        "“나의 소중한 일상을 돌려받고 싶었다고.”"
+      ]
+    },
+    {
+      "id": 2,
+      "image": "stage3_2",
+      "lines": [
+        "뮤츠",
+        "“...이제... 알 것 같아.",
+        "진짜 유대라는 것이 뭔지... 친구라는게 뭔지.”",
+        "",
+        "“고맙다.”",
+        "",
+        "뮤츠가 사라짐, 빛 속으로"
+      ]
+    },
+    {
+      "id": 3,
+      "image": "stage3_3",
+      "lines": [
+        "주인공 나레이션",
+        "“모든 포켓몬들이 돌아왔고, 세상은 다시 평화를 되찾았어.",
+        "하지만 난 지금도 때때로, 어딘가에서...",
+        "외롭게 떠도는 그 아이를 떠올려.”",
+        "",
+        "마지막 장면: 별이 빛나는 밤, 언덕 위에서 하늘을 바라보는 뮤츠의 실루엣"
+      ]
+    }
+] ;
 
 // ========== story_intro.js ==========
 window.story_intro = [
