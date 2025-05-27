@@ -8,6 +8,7 @@
     <link rel="icon" type="image/png" href="../favicon.ico" />
   </head>
   <body>
+    <!-- Game Root -->
     <div id="game-root">
       <!-- Title Screen-->
       <section id="title" class="screen">
@@ -74,6 +75,13 @@
           <span id="story-potrait" class="hidden"></span>
           <span id="story-line"></span>
           <span class="story-next-indicator">▼</span>
+        </div>
+      </section>
+
+      <!-- CRT console screen -->
+      <section id="crt-console-screen" class="screen hidden">
+        <div class="crt" id="crt-terminal">
+          <pre id="crt-console-text"></pre>
         </div>
       </section>
 
@@ -167,13 +175,6 @@
       </label>
       <button id="modal-close" class="pixel-box modal-inner-button">X</button>
     </dialog>
-
-    <!-- CRT 콘솔 연출 화면 -->
-    <section id="crt-console-screen" class="screen hidden">
-      <div class="crt" id="crt-terminal">
-        <pre id="crt-console-text"></pre>
-      </div>
-    </section>
 
     <!-- Sound -->
     <audio id="crt-type-sfx" preload="auto"></audio>
