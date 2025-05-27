@@ -1,9 +1,10 @@
 JSON_DIR = assets/data
 JS_DIR   = src/data
+DEST_DIR = src/js
 
 JSON_FILES = $(wildcard $(JSON_DIR)/*.json)
 JS_FILES   = $(patsubst $(JSON_DIR)/%.json, $(JS_DIR)/%.js, $(JSON_FILES))
-ALL_DATA_JS = $(JS_DIR)/../data.js
+ALL_DATA_JS = $(DEST_DIR)/data.js
 
 .PHONY: all convert combine clean re
 
