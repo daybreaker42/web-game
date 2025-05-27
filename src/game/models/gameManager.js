@@ -282,10 +282,7 @@ class GameManager {
             // 초기 안내 문구 출력
             const instructions = qs('#info-modal');
             const confirmButton = qs('#info-confirm-yes');
-            const infoContentSpan = qs('#info-content');
-            infoContentSpan.innerHTML = this.mode === 'boss' ?
-                'W A S D <br> ↑ ← ↓ →' :
-                'W A S D <br> ↑ ← ↓ → <br> 마우스';
+            this.setInfoModalContent(this.mode === 'boss');
             const result = instructions.showModal();
             confirmButton.addEventListener('click', () => {
                 instructions.close();
@@ -295,6 +292,19 @@ class GameManager {
                 this.showMessage(`게임 시작!`, 'success');
             });
         }
+    }
+
+    /**
+     * 게임 플래이 방법 안내 모달 내용 설정
+     * - 모달의 내용은 게임 모드에 따라 다르게 설정
+     * @param {boolean} isBossMode - 보스 모드 여부
+     * - true: 보스 모드, false: 일반 모드
+     */
+    setInfoModalContent(isBossMode) {
+        const infoContentSpan = qs('#info-content');
+        infoContentSpan.innerHTML = isBossMode ?
+            'W A S D <br> ↑ ← ↓ →' :
+            'W A S D <br> ↑ ← ↓ → <br> 마우스';
     }
 
     /**
