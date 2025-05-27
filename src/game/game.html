@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>벽돌 깨기 게임</title>
+    <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="./game.css">
 </head>
 <body>
@@ -29,6 +30,15 @@
             <button id="restartButton" tabindex="-1">다시 시작</button>
         </div>
     </div>
+    <dialog id="info-modal" class="pixel-box">
+        <div style="padding: 12px; text-align: center">
+            다음 키보드 키를 눌러 조작 가능합니다.<br />
+            W A S D 또는 ↑ ← ↓ →<br />
+            <button id="info-confirm-yes" class="pixel-box modal-inner-button" style="margin: 10px 4px">
+                알겠어요
+            </button>
+        </div>
+    </dialog>
     <div id="pokemon-slot-container">
         <div class="pokemon-slot" id="slot-0"></div>
         <div class="pokemon-slot" id="slot-1"></div>
@@ -36,7 +46,8 @@
         <div class="pokemon-slot" id="slot-3"></div>
     </div>
     
-    <script src="../data.js"></script>
+    <script src="../js/helpers.js"></script>
+    <script src="../js/data.js"></script>
     <script src="./utils.js"></script>
     <script src="./models/brick.js"></script>
     <script src="./models/gameManager.js"></script>

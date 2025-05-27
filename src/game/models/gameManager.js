@@ -276,10 +276,20 @@ class GameManager {
                 this.initializeGame();
             }
 
+            // UI 업데이트
             this.updateUI();
-            this.animationFrame = requestAnimationFrame((time) => this.update(time));
-            console.log(`${this.mode} 게임을 시작합니다.`);
-            this.showMessage(`게임 시작!`, 'success');
+
+            // 초기 안내 문구 출력
+            const instructions = qs('#info-modal');
+            const confirmButton = qs('#info-confirm-yes');
+            const result = instructions.showModal();
+            confirmButton.addEventListener('click', () => {
+                instructions.close();
+            // 애니메이션 프레임 시작
+                this.animationFrame = requestAnimationFrame((time) => this.update(time));
+                console.log(`${this.mode} 게임을 시작합니다.`);
+                this.showMessage(`게임 시작!`, 'success');
+            });
         }
     }
 
