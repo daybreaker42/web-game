@@ -53,18 +53,37 @@ function showMainMenu() {
 }
 
 // ================================================================
-//                  [메인 메뉴 <-> 모드 메뉴]
+//            [메인 메뉴 <-> 플레이 모드 선택 or 랭킹 화면]
 // ================================================================
 qs("#btn-play").onclick = () => {
   hide(qs("#main-menu"));
-  show(qs("#mode-menu"));
+  show(qs("#play-mode-menu"));
 };
-// 뒤로가기(모드) → 메인 메뉴
+
 qs("#btn-back-to-main-menu").onclick = () => {
-  hide(qs("#mode-menu"));
+  hide(qs("#play-mode-menu"));
   const mainMenu = qs("#main-menu");
   mainMenu.classList.remove("fade-in");
   show(mainMenu);
+};
+
+qs("#btn-ranking").onclick = () => {
+  stopCloudAnimation();
+  playBgm(BGM.RANKING);
+  qs("#ranking-screen").classList.remove("fade-out");
+  qs("#ranking-screen").classList.add("fade-in");
+  hide(qs("#main-menu"));
+  show(qs("#ranking-screen"));
+  renderScoreboard();
+};
+
+qs("#btn-back-to-main").onclick = () => {
+  playBgm(BGM.TITLE);
+  qs("#ranking-screen").classList.remove("fade-in");
+  qs("#ranking-screen").classList.add("fade-out");
+  hide(qs("#ranking-screen"));
+  show(qs("#main-menu"));
+  startCloudAnimation();
 };
 
 // ================================================================
@@ -72,19 +91,18 @@ qs("#btn-back-to-main-menu").onclick = () => {
 // ================================================================
 let selectedMode = null;
 
-qs("#btn-story").onclick = () => chooseMode("story");
-qs("#btn-score").onclick = () => chooseMode("score");
+qs("#btn-story").onclick = () => chooseMode("story-mode");
+qs("#btn-score").onclick = () => chooseMode("score-mode");
 
 function chooseMode(mode) {
   selectedMode = mode;
-  hide(qs("#mode-menu"));
+  hide(qs("#play-mode-menu"));
   show(qs("#level-menu"));
 }
 
-// 뒤로가기(난이도) → 모드 메뉴
-qs("#btn-back-to-mode-menu").onclick = () => {
+qs("#btn-back-to-play-mode-menu").onclick = () => {
   hide(qs("#level-menu"));
-  show(qs("#mode-menu"));
+  show(qs("#play-mode-menu"));
 };
 
 // ================================================================
@@ -94,7 +112,7 @@ qs("#btn-back-to-mode-menu").onclick = () => {
 qsa(".btn-level").forEach((btn) => {
   btn.onclick = () => {
     const level = btn.dataset.level;
-    if (selectedMode === "story") startGameStoryMode(level);
+    if (selectedMode === "story-mode") startGameStoryMode(level);
     else startGameScoreMode(level);
   };
 });
@@ -109,6 +127,7 @@ function startGameStoryMode(level) {
 }
 
 function startGameScoreMode(level) {
+  stopCloudAnimation();
   alert("미구현");
 }
 
@@ -199,7 +218,26 @@ const STORY_SCENE_TYPES = {
   CRT_CONSOLE: "crt_console",
   FLASHBACK: "flashback",
 };
+
 let prevStorySceneType = STORY_SCENE_TYPES.NORMAL;
+let prevIlustration = null;
+
+function showStoryIlustration(scene) {
+  if (prevIlustration === scene.image) return;
+
+  const storyIlustration = qs("#story-illustration");
+  storyIlustration.classList.remove("fade-in"); // 1. 클래스 제거
+  void storyIlustration.offsetWidth; // 2. 리플로우 강제(애니메이션 리셋 트릭)
+  storyIlustration.classList.add("fade-in"); // 3. 다시 추가 → 항상 애니메이션 재생
+  storyIlustration.style.backgroundImage = `url('../assets/images/story/${scene.image}.png')`;
+
+  if (scene.image_width) {
+    storyIlustration.style.width = `${scene.image_width}px`;
+  } else {
+    storyIlustration.style.width = "100%";
+  }
+  prevIlustration = scene.image;
+}
 
 // storyScript: 현재 stage의 전체 씬 배열
 // storySceneIdx: 현재 씬 index
@@ -213,7 +251,10 @@ function showStoryScenes() {
 
   playSceneAudio(scene);
   qs("#story-line").textContent = "";
-  qs("#story-illustration").style.backgroundImage = "none";
+  if (prevIlustration != scene.image) {
+    qs("#story-illustration").style.backgroundImage = "none";
+    showStoryIlustration(scene);
+  }
 
   if (scene.delay) {
     setTimeout(() => {
@@ -238,20 +279,6 @@ function showStoryScenes() {
   }
 }
 
-function showStorySceneIlustration(scene) {
-  const storyIlustration = qs("#story-illustration");
-  storyIlustration.classList.remove("fade-in"); // 1. 클래스 제거
-  void storyIlustration.offsetWidth; // 2. 리플로우 강제(애니메이션 리셋 트릭)
-  storyIlustration.classList.add("fade-in"); // 3. 다시 추가 → 항상 애니메이션 재생
-  storyIlustration.style.backgroundImage = `url('../assets/images/story/${scene.image}.png')`;
-
-  if (scene.image_width) {
-    storyIlustration.style.width = `${scene.image_width}px`;
-  } else {
-    storyIlustration.style.width = "100%";
-  }
-}
-
 function showStoryPotrait(scene) {
   const potraitEl = qs("#story-potrait");
   const storyLine = qs("#story-line");
@@ -269,7 +296,7 @@ function showStoryPotrait(scene) {
 }
 
 function showStorySceneNormal(scene, onDone) {
-  if (scene.image) showStorySceneIlustration(scene);
+  if (scene.image) showStoryIlustration(scene);
   showStoryPotrait(scene);
   const indicator = qs(".story-next-indicator");
   let idx = 0;
@@ -440,6 +467,7 @@ const BGM = {
   ENDING: "ending.mp3",
   CREDITS: "credits.mp3",
   INTRO: "intro.mp3",
+  RANKING: "ranking.mp3",
 };
 
 function getBgmPath(name) {
