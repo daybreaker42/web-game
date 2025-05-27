@@ -20,7 +20,10 @@ note: A public server deployment is planned in the future.
 
 ## Gameplay
 
-Navigate through the game's menu using keyboard or mouse. Progress through story scenes, play stages, and achieve high scores to appear on the ranking board.
+Navigate through the game's menu using your mouse. Progress through immersive story scenes, play the game in either Story Mode or Score-Attack Mode, and aim for high scores to get listed on the ranking board.
+
+- Story Mode: Experience an original narrative crafted by our team.
+- Score-Attack Mode: Enjoy brick-breaking gameplay and compete for the highest score.
 
 ## Team Members
 
