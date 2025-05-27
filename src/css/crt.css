@@ -16,7 +16,7 @@
   font-size: 2.1rem;
   box-shadow:
     0 0 90px #051,
-    0 0 0 6px #010f08 inset;
+    0 0 0 4px #010f08 inset;
   filter: contrast(1.22) saturate(1.18) brightness(0.99);
   overflow: hidden;
   display: flex;
