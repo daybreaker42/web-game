@@ -1,85 +1,106 @@
 #crt-console-screen {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    animation: none;
-    z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: none;
+  z-index: 10;
+}
+.crt {
+  position: relative;
+  width: 660px;
+  height: 340px;
+  margin: 0 auto;
+  background: #1c2e1e;
+  color: #57ff7b;
+  font-family: "DOSGothic", monospace;
+  font-size: 2.1rem;
+  box-shadow:
+    0 0 90px #051,
+    0 0 0 6px #010f08 inset;
+  filter: contrast(1.22) saturate(1.18) brightness(0.99);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.crt::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.06) 0 1.5px,
+    transparent 1.5px 6px
+  );
+  z-index: 2;
+  opacity: 0.47;
+}
+.crt::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.1) 0%,
+    transparent 25%,
+    transparent 75%,
+    rgba(0, 0, 0, 0.14) 100%
+  );
+  z-index: 3;
+  opacity: 0.7;
+}
+#crt-console-text {
+  position: relative;
+  z-index: 10;
+  padding: 28px 38px;
+  width: 100%;
+  min-height: 220px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  letter-spacing: 0.08em;
+  text-shadow:
+    0 0 6px #51ffbf88,
+    0 0 2px #5ffb,
+    0 0 2px #000;
+  text-align: left;
+  font-size: 1.4rem;
+  font-family: "DOSGothic", monospace;
+}
+@keyframes slow-fadein-crt {
+  from {
+    opacity: 0;
   }
-  .crt {
-    position: relative;
-    width: 660px;
-    height: 340px;
-    margin: 0 auto;
-    background: #1c2e1e;
-    color: #57ff7b;
-    font-family: "DOSGothic", monospace;
-    font-size: 2.1rem;
-    box-shadow: 0 0 90px #051, 0 0 0 6px #010f08 inset;
-    filter: contrast(1.22) saturate(1.18) brightness(0.99);
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  to {
+    opacity: 1;
   }
-  .crt::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: repeating-linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.06) 0 1.5px,
-      transparent 1.5px 6px
-    );
-    z-index: 2;
-    opacity: 0.47;
+}
+.slow-fadein-crt {
+  animation: slow-fadein-crt 2.7s cubic-bezier(0.5, 0, 1, 1) forwards;
+}
+@keyframes crt-off {
+  0% {
+    opacity: 1;
+    transform: scaleY(1) scaleX(1);
+    filter: brightness(1);
   }
-  .crt::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.1) 0%,
-      transparent 25%,
-      transparent 75%,
-      rgba(0, 0, 0, 0.14) 100%
-    );
-    z-index: 3;
-    opacity: 0.7;
+  75% {
+    opacity: 1;
+    transform: scaleY(0.08) scaleX(1.1);
+    filter: brightness(2.2);
   }
-  #crt-console-text {
-    position: relative;
-    z-index: 10;
-    padding: 28px 38px;
-    width: 100%;
-    min-height: 220px;
-    white-space: pre-wrap;
-    word-break: break-all;
-    letter-spacing: 0.08em;
-    text-shadow:
-      0 0 6px #51ffbf88,
-      0 0 2px #5ffb,
-      0 0 2px #000;
-    text-align: left;
-    font-size: 1.4rem;
-    font-family: "DOSGothic", monospace;
+  90% {
+    opacity: 1;
+    transform: scaleY(0.01) scaleX(1.25);
+    filter: brightness(3.3) blur(0.9px);
   }
-  @keyframes slow-fadein-crt {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  100% {
+    opacity: 0;
+    transform: scaleY(0.001) scaleX(1.34);
+    filter: brightness(0);
   }
-  .slow-fadein-crt {
-    animation: slow-fadein-crt 2.7s cubic-bezier(0.5, 0, 1, 1) forwards;
-  }
-  @keyframes crt-off {
-    0% { opacity: 1; transform: scaleY(1) scaleX(1); filter: brightness(1);}
-    75% { opacity: 1; transform: scaleY(0.08) scaleX(1.1); filter: brightness(2.2);}
-    90% { opacity: 1; transform: scaleY(0.01) scaleX(1.25); filter: brightness(3.3) blur(0.9px);}
-    100% { opacity: 0; transform: scaleY(0.001) scaleX(1.34); filter: brightness(0);}
-  }
-  .crt-off-anim {
-    animation: crt-off 0.84s cubic-bezier(0.6, 0, 0.4, 1) forwards;
-  }
-  
+}
+.crt-off-anim {
+  animation: crt-off 0.84s cubic-bezier(0.6, 0, 0.4, 1) forwards;
+}

@@ -1,38 +1,82 @@
 @keyframes slow-fadein {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  from {
+    opacity: 0;
   }
-  .slow-fadein {
-    animation: slow-fadein 2.5s cubic-bezier(0.5, 0, 1, 1) forwards;
+  to {
+    opacity: 1;
   }
-  @keyframes retro-fade-in-slow {
-    0% { opacity: 0; }
-    33% { opacity: 0.3; }
-    66% { opacity: 0.7; }
-    100% { opacity: 1; }
+}
+.slow-fadein {
+  animation: slow-fadein 2.5s cubic-bezier(0.5, 0, 1, 1) forwards;
+}
+@keyframes retro-fade-in-slow {
+  0% {
+    opacity: 0;
   }
-  @keyframes retro-fade-out-slow {
-    0% { opacity: 1; }
-    33% { opacity: 0.7; }
-    66% { opacity: 0.3; }
-    100% { opacity: 0; }
+  33% {
+    opacity: 0.3;
   }
-  @keyframes retro-fade-in-fast {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
+  66% {
+    opacity: 0.7;
   }
-  @keyframes retro-fade-out-fast {
-    0% { opacity: 1; }
-    100% { opacity: 0; }
+  100% {
+    opacity: 1;
   }
-  @keyframes retro-flashing-blink {
-    0% { color: #222; filter: none; }
-    20% { color: #fff; filter: brightness(2) drop-shadow(0 0 6px #fff); }
-    40% { color: #0f0; filter: contrast(2) brightness(2) blur(0.3px); }
-    60% { color: #fff; filter: grayscale(1) blur(1px); }
-    100% { color: #222; filter: none; }
+}
+@keyframes retro-fade-out-slow {
+  0% {
+    opacity: 1;
   }
-  @keyframes blink {
-    50% { opacity: 0; }
+  33% {
+    opacity: 0.7;
   }
-  
+  66% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes retro-fade-in-fast {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes retro-fade-out-fast {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes retro-flashing-blink {
+  0% {
+    color: #222;
+    filter: none;
+  }
+  20% {
+    color: #fff;
+    filter: brightness(2) drop-shadow(0 0 6px #fff);
+  }
+  40% {
+    color: #0f0;
+    filter: contrast(2) brightness(2) blur(0.3px);
+  }
+  60% {
+    color: #fff;
+    filter: grayscale(1) blur(1px);
+  }
+  100% {
+    color: #222;
+    filter: none;
+  }
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
