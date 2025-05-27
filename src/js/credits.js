@@ -1,15 +1,6 @@
-SAMPLE_CREDITS_DATA = {
-  mode: "score",
-  difficulty: "hard",
-  stage: 4,
-  score: 5400,
-  date: "2025-05-23T15:10:44",
-  saved_pokemon: [2, 4, 50, 100],
-};
-
 function showDemoCredits(creditData) {
   console.log("showDemoCredits");
-  window.showCredits(creditData || SAMPLE_CREDITS_DATA);
+  window.showCredits(creditData || DEMO_CREDITS_DATA);
 }
 
 // 실제론 게임 로직에서 엔딩 직전 이 데이터를 동적으로 전달!
