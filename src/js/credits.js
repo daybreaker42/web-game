@@ -1,5 +1,3 @@
-// credits.js
-
 SAMPLE_CREDITS_DATA = {
   mode: "score",
   difficulty: "hard",
@@ -51,6 +49,13 @@ function createCreditsContent(data) {
       <div class="credit-section" style="margin-top:60px;">
         Thank you for playing!<br>기획/개발: 한성준 김연하 오찬영 한지훈
       </div>
+      // ...
+<div class="credit-section" style="margin-top:36px; font-size: 0.95em; color:#bbb;">
+This fan game is based on the Pokémon series.
+Pokémon and all related images and sounds are the property of Nintendo, Creatures Inc., and GAME FREAK inc.
+Pokémon © 1995–2025 Nintendo/Creatures Inc./GAME FREAK inc.
+</div>
+
       <div style="height:100px;"></div>
     `;
   // 포켓몬 이미지
