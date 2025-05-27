@@ -31,11 +31,11 @@ class BossGame extends GameManager {
         this.boss = {
             x: this.canvas.width / 2,
             y: 100,
-            width: 120,
-            height: 80,
+            width: 120, // 초기 너비, 이미지 로드 후 변경될 수 있음 // 주석 추가
+            height: 80, // 초기 높이, 이미지 로드 후 변경될 수 있음 // 주석 추가
             health: this.bossMaxHealth,
             maxHealth: this.bossMaxHealth,
-            color: '#ff0000',
+            color: '#ff0000', // 이미지 로드 실패 시 폴백 색상 // 주석 추가
             lastAttackTime: 0,
             attackCooldown: 1000, // 1초마다 공격
             bulletSpeed: 3,
@@ -52,7 +52,38 @@ class BossGame extends GameManager {
             startX: 0, // 이동 시작 X 좌표
             startY: 0, // 이동 시작 Y 좌표
             targetX: 0, // 이동 목표 X 좌표
-            targetY: 0 // 이동 목표 Y 좌표
+            targetY: 0, // 이동 목표 Y 좌표
+            image: new Image(), // 보스 이미지 객체 추가 // 주석 추가
+            imageLoaded: false, // 이미지 로드 완료 플래그 추가 // 주석 추가
+            imagePath: '../../assets/images/game/boss/mewtwo_normal.png' // 보스 이미지 경로 추가 // 주석 추가
+        };
+        this.boss.image.src = this.boss.imagePath; // 이미지 경로 설정 // 주석 추가
+        this.boss.image.onload = () => { // 이미지 로드 완료 시 // 주석 추가
+            this.boss.imageLoaded = true; // 주석 추가
+
+            // 이미지 크기를 기반으로 보스 크기 조정 (예: 최대 크기 제한) // 주석 추가
+            const maxWidth = 150; // 보스 이미지 최대 너비 // 주석 추가
+            const maxHeight = 150; // 보스 이미지 최대 높이 // 주석 추가
+            let newWidth = this.boss.image.naturalWidth; // 주석 추가
+            let newHeight = this.boss.image.naturalHeight; // 주석 추가
+
+            if (newWidth > maxWidth) { // 주석 추가
+                const ratio = maxWidth / newWidth; // 주석 추가
+                newWidth = maxWidth; // 주석 추가
+                newHeight *= ratio; // 주석 추가
+            }
+            if (newHeight > maxHeight) { // 주석 추가
+                const ratio = maxHeight / newHeight; // 주석 추가
+                newHeight = maxHeight; // 주석 추가
+                newWidth *= ratio; // 주석 추가
+            }
+            this.boss.width = newWidth; // 주석 추가
+            this.boss.height = newHeight; // 주석 추가
+            console.log(`보스 이미지 로드 완료. 크기: ${this.boss.width}x${this.boss.height}`); // 주석 추가
+        };
+        this.boss.image.onerror = () => { // 이미지 로드 실패 시 // 주석 추가
+            console.error(`보스 이미지 로드 실패: ${this.boss.imagePath}`); // 주석 추가
+            this.boss.imageLoaded = false; // 이미지 로드 실패로 명시 // 주석 추가
         };
 
         // MARK: 총알 시스템
@@ -623,41 +654,62 @@ class BossGame extends GameManager {
      * MARK: 보스 그리기
      */
     drawBoss() {
-        // 이동 중일 때 반투명 효과
+        // 이동 중일 때 반투명 효과 (페이즈 2 순간이동) // 주석 추가
         if (this.boss.isMoving && this.boss.currentPhase === 2) {
-            this.ctx.globalAlpha = 0.7; // 순간이동 중 반투명
+            this.ctx.globalAlpha = 0.7;
         }
 
-        this.ctx.fillStyle = this.boss.color;
-        this.ctx.fillRect(
-            this.boss.x - this.boss.width / 2,
-            this.boss.y,
-            this.boss.width,
-            this.boss.height
-        );
-
-        // 보스 외곽선
-        this.ctx.strokeStyle = '#ffffff';
-        this.ctx.lineWidth = 3;
-        this.ctx.strokeRect(
-            this.boss.x - this.boss.width / 2,
-            this.boss.y,
-            this.boss.width,
-            this.boss.height
-        );
-
-        // 페이즈 2일 때 추가 효과
-        if (this.boss.currentPhase === 2) {
-            this.ctx.strokeStyle = '#ff00ff';
-            this.ctx.lineWidth = 2;
-            this.ctx.strokeRect(
-                this.boss.x - this.boss.width / 2 - 5,
-                this.boss.y - 5,
-                this.boss.width + 10,
-                this.boss.height + 10
+        if (this.boss.imageLoaded) { // 이미지가 로드되었으면 이미지 그리기 // 주석 추가
+            this.ctx.drawImage(
+                this.boss.image,
+                this.boss.x - this.boss.width / 2, // 이미지의 x 좌표 (중앙 정렬)
+                this.boss.y,                       // 이미지의 y 좌표 (상단 기준)
+                this.boss.width,                   // 그려질 이미지의 너비
+                this.boss.height                   // 그려질 이미지의 높이
             );
-        }
 
+            // 페이즈 2일 때 추가 효과 (외곽선 등)는 이미지 위에 그려질 수 있음 // 주석 추가
+            if (this.boss.currentPhase === 2) {
+                this.ctx.strokeStyle = '#ff00ff'; // 보라색 외곽선
+                this.ctx.lineWidth = 3; // 선 두께
+                this.ctx.strokeRect(
+                    this.boss.x - this.boss.width / 2,
+                    this.boss.y,
+                    this.boss.width,
+                    this.boss.height
+                );
+            }
+        } else { // 이미지가 로드되지 않았으면 기존 사각형 그리기 (폴백) // 주석 추가
+            this.ctx.fillStyle = this.boss.color;
+            this.ctx.fillRect(
+                this.boss.x - this.boss.width / 2,
+                this.boss.y,
+                this.boss.width,
+                this.boss.height
+            );
+
+            // 보스 외곽선
+            this.ctx.strokeStyle = '#ffffff';
+            this.ctx.lineWidth = 3;
+            this.ctx.strokeRect(
+                this.boss.x - this.boss.width / 2,
+                this.boss.y,
+                this.boss.width,
+                this.boss.height
+            );
+
+            // 페이즈 2일 때 추가 효과
+            if (this.boss.currentPhase === 2) {
+                this.ctx.strokeStyle = '#ff00ff';
+                this.ctx.lineWidth = 2;
+                this.ctx.strokeRect(
+                    this.boss.x - this.boss.width / 2 - 5,
+                    this.boss.y - 5,
+                    this.boss.width + 10,
+                    this.boss.height + 10
+                );
+            }
+        }
         this.ctx.globalAlpha = 1.0; // 투명도 복구
     }
 
