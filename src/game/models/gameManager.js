@@ -48,8 +48,8 @@ class GameManager {
         // MARK: 메시지 시스템
         this.persistentMessageElement = null;
 
-        // 이벤트 리스너 바인딩
-        this.bindEventListeners();
+        // 이벤트 리스너 바인딩 // 주석 처리 또는 내용 삭제
+        // this.bindEventListeners(); // 주석 처리: game.html에서 이벤트 리스너를 관리하도록 변경
     }
 
     /**
@@ -128,25 +128,6 @@ class GameManager {
     }
 
     /**
-     * 이벤트 리스너 바인딩
-     */
-    bindEventListeners() {
-        // 키보드 이벤트
-        document.addEventListener('keydown', (e) => this.keyDownHandler(e));
-        document.addEventListener('keyup', (e) => this.keyUpHandler(e));
-
-        // 마우스 이벤트
-        document.addEventListener('mousemove', (e) => this.mouseMoveHandler(e));
-
-        // 버튼 이벤트 (존재하는 경우만)
-        const startButton = document.getElementById('startButton');
-        const pauseButton = document.getElementById('pauseButton');
-        const restartButton = document.getElementById('restartButton');
-
-        if (startButton) startButton.addEventListener('click', () => this.startGame());
-        if (pauseButton) pauseButton.addEventListener('click', () => this.togglePause());
-        if (restartButton) restartButton.addEventListener('click', () => this.restartGame());
-    }    /**
      * 키보드 입력 처리
      */
     keyDownHandler(e) {
