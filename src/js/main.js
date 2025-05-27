@@ -18,14 +18,14 @@ let started = false;
 function startFromTitle(e) {
   if (started) return;
   started = true;
-  setTimeout(() => {
-    playSfx(SFX.START);
-  }, 0);
+  playSfx(SFX.START);
 
   const pressAny = qs(".press-any");
-  pressAny.classList.remove("flash-twice", "noblink");
-  void pressAny.offsetWidth;
-  pressAny.classList.add("flash-twice");
+  setTimeout(() => {
+    pressAny.classList.remove("flash-twice", "noblink");
+    void pressAny.offsetWidth;
+    pressAny.classList.add("flash-twice");
+  }, 100);
 
   setTimeout(() => {
     hide(qs("#title"));
