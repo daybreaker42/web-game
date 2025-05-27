@@ -1,12 +1,37 @@
-function showStoryScreen() {
-  hide(qs("#difficulty-menu"));
-  show(qs("#story-screen"));
+// ============================================================================
+//                               Skip Modal
+// ============================================================================
+
+const skipModal = qs("#confirm-skip-modal");
+const btnYes = qs("#skip-confirm-yes");
+const btnNo = qs("#skip-confirm-no");
+
+function setupStorySkipHandler(onSkip) {
+    const btnSkipStory = qs("#btn-skip-story");
+    if (btnSkipStory) {
+      btnSkipStory.onclick = () => skipModal.showModal();
+    }
+    btnYes.onclick = () => {
+      skipModal.close();
+      hide(qs("#story-screen"));
+      if (typeof onSkip === "function") onSkip();
+    };
+    btnNo.onclick = () => skipModal.close();
 }
 
+// ============================================================================
+
+function showStoryScreen() {
+    hide(qs("#difficulty-menu"));
+    show(qs("#story-screen"));
+}
+
+  
 function playStageStory(stageIndex, onStoryEnd) {
   showStoryScreen();
   const scenes = STORY_SCRIPTS[stageIndex] || [];
   playSceneByIndex(scenes, 0, onStoryEnd);
+  setupStorySkipHandler(onStoryEnd);
 }
 
 function playSceneByIndex(scenes, idx, onStoryEnd) {
@@ -196,25 +221,3 @@ function showStoryIlustration(scene) {
   }
   prevIlustration = scene.image;
 }
-
-// ============================================================================
-//                               Skip Modal
-// ============================================================================
-
-const skipModal = qs("#confirm-skip-modal");
-const btnYes = qs("#skip-confirm-yes");
-const btnNo = qs("#skip-confirm-no");
-
-qs("#btn-skip-story")?.addEventListener("click", () => {
-  skipModal.showModal();
-});
-btnYes?.addEventListener("click", () => {
-  skipModal.close();
-  hide(qs("#story-screen"));
-  if (typeof onStageClear === "function") {
-    onStageClear();
-  }
-});
-btnNo?.addEventListener("click", () => {
-  skipModal.close();
-});
