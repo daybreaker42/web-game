@@ -31,11 +31,11 @@ class BossGame extends GameManager {
         this.boss = {
             x: this.canvas.width / 2,
             y: 100,
-            width: 120,
-            height: 80,
+            width: 120, // 초기 너비, 이미지 로드 후 변경될 수 있음
+            height: 80, // 초기 높이, 이미지 로드 후 변경될 수 있음
             health: this.bossMaxHealth,
             maxHealth: this.bossMaxHealth,
-            color: '#ff0000',
+            color: '#ff0000', // 이미지 로드 실패 시 폴백 색상
             lastAttackTime: 0,
             attackCooldown: 1000, // 1초마다 공격
             bulletSpeed: 3,
@@ -52,7 +52,49 @@ class BossGame extends GameManager {
             startX: 0, // 이동 시작 X 좌표
             startY: 0, // 이동 시작 Y 좌표
             targetX: 0, // 이동 목표 X 좌표
-            targetY: 0 // 이동 목표 Y 좌표
+            targetY: 0, // 이동 목표 Y 좌표
+            image: new Image(), // 보스 이미지 객체 추가
+            imageLoaded: false, // 이미지 로드 완료 플래그 추가
+            imagePath: '../../assets/images/game/boss/mewtwo_normal.png', // 보스 이미지 상대 경로 추가
+            imageHurt: new Image(), // 피격 시 이미지 객체 추가
+            imageHurtLoaded: false, // 피격 이미지 로드 완료 플래그 추가
+            imagePathHurt: '../../assets/images/game/boss/mewtwo_hurt.png', // 피격 이미지 경로 추가
+            imageAttack: new Image(), // 공격 시 이미지 객체 추가
+            imageAttackLoaded: false, // 공격 이미지 로드 완료 플래그 추가
+            imagePathAttack: '../../assets/images/game/boss/mewtwo_attack.png', // 공격 이미지 경로 추가
+            isHurt: false, // 현재 피격 애니메이션 중인지 여부
+            hurtEndTime: 0, // 피격 애니메이션 종료 시간
+            isAttacking: false, // 현재 공격 애니메이션 중인지 여부
+            attackAnimEndTime: 0, // 공격 애니메이션 종료 시간
+            attackAnimationDuration: 300 // 공격 애니메이션 지속 시간 (ms)
+        };
+        this.boss.image.src = this.boss.imagePath;
+        this.boss.image.onload = () => {
+            this.boss.imageLoaded = true;
+            this.adjustBossImageSize(this.boss.image); // 이미지 크기 조정 함수 호출 // 주석 수정: 이전에 이 위치에 직접 로직이 있었음
+            console.log(`보스 일반 이미지 로드 완료. 크기: ${this.boss.width}x${this.boss.height}`);
+        };
+        this.boss.image.onerror = () => {
+            console.error(`보스 일반 이미지 로드 실패: ${this.boss.imagePath}`);
+            this.boss.imageLoaded = false;
+        };
+
+        this.boss.imageHurt.src = this.boss.imagePathHurt; // 피격 이미지 로드
+        this.boss.imageHurt.onload = () => {
+            this.boss.imageHurtLoaded = true;
+            console.log('보스 피격 이미지 로드 완료.');
+        };
+        this.boss.imageHurt.onerror = () => {
+            console.error(`보스 피격 이미지 로드 실패: ${this.boss.imagePathHurt}`);
+        };
+
+        this.boss.imageAttack.src = this.boss.imagePathAttack; // 공격 이미지 로드
+        this.boss.imageAttack.onload = () => {
+            this.boss.imageAttackLoaded = true;
+            console.log('보스 공격 이미지 로드 완료.');
+        };
+        this.boss.imageAttack.onerror = () => {
+            console.error(`보스 공격 이미지 로드 실패: ${this.boss.imagePathAttack}`);
         };
 
         // MARK: 총알 시스템
@@ -423,6 +465,8 @@ class BossGame extends GameManager {
                 damage: 15 // 레이저는 더 강한 데미지
             });
         }
+        this.boss.isAttacking = true; // 공격 상태 설정
+        this.boss.attackAnimEndTime = performance.now() + this.boss.attackAnimationDuration; // 공격 애니메이션 종료 시간 설정
     }
 
     /**
@@ -433,7 +477,7 @@ class BossGame extends GameManager {
         const dx = this.player.x - this.boss.x;
         const dy = this.player.y - (this.boss.y + this.boss.height / 2);
         const baseAngle = Math.atan2(dy, dx);
-        const bulletLifespan = 5000; // 총알 수명: 5000ms (5초) // 주석 추가
+        const bulletLifespan = 5000; // 총알 수명: 5000ms (5초)
 
         for (let i = -1; i <= 1; i++) {
             const angle = baseAngle + (i * 0.3); // 약 17도씩 벗어나게
@@ -446,9 +490,11 @@ class BossGame extends GameManager {
                 velocityY: Math.sin(angle) * bulletSpeed,
                 radius: 6,
                 color: '#ff4400', // 주황색으로 조준 공격 구분
-                lifespan: bulletLifespan // 수명 속성 추가 // 주석 추가
+                lifespan: bulletLifespan // 수명 속성 추가
             });
         }
+        this.boss.isAttacking = true; // 공격 상태 설정
+        this.boss.attackAnimEndTime = performance.now() + this.boss.attackAnimationDuration; // 공격 애니메이션 종료 시간 설정
     }
 
     /**
@@ -457,7 +503,7 @@ class BossGame extends GameManager {
     shootBossBullets() {
         const bulletCount = 8; // 8방향으로 탄막 발사
         const angleStep = (Math.PI * 2) / bulletCount;
-        const bulletLifespan = 5000; // 총알 수명: 5000ms (5초) // 주석 추가
+        const bulletLifespan = 5000; // 총알 수명: 5000ms (5초)
 
         for (let i = 0; i < bulletCount; i++) {
             const angle = i * angleStep;
@@ -468,16 +514,18 @@ class BossGame extends GameManager {
                 velocityY: Math.sin(angle) * this.boss.bulletSpeed,
                 radius: 6,
                 color: '#ff8800',
-                lifespan: bulletLifespan // 수명 속성 추가 // 주석 추가
+                lifespan: bulletLifespan // 수명 속성 추가
             });
         }
+        this.boss.isAttacking = true; // 공격 상태 설정
+        this.boss.attackAnimEndTime = performance.now() + this.boss.attackAnimationDuration; // 공격 애니메이션 종료 시간 설정
     }
 
     /**
      * MARK: 보스 탄막 업데이트
      */
     updateBossBullets(timeMultiplier) {
-        const deltaTime = timeMultiplier * this.FRAME_DELAY; // 실제 경과 시간 계산 // 주석 추가
+        const deltaTime = timeMultiplier * this.FRAME_DELAY; // 실제 경과 시간 계산
 
         for (let i = this.bossBullets.length - 1; i >= 0; i--) {
             const bullet = this.bossBullets[i];
@@ -486,15 +534,15 @@ class BossGame extends GameManager {
             bullet.x += bullet.velocityX * timeMultiplier;
             bullet.y += bullet.velocityY * timeMultiplier;
 
-            // 수명 감소 // 주석 추가
-            if (bullet.lifespan !== undefined) { // lifespan 속성이 있는 경우에만 처리 // 주석 추가
-                bullet.lifespan -= deltaTime; // 주석 추가
+            // 수명 감소
+            if (bullet.lifespan !== undefined) { // lifespan 속성이 있는 경우에만 처리
+                bullet.lifespan -= deltaTime;
             }
 
             // 화면 밖으로 나간 탄막 또는 수명이 다한 탄막 제거 // 주석 수정
             if (bullet.x < -50 || bullet.x > this.canvas.width + 50 ||
                 bullet.y < -50 || bullet.y > this.canvas.height + 50 ||
-                (bullet.lifespan !== undefined && bullet.lifespan <= 0)) { // 수명 체크 조건 추가 // 주석 추가
+                (bullet.lifespan !== undefined && bullet.lifespan <= 0)) { // 수명 체크 조건 추가
                 this.bossBullets.splice(i, 1);
             }
         }
@@ -529,8 +577,8 @@ class BossGame extends GameManager {
 
             if (bullet.x >= this.boss.x - this.boss.width / 2 &&
                 bullet.x <= this.boss.x + this.boss.width / 2 &&
-                bullet.y >= this.boss.y &&
-                bullet.y <= this.boss.y + this.boss.height) {
+                bullet.y >= this.boss.y && // Y 좌표는 이미지 상단 기준
+                bullet.y <= this.boss.y + this.boss.height) { // Y 좌표는 이미지 상단 기준
 
                 // 보스 체력 감소
                 this.boss.health -= 50;
@@ -538,6 +586,13 @@ class BossGame extends GameManager {
 
                 // 총알 제거
                 this.playerBullets.splice(i, 1);
+
+                // 피격 애니메이션 처리 (스로틀링)
+                const currentTime = performance.now();
+                if (!this.boss.isHurt || currentTime >= this.boss.hurtEndTime) { // 현재 피격 애니메이션 중이 아니거나, 이전 애니메이션이 끝났으면
+                    this.boss.isHurt = true;
+                    this.boss.hurtEndTime = currentTime + 200; // 0.2초간 피격 상태 유지
+                }
             }
         }
 
@@ -623,41 +678,86 @@ class BossGame extends GameManager {
      * MARK: 보스 그리기
      */
     drawBoss() {
-        // 이동 중일 때 반투명 효과
+        const currentTime = performance.now(); // 현재 시간
+        let currentImage = this.boss.image; // 기본 이미지
+        let imageToDrawLoaded = this.boss.imageLoaded;
+
+        // 이동 중일 때 반투명 효과 (페이즈 2 순간이동)
         if (this.boss.isMoving && this.boss.currentPhase === 2) {
-            this.ctx.globalAlpha = 0.7; // 순간이동 중 반투명
+            this.ctx.globalAlpha = 0.7;
         }
 
-        this.ctx.fillStyle = this.boss.color;
-        this.ctx.fillRect(
-            this.boss.x - this.boss.width / 2,
-            this.boss.y,
-            this.boss.width,
-            this.boss.height
-        );
+        // 피격 애니메이션 상태 업데이트
+        if (this.boss.isHurt && currentTime >= this.boss.hurtEndTime) {
+            this.boss.isHurt = false; // 피격 시간 지나면 상태 해제
+        }
 
-        // 보스 외곽선
-        this.ctx.strokeStyle = '#ffffff';
-        this.ctx.lineWidth = 3;
-        this.ctx.strokeRect(
-            this.boss.x - this.boss.width / 2,
-            this.boss.y,
-            this.boss.width,
-            this.boss.height
-        );
+        // 공격 애니메이션 상태 업데이트
+        if (this.boss.isAttacking && currentTime >= this.boss.attackAnimEndTime) {
+            this.boss.isAttacking = false; // 공격 애니메이션 시간 지나면 상태 해제
+        }
 
-        // 페이즈 2일 때 추가 효과
-        if (this.boss.currentPhase === 2) {
-            this.ctx.strokeStyle = '#ff00ff';
-            this.ctx.lineWidth = 2;
-            this.ctx.strokeRect(
-                this.boss.x - this.boss.width / 2 - 5,
-                this.boss.y - 5,
-                this.boss.width + 10,
-                this.boss.height + 10
+        // 이미지 선택 로직 (피격 > 공격 > 일반 순)
+        if (this.boss.isHurt && this.boss.imageHurtLoaded) { // 피격 상태이고 피격 이미지가 로드되었으면
+            currentImage = this.boss.imageHurt;
+            imageToDrawLoaded = this.boss.imageHurtLoaded;
+        } else if (this.boss.isAttacking && this.boss.imageAttackLoaded) { // 공격 상태이고 공격 이미지가 로드되었으면
+            currentImage = this.boss.imageAttack;
+            imageToDrawLoaded = this.boss.imageAttackLoaded;
+        }
+        // 그 외의 경우는 기본 이미지가 이미 설정되어 있음
+
+        if (imageToDrawLoaded) { // 선택된 이미지가 로드되었으면 이미지 그리기
+            this.ctx.drawImage(
+                currentImage, // 현재 상태에 맞는 이미지
+                this.boss.x - this.boss.width / 2,
+                this.boss.y,
+                this.boss.width,
+                this.boss.height
             );
-        }
 
+            // 페이즈 2일 때 추가 효과 (외곽선 등)는 이미지 위에 그려질 수 있음
+            if (this.boss.currentPhase === 2 && !this.boss.isHurt) { // 피격 시에는 외곽선 잠시 숨김 (선택사항)
+                this.ctx.strokeStyle = '#ff00ff';
+                this.ctx.lineWidth = 3;
+                this.ctx.strokeRect(
+                    this.boss.x - this.boss.width / 2,
+                    this.boss.y,
+                    this.boss.width,
+                    this.boss.height
+                );
+            }
+        } else { // 이미지가 로드되지 않았으면 기존 사각형 그리기 (폴백)
+            this.ctx.fillStyle = this.boss.color;
+            this.ctx.fillRect(
+                this.boss.x - this.boss.width / 2,
+                this.boss.y,
+                this.boss.width,
+                this.boss.height
+            );
+
+            // 보스 외곽선
+            this.ctx.strokeStyle = '#ffffff';
+            this.ctx.lineWidth = 3;
+            this.ctx.strokeRect(
+                this.boss.x - this.boss.width / 2,
+                this.boss.y,
+                this.boss.width,
+                this.boss.height
+            );
+
+            // 페이즈 2일 때 추가 효과
+            if (this.boss.currentPhase === 2) {
+                this.ctx.strokeStyle = '#ff00ff';
+                this.ctx.lineWidth = 2;
+                this.ctx.strokeRect(
+                    this.boss.x - this.boss.width / 2 - 5,
+                    this.boss.y - 5,
+                    this.boss.width + 10,
+                    this.boss.height + 10
+                );
+            }
+        }
         this.ctx.globalAlpha = 1.0; // 투명도 복구
     }
 
@@ -742,6 +842,46 @@ class BossGame extends GameManager {
             bossHealthBarY + bossHealthBarHeight + 20
         );
     }
+
+    /**
+     * 보스 이미지 크기 조정 공통 함수 // 주석 추가: 메서드 정의 추가
+     */
+    adjustBossImageSize(imageInstance) { // 주석 추가
+        const minWidth = 67.5; // 주석 추가
+        const minHeight = 67.5; // 주석 추가
+        const maxWidth = 200; // 보스 이미지 최대 너비 // 주석 추가
+        const maxHeight = 200; // 보스 이미지 최대 높이 // 주석 추가
+        let newWidth = imageInstance.naturalWidth; // 주석 추가
+        let newHeight = imageInstance.naturalHeight; // 주석 추가
+
+        if (newWidth > maxWidth) { // 주석 추가
+            const ratio = maxWidth / newWidth; // 주석 추가
+            newWidth = maxWidth; // 주석 추가
+            newHeight *= ratio; // 주석 추가
+        }
+        if (newHeight > maxHeight) { // 주석 추가
+            const ratio = maxHeight / newHeight; // 주석 추가
+            newHeight = maxHeight; // 주석 추가
+            newWidth *= ratio; // 주석 추가
+        }
+        if (newWidth < minWidth) { // 주석 추가
+            const ratio = minWidth / newWidth; // 주석 추가
+            newWidth = minWidth; // 최소 너비 제한 // 주석 추가
+            newHeight *= ratio; // 주석 추가
+        }
+        if (newHeight < minHeight) { // 주석 추가
+            const ratio = minHeight / newHeight; // 주석 추가
+            newHeight = minHeight; // 최소 높이 제한 // 주석 추가
+            newWidth *= ratio; // 주석 추가
+        }
+
+        // 이 함수는 보스의 기본 렌더링 크기를 설정하는 데 사용됩니다. // 주석 추가
+        // imageInstance가 this.boss.image일 때만 this.boss.width와 this.boss.height를 업데이트합니다. // 주석 추가
+        if (imageInstance === this.boss.image) { // 주석 추가
+            this.boss.width = newWidth; // 주석 추가
+            this.boss.height = newHeight; // 주석 추가
+        } // 주석 추가
+    } // 주석 추가
 }
 
 // 게임 인스턴스 생성 및 시작 (전역 변수로 설정)
