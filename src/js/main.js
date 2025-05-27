@@ -1,5 +1,17 @@
-document.addEventListener("keydown", startFromTitle, { once: true });
-document.addEventListener("click", startFromTitle, { once: true });
+window.addEventListener("DOMContentLoaded", () => {
+  console.log("Adding event listeners");
+  document.addEventListener("keydown", startFromTitle, { once: true });
+  document.addEventListener("click", startFromTitle, { once: true });
+  setupMenuEvents();
+  setupOptionModal();
+  setupAudioSliders();
+  setupButtonSfx();
+  if (!localStorage.getItem("scoreboard")) {
+    setScoreboardData(makeEmptyScoreboard());
+  }
+  // DEMO
+  setScoreboardData(DEMO_RANKING_DATA);
+});
 
 let started = false;
 
@@ -22,17 +34,3 @@ function startFromTitle(e) {
     startCloudAnimation();
   }, 1100);
 }
-
-window.addEventListener("DOMContentLoaded", () => {
-  console.log("DOM fully loaded and parsed");
-  setupMenuEvents();
-  setupOptionModal();
-  setupAudioSliders();
-  setupButtonSfx();
-  if (!localStorage.getItem("scoreboard")) {
-    setScoreboardData(makeEmptyScoreboard());
-  }
-
-  // DEMO
-  setScoreboardData(DEMO_RANKING_DATA);
-});
