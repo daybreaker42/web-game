@@ -17,7 +17,7 @@ body {
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-color: #1e1e1e; /* 다크 모드 배경색으로 변경 */
+    /* background-color: #1e1e1e; 다크 모드 배경색으로 변경 */
     color: #ffffff; /* 텍스트 색상을 흰색으로 변경하여 가독성 확보 */
     transition: background-color 0.3s;
 }

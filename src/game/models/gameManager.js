@@ -282,6 +282,10 @@ class GameManager {
             // 초기 안내 문구 출력
             const instructions = qs('#info-modal');
             const confirmButton = qs('#info-confirm-yes');
+            const infoContentSpan = qs('#info-content');
+            infoContentSpan.innerHTML = this.mode === 'boss' ?
+                'W A S D <br> ↑ ← ↓ →' :
+                'W A S D <br> ↑ ← ↓ → <br> 마우스';
             const result = instructions.showModal();
             confirmButton.addEventListener('click', () => {
                 instructions.close();
