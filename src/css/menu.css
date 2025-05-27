@@ -1,0 +1,19 @@
+#main-menu {
+  opacity: 1;
+  background: var(--img-menu-bg) center/cover;
+}
+#main-menu.fade-in {
+  animation: retro-fade-in-slow 0.8s steps(3, end) 1;
+}
+#play-mode-menu {
+  background: var(--img-menu-bg) center/cover;
+}
+#level-menu {
+  background: var(--img-menu-bg) center/cover;
+}
+#level-menu h2 {
+  font-size: 1.6rem;
+  margin: 0;
+  padding: 0.5rem 0;
+  text-shadow: 1px 1px 1px #ffffff;
+}

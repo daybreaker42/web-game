@@ -1,0 +1,30 @@
+.logo {
+  position: relative;
+  top: -50px;
+  width: 550px;
+  height: 250px;
+  margin: 0 auto 1rem auto;
+  background: var(--img-logo) center/contain no-repeat;
+}
+#title {
+  opacity: 1;
+  transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--img-title-bg) center/cover;
+}
+.press-any {
+  position: relative;
+  top: -50px;
+  font-size: 2rem;
+  color: #fff;
+  animation: blink 1.2s step-end infinite;
+  margin: 0;
+}
+.press-any.flash-twice {
+  animation: retro-flashing-blink 0.29s steps(2) 1;
+}
+.logo.show {
+  opacity: 1;
+}
+.press-any.show {
+  opacity: 1;
+}

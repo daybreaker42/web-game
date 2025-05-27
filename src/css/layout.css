@@ -1,0 +1,24 @@
+#game-root {
+  width: 800px;
+  height: 533px;
+  background: var(--bg-dark) center/cover;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+}
+.screen {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: transparent;
+}
+.menu {
+  gap: 1.4rem;
+}
