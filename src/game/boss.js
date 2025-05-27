@@ -433,6 +433,7 @@ class BossGame extends GameManager {
         const dx = this.player.x - this.boss.x;
         const dy = this.player.y - (this.boss.y + this.boss.height / 2);
         const baseAngle = Math.atan2(dy, dx);
+        const bulletLifespan = 5000; // 총알 수명: 5000ms (5초) // 주석 추가
 
         for (let i = -1; i <= 1; i++) {
             const angle = baseAngle + (i * 0.3); // 약 17도씩 벗어나게
@@ -444,8 +445,58 @@ class BossGame extends GameManager {
                 velocityX: Math.cos(angle) * bulletSpeed,
                 velocityY: Math.sin(angle) * bulletSpeed,
                 radius: 6,
-                color: '#ff4400' // 주황색으로 조준 공격 구분
+                color: '#ff4400', // 주황색으로 조준 공격 구분
+                lifespan: bulletLifespan // 수명 속성 추가 // 주석 추가
             });
+        }
+    }
+
+    /**
+     * MARK: 보스 탄막 발사
+     */
+    shootBossBullets() {
+        const bulletCount = 8; // 8방향으로 탄막 발사
+        const angleStep = (Math.PI * 2) / bulletCount;
+        const bulletLifespan = 5000; // 총알 수명: 5000ms (5초) // 주석 추가
+
+        for (let i = 0; i < bulletCount; i++) {
+            const angle = i * angleStep;
+            this.bossBullets.push({
+                x: this.boss.x,
+                y: this.boss.y + this.boss.height / 2,
+                velocityX: Math.cos(angle) * this.boss.bulletSpeed,
+                velocityY: Math.sin(angle) * this.boss.bulletSpeed,
+                radius: 6,
+                color: '#ff8800',
+                lifespan: bulletLifespan // 수명 속성 추가 // 주석 추가
+            });
+        }
+    }
+
+    /**
+     * MARK: 보스 탄막 업데이트
+     */
+    updateBossBullets(timeMultiplier) {
+        const deltaTime = timeMultiplier * this.FRAME_DELAY; // 실제 경과 시간 계산 // 주석 추가
+
+        for (let i = this.bossBullets.length - 1; i >= 0; i--) {
+            const bullet = this.bossBullets[i];
+
+            // 탄막 이동
+            bullet.x += bullet.velocityX * timeMultiplier;
+            bullet.y += bullet.velocityY * timeMultiplier;
+
+            // 수명 감소 // 주석 추가
+            if (bullet.lifespan !== undefined) { // lifespan 속성이 있는 경우에만 처리 // 주석 추가
+                bullet.lifespan -= deltaTime; // 주석 추가
+            }
+
+            // 화면 밖으로 나간 탄막 또는 수명이 다한 탄막 제거 // 주석 수정
+            if (bullet.x < -50 || bullet.x > this.canvas.width + 50 ||
+                bullet.y < -50 || bullet.y > this.canvas.height + 50 ||
+                (bullet.lifespan !== undefined && bullet.lifespan <= 0)) { // 수명 체크 조건 추가 // 주석 추가
+                this.bossBullets.splice(i, 1);
+            }
         }
     }
 

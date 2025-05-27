@@ -297,7 +297,8 @@ class GameManager {
 
             this.updateUI();
             this.animationFrame = requestAnimationFrame((time) => this.update(time));
-            this.showMessage('게임 시작!', 'success');
+            console.log(`${this.mode} 게임을 시작합니다.`);
+            this.showMessage(`게임 시작!`, 'success');
         }
     }
 
