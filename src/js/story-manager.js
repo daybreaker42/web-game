@@ -31,7 +31,6 @@ function playStageStory(stageIndex, onStoryEnd) {
   const scenes = STORY_SCRIPTS[stageIndex] || [];
   playSceneByIndex(scenes, 0, onStoryEnd);
   setupStorySkipHandler(onStoryEnd);
-  stopBgm();
 }
 
 function playSceneByIndex(scenes, idx, onStoryEnd) {
