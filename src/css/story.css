@@ -1,11 +1,9 @@
 #story-screen {
-  background: var(--bg);
   animation: fade-in-slow 0.5s steps(3, end) 1;
   display: flex;
   flex-direction: column;
   height: 100%;
   justify-content: flex-start;
-  background-color: var(--bg-dark);
 }
 #story-illustration {
   flex: 1 1 70%;
