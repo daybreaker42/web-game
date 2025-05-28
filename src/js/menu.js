@@ -1,7 +1,11 @@
 function chooseMode(mode) {
   selectedMode = mode;
-  hide(qs("#play-mode-menu"));
-  show(qs("#difficulty-menu"));
+  hide(qs("#select-mode-menu-screen"));
+  show(qs("#difficulty-menu-screen"));
+}
+
+function showMainMenu() {
+    showWithFade(qs("#main-menu-screen"));
 }
 
 // ==================== Start Game Functions ====================
@@ -11,7 +15,7 @@ let selectedDifficulty = null;
 function startGameStoryMode(difficulty) {
   stopCloudAnimation();
   stopBgm();
-  hide(qs("#difficulty-menu"));
+  hide(qs("#difficulty-menu-screen"));
   selectedDifficulty = difficulty;
   proceedToStage(0);
 }
@@ -24,48 +28,38 @@ function startGameScoreMode(difficulty) {
 
 // ==================== Setup Menu Events ====================
 
-function showMainMenu() {
-  const mainMenu = qs("#main-menu");
-  mainMenu.classList.add("fade-in");
-  show(mainMenu);
-}
-
 function setupMenuEvents() {
   qs("#btn-story").onclick = () => chooseMode("story-mode");
   qs("#btn-score").onclick = () => chooseMode("score-mode");
 
   qs("#btn-play").onclick = () => {
-    hide(qs("#main-menu"));
-    show(qs("#play-mode-menu"));
+    hide(qs("#main-menu-screen"));
+    show(qs("#select-mode-menu-screen"));
   };
 
-  qs("#btn-back-to-main-menu").onclick = () => {
-    hide(qs("#play-mode-menu"));
-    showMainMenu();
+  qs("#btn-select-to-main").onclick = () => {
+    hide(qs("#select-mode-menu-screen"));
+    show(qs("#main-menu-screen"));
   };
 
   qs("#btn-ranking").onclick = () => {
     stopCloudAnimation();
     playBgm(BGM.RANKING);
-    qs("#ranking-screen").classList.remove("fade-out");
-    qs("#ranking-screen").classList.add("fade-in");
-    hide(qs("#main-menu"));
-    show(qs("#ranking-screen"));
+    hide(qs("#main-menu-screen"));
+    showWithFade(qs("#ranking-screen"));
     renderScoreboard();
   };
 
-  qs("#btn-back-to-main").onclick = () => {
+  qs("#btn-ranking-to-main").onclick = () => {
     playBgm(BGM.TITLE);
-    qs("#ranking-screen").classList.remove("fade-in");
-    qs("#ranking-screen").classList.add("fade-out");
-    hide(qs("#ranking-screen"));
-    show(qs("#main-menu"));
+    hideWithFade(qs("#ranking-screen"));
+    showWithFade(qs("#main-menu-screen"));
     startCloudAnimation();
   };
 
-  qs("#btn-back-to-play-mode-menu").onclick = () => {
-    hide(qs("#difficulty-menu"));
-    show(qs("#play-mode-menu"));
+  qs("#btn-back-to-select-mode-menu-screen").onclick = () => {
+    hide(qs("#difficulty-menu-screen"));
+    show(qs("#select-mode-menu-screen"));
   };
 
   qsa(".btn-difficulty").forEach((btn) => {

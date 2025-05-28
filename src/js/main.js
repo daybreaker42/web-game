@@ -1,7 +1,14 @@
+function setupCredits() {
+  qs("#btn-credits").onclick = () => showDemoCredits();
+}
+
 window.addEventListener("DOMContentLoaded", () => {
-  console.log("Adding event listeners");
+  //   console.log("Adding event listeners");
   document.addEventListener("keydown", startFromTitle, { once: true });
   document.addEventListener("click", startFromTitle, { once: true });
+
+  setupCredits();
+
   setupMenuEvents();
   setupOptionModal();
   setupAudioSliders();
@@ -28,8 +35,8 @@ function startFromTitle(e) {
   }, 100);
 
   setTimeout(() => {
-    hide(qs("#title"));
-    showMainMenu();
+    hide(qs("#title-screen"));
+    showWithFade(qs("#main-menu-screen"));
     playBgm(BGM.TITLE);
     startCloudAnimation();
   }, 1100);
