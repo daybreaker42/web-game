@@ -1,0 +1,184 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+    /* z-index 변수 설정 */
+    --z-index-slot: 10;
+    --z-index-slot-frame: 20;
+    --z-index-pause-button: 100;
+    --z-index-modal: 200;
+    --z-index-paddle: 300;
+    --z-index-ball: 400;
+    --z-index-indicator: 1000;
+}
+
+li {
+    list-style: none;
+}
+
+h1 {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 2.5em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#game-container {
+    position: relative;
+    margin: 20px auto;
+    width: 800px;
+    height: 533px;
+}
+
+canvas {
+    background: #333;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    display: block;
+}
+
+.controls {
+    position: relative;
+    top: 20px;
+    text-align: center;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 5px;
+    margin: 0 10px;
+    transition: background-color 0.3s;
+}
+
+/* button:hover {
+    background-color: #45a049;
+} */
+
+/* 모드 선택 스타일 */
+.mode-selection {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 20px 0;
+    text-align: center;
+}
+
+.mode-button {
+    padding: 15px 30px;
+    font-size: 18px;
+    margin: 0 15px;
+    background-color: #2196F3;
+}
+
+.mode-button:hover {
+    background-color: #1976D2;
+}
+
+.mode-button.active {
+    background-color: #FF9800;
+}
+
+.mode-button.active:hover {
+    background-color: #F57C00;
+}
+
+/* timer, 점수 정보 보여주는 container */
+#game-info-indicator {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: var(--z-index-indicator); /* z-index를 높여서 다른 요소 위에 표시 */
+
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff; /* 텍스트 색상을 흰색으로 변경하여 가독성 확보 */
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+.score-info {
+    display: flex;
+}
+/* 반응형 디자인 */
+@media (max-width: 850px) {
+    canvas {
+        width: 100%;
+        height: auto;
+    }
+    
+    .controls {
+        flex-direction: column;
+    }
+    
+    button {
+        margin: 5px 0;
+    }
+}
+/* pokemon slot container */
+#pokemon-slot-container {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+
+    display: flex;
+    width: calc(64px * 4);
+    z-index: var(--z-index-slot);
+}
+/* pokemon slot */
+.pokemon-slot {
+    width: 64px;
+    height: 64px;
+    z-index: var(--z-index-slot);
+}
+
+/* pokemon slot frame container*/
+#pokemon-slot-frame-container {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+
+    display: flex;
+    width: calc(64px * 4);
+    z-index: var(--z-index-slot-frame);
+}
+/* pokemon slot frame */
+.pokemon-slot-frame{
+    width: 64px;
+    height: 64px;
+    background-image: url(../../../assets/images/game/ui/slot_frame.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.2);
+    z-index: var(--z-index-slot-frame);
+}
+
+.pokemon-slot-frame.selected{
+    background-image: url(../../../assets/images/game/ui/slot_frame_selected.png);
+    box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.4);
+}
+
+#info-modal{
+    margin: auto;
+}
+#info-confirm-yes:hover{
+    background-color: #e7e7e7;
+}
+
+/* 일시정지 버튼 */
+#pause-button{
+    width: 150px;
+    height: 50px;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+}

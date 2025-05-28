@@ -1,7 +1,7 @@
 /**
  * GameManager class
  * - 게임 실행/상태 관리를 수행하는 클래스
- * - 벽돌깨기(game.js)와 보스전(boss.js)의 공통 기능을 제공
+ * - 벽돌깨기(brickGame.js)와 보스전(bossGame.js)의 공통 기능을 제공
  */
 class GameManager {
     constructor(canvas) {
@@ -32,6 +32,12 @@ class GameManager {
         this.totalLives = 300;
         this.isGameClear = false;
         this.saved_pokemon = [];
+
+        // MARK: 생명 설정 (모드 및 난이도별) // 주석 추가: 생명 설정 구조화
+        this.livesConfig = {
+            brick: { easy: 300, normal: 300, hard: 300 }, // 주석 추가: 벽돌깨기 모드 생명 (현재는 동일)
+            boss: { easy: 300, normal: 300, hard: 300 }   // 주석 추가: 보스전 모드 생명 (현재는 동일)
+        };
 
         // MARK: 입력 상태
         this.keys = {
@@ -87,18 +93,20 @@ class GameManager {
      * 레벨에 따른 난이도 설정
      */
     setDifficultyByLevel(level) {
+        const currentModeConfig = this.livesConfig[this.mode] || this.livesConfig.brick; // 현재 모드의 설정을 가져오거나 기본값(brick) 사용
+
         switch (level) {
             case 'easy':
-                this.totalLives = 500;
+                this.totalLives = currentModeConfig.easy; // 주석 수정: 모드별 난이도에 따른 생명 설정
                 break;
             case 'normal':
-                this.totalLives = 300;
+                this.totalLives = currentModeConfig.normal; // 주석 수정: 모드별 난이도에 따른 생명 설정
                 break;
             case 'hard':
-                this.totalLives = 100;
+                this.totalLives = currentModeConfig.hard; // 주석 수정: 모드별 난이도에 따른 생명 설정
                 break;
             default:
-                this.totalLives = 300;
+                this.totalLives = currentModeConfig.normal; // 주석 수정: 기본값으로 normal 난이도 생명 설정
         }
         this.lives = this.totalLives;
     }
@@ -282,6 +290,7 @@ class GameManager {
             // 초기 안내 문구 출력
             const instructions = qs('#info-modal');
             const confirmButton = qs('#info-confirm-yes');
+            this.setInfoModalContent(this.mode === 'boss');
             const result = instructions.showModal();
             confirmButton.addEventListener('click', () => {
                 instructions.close();
@@ -291,6 +300,19 @@ class GameManager {
                 this.showMessage(`게임 시작!`, 'success');
             });
         }
+    }
+
+    /**
+     * 게임 플래이 방법 안내 모달 내용 설정
+     * - 모달의 내용은 게임 모드에 따라 다르게 설정
+     * @param {boolean} isBossMode - 보스 모드 여부
+     * - true: 보스 모드, false: 일반 모드
+     */
+    setInfoModalContent(isBossMode) {
+        const infoContentSpan = qs('#info-content');
+        infoContentSpan.innerHTML = isBossMode ?
+            'W A S D <br> ↑ ← ↓ →' :
+            'W A S D <br> ↑ ← ↓ → <br> 마우스';
     }
 
     /**

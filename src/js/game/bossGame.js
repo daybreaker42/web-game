@@ -55,15 +55,16 @@ class BossGame extends GameManager {
             targetY: 0, // 이동 목표 Y 좌표
             image: new Image(), // 보스 이미지 객체 추가
             imageLoaded: false, // 이미지 로드 완료 플래그 추가
-            imagePath: '../../assets/images/game/boss/mewtwo_normal.png', // 보스 이미지 상대 경로 추가
+            imagePath: '../assets/images/game/boss/mewtwo_normal_1.png', // 보스 이미지 상대 경로 추가
             imageHurt: new Image(), // 피격 시 이미지 객체 추가
             imageHurtLoaded: false, // 피격 이미지 로드 완료 플래그 추가
-            imagePathHurt: '../../assets/images/game/boss/mewtwo_hurt.png', // 피격 이미지 경로 추가
+            imagePathHurt: '../assets/images/game/boss/mewtwo_hurt_1.png', // 피격 이미지 경로 추가
             imageAttack: new Image(), // 공격 시 이미지 객체 추가
             imageAttackLoaded: false, // 공격 이미지 로드 완료 플래그 추가
-            imagePathAttack: '../../assets/images/game/boss/mewtwo_attack.png', // 공격 이미지 경로 추가
+            imagePathAttack: '../assets/images/game/boss/mewtwo_attack_1.png', // 공격 이미지 경로 추가
             isHurt: false, // 현재 피격 애니메이션 중인지 여부
             hurtEndTime: 0, // 피격 애니메이션 종료 시간
+            hurtAnimationDuration: 200, // 피격 애니메이션 지속 시간 (ms) // 주석 추가: 피격 애니메이션 지속 시간 명시
             isAttacking: false, // 현재 공격 애니메이션 중인지 여부
             attackAnimEndTime: 0, // 공격 애니메이션 종료 시간
             attackAnimationDuration: 300 // 공격 애니메이션 지속 시간 (ms)
@@ -107,6 +108,14 @@ class BossGame extends GameManager {
         // MARK: 추가 키 설정
         this.keys.upPressed = false;
         this.keys.downPressed = false;
+
+        // 사운드 설정
+        this.bossHitSound = new Audio('../assets/sounds/sfx/mewtwo.ogg'); // 피격 사운드 파일 경로
+        this.bossHitSound.volume = 0.5; // 사운드 볼륨 설정 (0.0 ~ 1.0)
+        this.lastHitSoundTime = 0; // 마지막 사운드 재생 시간 (throttling용)
+        this.HIT_SOUND_THROTTLE_MS = 1200; // 사운드 재생 최소 간격 (밀리초)
+        this.lastHurtAnimationTime = 0; // 마지막 피격 애니메이션 시작 시간 (throttling용)
+        this.HURT_ANIMATION_THROTTLE_MS = 200; // 피격 애니메이션 최소 간격 (밀리초)
     }
 
     /**
@@ -587,11 +596,20 @@ class BossGame extends GameManager {
                 // 총알 제거
                 this.playerBullets.splice(i, 1);
 
-                // 피격 애니메이션 처리 (스로틀링)
                 const currentTime = performance.now();
-                if (!this.boss.isHurt || currentTime >= this.boss.hurtEndTime) { // 현재 피격 애니메이션 중이 아니거나, 이전 애니메이션이 끝났으면
-                    this.boss.isHurt = true;
-                    this.boss.hurtEndTime = currentTime + 200; // 0.2초간 피격 상태 유지
+
+                // 피격 이미지 변경 처리 (0.2초 throttling)
+                if (currentTime - this.lastHurtAnimationTime > this.HURT_ANIMATION_THROTTLE_MS) { // 주석 추가: 이미지 변경 throttling 조건
+                    this.boss.isHurt = true; // 피격 상태로 설정
+                    this.boss.hurtEndTime = currentTime + this.boss.hurtAnimationDuration; // 피격 애니메이션 종료 시간 설정
+                    this.lastHurtAnimationTime = currentTime; // 마지막 이미지 변경 시간 업데이트
+                }
+
+                // 피격 사운드 재생 처리 (1초 throttling)
+                if (currentTime - this.lastHitSoundTime > this.HIT_SOUND_THROTTLE_MS) { // 주석 추가: 사운드 재생 throttling 조건
+                    this.bossHitSound.currentTime = 0; // 사운드를 처음부터 재생
+                    this.bossHitSound.play().catch(error => console.error("Error playing boss hit sound:", error)); // 사운드 재생 및 오류 처리
+                    this.lastHitSoundTime = currentTime; // 마지막 사운드 재생 시간 업데이트
                 }
             }
         }

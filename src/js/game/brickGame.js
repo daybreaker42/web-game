@@ -9,7 +9,7 @@ class BrickGame extends GameManager {
         super(canvas); // GameManager 생성자 호출
 
         // MARK: 벽돌깨기 전용 설정
-        this.TOTAL_LIVES = 300;
+        // this.TOTAL_LIVES = 300; // 주석 처리 또는 삭제: GameManager에서 관리하도록 변경
         this.leftBrick = 0;
 
         // MARK: 벽돌 관련 설정
@@ -61,8 +61,8 @@ class BrickGame extends GameManager {
 
         // 벽돌깨기 전용 초기화
         this.initBricks();
-        this.lives = this.TOTAL_LIVES;
-        this.totalLives = this.TOTAL_LIVES;
+        // this.lives = this.TOTAL_LIVES; // 주석 처리 또는 삭제: GameManager의 setDifficultyByLevel에서 설정됨
+        this.totalLives = this.lives; // GameManager에서 설정된 lives 값으로 totalLives 동기화 (필요시)
     }
 
     /**
@@ -78,7 +78,7 @@ class BrickGame extends GameManager {
             }
         }
 
-        this.targetPokemonImages = this.targetPokemonIndexes.map(index => `../../assets/images/game/pokemon/${index}.png`);
+        this.targetPokemonImages = this.targetPokemonIndexes.map(index => `../assets/images/game/pokemon/${index}.png`);
 
         const positions = [];
         for (let c = 0; c < this.brickColumnCount; c++) {
@@ -112,7 +112,7 @@ class BrickGame extends GameManager {
                     } while (this.targetPokemonIndexes.includes(pokeIndex));
                 }
 
-                const imagePath = `../../assets/images/game/pokemon/${pokeIndex}.png`;
+                const imagePath = `../assets/images/game/pokemon/${pokeIndex}.png`;
                 const pokeType = window.pokemon?.[pokeIndex]?.type;
                 const slotColor = this.typeColorMap[pokeType] || '#eee';
 
@@ -229,7 +229,7 @@ class BrickGame extends GameManager {
                         this.leftBrick--; // 남은 벽돌 수 감소
 
                         if (b.isTarget && this.targetPokemonIndexes.includes(b.pokeIndex)) {
-                        const imagePath = `../../assets/images/game/pokemon/${b.pokeIndex}.png`;
+                        const imagePath = `../assets/images/game/pokemon/${b.pokeIndex}.png`;
                             this.addPokemonToSlot(imagePath);
                         }
 
@@ -250,11 +250,9 @@ class BrickGame extends GameManager {
             const slot = document.getElementById(`slot-${i}`);
             const bg = slot.style.backgroundImage;
 
-
             if (bg.includes(imageSrc)) {
-                return; // 이미 들어있으면 중복 추가 안 함
+                return; // 이미 들어있는 포켓몬은 중복 추가 안 함
             }
-
         }
 
         // 빈 슬롯 찾아서 추가

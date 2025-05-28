@@ -41,7 +41,7 @@ class Brick {
     // 느낌표 표시
     if (this.isTarget) {
       const exMark = new Image();
-      exMark.src = '../../assets/images/icons/exmark.png';
+      exMark.src = '../assets/images/icons/exmark.png';
       ctx.drawImage(exMark, this.x + this.width - 35, this.y + 5, 30, 30);
     }
   }
