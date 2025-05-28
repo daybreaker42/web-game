@@ -10,6 +10,7 @@
     --z-index-modal: 200;
     --z-index-paddle: 300;
     --z-index-ball: 400;
+    --z-index-indicator: 1000;
 }
 
 li {
@@ -98,33 +99,25 @@ button {
     background-color: #F57C00;
 }
 
-.score-info {
-    font-size: 18px;
-    margin-bottom: 10px;
+/* timer, 점수 정보 보여주는 container */
+#game-info-indicator {
+    position: absolute;
+    top: 10px;
+    left: 10px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    z-index: var(--z-index-indicator); /* z-index를 높여서 다른 요소 위에 표시 */
+
+    font-size: 18px;
     font-weight: bold;
+    color: #ffffff; /* 텍스트 색상을 흰색으로 변경하여 가독성 확보 */
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
 }
-
-.score-info span {
-    margin-right: 20px;
-    background-color: #4CAF50;
-    /* 기존 스타일과 통합 */
-    padding: 8px 15px;
-    border-radius: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+.score-info {
+    display: flex;
 }
-
-.score-info span:last-child {
-    margin-left: 20px;
-    margin-right: 0;
-}
-
-#score, #lives {
-    color: #FFD700; /* 점수 색상 변경 */
-    font-weight: bold;
-}
-
 /* 반응형 디자인 */
 @media (max-width: 850px) {
     canvas {

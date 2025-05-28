@@ -13,13 +13,11 @@
         <button id="bossModeButton" class="mode-button">보스전</button>
     </div>
     
-    <div class="score-info">
-        <span>점수: <span id="score">0</span></span>
-        <span style="margin-left: 20px;">남은 생명: <span id="lives">3</span></span>
-    </div>
-    <div id="timer">02:00</div>
-    
     <div id="game-container">
+        <div id="game-info-indicator">
+            <span class="score-info">SCORE : <span id="score">0</span></span>
+            <span id="timer-container">TIME : <span id="timer">02:00</span></span>
+        </div>
         <canvas id="gameCanvas" width="800" height="533"></canvas>
         <div class="controls">
             <button id="startButton" tabindex="-1">게임 시작</button>
