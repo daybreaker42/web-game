@@ -1,7 +1,7 @@
 // 게임 모드 선택 관리
 let currentGameMode = 'brick'; // 기본값: 벽돌깨기
 let currentGame = null;
-const canvas = document.getElementById('gameCanvas');
+const canvas = document.getElementById('game-canvas');
 const brickModeButton = document.getElementById('brickModeButton');
 const bossModeButton = document.getElementById('bossModeButton'); // bossModeButton 정의 추가
 
