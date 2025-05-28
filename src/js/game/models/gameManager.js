@@ -65,7 +65,7 @@ class GameManager {
         this.persistentMessageElement = null;
 
         // 다음 스테이지로 넘어가기
-        this.continueNextStage = null;
+        this.onGameEnd = null;
     }
 
     /**
@@ -103,8 +103,8 @@ class GameManager {
     /**
      * 다음 스테이지로 넘어가는 함수를 설정함
      */
-    setContinueNextStage(continueNextStage) {
-        this.continueNextStage = continueNextStage;
+    setOnGameEnd(onGameEnd) {
+        this.onGameEnd = onGameEnd;
     }
 
     /**

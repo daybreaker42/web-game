@@ -41,6 +41,26 @@ function switchGameMode(mode) {
     }
 }
 
+/**
+ * brickGame 인스턴스 제작하는 함수
+ */
+function createBrickGame(data, onGameEnd) {
+    let game = new BrickGame(canvas);
+    game.setGameInfo(data);
+    game.setOnGameEnd(onGameEnd);
+    return game;
+}
+
+/**
+ * bossGame 인스턴스 제작하는 함수
+ */
+function createBossGame(data, onGameEnd) {
+    let game = new BossGame(canvas);
+    game.setGameInfo(data);
+    game.setOnGameEnd(onGameEnd);
+    return game;
+}
+
 // 페이지 로드 시 초기화
 document.addEventListener('DOMContentLoaded', function () {
     switchGameMode('brick'); // 기본 모드로 초기화
