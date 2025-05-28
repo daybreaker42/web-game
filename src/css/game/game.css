@@ -76,6 +76,10 @@ button {
 
 /* 모드 선택 스타일 */
 .mode-selection {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
     margin: 20px 0;
     text-align: center;
 }
