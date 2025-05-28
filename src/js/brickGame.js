@@ -78,7 +78,7 @@ class BrickGame extends GameManager {
             }
         }
 
-        this.targetPokemonImages = this.targetPokemonIndexes.map(index => `../../assets/images/game/pokemon/${index}.png`);
+        this.targetPokemonImages = this.targetPokemonIndexes.map(index => `../assets/images/game/pokemon/${index}.png`);
 
         const positions = [];
         for (let c = 0; c < this.brickColumnCount; c++) {
@@ -112,7 +112,7 @@ class BrickGame extends GameManager {
                     } while (this.targetPokemonIndexes.includes(pokeIndex));
                 }
 
-                const imagePath = `../../assets/images/game/pokemon/${pokeIndex}.png`;
+                const imagePath = `../assets/images/game/pokemon/${pokeIndex}.png`;
                 const pokeType = window.pokemon?.[pokeIndex]?.type;
                 const slotColor = this.typeColorMap[pokeType] || '#eee';
 
@@ -229,7 +229,7 @@ class BrickGame extends GameManager {
                         this.leftBrick--; // 남은 벽돌 수 감소
 
                         if (b.isTarget && this.targetPokemonIndexes.includes(b.pokeIndex)) {
-                        const imagePath = `../../assets/images/game/pokemon/${b.pokeIndex}.png`;
+                        const imagePath = `../assets/images/game/pokemon/${b.pokeIndex}.png`;
                             this.addPokemonToSlot(imagePath);
                         }
 

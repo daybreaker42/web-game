@@ -55,13 +55,13 @@ class BossGame extends GameManager {
             targetY: 0, // 이동 목표 Y 좌표
             image: new Image(), // 보스 이미지 객체 추가
             imageLoaded: false, // 이미지 로드 완료 플래그 추가
-            imagePath: '../../assets/images/game/boss/mewtwo_normal.png', // 보스 이미지 상대 경로 추가
+            imagePath: '../assets/images/game/boss/mewtwo_normal_1.png', // 보스 이미지 상대 경로 추가
             imageHurt: new Image(), // 피격 시 이미지 객체 추가
             imageHurtLoaded: false, // 피격 이미지 로드 완료 플래그 추가
-            imagePathHurt: '../../assets/images/game/boss/mewtwo_hurt.png', // 피격 이미지 경로 추가
+            imagePathHurt: '../assets/images/game/boss/mewtwo_hurt_1.png', // 피격 이미지 경로 추가
             imageAttack: new Image(), // 공격 시 이미지 객체 추가
             imageAttackLoaded: false, // 공격 이미지 로드 완료 플래그 추가
-            imagePathAttack: '../../assets/images/game/boss/mewtwo_attack.png', // 공격 이미지 경로 추가
+            imagePathAttack: '../assets/images/game/boss/mewtwo_attack_1.png', // 공격 이미지 경로 추가
             isHurt: false, // 현재 피격 애니메이션 중인지 여부
             hurtEndTime: 0, // 피격 애니메이션 종료 시간
             hurtAnimationDuration: 200, // 피격 애니메이션 지속 시간 (ms) // 주석 추가: 피격 애니메이션 지속 시간 명시
@@ -110,7 +110,7 @@ class BossGame extends GameManager {
         this.keys.downPressed = false;
 
         // 사운드 설정
-        this.bossHitSound = new Audio('../../assets/sounds/sfx/mewtwo.ogg'); // 피격 사운드 파일 경로
+        this.bossHitSound = new Audio('../assets/sounds/sfx/mewtwo.ogg'); // 피격 사운드 파일 경로
         this.bossHitSound.volume = 0.5; // 사운드 볼륨 설정 (0.0 ~ 1.0)
         this.lastHitSoundTime = 0; // 마지막 사운드 재생 시간 (throttling용)
         this.HIT_SOUND_THROTTLE_MS = 1200; // 사운드 재생 최소 간격 (밀리초)
