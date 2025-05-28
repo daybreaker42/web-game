@@ -17,21 +17,21 @@ window.addEventListener("DOMContentLoaded", () => {
 let started = false;
 
 function returnToTitleScreen() {
-    console.log("Returning to title screen");
-    started = false;
-    stopBgm();
-    hideAllFade(qsa(".screen"));
-    showWithFade(qs("#title-screen"));
+  console.log("Returning to title screen");
+  started = false;
+  stopBgm();
+  hideAllFade(qsa(".screen"));
+  showWithFade(qs("#title-screen"));
 
-    setTimeout(() => {
-        const pressAny = qs(".press-any");
-        if (pressAny) {
-            pressAny.classList.remove("flash-twice", "noblink", "blink");
-            void pressAny.offsetWidth;
-        }
-        document.addEventListener("keydown", startFromTitle, { once: true });
-        document.addEventListener("click", startFromTitle, { once: true });
-    }, 1000);
+  setTimeout(() => {
+    const pressAny = qs(".press-any");
+    if (pressAny) {
+      pressAny.classList.remove("flash-twice", "noblink", "blink");
+      void pressAny.offsetWidth;
+    }
+    document.addEventListener("keydown", startFromTitle, { once: true });
+    document.addEventListener("click", startFromTitle, { once: true });
+  }, 1000);
 }
 
 function startFromTitle(e) {
@@ -55,8 +55,8 @@ function startFromTitle(e) {
 }
 
 function showMainMenuScreen() {
-    hideAllFade(qsa(".screen"));
-    showWithFade(qs("#main-menu-screen"));
-    playBgm(BGM.TITLE);
-    startCloudAnimation();
+  hideAllFade(qsa(".screen"));
+  showWithFade(qs("#main-menu-screen"));
+  playBgm(BGM.TITLE);
+  startCloudAnimation();
 }

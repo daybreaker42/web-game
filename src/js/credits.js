@@ -83,8 +83,8 @@ const CREDITS_TEXT = [
 // ========================
 
 function showCredits(creditData) {
-    creditData = creditData || DEMO_CREDITS_DATA; // 기본값 설정
-    console.log("Showing credits with data:", creditData);
+  creditData = creditData || DEMO_CREDITS_DATA; // 기본값 설정
+  console.log("Showing credits with data:", creditData);
   hideAllFade(qsa(".screen"));
   showWithFade(elById("credits-screen"));
   createCreditsContent(creditData);
