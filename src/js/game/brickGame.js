@@ -17,10 +17,11 @@ class BrickGame extends GameManager {
         this.BRICK_HEIGHT = 80;
         this.BRICK_PADDING = 10;
         this.BRICK_OFFSET_TOP = 60;
-        this.BRICK_OFFSET_LEFT = 30;
-
-        // MARK: 벽돌 배열
+        this.BRICK_OFFSET_LEFT = 30;        // MARK: 벽돌 배열
         this.bricks = [];
+
+        // MARK: 이미지 관련 속성
+        this.paddleImage = null; // 패들 이미지 객체 초기화
 
         // MARK: 벽돌 개수 계산 및 설정
         const { maxColumns, maxRows } = this.calculateMaxBricks();
@@ -310,17 +311,33 @@ class BrickGame extends GameManager {
         this.ctx.fillStyle = this.ball.color;
         this.ctx.fill();
         this.ctx.closePath();
-    }
-
-    /**
+    }    /**
      * 패들 그리기
      */
-    drawPaddle() {
-        this.ctx.beginPath();
-        this.ctx.rect(this.paddle.x, this.paddle.y, this.paddle.width, this.paddle.height);
-        this.ctx.fillStyle = this.paddle.color;
-        this.ctx.fill();
-        this.ctx.closePath();
+    drawPaddle() {        // 이미지 객체 생성 및 캐싱을 위한 정적 변수 사용
+        if (!this.paddleImage) {
+            this.paddleImage = new Image(); // 패들 이미지 객체 생성
+            this.paddleImage.src = '../assets/images/game/object/bar.png'; // index.html 기준 상대 경로로 수정
+        }
+
+        // 이미지가 로드되었는지 확인
+        if (this.paddleImage.complete) {
+            // 이미지를 패들과 같은 크기로 그리기
+            this.ctx.drawImage(
+                this.paddleImage,
+                this.paddle.x,
+                this.paddle.y,
+                this.paddle.width,
+                this.paddle.height
+            );
+        } else {
+            // 이미지 로딩 중일 때는 기존 사각형으로 대체
+            this.ctx.beginPath();
+            this.ctx.rect(this.paddle.x, this.paddle.y, this.paddle.width, this.paddle.height);
+            this.ctx.fillStyle = this.paddle.color;
+            this.ctx.fill();
+            this.ctx.closePath();
+        }
     }
 
     /**
