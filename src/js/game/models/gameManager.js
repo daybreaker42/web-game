@@ -46,7 +46,7 @@ class GameManager {
         // MARK: 생명 설정 (모드 및 난이도별) // 주석 추가: 생명 설정 구조화
         this.livesConfig = {
             brick: { easy: 300, normal: 300, hard: 300 }, // 주석 추가: 벽돌깨기 모드 생명 (현재는 동일)
-            boss: { easy: 300, normal: 300, hard: 300 }   // 주석 추가: 보스전 모드 생명 (현재는 동일)
+            boss: { easy: 1000, normal: 300, hard: 300 }   // 주석 추가: 보스전 모드 생명 (현재는 동일)
         };
 
         // MARK: 입력 상태
@@ -176,7 +176,7 @@ class GameManager {
             height: 10,
             width: 110,
             x: (this.canvas.width - 110) / 2,
-            y: this.canvas.height - 10,
+            y: this.canvas.height - 100,
             color: '#4CAF50'
         };
     }
