@@ -1,7 +1,7 @@
 /**
  * GameManager class
  * - 게임 실행/상태 관리를 수행하는 클래스
- * - 벽돌깨기(game.js)와 보스전(boss.js)의 공통 기능을 제공
+ * - 벽돌깨기(brickGame.js)와 보스전(bossGame.js)의 공통 기능을 제공
  */
 class GameManager {
     constructor(canvas) {
