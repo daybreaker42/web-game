@@ -1,9 +1,10 @@
 function playStageGameplay(stageIndex, onGameEnd) {
-  // TODO: 본게임 구현
-  alert(`Stage ${stageIndex + 1} 게임 시작`);
-  setTimeout(() => {
-    // TODO: 값 교체
-    const gameResult = DEMO_GAME_RESULT_1;
-    onGameEnd(gameResult);
-  }, 2000);
+  let currentGame = null;
+  if (1 <= stageIndex && stageIndex <= 3) {
+    currentGame = new BrickGame(canvas);
+  } else if (stageIndex == 4) {
+    currentGame = new BossGame(canvas);
+  } else {
+    console.error(`gameIndex 에러! - 1~4 사이의 값을 가져야 합니다. ${gameIndex}`);
+  }
 }

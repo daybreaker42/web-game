@@ -64,8 +64,8 @@ class GameManager {
         // MARK: 메시지 시스템
         this.persistentMessageElement = null;
 
-        // 이벤트 리스너 바인딩 // 주석 처리 또는 내용 삭제
-        // this.bindEventListeners(); // 주석 처리: game.html에서 이벤트 리스너를 관리하도록 변경
+        // 다음 스테이지로 넘어가기
+        this.continueNextStage = null;
     }
 
     /**
@@ -98,7 +98,16 @@ class GameManager {
 
         // 레벨에 따른 난이도 설정
         this.setDifficultyByLevel(data.level);
-    }    /**
+    }
+
+    /**
+     * 다음 스테이지로 넘어가는 함수를 설정함
+     */
+    setContinueNextStage(continueNextStage) {
+        this.continueNextStage = continueNextStage;
+    }
+
+    /**
      * 스테이지별 배경 이미지 로드 메서드 (추가된 기능)
      * @param {number} stage - 스테이지 번호 (1~4)
      */
