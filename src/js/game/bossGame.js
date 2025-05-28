@@ -201,9 +201,7 @@ class BossGame extends GameManager {
         this.bossBullets = [];
         this.laserBullets = []; // 레이저 총알 배열 초기화
         this.playerLastShotTime = 0;
-    }
-
-    /**
+    }    /**
      * 게임별 업데이트 로직
      */
     updateGame(timeMultiplier) {

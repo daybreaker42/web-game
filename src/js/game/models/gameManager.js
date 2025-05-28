@@ -326,6 +326,7 @@ class GameManager {
 
             // UI 업데이트
             this.updateUI();
+            this.drawBackground();
 
             // 초기 안내 문구 출력
             const instructions = qs('#info-modal');
@@ -371,6 +372,16 @@ class GameManager {
     }
 
     /**
+     * 배경 이미지 그리기 메서드 (추가된 기능 - 하위 클래스에서 호출)
+     */
+    drawBackground() {
+        // 스테이지별 배경 이미지 그리기
+        if (this.backgroundImageLoaded && this.backgroundImage) {
+            this.ctx.drawImage(this.backgroundImage, 0, 0, this.canvas.width, this.canvas.height);
+        }
+    }
+
+    /**
      * 메인 게임 루프 - 하위 클래스에서 오버라이드
      */
     update(currentTime = 0) {
@@ -407,12 +418,7 @@ class GameManager {
             // 이하 기존 게임 로직 계속...            // 캔버스 초기화
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-            // 스테이지별 배경 이미지 그리기 (추가된 기능)
-            if (this.backgroundImageLoaded && this.backgroundImage) {
-                this.ctx.drawImage(this.backgroundImage, 0, 0, this.canvas.width, this.canvas.height);
-            }
-
-            // 하위 클래스의 업데이트 메서드 호출
+            // 하위 클래스의 업데이트 메서드 호출 (배경 그리기는 하위 클래스에서 담당)
             if (this.updateGame) {
                 this.updateGame(timeMultiplier);
             }
