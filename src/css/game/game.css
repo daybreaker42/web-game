@@ -31,39 +31,41 @@ h1 {
 
 #game-container {
     position: relative;
-    margin: 20px auto; /* HTML 인라인 스타일에서 이동 */
+    margin: 20px auto;
+    width: 800px;
+    height: 533px;
 }
 
 canvas {
-    background: #333; /* HTML 인라인 스타일에서 이동 */
-    border-radius: 5px; /* HTML 인라인 스타일에서 이동 */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* HTML 인라인 스타일에서 이동 */
-    display: block; /* HTML 인라인 스타일에서 이동 */
+    background: #333;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    display: block;
 }
 
 .controls {
-    margin: 20px 0; /* HTML 인라인 스타일에서 이동 */
-    text-align: center; /* HTML 인라인 스타일에서 이동 */
-    /* 기존 absolute 포지셔닝 스타일 제거하고 HTML 인라인 스타일 적용 */
+    position: relative;
+    top: 20px;
+    text-align: center;
 }
 
 button {
-    padding: 10px 20px; /* HTML 인라인 스타일에서 이동 */
-    font-size: 16px; /* HTML 인라인 스타일에서 이동 */
-    cursor: pointer; /* HTML 인라인 스타일에서 이동 */
-    border: none; /* HTML 인라인 스타일에서 이동 */
-    background-color: #4CAF50; /* HTML 인라인 스타일에서 이동 */
-    color: white; /* HTML 인라인 스타일에서 이동 */
-    border-radius: 5px; /* HTML 인라인 스타일에서 이동 */
-    margin: 0 10px; /* HTML 인라인 스타일에서 이동 */
-    transition: background-color 0.3s; /* HTML 인라인 스타일에서 이동 */
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 5px;
+    margin: 0 10px;
+    transition: background-color 0.3s;
 }
 
-button:hover {
-    background-color: #45a049; /* HTML 인라인 스타일에서 이동 */
-}
+/* button:hover {
+    background-color: #45a049;
+} */
 
-/* 모드 선택 스타일 - HTML 인라인에서 이동 */
+/* 모드 선택 스타일 */
 .mode-selection {
     margin: 20px 0;
     text-align: center;
@@ -160,4 +162,13 @@ button:hover {
 }
 #info-confirm-yes:hover{
     background-color: #e7e7e7;
+}
+
+/* 일시정지 버튼 */
+#pause-button{
+    width: 150px;
+    height: 50px;
+    position: relative;
+    bottom: calc(100px + 20px);    /* 기본 100px */
+    left: calc(650px - 20px);      /* 기본 650px */
 }

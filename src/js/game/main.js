@@ -47,7 +47,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 게임 컨트롤 버튼 이벤트 리스너 설정 (한 번만) // 주석 추가
     const startButton = document.getElementById('startButton');
-    const pauseButton = document.getElementById('pauseButton');
+    const pauseButtonLegacy = document.getElementById('pauseButton');
+    const pauseButton = document.getElementById('pause-button');
     const restartButton = document.getElementById('restartButton');
 
     if (startButton) {
@@ -59,8 +60,13 @@ document.addEventListener('DOMContentLoaded', function () {
     } else {
         console.error('startButton 요소를 찾을 수 없습니다.');
     }
-    if (pauseButton) {
+    if (pauseButton && pauseButtonLegacy) {
         pauseButton.addEventListener('click', () => {
+            if (currentGame && typeof currentGame.togglePause === 'function') {
+                currentGame.togglePause();
+            }
+        });
+        pauseButtonLegacy.addEventListener('click', () => {
             if (currentGame && typeof currentGame.togglePause === 'function') {
                 currentGame.togglePause();
             }

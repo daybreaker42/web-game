@@ -146,10 +146,49 @@
           <button id="btn-skip-credits" class="btn-skip">> Skip</button>
         </div>
       </section>
-      
+
       <!-- game play screen -->
       <section id="gameplay-screen" class="screen hidden">
-        <canvas id="gameCanvas" width="800" height="533"></canvas>
+        <div class="game-container">
+          <!-- 모드 선택 (상단) -->
+          <div class="mode-selection">
+            <button id="brickModeButton" class="mode-button active">벽돌깨기 게임</button>
+            <button id="bossModeButton" class="mode-button">보스전</button>
+          </div>
+        
+          <!-- 점수 정보 (좌측) -->
+          <div class="score-info">
+            <div class="score-item">
+              점수: <span id="score" class="score-value">0</span>
+            </div>
+            <div class="score-item">
+              생명: <span id="lives" class="score-value">3</span>
+            </div>
+          </div>
+        
+          <!-- 타이머 (중앙 상단) -->
+          <div id="timer">02:00</div>
+        
+          <!-- 포켓몬 슬롯 (우측) -->
+          <div id="pokemon-slot-container">
+            <div class="pokemon-slot" id="slot-0"></div>
+            <div class="pokemon-slot" id="slot-1"></div>
+            <div class="pokemon-slot" id="slot-2"></div>
+            <div class="pokemon-slot" id="slot-3"></div>
+          </div>
+        
+          <!-- Canvas 영역 (중앙) -->
+          <div class="game-canvas-area">
+            <canvas id="gameCanvas" width="800" height="533"></canvas>
+          </div>
+          
+          <!-- 컨트롤 버튼들 (하단) -->
+          <div class="controls">
+            <button id="startButton" class="control-button" tabindex="-1">게임 시작</button>
+            <button id="pauseButton" class="control-button" tabindex="-1">일시 정지</button>
+            <button id="restartButton" class="control-button" tabindex="-1">다시 시작</button>
+          </div>
+          </div>
       </section>
     </div>
 
@@ -173,6 +212,17 @@
         </button>
       </div>
     </dialog>
+
+    <dialog id="info-modal" class="pixel-box">
+      <div style="padding: 12px; text-align: center">
+        다음 방식으로 조작이 가능합니다.<br />
+        <span id="info-content"></span>
+        <br />
+        <button id="info-confirm-yes" class="pixel-box modal-inner-button" style="margin: 10px 4px">
+          알겠어요
+        </button>
+      </div>
+    </dialog> <!-- 포켓몬 슬롯은 게임플레이 화면으로 이동됨 -->
 
     <!-- Option modal -->
     <dialog id="options-modal" class="pixel-box">
@@ -222,5 +272,12 @@
     <script src="js/ranking.js"></script>
     <script src="js/credits.js"></script>
     <script src="js/main.js"></script>
+    <!-- game 관련 js script -->
+    <script src="js/game/utils.js"></script>
+    <script src="js/game/models/brick.js"></script>
+    <script src="js/game/models/gameManager.js"></script>
+    <script src="js/game/brickGame.js"></script>
+    <script src="js/game/bossGame.js"></script>
+    <script src="js/game/main.js"></script>
   </body>
 </html>
