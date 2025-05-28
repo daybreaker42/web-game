@@ -86,8 +86,7 @@ class GameManager {
         } catch (e) {
             throw new Error('받은 data가 JSON 형식이 아닙니다');
         }
-
-        if (typeof data.mode !== 'string' || typeof data.level !== 'string' || typeof data.stage !== 'number') {
+        if (typeof data.mode !== 'string' || typeof data.level !== 'string') {
             throw new Error('게임 정보의 형식이 유효하지 않습니다');
         } this.mode = data.mode;
         this.level = data.level;
