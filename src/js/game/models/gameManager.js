@@ -15,9 +15,15 @@ class GameManager {
         this.FRAME_DELAY = 1000 / this.FPS;
 
         // MARK: 배경 이미지 시스템 추가
-        this.backgroundImage = null; // 배경 이미지 객체
-        this.backgroundImageLoaded = false; // 배경 이미지 로드 완료 플래그
-
+        this.backgroundImage = null;
+        this.backgroundImageLoaded = false;
+        // MARK: 목숨 아이콘 이미지 추가
+        this.ballIcon = new Image();
+        this.ballIcon.src = '../assets/images/game/object/ball.png'; // 볼 아이콘 경로 설정
+        this.ballIconLoaded = false;
+        this.ballIcon.onload = () => {
+            this.ballIconLoaded = true; // 볼 아이콘 로드 완료 플래그
+        };
         // MARK: 게임 상태 변수들
         this.gameState = 'waiting'; // waiting, playing, paused, finished
         this.lastTime = 0;
@@ -264,11 +270,35 @@ class GameManager {
      * UI 업데이트
      */
     updateUI() {
-        const scoreElement = document.getElementById('score');
-        const livesElement = document.getElementById('lives');
+        this.drawLives();
+        this.drawScore();
+    }
 
+    /**
+     * 목숨 표시 (master 요청으로 추가된 메서드)
+     */
+    drawLives() {
+        const iconWidth = 30; // 아이콘 너비
+        const iconHeight = 30; // 아이콘 높이
+        const iconX = this.canvas.width - 100; // 아이콘 위치 (우측 여백 70px)
+        const iconY = 10; // 아이콘 위치 (상단 여백 10px)
+        const textX = iconX + iconWidth + 5; // 텍스트 위치 (아이콘 옆)
+        const textY = iconY + iconHeight / 2 + 5; // 텍스트 수직 정렬
+        if (this.ballIconLoaded) {
+            this.ctx.drawImage(this.ballIcon, iconX, iconY, iconWidth, iconHeight); // 볼 아이콘 그리기
+
+            this.ctx.font = '20px DOSGothic'; // 폰트 설정
+            this.ctx.fillStyle = '#fff'; // 텍스트 색상
+            this.ctx.textAlign = 'left'; // 텍스트 정렬
+            this.ctx.fillText(`X ${this.lives}`, textX, textY); // 남은 목숨 표시
+        } else {
+            this.ctx.fillText(`남은 목숨: ${this.lives}`, textX, textY); // 볼 아이콘이 로드되지 않았을 때 텍스트로 표시
+        }
+    }
+
+    drawScore() {
+        const scoreElement = qs('#score');
         if (scoreElement) scoreElement.textContent = this.score;
-        if (livesElement) livesElement.textContent = this.lives;
     }
 
     /**
@@ -387,14 +417,17 @@ class GameManager {
     update(currentTime = 0) {
         const deltaTime = currentTime - this.lastTime;
 
+        // 프레임 딜레이를 고려한 업데이트
+        // 현재 시간과 마지막 업데이트 시간의 차이를 계산하여 프레임 딜레이보다 작으면 다음 프레임으로 넘어감
         if (deltaTime < this.FRAME_DELAY) {
             this.animationFrame = requestAnimationFrame((time) => this.update(time));
             return;
         }
 
         this.lastTime = currentTime - (deltaTime % this.FRAME_DELAY);
-        const timeMultiplier = deltaTime / this.FRAME_DELAY;
+        const timeMultiplier = deltaTime / this.FRAME_DELAY; // FPS 기반 시간 보정치
 
+        // 게임이 실행 중이고 일시정지가 아닌 경우에만 업데이트
         if (this.isGameRunning && !this.isPaused) {
             // 남은 시간 (ms)
             const elapsedTime = currentTime - this.gameStartTime - this.totalPauseDuration;
@@ -414,18 +447,24 @@ class GameManager {
                 this.isGameRunning = false; // this 추가
                 cancelAnimationFrame(this.animationFrame);
                 return;
-            }
-            // 이하 기존 게임 로직 계속...            // 캔버스 초기화
+            }            // 이하 기존 게임 로직 계속...
+            // 캔버스 초기화
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-            // 하위 클래스의 업데이트 메서드 호출 (배경 그리기는 하위 클래스에서 담당)
+            // 배경 그리기 (항상 먼저)
+            if (this.backgroundImageLoaded && this.backgroundImage) {
+                this.drawBackground();
+            } else if (this.stage) { // 배경 이미지가 로드되지 않았지만 스테이지 정보가 있다면 로드 시도
+                this.loadStageBackground(this.stage);
+            }
+
+            // 하위 클래스의 업데이트 메서드 호출
             if (this.updateGame) {
                 this.updateGame(timeMultiplier);
             }
 
             this.updateUI();
-        }
-
+        }        // 다음 프레임 요청 (게임이 실행 중일 때만)
         if (this.isGameRunning) {
             this.animationFrame = requestAnimationFrame((time) => this.update(time));
         }
