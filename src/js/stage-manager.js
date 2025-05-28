@@ -15,7 +15,7 @@ function proceedToStage(n) {
  */
 function onGameEnd(gameResult) {
   saveGameResult(gameResult);
-
+    hideWithFade(qs('#gameplay-screen'));
   if (gameResult.game_over) {
     onStageOver(gameResult);
   } else {
