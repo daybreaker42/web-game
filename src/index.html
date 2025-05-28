@@ -11,13 +11,13 @@
     <!-- Game Root -->
     <div id="game-root">
       <!-- Title Screen-->
-      <section id="title-screen" class="screen">
+      <section id="title-screen" class="screen hidden">
         <div class="logo" alt="Game Logo"></div>
         <p class="press-any">Press any button to start</p>
       </section>
 
       <!-- Main menu Screen-->
-      <section id="main-menu-screen" class="menu screen hidden">
+      <section id="main-menu-screen" class="menu screen">
         <button class="pixel-box pixel-box--menu" id="btn-play">
           게임하기
         </button>
@@ -145,6 +145,10 @@
           <div id="credits-scroll"></div>
           <button id="btn-skip-credits" class="btn-skip">> Skip</button>
         </div>
+      </section>
+      <!-- game play screen -->
+      <section id="gameplay-screen" class="screen hidden">
+        <canvas id="gameCanvas" width="800" height="533"></canvas>
       </section>
     </div>
 
