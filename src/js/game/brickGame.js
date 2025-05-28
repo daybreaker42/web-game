@@ -144,33 +144,52 @@ class BrickGame extends GameManager {
         // 공 이동
         this.ball.x += this.ball.speedX * timeMultiplier;
         this.ball.y += this.ball.speedY * timeMultiplier;
+        console.log(`ball location - ${this.ball.x}, ${this.ball.y}`);
 
-        // 좌우 벽 충돌
-        if (this.ball.x + this.ball.radius > this.canvas.width || this.ball.x - this.ball.radius < 0) {
-            this.ball.speedX = -this.ball.speedX;
-        }
+        // 화면 밖 감지 조건 정의 (Master 요청 기준)
+        const ballIsOutOfScreenLeft = this.ball.x <= -this.ball.radius; // 공의 중심 x가 -radius 이하 (완전히 왼쪽 밖)
+        const ballIsOutOfScreenTop = this.ball.y <= -this.ball.radius;  // 공의 중심 y가 -radius 이하 (완전히 위쪽 밖)
+        const ballIsOutOfScreenRight = this.ball.x - this.ball.radius > this.canvas.width; // 공의 왼쪽 끝이 캔버스 오른쪽을 넘어감 (완전히 오른쪽 밖)
+        const ballIsOutOfScreenBottom = this.ball.y + this.ball.radius > this.canvas.height; // 기존 하단 아웃 조건 (공의 아래쪽 끝이 캔버스 하단을 넘어감)
+        const isBallMissing = isNaN(this.ball.x) || isNaN(this.ball.x);
 
-        // 상단 벽 충돌
-        if (this.ball.y - this.ball.radius < 0) {
-            this.ball.speedY = -this.ball.speedY;
-        }
-
-        // 하단 벽 충돌 (게임 오버)
-        if (this.ball.y + this.ball.radius > this.canvas.height) {
+        if (ballIsOutOfScreenLeft || ballIsOutOfScreenRight || ballIsOutOfScreenTop || ballIsOutOfScreenBottom || isBallMissing) {
+        // 공이 화면 밖으로 나간 경우: 생명 감소 및 위치/속도 초기화
             this.lives -= 1; // 생명 감소
+            console.log(`Ball went out of bounds. Condition: L=${ballIsOutOfScreenLeft}, R=${ballIsOutOfScreenRight}, T=${ballIsOutOfScreenTop}, B=${ballIsOutOfScreenBottom}. Lives left: ${this.lives}`); // 수정: 아웃된 조건 로그 추가
 
             if (this.lives <= 0) {
                 this.isGameClear = false;
                 this.showMessage('게임 오버!', 'error', true);
                 this.endGame();
-                return;
+                return; // 게임 종료 시 더 이상 진행하지 않음
             }
 
-            // 공 위치 리셋
+            // 공 위치 및 속도 초기화
             this.ball.x = this.canvas.width / 2;
-            this.ball.y = this.canvas.height - 30;
-            this.ball.speedX = 0;
-            this.ball.speedY = -this.BALL_SPEED;
+            this.ball.y = this.canvas.height - 30; // 패들 근처 또는 안전한 위치
+            this.ball.speedX = 0; 
+            this.ball.speedY = -this.BALL_SPEED; // 위로 다시 발사
+            console.log(`Ball reset after going out of bounds. New position x: ${this.ball.x}, y: ${this.ball.y}`); // 수정: 리셋 로그 추가
+        } else {
+            // 공이 화면 안에 있는 경우: 일반 벽 충돌(바운스) 처리
+            // 좌우 벽 충돌
+            if (this.ball.x - this.ball.radius < 0) { // 왼쪽 벽에 닿음 (튕김)
+                this.ball.speedX = -this.ball.speedX;
+                this.ball.x = this.ball.radius; // 공이 벽을 넘어가지 않도록 위치 조정
+                console.log(`Ball bounced off left wall. New x: ${this.ball.x}`); // 추가: 왼쪽 벽 충돌 로그
+            } else if (this.ball.x + this.ball.radius > this.canvas.width) { // 오른쪽 벽에 닿음 (튕김)
+                this.ball.speedX = -this.ball.speedX;
+                this.ball.x = this.canvas.width - this.ball.radius; // 위치 조정
+                console.log(`Ball bounced off right wall. New x: ${this.ball.x}`); // 추가: 오른쪽 벽 충돌 로그
+            }
+
+            // 상단 벽 충돌
+            if (this.ball.y - this.ball.radius < 0) { // 상단 벽에 닿음 (튕김)
+                this.ball.speedY = -this.ball.speedY;
+                this.ball.y = this.ball.radius; // 위치 조정
+                console.log(`Ball bounced off top wall. New y: ${this.ball.y}`); // 추가: 상단 벽 충돌 로그
+            }
         }
 
         // 패들 이동 처리
