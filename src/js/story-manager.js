@@ -7,23 +7,23 @@ const btnYes = qs("#skip-confirm-yes");
 const btnNo = qs("#skip-confirm-no");
 
 function setupStorySkipHandler(onSkip) {
-    const btnSkipStory = qs("#btn-skip-story");
-    if (btnSkipStory) {
-      btnSkipStory.onclick = () => skipModal.showModal();
-    }
-    btnYes.onclick = () => {
-      skipModal.close();
-      hide(qs("#story-screen"));
-      if (typeof onSkip === "function") onSkip();
-    };
-    btnNo.onclick = () => skipModal.close();
+  const btnSkipStory = qs("#btn-skip-story");
+  if (btnSkipStory) {
+    btnSkipStory.onclick = () => skipModal.showModal();
+  }
+  btnYes.onclick = () => {
+    skipModal.close();
+    hide(qs("#story-screen"));
+    if (typeof onSkip === "function") onSkip();
+  };
+  btnNo.onclick = () => skipModal.close();
 }
 
 // ============================================================================
 
 function showStoryScreen() {
-    hide(qs("#difficulty-menu"));
-    show(qs("#story-screen"));
+  hide(qs("#difficulty-menu-screen"));
+  show(qs("#story-screen"));
 }
 
 function playStageStory(stageIndex, onStoryEnd) {

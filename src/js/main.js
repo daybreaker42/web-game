@@ -1,7 +1,8 @@
 window.addEventListener("DOMContentLoaded", () => {
-  console.log("Adding event listeners");
+  //   console.log("Adding event listeners");
   document.addEventListener("keydown", startFromTitle, { once: true });
   document.addEventListener("click", startFromTitle, { once: true });
+
   setupMenuEvents();
   setupOptionModal();
   setupAudioSliders();
@@ -15,6 +16,24 @@ window.addEventListener("DOMContentLoaded", () => {
 
 let started = false;
 
+function returnToTitleScreen() {
+  console.log("Returning to title screen");
+  started = false;
+  stopBgm();
+  hideAllFade(qsa(".screen"));
+  showWithFade(qs("#title-screen"));
+
+  setTimeout(() => {
+    const pressAny = qs(".press-any");
+    if (pressAny) {
+      pressAny.classList.remove("flash-twice", "noblink", "blink");
+      void pressAny.offsetWidth;
+    }
+    document.addEventListener("keydown", startFromTitle, { once: true });
+    document.addEventListener("click", startFromTitle, { once: true });
+  }, 1000);
+}
+
 function startFromTitle(e) {
   if (started) return;
   started = true;
@@ -22,15 +41,22 @@ function startFromTitle(e) {
 
   const pressAny = qs(".press-any");
   setTimeout(() => {
-    pressAny.classList.remove("flash-twice", "noblink");
-    void pressAny.offsetWidth;
-    pressAny.classList.add("flash-twice");
+    // 깜빡임 효과 리트리거
+    if (pressAny) {
+      pressAny.classList.remove("flash-twice", "noblink", "blink");
+      void pressAny.offsetWidth; // 강제 리플로우
+      pressAny.classList.add("flash-twice");
+    }
   }, 100);
 
   setTimeout(() => {
-    hide(qs("#title"));
-    showMainMenu();
-    playBgm(BGM.TITLE);
-    startCloudAnimation();
+    showMainMenuScreen();
   }, 1100);
+}
+
+function showMainMenuScreen() {
+  hideAllFade(qsa(".screen"));
+  showWithFade(qs("#main-menu-screen"));
+  playBgm(BGM.TITLE);
+  startCloudAnimation();
 }

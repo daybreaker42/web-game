@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=800, initial-scale=1.0" />
-    <title>~The Lost Pokemons~</title>
+    <title>~The Lost Pokémons~</title>
     <link rel="stylesheet" href="css/style.css" />
     <link rel="icon" type="image/png" href="../favicon.ico" />
   </head>
@@ -11,13 +11,13 @@
     <!-- Game Root -->
     <div id="game-root">
       <!-- Title Screen-->
-      <section id="title" class="screen">
+      <section id="title-screen" class="screen">
         <div class="logo" alt="Game Logo"></div>
         <p class="press-any">Press any button to start</p>
       </section>
 
       <!-- Main menu Screen-->
-      <section id="main-menu" class="menu screen hidden">
+      <section id="main-menu-screen" class="menu screen hidden">
         <button class="pixel-box pixel-box--menu" id="btn-play">
           게임하기
         </button>
@@ -27,10 +27,17 @@
         <button class="pixel-box pixel-box--menu btn-options" title="Options">
           환경설정
         </button>
+        <button
+          class="pixel-box pixel-box--menu"
+          id="btn-credits"
+          title="Options"
+        >
+          크레딧
+        </button>
       </section>
 
       <!-- Select mode Screen-->
-      <section id="play-mode-menu" class="menu screen hidden">
+      <section id="select-mode-menu-screen" class="menu screen hidden">
         <button class="pixel-box pixel-box--menu" id="btn-story">
           스토리 모드
         </button>
@@ -39,7 +46,7 @@
         </button>
         <button
           class="pixel-box pixel-box--menu"
-          id="btn-back-to-main-menu"
+          id="btn-select-to-main"
           class="back"
         >
           뒤로가기
@@ -47,20 +54,29 @@
       </section>
 
       <!-- Select Difficulty Screen-->
-      <section id="difficulty-menu" class="menu screen hidden">
+      <section id="difficulty-menu-screen" class="menu screen hidden">
         <h2>난이도를 선택하세요</h2>
-        <button class="pixel-box pixel-box--menu btn-difficulty" data-difficulty="easy">
+        <button
+          class="pixel-box pixel-box--menu btn-difficulty"
+          data-difficulty="easy"
+        >
           쉬움
         </button>
-        <button class="pixel-box pixel-box--menu btn-difficulty" data-difficulty="normal">
+        <button
+          class="pixel-box pixel-box--menu btn-difficulty"
+          data-difficulty="normal"
+        >
           보통
         </button>
-        <button class="pixel-box pixel-box--menu btn-difficulty" data-difficulty="hard">
+        <button
+          class="pixel-box pixel-box--menu btn-difficulty"
+          data-difficulty="hard"
+        >
           어려움
         </button>
         <button
           class="pixel-box pixel-box--menu"
-          id="btn-back-to-play-mode-menu"
+          id="btn-back-to-select-mode-menu-screen"
           class="back"
         >
           뒤로가기
@@ -87,7 +103,7 @@
       </section>
 
       <!-- Ranking screen -->
-      <section id="ranking-screen" class="screen hidden fade-in">
+      <section id="ranking-screen" class="screen hidden">
         <div class="ranking-container">
           <div class="ranking-row">
             <div class="ranking-label">모드</div>
@@ -104,13 +120,17 @@
               <button class="difficulty-tab active" data-difficulty="easy">
                 쉬움
               </button>
-              <button class="difficulty-tab" data-difficulty="normal">보통</button>
-              <button class="difficulty-tab" data-difficulty="hard">어려움</button>
+              <button class="difficulty-tab" data-difficulty="normal">
+                보통
+              </button>
+              <button class="difficulty-tab" data-difficulty="hard">
+                어려움
+              </button>
             </div>
           </div>
           <div class="scoreboard"></div>
           <button
-            id="btn-back-to-main"
+            id="btn-ranking-to-main"
             class="pixel-box ranking-back"
             style="margin-top: 28px"
           >
@@ -119,7 +139,7 @@
         </div>
       </section>
 
-      <!-- Ending Credits -->
+      <!-- Credits screen -->
       <section id="credits-screen" class="screen hidden">
         <div id="credits-root">
           <div id="credits-scroll"></div>
@@ -150,7 +170,7 @@
     </dialog>
 
     <!-- Option modal -->
-    <dialog class="pixel-box" id="options-modal">
+    <dialog id="options-modal" class="pixel-box">
       <h3>환경설정</h3>
       <label>
         효과음&nbsp;볼륨
@@ -180,7 +200,6 @@
     <!-- Sound -->
     <audio id="crt-type-sfx" preload="auto"></audio>
     <audio id="crt-off-sfx" preload="auto"></audio>
-
     <audio id="bgm" autoplay loop></audio>
     <audio id="sfx" preload="auto"></audio>
     <!-- JS Scripts-->
