@@ -26,7 +26,7 @@ function showStoryScreen() {
   show(qs("#story-screen"));
 }
 
-function playStageStory(stageIndex, onStoryEnd) {
+function playStory(stageIndex, onStoryEnd) {
   showStoryScreen();
   const scenes = STORY_SCRIPTS[stageIndex] || [];
   playSceneByIndex(scenes, 0, onStoryEnd);

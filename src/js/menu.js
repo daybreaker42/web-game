@@ -13,7 +13,11 @@ function startGameStoryMode(difficulty) {
 function startGameScoreMode(difficulty) {
   selectedDifficulty = difficulty;
   stopCloudAnimation();
-  alert("미구현");
+  playGame("score", selectedDifficulty, null, (gameResult) => {
+    saveGameResult(gameResult);
+    console.log("게임 종료:", gameResult);
+  }
+  );
 }
 
 // ==================== Setup Menu Events ====================

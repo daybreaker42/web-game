@@ -2,8 +2,11 @@ let currentStageIndex = 0;
 
 function proceedToStage(n) {
   currentStageIndex = n;
-  playStageStory(n, () => {
-    playStageGameplay(n, onGameEnd);
+  playStory(n, () => {
+    playGame("story", selectedDifficulty, n, (gameResult) => {
+      onGameEnd(gameResult);
+    }
+  );
   });
 }
 
