@@ -374,6 +374,10 @@ class GameManager {
             const result = instructions.showModal();
             confirmButton.addEventListener('click', () => {
                 instructions.close();
+            
+            hideAllFade(qsa('.screen'));
+            showWithFade(qs('#gameplay-screen'));
+
             // 애니메이션 프레임 시작
                 this.animationFrame = requestAnimationFrame((time) => this.update(time));
                 console.log(`${this.mode} 게임을 시작합니다.`);
