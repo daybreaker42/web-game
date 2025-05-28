@@ -7,6 +7,9 @@ function proceedToStage(n) {
   });
 }
 
+/**
+ * 게임 끝나고 호출하는 함수, 다음 스테이지로 넘어가거나 없으면 타이틀로
+ */
 function onGameEnd(gameResult) {
   saveGameResult(gameResult);
 

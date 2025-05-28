@@ -27,10 +27,10 @@ function switchGameMode(mode) {
 
     if (mode === 'brick') {
         currentGame = new BrickGame(canvas);
-        currentGame.setGameInfo({ mode: 'brick', level: 'normal', stage: 1 });
+        currentGame.setGameInfo({ mode: 'brick', level: 'easy', stage: 1 });
     } else if (mode === 'boss') {
         currentGame = new BossGame(canvas);
-        currentGame.setGameInfo({ mode: 'boss', level: 'normal', stage: 4 });
+        currentGame.setGameInfo({ mode: 'boss', level: 'easy', stage: 4 });
     }
     console.log(`게임 모드 ${currentGameMode} 설정 완료`);
     // 게임 초기화
@@ -39,6 +39,26 @@ function switchGameMode(mode) {
     if (currentGame && typeof currentGame.updateUI === 'function') {
         currentGame.updateUI(); // 모드 변경 시 초기 UI 반영
     }
+}
+
+/**
+ * brickGame 인스턴스 제작하는 함수
+ */
+function createBrickGame(data, onGameEnd) {
+    let game = new BrickGame(canvas);
+    game.setGameInfo(data);
+    game.setOnGameEnd(onGameEnd);
+    return game;
+}
+
+/**
+ * bossGame 인스턴스 제작하는 함수
+ */
+function createBossGame(data, onGameEnd) {
+    let game = new BossGame(canvas);
+    game.setGameInfo(data);
+    game.setOnGameEnd(onGameEnd);
+    return game;
 }
 
 // 페이지 로드 시 초기화

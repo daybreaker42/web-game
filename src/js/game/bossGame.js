@@ -201,9 +201,7 @@ class BossGame extends GameManager {
         this.bossBullets = [];
         this.laserBullets = []; // 레이저 총알 배열 초기화
         this.playerLastShotTime = 0;
-    }
-
-    /**
+    }    /**
      * 게임별 업데이트 로직
      */
     updateGame(timeMultiplier) {
@@ -901,28 +899,3 @@ class BossGame extends GameManager {
         } // 주석 추가
     } // 주석 추가
 }
-
-// 게임 인스턴스 생성 및 시작 (전역 변수로 설정)
-// let bossGame = null;
-
-// // 페이지 로드 시 게임 초기화
-// document.addEventListener('DOMContentLoaded', function () {
-//     const canvas = document.getElementById('gameCanvas');
-//     if (canvas) {
-//         bossGame = new BossGame(canvas);
-
-//         // 게임 정보 설정 (예시)
-//         try {
-//             bossGame.setGameInfo({
-//                 mode: 'boss',
-//                 level: 'normal',
-//                 stage: 4
-//             });
-//         } catch (e) {
-//             console.error('게임 정보 설정 오류:', e);
-//         }
-
-//         // 초기 애니메이션 프레임 시작
-//         bossGame.animationFrame = requestAnimationFrame((time) => bossGame.update(time));
-//     }
-// });

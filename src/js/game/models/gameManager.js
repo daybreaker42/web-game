@@ -14,6 +14,16 @@ class GameManager {
         this.FPS = 60;
         this.FRAME_DELAY = 1000 / this.FPS;
 
+        // MARK: 배경 이미지 시스템 추가
+        this.backgroundImage = null;
+        this.backgroundImageLoaded = false;
+        // MARK: 목숨 아이콘 이미지 추가
+        this.ballIcon = new Image();
+        this.ballIcon.src = '../assets/images/game/object/ball.png'; // 볼 아이콘 경로 설정
+        this.ballIconLoaded = false;
+        this.ballIcon.onload = () => {
+            this.ballIconLoaded = true; // 볼 아이콘 로드 완료 플래그
+        };
         // MARK: 게임 상태 변수들
         this.gameState = 'waiting'; // waiting, playing, paused, finished
         this.lastTime = 0;
@@ -36,7 +46,7 @@ class GameManager {
         // MARK: 생명 설정 (모드 및 난이도별) // 주석 추가: 생명 설정 구조화
         this.livesConfig = {
             brick: { easy: 300, normal: 300, hard: 300 }, // 주석 추가: 벽돌깨기 모드 생명 (현재는 동일)
-            boss: { easy: 300, normal: 300, hard: 300 }   // 주석 추가: 보스전 모드 생명 (현재는 동일)
+            boss: { easy: 1000, normal: 300, hard: 300 }   // 주석 추가: 보스전 모드 생명 (현재는 동일)
         };
 
         // MARK: 입력 상태
@@ -54,8 +64,8 @@ class GameManager {
         // MARK: 메시지 시스템
         this.persistentMessageElement = null;
 
-        // 이벤트 리스너 바인딩 // 주석 처리 또는 내용 삭제
-        // this.bindEventListeners(); // 주석 처리: game.html에서 이벤트 리스너를 관리하도록 변경
+        // 다음 스테이지로 넘어가기
+        this.onGameEnd = null;
     }
 
     /**
@@ -79,14 +89,59 @@ class GameManager {
 
         if (typeof data.mode !== 'string' || typeof data.level !== 'string' || typeof data.stage !== 'number') {
             throw new Error('게임 정보의 형식이 유효하지 않습니다');
-        }
-
-        this.mode = data.mode;
+        } this.mode = data.mode;
         this.level = data.level;
         this.stage = data.stage;
 
+        // 스테이지별 배경 이미지 로드 (추가된 기능)
+        this.loadStageBackground(data.stage);
+
         // 레벨에 따른 난이도 설정
         this.setDifficultyByLevel(data.level);
+    }
+
+    /**
+     * 다음 스테이지로 넘어가는 함수를 설정함
+     */
+    setOnGameEnd(onGameEnd) {
+        this.onGameEnd = onGameEnd;
+    }
+
+    /**
+     * 스테이지별 배경 이미지 로드 메서드 (추가된 기능)
+     * @param {number} stage - 스테이지 번호 (1~4)
+     */
+    loadStageBackground(stage) {
+        // 기존 배경 이미지 초기화
+        this.backgroundImage = null;
+        this.backgroundImageLoaded = false;
+
+        // 스테이지 번호 유효성 검사
+        if (stage < 1 || stage > 4) {
+            console.warn(`유효하지 않은 스테이지 번호: ${stage}. 기본 배경을 사용합니다.`);
+            return;
+        }
+
+        // 배경 이미지 생성 및 로드
+        this.backgroundImage = new Image();
+
+        // 이미지 로드 완료 시 플래그 설정
+        this.backgroundImage.onload = () => {
+            this.backgroundImageLoaded = true;
+            console.log(`스테이지 ${stage} 배경 이미지 로드 완료`);
+        };
+
+        // 이미지 로드 실패 시 에러 처리
+        this.backgroundImage.onerror = () => {
+            console.error(`스테이지 ${stage} 배경 이미지 로드 실패`);
+            this.backgroundImage = null;
+            this.backgroundImageLoaded = false;
+        };
+
+        // 배경 이미지 경로 설정 및 로드 시작
+        const imagePath = `../assets/images/game/ui/background-stage-${stage}.png`;
+        this.backgroundImage.src = imagePath;
+        console.log(`스테이지 ${stage} 배경 이미지 로드 시작: ${imagePath}`);
     }
 
     /**
@@ -130,7 +185,7 @@ class GameManager {
             height: 10,
             width: 110,
             x: (this.canvas.width - 110) / 2,
-            y: this.canvas.height - 10,
+            y: this.canvas.height - 100,
             color: '#4CAF50'
         };
     }
@@ -224,11 +279,35 @@ class GameManager {
      * UI 업데이트
      */
     updateUI() {
-        const scoreElement = document.getElementById('score');
-        const livesElement = document.getElementById('lives');
+        this.drawLives();
+        this.drawScore();
+    }
 
+    /**
+     * 목숨 표시 (master 요청으로 추가된 메서드)
+     */
+    drawLives() {
+        const iconWidth = 30; // 아이콘 너비
+        const iconHeight = 30; // 아이콘 높이
+        const iconX = this.canvas.width - 100; // 아이콘 위치 (우측 여백 70px)
+        const iconY = 10; // 아이콘 위치 (상단 여백 10px)
+        const textX = iconX + iconWidth + 5; // 텍스트 위치 (아이콘 옆)
+        const textY = iconY + iconHeight / 2 + 5; // 텍스트 수직 정렬
+        if (this.ballIconLoaded) {
+            this.ctx.drawImage(this.ballIcon, iconX, iconY, iconWidth, iconHeight); // 볼 아이콘 그리기
+
+            this.ctx.font = '20px DOSGothic'; // 폰트 설정
+            this.ctx.fillStyle = '#fff'; // 텍스트 색상
+            this.ctx.textAlign = 'left'; // 텍스트 정렬
+            this.ctx.fillText(`X ${this.lives}`, textX, textY); // 남은 목숨 표시
+        } else {
+            this.ctx.fillText(`남은 목숨: ${this.lives}`, textX, textY); // 볼 아이콘이 로드되지 않았을 때 텍스트로 표시
+        }
+    }
+
+    drawScore() {
+        const scoreElement = qs('#score');
         if (scoreElement) scoreElement.textContent = this.score;
-        if (livesElement) livesElement.textContent = this.lives;
     }
 
     /**
@@ -286,6 +365,7 @@ class GameManager {
 
             // UI 업데이트
             this.updateUI();
+            this.drawBackground();
 
             // 초기 안내 문구 출력
             const instructions = qs('#info-modal');
@@ -331,19 +411,32 @@ class GameManager {
     }
 
     /**
+     * 배경 이미지 그리기 메서드 (추가된 기능 - 하위 클래스에서 호출)
+     */
+    drawBackground() {
+        // 스테이지별 배경 이미지 그리기
+        if (this.backgroundImageLoaded && this.backgroundImage) {
+            this.ctx.drawImage(this.backgroundImage, 0, 0, this.canvas.width, this.canvas.height);
+        }
+    }
+
+    /**
      * 메인 게임 루프 - 하위 클래스에서 오버라이드
      */
     update(currentTime = 0) {
         const deltaTime = currentTime - this.lastTime;
 
+        // 프레임 딜레이를 고려한 업데이트
+        // 현재 시간과 마지막 업데이트 시간의 차이를 계산하여 프레임 딜레이보다 작으면 다음 프레임으로 넘어감
         if (deltaTime < this.FRAME_DELAY) {
             this.animationFrame = requestAnimationFrame((time) => this.update(time));
             return;
         }
 
         this.lastTime = currentTime - (deltaTime % this.FRAME_DELAY);
-        const timeMultiplier = deltaTime / this.FRAME_DELAY;
+        const timeMultiplier = deltaTime / this.FRAME_DELAY; // FPS 기반 시간 보정치
 
+        // 게임이 실행 중이고 일시정지가 아닌 경우에만 업데이트
         if (this.isGameRunning && !this.isPaused) {
             // 남은 시간 (ms)
             const elapsedTime = currentTime - this.gameStartTime - this.totalPauseDuration;
@@ -363,11 +456,16 @@ class GameManager {
                 this.isGameRunning = false; // this 추가
                 cancelAnimationFrame(this.animationFrame);
                 return;
-            }
-            // 이하 기존 게임 로직 계속...
-
+            }            // 이하 기존 게임 로직 계속...
             // 캔버스 초기화
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+            // 배경 그리기 (항상 먼저)
+            if (this.backgroundImageLoaded && this.backgroundImage) {
+                this.drawBackground();
+            } else if (this.stage) { // 배경 이미지가 로드되지 않았지만 스테이지 정보가 있다면 로드 시도
+                this.loadStageBackground(this.stage);
+            }
 
             // 하위 클래스의 업데이트 메서드 호출
             if (this.updateGame) {
@@ -375,8 +473,7 @@ class GameManager {
             }
 
             this.updateUI();
-        }
-
+        }        // 다음 프레임 요청 (게임이 실행 중일 때만)
         if (this.isGameRunning) {
             this.animationFrame = requestAnimationFrame((time) => this.update(time));
         }

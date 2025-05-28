@@ -17,10 +17,11 @@ class BrickGame extends GameManager {
         this.BRICK_HEIGHT = 80;
         this.BRICK_PADDING = 10;
         this.BRICK_OFFSET_TOP = 60;
-        this.BRICK_OFFSET_LEFT = 30;
-
-        // MARK: 벽돌 배열
+        this.BRICK_OFFSET_LEFT = 30;        // MARK: 벽돌 배열
         this.bricks = [];
+
+        // MARK: 이미지 관련 속성
+        this.paddleImage = null; // 패들 이미지 객체 초기화
 
         // MARK: 벽돌 개수 계산 및 설정
         const { maxColumns, maxRows } = this.calculateMaxBricks();
@@ -144,32 +145,50 @@ class BrickGame extends GameManager {
         this.ball.x += this.ball.speedX * timeMultiplier;
         this.ball.y += this.ball.speedY * timeMultiplier;
 
-        // 좌우 벽 충돌
-        if (this.ball.x + this.ball.radius > this.canvas.width || this.ball.x - this.ball.radius < 0) {
-            this.ball.speedX = -this.ball.speedX;
-        }
+        // 화면 밖 감지 조건 정의 (Master 요청 기준)
+        const ballIsOutOfScreenLeft = this.ball.x <= -this.ball.radius; // 공의 중심 x가 -radius 이하 (완전히 왼쪽 밖)
+        const ballIsOutOfScreenTop = this.ball.y <= -this.ball.radius;  // 공의 중심 y가 -radius 이하 (완전히 위쪽 밖)
+        const ballIsOutOfScreenRight = this.ball.x - this.ball.radius > this.canvas.width; // 공의 왼쪽 끝이 캔버스 오른쪽을 넘어감 (완전히 오른쪽 밖)
+        const ballIsOutOfScreenBottom = this.ball.y + this.ball.radius > this.canvas.height; // 기존 하단 아웃 조건 (공의 아래쪽 끝이 캔버스 하단을 넘어감)
+        const isBallMissing = isNaN(this.ball.x) || isNaN(this.ball.y);
 
-        // 상단 벽 충돌
-        if (this.ball.y - this.ball.radius < 0) {
-            this.ball.speedY = -this.ball.speedY;
-        }
-
-        // 하단 벽 충돌 (게임 오버)
-        if (this.ball.y + this.ball.radius > this.canvas.height) {
+        if (ballIsOutOfScreenLeft || ballIsOutOfScreenRight || ballIsOutOfScreenTop || ballIsOutOfScreenBottom || isBallMissing) {
+        // 공이 화면 밖으로 나간 경우: 생명 감소 및 위치/속도 초기화
             this.lives -= 1; // 생명 감소
+            // console.log(`Ball went out of bounds. Condition: L=${ballIsOutOfScreenLeft}, R=${ballIsOutOfScreenRight}, T=${ballIsOutOfScreenTop}, B=${ballIsOutOfScreenBottom}, M=${isBallMissing}. Lives left: ${this.lives}`); // 수정: 아웃된 조건 로그 추가
 
             if (this.lives <= 0) {
                 this.isGameClear = false;
                 this.showMessage('게임 오버!', 'error', true);
                 this.endGame();
-                return;
+                return; // 게임 종료 시 더 이상 진행하지 않음
             }
 
-            // 공 위치 리셋
+            // 공 위치 및 속도 초기화
             this.ball.x = this.canvas.width / 2;
-            this.ball.y = this.canvas.height - 30;
-            this.ball.speedX = 0;
-            this.ball.speedY = -this.BALL_SPEED;
+            this.ball.y = this.canvas.height - 30; // 패들 근처 또는 안전한 위치
+            this.ball.speedX = 0; 
+            this.ball.speedY = -this.BALL_SPEED; // 위로 다시 발사
+            // console.log(`Ball reset after going out of bounds. New position x: ${this.ball.x}, y: ${this.ball.y}`); // 수정: 리셋 로그 추가
+        } else {
+            // 공이 화면 안에 있는 경우: 일반 벽 충돌(바운스) 처리
+            // 좌우 벽 충돌
+            if (this.ball.x - this.ball.radius <= 0) { // 왼쪽 벽에 닿음 (튕김)
+                this.ball.speedX = -this.ball.speedX;
+                this.ball.x = this.ball.radius; // 공이 벽을 넘어가지 않도록 위치 조정
+                // console.log(`Ball bounced off left wall. New x: ${this.ball.x}`); // 추가: 왼쪽 벽 충돌 로그
+            } else if (this.ball.x + this.ball.radius >= this.canvas.width) { // 오른쪽 벽에 닿음 (튕김)
+                this.ball.speedX = -this.ball.speedX;
+                this.ball.x = this.canvas.width - this.ball.radius; // 위치 조정
+                // console.log(`Ball bounced off right wall. New x: ${this.ball.x}`); // 추가: 오른쪽 벽 충돌 로그
+            }
+
+            // 상단 벽 충돌
+            if (this.ball.y - this.ball.radius <= 0) { // 상단 벽에 닿음 (튕김)
+                this.ball.speedY = -this.ball.speedY;
+                this.ball.y = this.ball.radius; // 위치 조정
+                // console.log(`Ball bounced off top wall. New y: ${this.ball.y}`); // 추가: 상단 벽 충돌 로그
+            }
         }
 
         // 패들 이동 처리
@@ -310,17 +329,33 @@ class BrickGame extends GameManager {
         this.ctx.fillStyle = this.ball.color;
         this.ctx.fill();
         this.ctx.closePath();
-    }
-
-    /**
+    }    /**
      * 패들 그리기
      */
-    drawPaddle() {
-        this.ctx.beginPath();
-        this.ctx.rect(this.paddle.x, this.paddle.y, this.paddle.width, this.paddle.height);
-        this.ctx.fillStyle = this.paddle.color;
-        this.ctx.fill();
-        this.ctx.closePath();
+    drawPaddle() {        // 이미지 객체 생성 및 캐싱을 위한 정적 변수 사용
+        if (!this.paddleImage) {
+            this.paddleImage = new Image(); // 패들 이미지 객체 생성
+            this.paddleImage.src = '../assets/images/game/object/bar.png'; // index.html 기준 상대 경로로 수정
+        }
+
+        // 이미지가 로드되었는지 확인
+        if (this.paddleImage.complete) {
+            // 이미지를 패들과 같은 크기로 그리기
+            this.ctx.drawImage(
+                this.paddleImage,
+                this.paddle.x,
+                this.paddle.y,
+                this.paddle.width,
+                this.paddle.height
+            );
+        } else {
+            // 이미지 로딩 중일 때는 기존 사각형으로 대체
+            this.ctx.beginPath();
+            this.ctx.rect(this.paddle.x, this.paddle.y, this.paddle.width, this.paddle.height);
+            this.ctx.fillStyle = this.paddle.color;
+            this.ctx.fill();
+            this.ctx.closePath();
+        }
     }
 
     /**
@@ -330,7 +365,7 @@ class BrickGame extends GameManager {
         for (let c = 0; c < this.brickColumnCount; c++) {
             for (let r = 0; r < this.brickRowCount; r++) {
                 if (this.bricks[c][r].status === 1) {
-    // Brick 클래스의 draw 메서드 사용
+                    // Brick 클래스의 draw 메서드 사용
                     this.bricks[c][r].draw(this.ctx);
                 }
             }
@@ -345,26 +380,3 @@ class BrickGame extends GameManager {
     super.restartGame(); // 부모 클래스의 재시작 메서드 호출
    }
 }
-
-// 전역 변수로 게임 인스턴스 관리 (game.html에서 사용) - 하위 호환성을 위해 유지
-let brickGame = null;
-
-// 페이지 로드 시 게임 초기화 (하지만 즉시 시작하지는 않음)
-// document.addEventListener('DOMContentLoaded', function () {
-//     const canvas = document.getElementById('gameCanvas');
-//     if (canvas) {
-//         // BrickGame 인스턴스 생성 - 클래스 기반 접근법 사용
-//         brickGame = new BrickGame(canvas);
-
-//         // 게임 정보 설정
-//         try {
-//             brickGame.setGameInfo({
-//                 mode: 'brick',
-//                 level: 'normal',
-//                 stage: 1
-//             });
-//         } catch (e) {
-//             console.warn('게임 정보 설정 실패:', e.message);
-//         }
-//     }
-// });
