@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('keydown', (e) => {
         if (e.key >= '1' && e.key <= '4') {
             // 1 ~ 4 키를 누르면 해당하는 slot 선택
-            const slotList = document.querySelectorAll('.pokemon-slot');
+            const slotList = document.querySelectorAll('.pokemon-slot-frame');
             const index = parseInt(e.key) - 1;
             slotList.forEach((slot, i) => {
                 if (i === index) {

@@ -250,11 +250,9 @@ class BrickGame extends GameManager {
             const slot = document.getElementById(`slot-${i}`);
             const bg = slot.style.backgroundImage;
 
-
             if (bg.includes(imageSrc)) {
-                return; // 이미 들어있으면 중복 추가 안 함
+                return; // 이미 들어있는 포켓몬은 중복 추가 안 함
             }
-
         }
 
         // 빈 슬롯 찾아서 추가

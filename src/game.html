@@ -26,8 +26,16 @@
             <button id="pauseButton" tabindex="-1">일시 정지</button>
             <button id="restartButton" tabindex="-1">다시 시작</button>
         </div>
+        <!-- pokemon slot 위에 표시되는 frame -->
+        <div id="pokemon-slot-frame-container">
+            <div id="slot-frame-0" class="pokemon-slot-frame selected"></div>
+            <div id="slot-frame-1" class="pokemon-slot-frame"></div>
+            <div id="slot-frame-2" class="pokemon-slot-frame"></div>
+            <div id="slot-frame-3" class="pokemon-slot-frame"></div>
+        </div>
+        <!-- 실제로 pokemon이 들어가는 slot -->
         <div id="pokemon-slot-container" class="">
-            <div class="pokemon-slot selected" id="slot-0"></div>
+            <div class="pokemon-slot" id="slot-0"></div>
             <div class="pokemon-slot" id="slot-1"></div>
             <div class="pokemon-slot" id="slot-2"></div>
             <div class="pokemon-slot" id="slot-3"></div>
