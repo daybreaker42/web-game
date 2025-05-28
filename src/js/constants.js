@@ -3,6 +3,7 @@ const STORY_SCRIPTS = [
   window.story_stage1,
   window.story_stage2,
   window.story_stage3,
+  window.story_stage4,
   window.story_ending,
 ];
 
