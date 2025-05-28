@@ -1,13 +1,3 @@
-function chooseMode(mode) {
-  selectedMode = mode;
-  hide(qs("#select-mode-menu-screen"));
-  show(qs("#difficulty-menu-screen"));
-}
-
-function showMainMenu() {
-    showWithFade(qs("#main-menu-screen"));
-}
-
 // ==================== Start Game Functions ====================
 
 let selectedDifficulty = null;
@@ -28,6 +18,16 @@ function startGameScoreMode(difficulty) {
 
 // ==================== Setup Menu Events ====================
 
+function chooseMode(mode) {
+    selectedMode = mode;
+    hide(qs("#select-mode-menu-screen"));
+    show(qs("#difficulty-menu-screen"));
+}
+  
+function showMainMenu() {
+showWithFade(qs("#main-menu-screen"));
+}
+
 function setupMenuEvents() {
   qs("#btn-story").onclick = () => chooseMode("story-mode");
   qs("#btn-score").onclick = () => chooseMode("score-mode");
@@ -36,6 +36,14 @@ function setupMenuEvents() {
     hide(qs("#main-menu-screen"));
     show(qs("#select-mode-menu-screen"));
   };
+
+  qs("#btn-credits").onclick = () => {
+    stopCloudAnimation();
+    playBgm(BGM.CREDITS);
+    hideAllFade(qsa(".screen"));
+    showWithFade(qs("#credits-screen"));
+    showCredits();
+  }
 
   qs("#btn-select-to-main").onclick = () => {
     hide(qs("#select-mode-menu-screen"));
