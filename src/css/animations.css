@@ -1,15 +1,4 @@
-@keyframes slow-fadein {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-.slow-fadein {
-  animation: slow-fadein 2.5s cubic-bezier(0.5, 0, 1, 1) forwards;
-}
-@keyframes retro-fade-in-slow {
+@keyframes fade-in {
   0% {
     opacity: 0;
   }
@@ -23,7 +12,7 @@
     opacity: 1;
   }
 }
-@keyframes retro-fade-out-slow {
+@keyframes fade-out {
   0% {
     opacity: 1;
   }
@@ -37,7 +26,7 @@
     opacity: 0;
   }
 }
-@keyframes retro-fade-in-fast {
+@keyframes fade-in-fast {
   0% {
     opacity: 0;
   }
@@ -45,7 +34,7 @@
     opacity: 1;
   }
 }
-@keyframes retro-fade-out-fast {
+@keyframes fade-out-fast {
   0% {
     opacity: 1;
   }
@@ -53,7 +42,7 @@
     opacity: 0;
   }
 }
-@keyframes retro-flashing-blink {
+@keyframes press-any-blink {
   0% {
     color: #222;
     filter: none;
@@ -79,4 +68,33 @@
   50% {
     opacity: 0;
   }
+}
+
+/* ========================== Screens Animations ========================== */
+
+#title-screen.fade-in,
+#main-menu-screen.fade-in,
+#select-mode-menu-screen.fade-in,
+#difficulty-menu-screen.fade-in,
+#story-screen.fade-in,
+#crt-console-screen.fade-in,
+#ranking-screen.fade-in,
+#credits-screen.fade-in {
+  animation: fade-in 0.5s steps(3, end) 1;
+}
+#title-screen.fade-out,
+#main-menu-screen.fade-out,
+#select-mode-menu-screen.fade-out,
+#difficulty-menu-screen.fade-out,
+#story-screen.fade-out,
+#crt-console-screen.fade-out,
+#ranking-screen.fade-out,
+#credits-screen.fade-out {
+  animation: fade-out 0.5s steps(3, end) 1;
+}
+#story-illustration.fade-in {
+  animation: fade-in 0.8s steps(3, end) 1;
+}
+#story-illustration.fade-out {
+  animation: fade-out 0.8s steps(3, end) 1;
 }
