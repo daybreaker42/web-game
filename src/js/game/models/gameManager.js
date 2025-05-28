@@ -443,7 +443,7 @@ class GameManager {
         if (this.isGameRunning && !this.isPaused) {
             // 남은 시간 (ms)
             const elapsedTime = currentTime - this.gameStartTime - this.totalPauseDuration;
-            const timeLeft = Math.max(0, 120000 - elapsedTime);
+            const timeLeft = Math.max(0, 5000 - elapsedTime);
 
             // 분과 초 계산
             const minutes = Math.floor(timeLeft / 60000);
@@ -458,6 +458,7 @@ class GameManager {
                 this.showMessage('시간 초과! 게임 종료', 'error'); // this 추가
                 this.isGameRunning = false; // this 추가
                 cancelAnimationFrame(this.animationFrame);
+                this.endGame();
                 return;
             }            // 이하 기존 게임 로직 계속...
             // 캔버스 초기화
@@ -488,12 +489,12 @@ class GameManager {
     endGame() {
         this.isGameRunning = false;
         this.gameState = 'finished';
-
+        console.log('게임 종료:', this.mode, this.level, this.stage, this.score);
         if (this.animationFrame) {
             cancelAnimationFrame(this.animationFrame);
         }
 
-        return {
+        this.onGameEnd({
             mode: this.mode,
             level: this.level,
             stage: this.stage,
@@ -501,7 +502,7 @@ class GameManager {
             date: new Date().toISOString(),
             game_over: !this.isGameClear,
             saved_pokemon: this.saved_pokemon || [],
-        };
+        });
     }
 
     // MARK: 하위 클래스에서 구현해야 할 추상 메서드들
