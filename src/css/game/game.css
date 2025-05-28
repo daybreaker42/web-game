@@ -132,29 +132,34 @@ button {
         margin: 5px 0;
     }
 }
-
+/* pokemon slot container */
 #pokemon-slot-container {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 30px;
-    padding: 10px;
-    background-color: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-}
+    position: relative;
+    bottom: 110px;
+    left: 0px;
 
+    display: flex;
+    width: calc(64px * 4);
+}
+/* pokemon slot */
 .pokemon-slot {
     width: 64px;
     height: 64px;
-    border: 3px solid #fff;
-    border-radius: 10px;
-    background-color: rgba(255, 255, 255, 0.1);
+    /* border: 3px solid #fff; */
+    /* border-radius: 10px; */
+    /* background-color: rgba(255, 255, 255, 0.1); */
+    background-image: url(../../../assets/images/game/ui/slot_frame.png);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.2);
     transition: background-image 0.3s ease;
+}
+
+.pokemon-slot.selected{
+    background-image: url(../../../assets/images/game/ui/slot_frame_selected.png);
+    box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.4);
+    transform: scale(1.1);
 }
 
 #info-modal{

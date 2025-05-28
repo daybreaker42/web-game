@@ -106,4 +106,21 @@ document.addEventListener('DOMContentLoaded', function () {
             currentGame.mouseMoveHandler(e);
         }
     });
+
+    // slot 이동
+    document.addEventListener('keydown', (e) => {
+        if (e.key >= '1' && e.key <= '4') {
+            // 1 ~ 4 키를 누르면 해당하는 slot 선택
+            const slotList = document.querySelectorAll('.pokemon-slot');
+            const index = parseInt(e.key) - 1;
+            slotList.forEach((slot, i) => {
+                if (i === index) {
+                    slot.classList.add('selected');
+                } else {
+                    slot.classList.remove('selected');
+                }
+            });
+        }
+    });
+
 });
