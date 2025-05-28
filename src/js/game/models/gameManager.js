@@ -14,6 +14,10 @@ class GameManager {
         this.FPS = 60;
         this.FRAME_DELAY = 1000 / this.FPS;
 
+        // MARK: 배경 이미지 시스템 추가
+        this.backgroundImage = null; // 배경 이미지 객체
+        this.backgroundImageLoaded = false; // 배경 이미지 로드 완료 플래그
+
         // MARK: 게임 상태 변수들
         this.gameState = 'waiting'; // waiting, playing, paused, finished
         this.lastTime = 0;
@@ -79,14 +83,50 @@ class GameManager {
 
         if (typeof data.mode !== 'string' || typeof data.level !== 'string' || typeof data.stage !== 'number') {
             throw new Error('게임 정보의 형식이 유효하지 않습니다');
-        }
-
-        this.mode = data.mode;
+        } this.mode = data.mode;
         this.level = data.level;
         this.stage = data.stage;
 
+        // 스테이지별 배경 이미지 로드 (추가된 기능)
+        this.loadStageBackground(data.stage);
+
         // 레벨에 따른 난이도 설정
         this.setDifficultyByLevel(data.level);
+    }    /**
+     * 스테이지별 배경 이미지 로드 메서드 (추가된 기능)
+     * @param {number} stage - 스테이지 번호 (1~4)
+     */
+    loadStageBackground(stage) {
+        // 기존 배경 이미지 초기화
+        this.backgroundImage = null;
+        this.backgroundImageLoaded = false;
+
+        // 스테이지 번호 유효성 검사
+        if (stage < 1 || stage > 4) {
+            console.warn(`유효하지 않은 스테이지 번호: ${stage}. 기본 배경을 사용합니다.`);
+            return;
+        }
+
+        // 배경 이미지 생성 및 로드
+        this.backgroundImage = new Image();
+
+        // 이미지 로드 완료 시 플래그 설정
+        this.backgroundImage.onload = () => {
+            this.backgroundImageLoaded = true;
+            console.log(`스테이지 ${stage} 배경 이미지 로드 완료`);
+        };
+
+        // 이미지 로드 실패 시 에러 처리
+        this.backgroundImage.onerror = () => {
+            console.error(`스테이지 ${stage} 배경 이미지 로드 실패`);
+            this.backgroundImage = null;
+            this.backgroundImageLoaded = false;
+        };
+
+        // 배경 이미지 경로 설정 및 로드 시작
+        const imagePath = `../assets/images/game/ui/background-stage-${stage}.png`;
+        this.backgroundImage.src = imagePath;
+        console.log(`스테이지 ${stage} 배경 이미지 로드 시작: ${imagePath}`);
     }
 
     /**
@@ -364,10 +404,13 @@ class GameManager {
                 cancelAnimationFrame(this.animationFrame);
                 return;
             }
-            // 이하 기존 게임 로직 계속...
-
-            // 캔버스 초기화
+            // 이하 기존 게임 로직 계속...            // 캔버스 초기화
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+            // 스테이지별 배경 이미지 그리기 (추가된 기능)
+            if (this.backgroundImageLoaded && this.backgroundImage) {
+                this.ctx.drawImage(this.backgroundImage, 0, 0, this.canvas.width, this.canvas.height);
+            }
 
             // 하위 클래스의 업데이트 메서드 호출
             if (this.updateGame) {
