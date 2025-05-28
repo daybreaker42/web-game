@@ -6,12 +6,6 @@
   align-items: center;
   min-height: 100%;
 }
-#ranking-screen.fade-in {
-  animation: retro-fade-in-slow 0.5s steps(3, end) 1;
-}
-#ranking-screen.fade-out {
-  animation: retro-fade-out-slow 0.5s steps(3, end) 1;
-}
 
 .ranking-container {
   width: 620px;

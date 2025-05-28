@@ -28,6 +28,7 @@ function onGameEnd(gameResult) {
 
 function onAllStagesCleared(gameResult) {
   alert("축하합니다. 모든 스테이지를 클리어했습니다!\n타이틀로 돌아갑니다.");
+  returnToTitleScreen();
 }
 
 function onStageClear(gameResult) {
