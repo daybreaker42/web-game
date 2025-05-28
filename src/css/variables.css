@@ -1,6 +1,7 @@
 :root {
   --bg: #ffffff;
   --bg-dark: #000000;
+  --bg-game-screen: #222222;
   --fg: #000000;
   --accent: rgb(255, 0, 0);
   --font-size: 1.4rem;
