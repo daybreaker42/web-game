@@ -1,3 +1,6 @@
+const DEBUG_MODE = true;
+const DEBUG_GAME = true;
+
 window.addEventListener("DOMContentLoaded", () => {
   //   console.log("Adding event listeners");
   document.addEventListener("keydown", startFromTitle, { once: true });
@@ -37,6 +40,18 @@ function returnToTitleScreen() {
 function startFromTitle(e) {
   if (started) return;
   started = true;
+
+  if (DEBUG_MODE) {
+    if (DEBUG_GAME) {
+      qsa('.screen').forEach(screen => {
+        screen.classList.add('hidden');
+      });
+      qs('#gameplay-screen').classList.remove('hidden');
+    }
+    return;
+  }
+
+
   playSfx(SFX.START);
 
   const pressAny = qs(".press-any");

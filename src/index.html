@@ -149,46 +149,40 @@
 
       <!-- game play screen -->
       <section id="gameplay-screen" class="screen hidden">
-        <div class="game-container">
-          <!-- 모드 선택 (상단) -->
+        <div id="game-container">
           <div class="mode-selection">
             <button id="brickModeButton" class="mode-button active">벽돌깨기 게임</button>
             <button id="bossModeButton" class="mode-button">보스전</button>
-          </div>
-        
-          <!-- 점수 정보 (좌측) -->
-          <div class="score-info">
-            <div class="score-item">
-              점수: <span id="score" class="score-value">0</span>
-            </div>
-            <div class="score-item">
-              생명: <span id="lives" class="score-value">3</span>
-            </div>
-          </div>
-        
-          <!-- 타이머 (중앙 상단) -->
-          <div id="timer">02:00</div>
-        
-          <!-- 포켓몬 슬롯 (우측) -->
-          <div id="pokemon-slot-container">
+        </div>
+
+        <div id="game-info-indicator">
+          <span class="score-info">SCORE : <span id="score">0</span></span>
+          <span id="timer-container">TIME : <span id="timer">02:00</span></span>
+        </div>
+        <canvas id="gameCanvas" width="800" height="533"></canvas>
+        <div class="controls">
+          <button id="startButton" tabindex="-1">게임 시작</button>
+          <button id="pauseButton" tabindex="-1">일시 정지</button>
+          <button id="restartButton" tabindex="-1">다시 시작</button>
+        </div>
+        <!-- pokemon slot 위에 표시되는 frame -->
+        <div id="pokemon-slot-frame-container">
+          <div id="slot-frame-0" class="pokemon-slot-frame selected"></div>
+          <div id="slot-frame-1" class="pokemon-slot-frame"></div>
+          <div id="slot-frame-2" class="pokemon-slot-frame"></div>
+          <div id="slot-frame-3" class="pokemon-slot-frame"></div>
+        </div>
+        <!-- 실제로 pokemon이 들어가는 slot -->
+        <div id="pokemon-slot-container" class="">
             <div class="pokemon-slot" id="slot-0"></div>
             <div class="pokemon-slot" id="slot-1"></div>
             <div class="pokemon-slot" id="slot-2"></div>
             <div class="pokemon-slot" id="slot-3"></div>
-          </div>
-        
-          <!-- Canvas 영역 (중앙) -->
-          <div class="game-canvas-area">
-            <canvas id="gameCanvas" width="800" height="533"></canvas>
-          </div>
-          
-          <!-- 컨트롤 버튼들 (하단) -->
-          <div class="controls">
-            <button id="startButton" class="control-button" tabindex="-1">게임 시작</button>
-            <button id="pauseButton" class="control-button" tabindex="-1">일시 정지</button>
-            <button id="restartButton" class="control-button" tabindex="-1">다시 시작</button>
-          </div>
-          </div>
+        </div>
+        <button id="pause-button" class="pixel-box">
+          일시정지
+        </button>
+        </div>
       </section>
     </div>
 
