@@ -18,15 +18,6 @@ const DEMO_GAME_RESULT_2 = {
   saved_pokemon: [4, 5],
 };
 
-const DEMO_CREDITS_DATA = {
-  mode: "score",
-  difficulty: "hard",
-  stage: 4,
-  score: 5400,
-  date: "2025-05-23T15:10:44",
-  saved_pokemon: [2, 4, 50, 100],
-};
-
 const DEMO_RANKING_DATA = {
   story_mode: {
     easy: [
