@@ -45,6 +45,11 @@ class BrickGame extends GameManager {
       1: 105, // stage1: 피카츄
       2: 106  // stage2: 팽도리
     };
+
+    // MARK: 포켓몬 능력 효과 상태 변수 추가
+    this.electricBoostActive = false; // 전기타입 능력 (점수 2배) 활성 상태
+    this.waterBoostActive = false; // 물타입 능력 (패들 크기 증가) 활성 상태  
+    this.iceBoostActive = false; // 얼음타입 능력 (조합 속도 감소) 활성 상태
   }  /**
    * MARK: 모든 조합 패턴 정의 메서드 (스테이지 구분 없이 랜덤 선택)
    */
@@ -394,16 +399,23 @@ class BrickGame extends GameManager {
             this.ball.speedX = -this.ball.speedX;
           } else {
             this.ball.speedY = -this.ball.speedY;
-          }
-
-          brick.status = 0; // 벽돌 부서짐
+          } brick.status = 0; // 벽돌 부서짐
           let pokemon = window.pokemon[brick.pokeIndex];
+          let baseScore = 0;
+
           if (pokemon.type === 5) {
             // 전설의 포켓몬 - 점수 더 많이 줌
-            this.score += 50;
+            baseScore = 50;
           } else {
-          // 일반 포켓몬 - 10점
-            this.score += 10;
+            // 일반 포켓몬 - 10점
+            baseScore = 10;
+          }
+
+          // MARK: 전기타입 능력 적용 - 점수 2배
+          if (this.electricBoostActive) {
+            this.score += baseScore * 2;
+          } else {
+            this.score += baseScore;
           }
 
           // 타겟 포켓몬이거나 특별 포켓몬인 경우 슬롯에 추가
@@ -566,6 +578,12 @@ class BrickGame extends GameManager {
    */
   restartGame() {
     this.clearPokemonSlots(); // 슬롯 초기화
+
+    // MARK: 포켓몬 능력 효과 상태 초기화
+    this.electricBoostActive = false;
+    this.waterBoostActive = false;
+    this.iceBoostActive = false;
+
     super.restartGame(); // 부모 클래스의 재시작 메서드 호출
   }
   /**
@@ -609,5 +627,128 @@ class BrickGame extends GameManager {
     // 적절한 위치를 찾지 못한 경우 기본 위치 반환
     console.log("조합 배치: 겹치지 않는 위치를 찾지 못해 기본 위치 사용");
     return minY + Math.random() * (maxY - minY);
+  }
+
+  /**
+   * MARK: 포켓몬 능력 실행 오버라이드 (GameManager에서 상속)
+   */
+  executePokemonAbility(slotIndex, pokemonIndex, pokemonType) {
+    // 타입별 능력 실행
+    switch (pokemonType) {
+      case 0: // 풀타입
+        this.executeGrassAbility();
+        break;
+      case 1: // 불타입  
+        this.executeFireAbility();
+        break;
+      case 2: // 전기타입
+        this.executeElectricAbility();
+        break;
+      case 3: // 물타입
+        this.executeWaterAbility();
+        break;
+      case 4: // 얼음타입
+        this.executeIceAbility();
+        break;
+      default:
+        console.log("알 수 없는 타입의 포켓몬 능력입니다.");
+    }
+  }
+
+  /**
+   * MARK: 풀타입 능력 - 생명력 회복
+   */
+  executeGrassAbility() {
+    const healAmount = 50; // 회복량
+    this.lives = Math.min(this.totalLives, this.lives + healAmount);
+    this.showMessage(`풀타입 능력: 생명력 ${healAmount} 회복!`, "success");
+    console.log(`풀타입 능력 사용: 생명력 ${healAmount} 회복`);
+  }
+
+  /**
+   * MARK: 불타입 능력 - 공 속도 증가
+   */
+  executeFireAbility() {
+    const speedBoost = 2; // 속도 증가량
+    const duration = 5000; // 지속시간 5초
+
+    // 공 속도 증가
+    this.ball.speedX *= (1 + speedBoost / this.BALL_SPEED);
+    this.ball.speedY *= (1 + speedBoost / this.BALL_SPEED);
+
+    this.showMessage("불타입 능력: 공 속도 증가!", "success");
+    console.log("불타입 능력 사용: 공 속도 증가");
+
+    // 일정 시간 후 속도 원상복구
+    setTimeout(() => {
+      this.ball.speedX /= (1 + speedBoost / this.BALL_SPEED);
+      this.ball.speedY /= (1 + speedBoost / this.BALL_SPEED);
+      console.log("불타입 능력 효과 종료: 공 속도 원상복구");
+    }, duration);
+  }
+
+  /**
+   * MARK: 전기타입 능력 - 점수 2배 증가 (일정 시간)
+   */
+  executeElectricAbility() {
+    const duration = 8000; // 지속시간 8초
+
+    if (!this.electricBoostActive) {
+      this.electricBoostActive = true;
+      this.showMessage("전기타입 능력: 점수 2배 획득!", "success");
+      console.log("전기타입 능력 사용: 점수 2배 획득");
+
+      // 일정 시간 후 효과 해제
+      setTimeout(() => {
+        this.electricBoostActive = false;
+        console.log("전기타입 능력 효과 종료: 점수 2배 해제");
+      }, duration);
+    }
+  }
+
+  /**
+   * MARK: 물타입 능력 - 패들 크기 증가
+   */
+  executeWaterAbility() {
+    const sizeIncrease = 40; // 패들 크기 증가량
+    const duration = 7000; // 지속시간 7초
+
+    if (!this.waterBoostActive) {
+      this.waterBoostActive = true;
+      this.paddle.width += sizeIncrease;
+
+      this.showMessage("물타입 능력: 패들 크기 증가!", "success");
+      console.log("물타입 능력 사용: 패들 크기 증가");
+
+      // 일정 시간 후 크기 원상복구
+      setTimeout(() => {
+        this.paddle.width -= sizeIncrease;
+        this.waterBoostActive = false;
+        console.log("물타입 능력 효과 종료: 패들 크기 원상복구");
+      }, duration);
+    }
+  }
+
+  /**
+   * MARK: 얼음타입 능력 - 조합 이동 속도 감소
+   */
+  executeIceAbility() {
+    const slowFactor = 0.3; // 속도 감소 비율 (70% 감소)
+    const duration = 6000; // 지속시간 6초
+
+    if (!this.iceBoostActive) {
+      this.iceBoostActive = true;
+      this.combinationSpeed *= slowFactor;
+
+      this.showMessage("얼음타입 능력: 조합 이동 속도 감소!", "success");
+      console.log("얼음타입 능력 사용: 조합 이동 속도 감소");
+
+      // 일정 시간 후 속도 원상복구
+      setTimeout(() => {
+        this.combinationSpeed /= slowFactor;
+        this.iceBoostActive = false;
+        console.log("얼음타입 능력 효과 종료: 조합 이동 속도 원상복구");
+      }, duration);
+    }
   }
 }

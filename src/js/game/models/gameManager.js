@@ -24,6 +24,16 @@ class GameManager {
     this.ballIcon.onload = () => {
       this.ballIconLoaded = true; // 볼 아이콘 로드 완료 플래그
     };
+
+    // MARK: 포켓몬 능력 시스템 추가
+    this.pokemonAbilitySystem = {
+      cooldowns: [0, 0, 0, 0], // 각 슬롯별 쿨타임 (밀리초)
+      lastUsed: [0, 0, 0, 0], // 각 슬롯별 마지막 사용 시간
+      defaultCooldown: 3000, // 기본 쿨타임: 3초
+      throttleInterval: 200, // 입력 throttling 간격: 200ms
+      lastInputTime: [0, 0, 0, 0], // 각 슬롯별 마지막 입력 시간
+    };
+
     // 게임 상태 변수들
     this.lastTime = 0;
     this.isGameRunning = false;
@@ -201,19 +211,33 @@ class GameManager {
       e.key === "D"
     ) {
       this.keys.rightPressed = true;
-    } else if (
-      e.key === "Left" ||
-      e.key === "ArrowLeft" ||
-      e.key === "a" ||
-      e.key === "A"
-    ) {
-      this.keys.leftPressed = true;
-    } else if (e.code === "Space") {
-      this.keys.spacePressed = true;
-      this.togglePause(); // 스페이스바로 일시정지 토글
+    } else {
+      this.keys.rightPressed = false;
+      if (
+        e.key === "Left" ||
+        e.key === "ArrowLeft" ||
+        e.key === "a" ||
+        e.key === "A"
+      ) {
+        this.keys.leftPressed = true;
+      } else {
+        this.keys.leftPressed = false;
+        if (e.code === "Space") {
+          this.keys.spacePressed = true;
+          this.togglePause(); // 스페이스바로 일시정지 토글
+        } else {
+          this.keys.spacePressed = false;
+          if (e.key >= "1" && e.key <= "4") {
+            // MARK: 포켓몬 능력 사용 처리 추가
+            this.handlePokemonAbilityKey(parseInt(e.key) - 1);
+          }
+        }
+      }
     }
   }
-
+  /**
+   * 키보드 입력 해제 처리
+   */
   keyUpHandler(e) {
     if (
       e.key === "Right" ||
@@ -230,8 +254,83 @@ class GameManager {
     ) {
       this.keys.leftPressed = false;
     } else if (e.code === "Space") {
-      this.keys.spacePressed = false;
+      this.keys.spacePressed = false; // 스페이스바 입력 해제
+    } else if (e.key >= "1" && e.key <= "4") {
+      // MARK: 포켓몬 능력 사용 처리 추가
+      // const slotIndex = parseInt(e.key) - 1;
+      // this.handlePokemonAbilityKey(slotIndex);
     }
+  }
+
+  // MARK: 포켓몬 능력 키 입력 처리 메서드 추가
+  handlePokemonAbilityKey(slotIndex) {
+    // 게임이 실행 중이고 일시정지 상태가 아닐 때만 실행
+    if (!this.isGameRunning || this.isPaused) return;
+
+    const currentTime = performance.now();
+
+    // Throttling 체크: 너무 빠른 연속 입력 방지
+    if (currentTime - this.pokemonAbilitySystem.lastInputTime[slotIndex] < this.pokemonAbilitySystem.throttleInterval) {
+      return;
+    }
+    this.pokemonAbilitySystem.lastInputTime[slotIndex] = currentTime;
+
+    // 해당 슬롯에 포켓몬이 있는지 확인
+    const slot = document.getElementById(`slot-${slotIndex}`);
+    if (!slot || !slot.style.backgroundImage || slot.style.backgroundImage === "none") {
+      console.log(`슬롯 ${slotIndex + 1}에 포켓몬이 없습니다.`);
+      return;
+    }
+
+    // 쿨타임 체크
+    if (currentTime - this.pokemonAbilitySystem.lastUsed[slotIndex] < this.pokemonAbilitySystem.defaultCooldown) {
+      const remainingCooldown = Math.ceil((this.pokemonAbilitySystem.defaultCooldown - (currentTime - this.pokemonAbilitySystem.lastUsed[slotIndex])) / 1000);
+      console.log(`슬롯 ${slotIndex + 1} 포켓몬 능력 쿨타임 중입니다. (${remainingCooldown}초 남음)`);
+      return;
+    }
+
+    // 포켓몬 인덱스 추출
+    const bgImage = slot.style.backgroundImage;
+    const indexMatch = bgImage.match(/(\d+)\.png/);
+    if (!indexMatch) return;
+
+    const pokemonIndex = parseInt(indexMatch[1]);
+    this.usePokemonAbility(slotIndex, pokemonIndex);
+  }
+
+  // MARK: 포켓몬 능력 사용 메서드 추가
+  usePokemonAbility(slotIndex, pokemonIndex) {
+    const currentTime = performance.now();
+
+    // 포켓몬 타입 확인
+    let pokemonType = 0; // 기본값: 풀타입
+    if (window.pokemon && window.pokemon[pokemonIndex]) {
+      pokemonType = window.pokemon[pokemonIndex].type;
+    }
+
+    // 타입별 능력명 매핑
+    const typeNames = {
+      0: "풀타입",
+      1: "불타입",
+      2: "전기타입",
+      3: "물타입",
+      4: "얼음타입"
+    };
+
+    const typeName = typeNames[pokemonType] || "미지타입";
+    console.log(`${typeName} 능력 사용!`);
+
+    // 쿨타임 설정
+    this.pokemonAbilitySystem.lastUsed[slotIndex] = currentTime;
+
+    // 하위 클래스에서 오버라이드할 수 있는 메서드 호출
+    this.executePokemonAbility(slotIndex, pokemonIndex, pokemonType);
+  }
+
+  // MARK: 포켓몬 능력 실행 메서드 (하위 클래스에서 오버라이드)
+  executePokemonAbility(slotIndex, pokemonIndex, pokemonType) {
+    // 기본 구현: 하위 클래스에서 오버라이드하여 실제 능력 효과 구현
+    console.log(`슬롯 ${slotIndex + 1}의 포켓몬(인덱스: ${pokemonIndex}, 타입: ${pokemonType}) 능력이 사용되었습니다.`);
   }
 
   /**
