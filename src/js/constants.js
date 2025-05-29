@@ -1,12 +1,12 @@
 const GAME_TIME = 3000; // 3초
 
 const STORY_SCRIPTS = [
-    window.story_chapter0_opening,    // 0: START 스토리
-    window.story_chapter1,   // 1: Stage 1 전 스토리
-    window.story_chapter2,   // 2: Stage 2 전 스토리
-    window.story_chapter3,   // 3: Stage 3 전 스토리
-    window.story_chapter4_finale,     // 4: Stage 4 전 스토리 (보스전 전)
-    window.story_chapter5_closing,    // 5: ENDING 스토리
+  window.story_chapter0_opening, // 0: START 스토리
+  window.story_chapter1, // 1: Stage 1 후 스토리
+  window.story_chapter2, // 2: Stage 2 후 스토리
+  window.story_chapter3, // 3: Stage 3 후 스토리
+  window.story_chapter4_finale, // 4: Stage 4 전 스토리 (보스전 전)
+  window.story_chapter5_closing, // 5: ENDING 스토리
 ];
 const N_STAGES = STORY_SCRIPTS.length - 2; // 스토리 스크립트 개수 (보스전 제외)
 

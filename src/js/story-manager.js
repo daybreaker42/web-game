@@ -27,10 +27,11 @@ function showStoryScreen() {
 }
 
 function playStory(stageIndex, onStoryEnd) {
+    console.log(`Playing story for stage ${stageIndex}`);
   showStoryScreen();
   const scenes = STORY_SCRIPTS[stageIndex] || [];
-  playSceneByIndex(scenes, 0, onStoryEnd);
   setupStorySkipHandler(onStoryEnd);
+  playSceneByIndex(scenes, 0, onStoryEnd);
 }
 
 function playSceneByIndex(scenes, idx, onStoryEnd) {

@@ -8,23 +8,47 @@ function startGameStoryMode(difficulty) {
     hide(qs("#difficulty-menu-screen"));
     selectedDifficulty = difficulty;
     
-    // START 스토리부터 시작 (스테이지 0)
-    currentStageIndex = 0; // intro 스테이지
-    playStory(0, () => { // story_opening 재생
-      proceedToStage(1); // Stage 1로 진행
+    // START 스토리부터 시작
+    currentStageIndex = 0;
+    playStory(0, () => { // story_chapter0_opening
+      startStage(1); // Stage 1 게임부터 
     });
   }
-
-function startGameScoreMode(difficulty) {
-  selectedDifficulty = difficulty;
-  stopCloudAnimation();
-  playGame("score", selectedDifficulty, null, (gameResult) => {
-    saveGameResult(gameResult);
-    hide(qs("#difficulty-menu-screen"));
-    showWithFade(qs("#game-result-screen"));
-    renderGameResult(gameResult);
-  });
-}
+  
+  function startStage(stageNumber) {
+    currentStageIndex = stageNumber;
+    
+    if (stageNumber > N_STAGES) {
+      // 모든 스테이지 완료
+      onAllStagesCleared();
+      return;
+    }
+    
+    // Stage 4는 보스전 전 스토리가 먼저
+    if (stageNumber === 4) {
+      playStory(4, () => { // story_chapter4_finale
+        playGame("story", selectedDifficulty, stageNumber, (gameResult) => {
+          onGameEnd(gameResult);
+        });
+      });
+    } else {
+      // Stage 1~3은 게임 먼저
+      playGame("story", selectedDifficulty, stageNumber, (gameResult) => {
+        onGameEnd(gameResult);
+      });
+    }
+  }
+  
+  function startGameScoreMode(difficulty) {
+    selectedDifficulty = difficulty;
+    stopCloudAnimation();
+    playGame("score", selectedDifficulty, null, (gameResult) => {
+      saveGameResult(gameResult);
+      hide(qs("#difficulty-menu-screen"));
+      showWithFade(qs("#game-result-screen"));
+      renderGameResult(gameResult);
+    });
+  }
 
 // ==================== Setup Menu Events ====================
 
