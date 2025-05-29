@@ -27,7 +27,7 @@ function showStoryScreen() {
 }
 
 function playStory(stageIndex, onStoryEnd) {
-    console.log(`Playing story for stage ${stageIndex}`);
+  console.log(`Playing story for stage ${stageIndex}`);
   showStoryScreen();
   const scenes = STORY_SCRIPTS[stageIndex] || [];
   setupStorySkipHandler(onStoryEnd);

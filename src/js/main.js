@@ -1,4 +1,4 @@
-// window.DEBUG_MODE = true;
+window.DEBUG_MODE = true;
 // window.DEBUG_GAME = true;
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -7,7 +7,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
   document.addEventListener("keydown", handleStartFromTitle, { once: true });
   document.addEventListener("click", handleStartFromTitle, { once: true });
-  
+
   if (typeof window.DEBUG_MODE !== "undefined" && window.DEBUG_MODE) {
     debugMode();
     return;
