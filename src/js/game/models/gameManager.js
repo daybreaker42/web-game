@@ -645,6 +645,9 @@ class GameManager {
 
   // MARK: 포켓몬 체력바 그리기 메서드 추가
   drawPokemonHealthBars() {
+    // 보스전에선 그리지 않음
+    if (this.stage === 4) return;
+
     const barWidth = 60; // 체력바 너비
     const barHeight = 6; // 체력바 높이
     const barY = this.canvas.height - 15; // 체력바 Y 위치 (슬롯 바로 아래)

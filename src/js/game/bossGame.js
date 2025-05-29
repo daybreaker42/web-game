@@ -1161,4 +1161,4 @@ class BossGame extends GameManager {
 //       console.log("얼음타입 능력 효과 종료: 보스 이동 속도 원상복구"); // 종료 로그 추가
 //     }, 6000);
 //   }
-// }
+}
