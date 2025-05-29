@@ -1,18 +1,20 @@
 window.DEBUG_MODE = true;
-// window.DEBUG_GAME = true;
 
 window.addEventListener("DOMContentLoaded", () => {
   if (!localStorage.getItem("scoreboard")) {
     setScoreboardData(makeEmptyScoreboard());
   }
-  document.addEventListener("keydown", handleStartFromTitle, { once: true });
-  document.addEventListener("click", handleStartFromTitle, { once: true });
 
   if (typeof window.DEBUG_MODE !== "undefined" && window.DEBUG_MODE) {
     debugMode();
     return;
   }
+
   console.log("RELEASE_MODE");
+
+  document.addEventListener("keydown", handleStartFromTitle, { once: true });
+  document.addEventListener("click", handleStartFromTitle, { once: true });
+
   hideAllFade(qsa(".screen"));
   showWithFade(qs("#title-screen"));
   setupMenuEvents();
@@ -25,27 +27,9 @@ function debugMode() {
   console.log("DEBUG_MODE is ON");
   hideAllFade(qsa(".screen"));
 
-  // NOTE: Write your debug code here (e.g. Screen)
-  hideAllFade(qsa(".screen"));
-  showWithFade(qs("#title-screen"));
-  setupMenuEvents();
-  setupOptionModal();
-  setupAudioSliders();
-  setupButtonSfx();
-
-  // Set up debug events
-  if (window.DEBUG_GAME) {
-    console.log("DEBUG_GAME is ON");
-    hideAllFade(qsa(".screen"));
-    document.removeEventListener("keydown", handleStartFromTitle);
-    document.removeEventListener("click", handleStartFromTitle);
-    show(qs("#gameplay-screen"));
-    playGame("story", 0, 0, (gameResult) => {
-      console.log("Game ended:", gameResult);
-      handleReturnToTitleScreen();
-    });
-  }
-  return;
+  // NOTE: Write your test code here (e.g. Screen)
+  testGameResultScreen();
+  //   testGame();
 }
 
 let isStarted = false;

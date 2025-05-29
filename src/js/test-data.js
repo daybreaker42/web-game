@@ -1,14 +1,14 @@
-const DEMO_GAME_RESULT_1 = {
-  mode: "score",
-  difficulty: "normal",
-  stage: 0,
-  score: 5000,
-  date: "2023-10-01T12:00:00Z",
+const TEST_GAME_RESULT_1 = {
+  mode: "story",
+  difficulty: "easy",
+  stage: 1,
+  score: 7000,
+  date: "2023-10-02T12:00:00Z",
   game_over: false,
-  saved_pokemon: [1, 2, 3],
+  saved_pokemon: [4, 5],
 };
 
-const DEMO_GAME_RESULT_2 = {
+const TEST_GAME_RESULT_2 = {
   mode: "story",
   difficulty: "hard",
   stage: 1,
@@ -18,7 +18,16 @@ const DEMO_GAME_RESULT_2 = {
   saved_pokemon: [4, 5],
 };
 
-const DEMO_RANKING_DATA = {
+const TEST_GAME_RESULT_3 = {
+  mode: "score",
+  difficulty: "normal",
+  stage: 0,
+  score: 5000,
+  date: "2023-10-01T12:00:00Z",
+  saved_pokemon: [1, 2, 3],
+};
+
+const TEST_RANKING_DATA = {
   story_mode: {
     easy: [
       { rank: 1, name: "AAA", score: 5020, date: "2025-05-23 18:25" },

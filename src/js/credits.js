@@ -1,7 +1,7 @@
 // ========================
 // DEMO: 샘플 데이터
 // ========================
-const DEMO_CREDITS_DATA = {
+const TEST_CREDITS_DATA = {
   mode: "score",
   difficulty: "hard",
   stage: 4,
@@ -83,7 +83,7 @@ const CREDITS_TEXT = [
 // ========================
 
 function showCredits(creditData) {
-  creditData = creditData || DEMO_CREDITS_DATA; // 기본값 설정
+  creditData = creditData || TEST_CREDITS_DATA; // 기본값 설정
   console.log("Showing credits with data:", creditData);
   hideAllFade(qsa(".screen"));
   showWithFade(elById("credits-screen"));
