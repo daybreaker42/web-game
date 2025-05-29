@@ -16,6 +16,10 @@ window.addEventListener("DOMContentLoaded", () => {
     }
     return;
   }
+  else {
+    hideAllFade(qsa(".screen"));
+    showWithFade(qs("#title-screen"));
+  }
 
   setupMenuEvents();
   setupOptionModal();
