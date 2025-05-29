@@ -32,7 +32,6 @@ function playBgm(name) {
   bgm.volume = bgmVolume;
 }
 
-
 function playSfx(path, volume = sfxVolume) {
   path = getSfxPath(path);
   const audio = new Audio(path);
@@ -47,21 +46,20 @@ function playSfx(path, volume = sfxVolume) {
 }
 
 function stopSfx() {
-  activeSfxAudios.forEach(audio => {
+  activeSfxAudios.forEach((audio) => {
     audio.pause();
     audio.currentTime = 0;
   });
   activeSfxAudios.length = 0; // 배열 비우기
 
   // DOM에 존재하는 SFX 오디오도 정지 (예: clickSfx, startSfx)
-  [clickSfx, startSfx].forEach(audioEl => {
+  [clickSfx, startSfx].forEach((audioEl) => {
     if (audioEl) {
       audioEl.pause();
       audioEl.currentTime = 0;
     }
   });
 }
-
 
 function updateSfxVolume(vol) {
   if (clickSfx) clickSfx.volume = vol;

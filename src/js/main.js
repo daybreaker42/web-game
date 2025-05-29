@@ -28,8 +28,9 @@ function debugMode() {
   hideAllFade(qsa(".screen"));
 
   // NOTE: Write your test code here (e.g. Screen)
-  testGameResultScreen();
+  //   testGameResultScreen();
   //   testGame();
+  testMainLogic();
 }
 
 let isStarted = false;

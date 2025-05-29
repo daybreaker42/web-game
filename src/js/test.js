@@ -1,4 +1,6 @@
 function testMainLogic() {
+  document.addEventListener("keydown", handleStartFromTitle, { once: true });
+  document.addEventListener("click", handleStartFromTitle, { once: true });
   showWithFade(qs("#title-screen"));
   setupMenuEvents();
   setupOptionModal();
@@ -7,7 +9,7 @@ function testMainLogic() {
 }
 
 function testGameResultScreen() {
-    showGameResultScreen(TEST_GAME_RESULT_1);
+  showGameResultScreen(TEST_GAME_RESULT_1);
 }
 
 function testGame() {
