@@ -24,6 +24,24 @@ class GameManager {
     this.ballIcon.onload = () => {
       this.ballIconLoaded = true; // 볼 아이콘 로드 완료 플래그
     };
+
+    // MARK: 포켓몬 능력 시스템 추가
+    this.pokemonAbilitySystem = {
+      cooldowns: [0, 0, 0, 0], // 각 슬롯별 쿨타임 (밀리초)
+      lastUsed: [0, 0, 0, 0], // 각 슬롯별 마지막 사용 시간
+      defaultCooldown: 3000, // 기본 쿨타임: 3초
+      throttleInterval: 200, // 입력 throttling 간격: 200ms
+      lastInputTime: [0, 0, 0, 0], // 각 슬롯별 마지막 입력 시간
+    };    // MARK: 포켓몬 체력 시스템 추가
+    this.pokemonHealthSystem = {
+      maxHealth: [100, 100, 100, 100], // 각 슬롯별 최대 체력
+      currentHealth: [100, 100, 100, 100], // 각 슬롯별 현재 체력
+      healthConsumption: 20, // 능력 사용 시 소모 체력
+      isDizzy: [false, false, false, false], // 각 슬롯별 기절 상태
+      dizzyImages: [null, null, null, null], // 기절 상태 이미지
+      originalImages: [null, null, null, null], // 원본 이미지 저장
+    };
+
     // 게임 상태 변수들
     this.lastTime = 0;
     this.isGameRunning = false;
@@ -201,19 +219,33 @@ class GameManager {
       e.key === "D"
     ) {
       this.keys.rightPressed = true;
-    } else if (
-      e.key === "Left" ||
-      e.key === "ArrowLeft" ||
-      e.key === "a" ||
-      e.key === "A"
-    ) {
-      this.keys.leftPressed = true;
-    } else if (e.code === "Space") {
-      this.keys.spacePressed = true;
-      this.togglePause(); // 스페이스바로 일시정지 토글
+    } else {
+      this.keys.rightPressed = false;
+      if (
+        e.key === "Left" ||
+        e.key === "ArrowLeft" ||
+        e.key === "a" ||
+        e.key === "A"
+      ) {
+        this.keys.leftPressed = true;
+      } else {
+        this.keys.leftPressed = false;
+        if (e.code === "Space") {
+          this.keys.spacePressed = true;
+          this.togglePause(); // 스페이스바로 일시정지 토글
+        } else {
+          this.keys.spacePressed = false;
+          if (e.key >= "1" && e.key <= "4") {
+            // MARK: 포켓몬 능력 사용 처리 추가
+            this.handlePokemonAbilityKey(parseInt(e.key) - 1);
+          }
+        }
+      }
     }
   }
-
+  /**
+   * 키보드 입력 해제 처리
+   */
   keyUpHandler(e) {
     if (
       e.key === "Right" ||
@@ -230,8 +262,90 @@ class GameManager {
     ) {
       this.keys.leftPressed = false;
     } else if (e.code === "Space") {
-      this.keys.spacePressed = false;
+      this.keys.spacePressed = false; // 스페이스바 입력 해제
+    } else if (e.key >= "1" && e.key <= "4") {
+      // MARK: 포켓몬 능력 사용 처리 추가
+      // const slotIndex = parseInt(e.key) - 1;
+      // this.handlePokemonAbilityKey(slotIndex);
     }
+  }
+  // MARK: 포켓몬 능력 키 입력 처리 메서드 추가
+  handlePokemonAbilityKey(slotIndex) {
+    // 게임이 실행 중이고 일시정지 상태가 아닐 때만 실행
+    if (!this.isGameRunning || this.isPaused) return;
+
+    const currentTime = performance.now();
+
+    // Throttling 체크: 너무 빠른 연속 입력 방지
+    if (currentTime - this.pokemonAbilitySystem.lastInputTime[slotIndex] < this.pokemonAbilitySystem.throttleInterval) {
+      return;
+    }
+    this.pokemonAbilitySystem.lastInputTime[slotIndex] = currentTime;
+
+    // 해당 슬롯에 포켓몬이 있는지 확인
+    const slot = document.getElementById(`slot-${slotIndex}`);
+    if (!slot || !slot.style.backgroundImage || slot.style.backgroundImage === "none") {
+      console.log(`슬롯 ${slotIndex + 1}에 포켓몬이 없습니다.`);
+      return;
+    }
+
+    // 기절 상태 체크 (추가됨)
+    if (this.pokemonHealthSystem.isDizzy[slotIndex]) {
+      console.log(`슬롯 ${slotIndex + 1} 포켓몬이 기절 상태입니다. 회복할 때까지 능력을 사용할 수 없습니다.`);
+      return;
+    }
+
+    // 쿨타임 체크
+    if (currentTime - this.pokemonAbilitySystem.lastUsed[slotIndex] < this.pokemonAbilitySystem.defaultCooldown) {
+      const remainingCooldown = Math.ceil((this.pokemonAbilitySystem.defaultCooldown - (currentTime - this.pokemonAbilitySystem.lastUsed[slotIndex])) / 1000);
+      console.log(`슬롯 ${slotIndex + 1} 포켓몬 능력 쿨타임 중입니다. (${remainingCooldown}초 남음)`);
+      return;
+    }
+
+    // 포켓몬 인덱스 추출
+    const bgImage = slot.style.backgroundImage;
+    const indexMatch = bgImage.match(/(\d+)\.png/);
+    if (!indexMatch) return;
+
+    const pokemonIndex = parseInt(indexMatch[1]);
+    this.usePokemonAbility(slotIndex, pokemonIndex);
+  }
+  // MARK: 포켓몬 능력 사용 메서드 추가
+  usePokemonAbility(slotIndex, pokemonIndex) {
+    const currentTime = performance.now();
+
+    // 포켓몬 타입 확인
+    let pokemonType = 0; // 기본값: 풀타입
+    if (window.pokemon && window.pokemon[pokemonIndex]) {
+      pokemonType = window.pokemon[pokemonIndex].type;
+    }
+
+    // 타입별 능력명 매핑
+    const typeNames = {
+      0: "풀타입",
+      1: "불타입",
+      2: "전기타입",
+      3: "물타입",
+      4: "얼음타입"
+    };
+
+    const typeName = typeNames[pokemonType] || "미지타입";
+    console.log(`${typeName} 능력 사용!`);
+
+    // 체력 소모 처리 (추가됨)
+    this.consumePokemonHealth(slotIndex);
+
+    // 쿨타임 설정
+    this.pokemonAbilitySystem.lastUsed[slotIndex] = currentTime;
+
+    // 하위 클래스에서 오버라이드할 수 있는 메서드 호출
+    this.executePokemonAbility(slotIndex, pokemonIndex, pokemonType);
+  }
+
+  // MARK: 포켓몬 능력 실행 메서드 (하위 클래스에서 오버라이드)
+  executePokemonAbility(slotIndex, pokemonIndex, pokemonType) {
+    // 기본 구현: 하위 클래스에서 오버라이드하여 실제 능력 효과 구현
+    console.log(`슬롯 ${slotIndex + 1}의 포켓몬(인덱스: ${pokemonIndex}, 타입: ${pokemonType}) 능력이 사용되었습니다.`);
   }
 
   /**
@@ -294,7 +408,6 @@ class GameManager {
       }, 3000);
     }
   }
-
   /**
    * UI 업데이트
    */
@@ -304,6 +417,9 @@ class GameManager {
       this.drawLives();
     }
     this.drawScore();
+
+    // 포켓몬 체력바 그리기 (추가됨)
+    this.drawPokemonHealthBars();
   }
 
   /**
@@ -452,6 +568,127 @@ class GameManager {
         this.canvas.width,
         this.canvas.height,
       );
+    }
+  }
+
+  /**
+   * MARK: 포켓몬 체력 소모 메서드 추가
+   */
+  consumePokemonHealth(slotIndex) {
+    // 체력 소모
+    this.pokemonHealthSystem.currentHealth[slotIndex] -= this.pokemonHealthSystem.healthConsumption;
+
+    // 체력이 0 이하로 떨어진 경우 기절 상태 처리
+    if (this.pokemonHealthSystem.currentHealth[slotIndex] <= 0) {
+      this.pokemonHealthSystem.currentHealth[slotIndex] = 0;
+      this.setPokemonDizzy(slotIndex);
+    }
+  }  // MARK: 포켓몬 기절 상태 설정 메서드 추가 (dizzyImages 배열 활용)
+  setPokemonDizzy(slotIndex) {
+    this.pokemonHealthSystem.isDizzy[slotIndex] = true;
+
+    const slot = document.getElementById(`slot-${slotIndex}`);
+    if (!slot) return;
+
+    // 원본 이미지 저장 (아직 저장되지 않은 경우)
+    if (!this.pokemonHealthSystem.originalImages[slotIndex]) {
+      this.pokemonHealthSystem.originalImages[slotIndex] = slot.style.backgroundImage;
+    }
+
+    // 포켓몬 인덱스 추출
+    const bgImage = slot.style.backgroundImage;
+    const indexMatch = bgImage.match(/(\d+)\.png/);
+    if (!indexMatch) return;
+
+    const pokemonIndex = parseInt(indexMatch[1]);
+    const dizzyImagePath = `../assets/images/game/pokemon/potrait/dizzy/${pokemonIndex}.png`;
+
+    // dizzyImages 배열에 이미 저장된 이미지가 있는지 확인
+    if (this.pokemonHealthSystem.dizzyImages[slotIndex]) {
+      // 이미 로드된 기절 이미지 사용
+      slot.style.backgroundImage = `url(${dizzyImagePath})`;
+      slot.style.filter = "grayscale(1)"; // 흑백 효과 적용
+      console.log(`슬롯 ${slotIndex + 1} 포켓몬이 기절했습니다. 저장된 기절 이미지 사용.`);
+      return;
+    }
+
+    // 기절 이미지 존재 여부 확인 및 dizzyImages 배열에 저장
+    const testImage = new Image();
+    testImage.onload = () => {
+      // 성공적으로 로드된 경우 dizzyImages 배열에 저장
+      this.pokemonHealthSystem.dizzyImages[slotIndex] = testImage;
+
+      // 기절 이미지가 존재하는 경우 교체
+      slot.style.backgroundImage = `url(${dizzyImagePath})`;
+      slot.style.filter = "grayscale(1)"; // 흑백 효과 적용
+      console.log(`슬롯 ${slotIndex + 1} 포켓몬이 기절했습니다. 기절 이미지로 교체됩니다.`);
+    };
+    testImage.onerror = () => {
+      // 로드 실패한 경우 null로 표시하여 흑백 효과만 사용
+      this.pokemonHealthSystem.dizzyImages[slotIndex] = null;
+
+      // 기절 이미지가 없는 경우 흑백 효과만 적용
+      slot.style.filter = "grayscale(1)"; // 흑백 효과 적용
+      console.log(`슬롯 ${slotIndex + 1} 포켓몬이 기절했습니다. 흑백 효과만 적용됩니다.`);
+    };
+    testImage.src = dizzyImagePath;
+  }
+
+  // MARK: 포켓몬 체력 회복 메서드 추가
+  healPokemonHealth(slotIndex, healAmount = 50) {
+    // 체력 회복
+    this.pokemonHealthSystem.currentHealth[slotIndex] = Math.min(
+      this.pokemonHealthSystem.maxHealth[slotIndex],
+      this.pokemonHealthSystem.currentHealth[slotIndex] + healAmount
+    );
+
+    // 기절 상태에서 회복된 경우 원본 이미지 복원
+    if (this.pokemonHealthSystem.isDizzy[slotIndex] && this.pokemonHealthSystem.currentHealth[slotIndex] > 0) {
+      this.pokemonHealthSystem.isDizzy[slotIndex] = false;
+
+      const slot = document.getElementById(`slot-${slotIndex}`);
+      if (slot && this.pokemonHealthSystem.originalImages[slotIndex]) {
+        slot.style.backgroundImage = this.pokemonHealthSystem.originalImages[slotIndex];
+        slot.style.filter = "none"; // 흑백 효과 제거
+        console.log(`슬롯 ${slotIndex + 1} 포켓몬이 회복되었습니다.`);
+      }
+    }
+  }
+
+  // MARK: 포켓몬 체력바 그리기 메서드 추가
+  drawPokemonHealthBars() {
+    const barWidth = 60; // 체력바 너비
+    const barHeight = 6; // 체력바 높이
+    const barY = this.canvas.height - 15; // 체력바 Y 위치 (슬롯 바로 아래)
+
+    for (let i = 0; i < 4; i++) {
+      const barX = i * 64 + 2; // 각 슬롯 위치에 맞춰 체력바 위치 계산
+      const healthPercentage = this.pokemonHealthSystem.currentHealth[i] / this.pokemonHealthSystem.maxHealth[i];
+
+      // 배경 (회색 바)
+      this.ctx.fillStyle = "#333333";
+      this.ctx.fillRect(barX, barY, barWidth, barHeight);
+
+      // 체력바 색상 결정 (체력에 따라 색상 변화)
+      let healthColor;
+      if (healthPercentage > 0.6) {
+        healthColor = "#4CAF50"; // 초록색 (양호)
+      } else if (healthPercentage > 0.3) {
+        healthColor = "#FF9800"; // 주황색 (주의)
+      } else {
+        healthColor = "#F44336"; // 빨간색 (위험)
+      }
+
+      // 현재 체력바
+      if (healthPercentage > 0) {
+        this.ctx.fillStyle = healthColor;
+        this.ctx.fillRect(barX, barY, barWidth * healthPercentage, barHeight);
+      }
+
+      // 체력바 테두리
+      this.ctx.strokeStyle = "#FFFFFF";
+      this.ctx.lineWidth = 1;
+      this.ctx.strokeRect(barX, barY, barWidth, barHeight);
     }
   }
 

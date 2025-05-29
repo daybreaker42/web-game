@@ -65,11 +65,10 @@ document.addEventListener("DOMContentLoaded", function () {
       gameInstance.mouseMoveHandler(e);
     }
   });
-
-  // slot 이동 event lister 설정
+  // MARK: 슬롯 선택 UI 업데이트를 위한 이벤트 리스너 (능력 사용은 GameManager에서 처리)
   document.addEventListener("keydown", (e) => {
     if (e.key >= "1" && e.key <= "4") {
-      // 1 ~ 4 키를 누르면 해당하는 slot 선택
+      // 1 ~ 4 키를 누르면 해당하는 slot 선택 (UI만 업데이트)
       const slotList = document.querySelectorAll(".pokemon-slot-frame");
       const index = parseInt(e.key) - 1;
       slotList.forEach((slot, i) => {
