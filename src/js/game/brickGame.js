@@ -96,11 +96,9 @@ class BrickGame extends GameManager {
     if (currentSpecialPokemon && !this.saved_pokemon.includes(currentSpecialPokemon)) {
       combinationList.push({ type: 'pokemon', index: currentSpecialPokemon });
       hasSpecialPokemon = true;
-    }
-
-    // 아이템 1~2개 추가 (전체 조합 슬롯의 20% 확률)
-    let itemCount = Math.floor(slotCount * 0.2);
-    if (itemCount === 0 && Math.random() < 0.3) itemCount = 1; // 최소 30% 확률로 아이템 1개
+    }    // 아이템 최대 1개 추가 (5% 확률)
+    let itemCount = 0;
+    if (Math.random() < 0.05) itemCount = 1; // 5% 확률로 아이템 1개
 
     let availableItems = ['normal-potion', 'super-potion', 'hyper-potion', 'full-potion'];
     for (let i = 0; i < itemCount; i++) {
