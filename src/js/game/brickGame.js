@@ -389,7 +389,14 @@ class BrickGame extends GameManager {
           }
 
           brick.status = 0; // 벽돌 부서짐
-          this.score += 10;
+          let pokemon = window.pokemon[brick.pokeIndex];
+          if (pokemon.type === 5) {
+            // 전설의 포켓몬 - 점수 더 많이 줌
+            this.score += 50;
+          } else {
+          // 일반 포켓몬 - 10점
+            this.score += 10;
+          }
 
           // 타겟 포켓몬이거나 특별 포켓몬인 경우 슬롯에 추가
           if (brick.isTarget && this.targetPokemonIndexes.includes(brick.pokeIndex)) {
@@ -399,7 +406,7 @@ class BrickGame extends GameManager {
             // 특별 포켓몬 구출
             this.saved_pokemon.push(brick.pokeIndex);
             let imagePath = "../assets/images/game/pokemon/" + brick.pokeIndex + ".png";
-            this.addPokemonToSlot(imagePath);
+            // this.addPokemonToSlot(imagePath);
             let pokemonName = window.pokemon && window.pokemon[brick.pokeIndex] ? window.pokemon[brick.pokeIndex].name : "포켓몬";
             console.log("특별 포켓몬 구출: " + pokemonName);
           }
