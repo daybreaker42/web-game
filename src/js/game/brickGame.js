@@ -46,9 +46,8 @@ class BrickGame extends GameManager {
       1: 105, // stage1: 피카츄
       2: 106  // stage2: 팽도리
     };
-  }
-  /**
-   * 모든 조합 패턴 정의 메서드 (스테이지 구분 없이 랜덤 선택)
+  }  /**
+   * MARK: 모든 조합 패턴 정의 메서드 (스테이지 구분 없이 랜덤 선택)
    */
   getCombinationPatterns() {
     let patterns = [
@@ -75,9 +74,8 @@ class BrickGame extends GameManager {
     ];
     return patterns;
   }
-
   /**
-   * 조합에 들어갈 포켓몬 배치 생성 메서드 추가
+   * MARK: 조합에 들어갈 포켓몬 배치 생성 메서드 추가
    */
   generatePokemonForCombination(pattern) {
     let slotCount = pattern.flat().filter(function (cell) { return cell === 1; }).length;
@@ -110,16 +108,24 @@ class BrickGame extends GameManager {
   }
 
   /**
-   * 새로운 조합 생성 메서드 추가
+   * MARK: frame 조합 생성
+   * TODO - frame들 겹치는 문제 해결
    */
   createNewCombination() {
     let patterns = this.getCombinationPatterns();
     let randomPattern = patterns[Math.floor(Math.random() * patterns.length)];
-    let pokemonList = this.generatePokemonForCombination(randomPattern); let pokemonIndex = 0;
+    let pokemonList = this.generatePokemonForCombination(randomPattern);
+    let pokemonIndex = 0;
+
+    // 조합 크기 계산 - 수정됨: 패턴 크기 고려
+    let patternHeight = randomPattern.length * (this.BRICK_HEIGHT + this.BRICK_PADDING);
+
     // paddle y 위치보다 위쪽에서만 조합 생성하도록 제한
-    let maxY = this.paddle.y - 150; // 패들보다 충분히 위에서 생성
+    let maxY = this.paddle.y - 150 - patternHeight; // 패들보다 충분히 위에서 생성 + 패턴 높이 고려
     let minY = this.BRICK_OFFSET_TOP;
-    let randomY = minY + Math.random() * (maxY - minY);
+
+    // 기존 조합과 겹치지 않는 Y 위치 찾기 - 추가됨: 겹침 방지 로직
+    let randomY = this.findNonOverlappingY(minY, maxY, patternHeight);
 
     let combination = {
       pattern: randomPattern,
@@ -141,7 +147,6 @@ class BrickGame extends GameManager {
           let pokeType = window.pokemon && window.pokemon[pokeIndex] ? window.pokemon[pokeIndex].type : 0;
           let slotColor = this.typeColorMap[pokeType] || "#eee";
           let isTarget = this.targetPokemonIndexes.includes(pokeIndex);
-
           let brick = new Brick(
             brickX,
             brickY,
@@ -157,17 +162,21 @@ class BrickGame extends GameManager {
           brick.status = 1;
           brick.combination = combination; // 조합 참조 추가
 
-          combination.bricks.push(brick);
+          combination.bricks.push(brick); // 벽돌을 조합에 추가
         }
       }
     }
 
     this.combinations.push(combination);
     console.log("새로운 조합 생성: " + combination.bricks.length + "개 블록");
+    console.log(`조합 내 brick들 좌표 : `);
+    combination.bricks.forEach((brick, index)=>{
+      console.log(`brick ${index} : ${brick.x}, ${brick.y}`);
+    });
   }
-
   /**
-   * 게임별 초기화 (GameManager 오버라이드)
+   * MARK: 게임별 초기화 
+   * (GameManager 오버라이드)
    */
   initializeGame() {
     // 기본 게임 오브젝트 초기화는 부모에서 처리
@@ -177,9 +186,8 @@ class BrickGame extends GameManager {
     this.initDynamicBrickSystem();
     this.totalLives = this.lives;
   }
-
   /**
-   * 동적 벽돌 시스템 초기화 메서드 추가
+   * MARK: 동적 벽돌 시스템 초기화
    */
   initDynamicBrickSystem() {
     // 타겟 포켓몬 설정
@@ -204,9 +212,9 @@ class BrickGame extends GameManager {
     console.log("타겟 포켓몬: " + this.targetPokemonIndexes);
     console.log("특별 포켓몬 (Stage " + this.stage + "): " + this.specialPokemon[this.stage]);
   }
-
   /**
-   * 게임별 업데이트 로직 (GameManager 오버라이드)
+   * MARK: 게임별 업데이트 로직
+   * (GameManager 오버라이드)
    */
   updateGame(timeMultiplier) {
     // 공 이동
@@ -282,9 +290,10 @@ class BrickGame extends GameManager {
     this.drawBall();
     this.drawPaddle();
     this.drawDynamicBricks(); // 동적 벽돌 그리기로 변경
-  }
+  }  
+
   /**
-   * 조합 시스템 업데이트 메서드 추가
+   * MARK: 조합 시스템
    */
   updateCombinations(timeMultiplier) {
     let currentTime = Date.now();
@@ -358,7 +367,7 @@ class BrickGame extends GameManager {
   }
 
   /**
-   * 동적 벽돌 충돌 감지 메서드 추가
+   * MARK: 동적 벽돌 충돌 감지
    */
   dynamicCollisionDetection() {
     for (let i = 0; i < this.combinations.length; i++) {
@@ -404,7 +413,7 @@ class BrickGame extends GameManager {
   }
 
   /**
-   * 포켓몬 슬롯에 추가하는 메서드
+   * MARK: 포켓몬 슬롯에 추가
    */
   addPokemonToSlot(imageSrc) {
     // 중복 방지: 이미 슬롯에 들어가 있는 경우 무시
@@ -437,9 +446,8 @@ class BrickGame extends GameManager {
       }
     }
   }
-
   /**
-   * 포켓몬 슬롯 초기화
+   * MARK: 포켓몬 슬롯 초기화
    */
   clearPokemonSlots() {
     for (let i = 0; i < 4; i++) {
@@ -448,9 +456,8 @@ class BrickGame extends GameManager {
       slot.style.backgroundColor = "transparent";
     }
   }
-
   /**
-   * 승리 조건 확인
+   * MARK: 승리 조건 확인
    */
   checkWin() {
     // 필요한 조합 수를 클리어했다면
@@ -462,9 +469,8 @@ class BrickGame extends GameManager {
     }
     return false;
   }
-
   /**
-   * 공 그리기
+   * MARK: 공 그리기
    */
   drawBall() {
     this.ctx.beginPath();
@@ -473,9 +479,8 @@ class BrickGame extends GameManager {
     this.ctx.fill();
     this.ctx.closePath();
   }
-
   /**
-   * 패들 그리기
+   * MARK: 패들 그리기
    */
   drawPaddle() {
     // 이미지 객체 생성 및 캐싱을 위한 정적 변수 사용
@@ -508,9 +513,8 @@ class BrickGame extends GameManager {
       this.ctx.closePath();
     }
   }
-
   /**
-   * 동적 벽돌 그리기 메서드 추가
+   * MARK: 동적 벽돌 그리기 메서드 추가
    */
   drawDynamicBricks() {
     for (let i = 0; i < this.combinations.length; i++) {
@@ -523,12 +527,53 @@ class BrickGame extends GameManager {
       }
     }
   }
-
   /**
-   * 게임 재시작
+   * MARK: 게임 재시작
    */
   restartGame() {
     this.clearPokemonSlots(); // 슬롯 초기화
     super.restartGame(); // 부모 클래스의 재시작 메서드 호출
+  }
+  /**
+   * MARK: 기존 조합과 겹치지 않는 Y 위치 찾기 메서드 - 추가됨: 조합 겹침 방지
+   */
+  findNonOverlappingY(minY, maxY, patternHeight) {
+    let attempts = 0;
+    let maxAttempts = 10; // 최대 시도 횟수
+    let safeMargin = 20; // 조합 간 안전 여백
+
+    while (attempts < maxAttempts) {
+      let candidateY = minY + Math.random() * (maxY - minY);
+      let isOverlapping = false;
+
+      // 현재 화면에 있는 조합들과 겹치는지 확인
+      for (let i = 0; i < this.combinations.length; i++) {
+        let existingCombination = this.combinations[i];
+        // 화면 내에 있는 조합만 체크 (화면을 벗어난 조합은 무시)
+        if (existingCombination.x < this.canvas.width) {
+          let existingPatternHeight = existingCombination.pattern.length * (this.BRICK_HEIGHT + this.BRICK_PADDING);
+          let existingTop = existingCombination.y;
+          let existingBottom = existingCombination.y + existingPatternHeight;
+          let candidateTop = candidateY;
+          let candidateBottom = candidateY + patternHeight;
+
+          // Y축 겹침 확인 (안전 여백 포함)
+          if (!(candidateBottom + safeMargin < existingTop || candidateTop - safeMargin > existingBottom)) {
+            isOverlapping = true;
+            break;
+          }
+        }
+      }
+
+      if (!isOverlapping) {
+        return candidateY; // 겹치지 않는 위치 발견
+      }
+
+      attempts++;
+    }
+
+    // 적절한 위치를 찾지 못한 경우 기본 위치 반환
+    console.log("조합 배치: 겹치지 않는 위치를 찾지 못해 기본 위치 사용");
+    return minY + Math.random() * (maxY - minY);
   }
 }
