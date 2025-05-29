@@ -133,6 +133,7 @@ class BrickGame extends GameManager {
           this.BRICK_WIDTH,
           this.BRICK_HEIGHT,
           pokeIndex,
+          window.pokemon?.[pokeIndex]?.type,
           isTarget,
           imagePath,
         );

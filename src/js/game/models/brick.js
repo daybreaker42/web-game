@@ -5,6 +5,7 @@ class Brick {
     width,
     height,
     pokeIndex = null,
+    pokeType = null,
     isTarget = false,
     imagePath = null,
   ) {
@@ -15,6 +16,7 @@ class Brick {
     this.status = 1;
     this.isTarget = isTarget;
     this.pokeIndex = pokeIndex;
+    this.pokeType = pokeType;
 
     this.image = new Image();
     this.imageLoaded = false;
@@ -30,6 +32,9 @@ class Brick {
   }
 
   draw(ctx) {
+    try {
+
+
     if (this.status !== 1) return;
 
     // 이미지
@@ -47,7 +52,8 @@ class Brick {
     // ctx.strokeRect(this.x, this.y, this.width, this.height);
     ctx.globalAlpha = 0.8;
     const frameImg = new Image();
-    frameImg.src = 100 <= this.pokeIndex && this.pokeIndex <= 104 ?
+      const isLegend = this.pokeType === 5; // 전설의 포켓몬인지 여부
+      frameImg.src = isLegend ?
       '../assets/images/game/object/block_legend.png' :
       '../assets/images/game/object/block_normal.png';
     ctx.drawImage(frameImg, this.x, this.y, this.width, this.height);
@@ -58,6 +64,9 @@ class Brick {
       const exMark = new Image();
       exMark.src = "../assets/images/icons/exmark.png";
       ctx.drawImage(exMark, this.x + this.width - 35, this.y + 5, 30, 30);
+    }
+    } catch (e) {
+      console.error("브릭 그리기 중 오류 발생:", e);
     }
   }
 
