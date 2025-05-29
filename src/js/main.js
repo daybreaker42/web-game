@@ -40,7 +40,7 @@ function debugMode() {
     document.removeEventListener("keydown", handleStartFromTitle);
     document.removeEventListener("click", handleStartFromTitle);
     show(qs("#gameplay-screen"));
-    playGame("story", 0, 0, (gameResult) => {
+    playGame("story", 'easy', 0, (gameResult) => {
       console.log("Game ended:", gameResult);
       handleReturnToTitleScreen();
     });
