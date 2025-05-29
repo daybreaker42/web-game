@@ -4,3 +4,6 @@ package-lock.json
 sample
 .DS_Store
 src/data/
+no_upload/
+src/game
+.gitignore

@@ -478,6 +478,18 @@ class GameManager {
   }
 
   /**
+   * 컨트롤 정보 모달 표시
+   * @param {boolean} isBossMode - 보스 모드 여부
+   * @param {Function} onClose - 모달 닫기 콜백
+   */
+  showControlInfoModal(isBossMode, onClose) {
+    const msg = isBossMode
+      ? "W A S D <br> ↑ ← ↓ →"
+      : "W A S D <br> ↑ ← ↓ → <br>마우스";
+    showInfoModal(msg, onClose);
+  }
+
+  /**
    * 게임 시작
    */
   startGame() {
@@ -492,33 +504,22 @@ class GameManager {
       this.lives = this.totalLives;
       this.lastTime = performance.now();
       this.gameStartTime = performance.now();
-      this.pauseStartTime = 0; // pauseStartTime 초기화
-      this.totalPauseDuration = 0; // totalPauseDuration 초기화
+      this.pauseStartTime = 0;
+      this.totalPauseDuration = 0;
 
-      // 게임 오브젝트 초기화
       this.initializeGameObjects();
 
-      // 하위 클래스의 초기화 메서드 호출
       if (this.initializeGame) {
         this.initializeGame();
       }
 
-      // UI 업데이트
       this.updateUI();
       this.drawBackground();
 
-      // 초기 안내 문구 출력
-      const instructions = qs("#info-modal");
-      const confirmButton = qs("#info-confirm-yes");
-      this.setInfoModalContent(this.stage === 4);
-      const result = instructions.showModal();
-      confirmButton.addEventListener("click", () => {
-        instructions.close();
-
+      this.showControlInfoModal(this.mode === "boss", () => {
         hideAllFade(qsa(".screen"));
         showWithFade(qs("#gameplay-screen"));
 
-        // 애니메이션 프레임 시작
         this.animationFrame = requestAnimationFrame((time) =>
           this.update(time),
         );
@@ -526,19 +527,6 @@ class GameManager {
         this.showMessage(`게임 시작!`, "success");
       });
     }
-  }
-
-  /**
-   * 게임 플래이 방법 안내 모달 내용 설정
-   * - 모달의 내용은 게임 모드에 따라 다르게 설정
-   * @param {boolean} isBossMode - 보스 모드 여부
-   * - true: 보스 모드, false: 일반 모드
-   */
-  setInfoModalContent(isBossMode) {
-    const infoContentSpan = qs("#info-content");
-    infoContentSpan.innerHTML = isBossMode
-      ? "W A S D <br> ↑ ← ↓ →"
-      : "W A S D <br> ↑ ← ↓ → <br> 마우스";
   }
 
   /**
