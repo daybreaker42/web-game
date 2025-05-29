@@ -1078,87 +1078,87 @@ class BossGame extends GameManager {
     } // 주석 추가
   } // 주석 추가
 
-  // MARK: 포켓몬 능력 실행 오버라이드 (GameManager에서 상속)
-  executePokemonAbility(slotIndex, pokemonIndex, pokemonType) {
-    // 타입별 능력 실행
-    switch (pokemonType) {
-      case 0: // 풀타입
-        this.executeGrassAbility();
-        break;
-      case 1: // 불타입  
-        this.executeFireAbility();
-        break;
-      case 2: // 전기타입
-        this.executeElectricAbility();
-        break;
-      case 3: // 물타입
-        this.executeWaterAbility();
-        break;
-      case 4: // 얼음타입
-        this.executeIceAbility();
-        break;
-      default:
-        console.log("알 수 없는 타입의 포켓몬 능력입니다.");
-    }
-  }
+//   // MARK: 포켓몬 능력 실행 오버라이드 (GameManager에서 상속)
+//   executePokemonAbility(slotIndex, pokemonIndex, pokemonType) {
+//     // 타입별 능력 실행
+//     switch (pokemonType) {
+//       case 0: // 풀타입
+//         this.executeGrassAbility();
+//         break;
+//       case 1: // 불타입
+//         this.executeFireAbility();
+//         break;
+//       case 2: // 전기타입
+//         this.executeElectricAbility();
+//         break;
+//       case 3: // 물타입
+//         this.executeWaterAbility();
+//         break;
+//       case 4: // 얼음타입
+//         this.executeIceAbility();
+//         break;
+//       default:
+//         console.log("알 수 없는 타입의 포켓몬 능력입니다.");
+//     }
+//   }
 
-  // MARK: 풀타입 능력 - 생명력 회복
-  executeGrassAbility() {
-    this.lives += 100; // 생명력 100 회복
-    if (this.lives > this.totalLives) {
-      this.lives = this.totalLives; // 최대 생명력 제한
-    }
-    console.log("풀타입 능력 사용! 생명력 100 회복");
-  }
+//   // MARK: 풀타입 능력 - 생명력 회복
+//   executeGrassAbility() {
+//     this.lives += 100; // 생명력 100 회복
+//     if (this.lives > this.totalLives) {
+//       this.lives = this.totalLives; // 최대 생명력 제한
+//     }
+//     console.log("풀타입 능력 사용! 생명력 100 회복");
+//   }
 
-  // MARK: 불타입 능력 - 플레이어 이동 속도 증가
-  executeFireAbility() {
-    const originalMaxSpeed = this.player.maxSpeed;
-    this.player.maxSpeed = originalMaxSpeed * 1.5; // 1.5배 속도 증가
+//   // MARK: 불타입 능력 - 플레이어 이동 속도 증가
+//   executeFireAbility() {
+//     const originalMaxSpeed = this.player.maxSpeed;
+//     this.player.maxSpeed = originalMaxSpeed * 1.5; // 1.5배 속도 증가
 
-    console.log("불타입 능력 사용! 플레이어 속도 5초간 증가");
+//     console.log("불타입 능력 사용! 플레이어 속도 5초간 증가");
 
-    // 5초 후 원래 속도로 복귀
-    setTimeout(() => {
-      this.player.maxSpeed = originalMaxSpeed;
-    }, 5000);
-  }
+//     // 5초 후 원래 속도로 복귀
+//     setTimeout(() => {
+//       this.player.maxSpeed = originalMaxSpeed;
+//     }, 5000);
+//   }
 
-  // MARK: 전기타입 능력 - 점수 2배 획득
-  executeElectricAbility() {
-    this.electricBoostActive = true;
-    console.log("전기타입 능력 사용! 8초간 점수 2배 획득");
+//   // MARK: 전기타입 능력 - 점수 2배 획득
+//   executeElectricAbility() {
+//     this.electricBoostActive = true;
+//     console.log("전기타입 능력 사용! 8초간 점수 2배 획득");
 
-    // 8초 후 효과 해제
-    setTimeout(() => {
-      this.electricBoostActive = false;
-    }, 8000);
-  }
+//     // 8초 후 효과 해제
+//     setTimeout(() => {
+//       this.electricBoostActive = false;
+//     }, 8000);
+//   }
 
-  // MARK: 물타입 능력 - 플레이어 가속력 증가
-  executeWaterAbility() {
-    this.waterBoostActive = true;
-    const originalAcceleration = this.player.acceleration;
-    this.player.acceleration = originalAcceleration * 1.8; // 1.8배 가속력 증가
+//   // MARK: 물타입 능력 - 플레이어 가속력 증가
+//   executeWaterAbility() {
+//     this.waterBoostActive = true;
+//     const originalAcceleration = this.player.acceleration;
+//     this.player.acceleration = originalAcceleration * 1.8; // 1.8배 가속력 증가
 
-    console.log("물타입 능력 사용! 7초간 플레이어 가속력 증가");
+//     console.log("물타입 능력 사용! 7초간 플레이어 가속력 증가");
 
-    // 7초 후 효과 해제
-    setTimeout(() => {
-      this.waterBoostActive = false;
-      this.player.acceleration = originalAcceleration;
-    }, 7000);
-  }
-  // MARK: 얼음타입 능력 - 보스 이동 속도 감소
-  executeIceAbility() {
-    this.iceBoostActive = true;
-    this.showMessage("얼음타입 능력: 보스 이동 속도 감소!", "success"); // 시각적 피드백 추가
-    console.log("얼음타입 능력 사용! 6초간 보스 이동 속도 감소");
+//     // 7초 후 효과 해제
+//     setTimeout(() => {
+//       this.waterBoostActive = false;
+//       this.player.acceleration = originalAcceleration;
+//     }, 7000);
+//   }
+//   // MARK: 얼음타입 능력 - 보스 이동 속도 감소
+//   executeIceAbility() {
+//     this.iceBoostActive = true;
+//     this.showMessage("얼음타입 능력: 보스 이동 속도 감소!", "success"); // 시각적 피드백 추가
+//     console.log("얼음타입 능력 사용! 6초간 보스 이동 속도 감소");
 
-    // 6초 후 효과 해제
-    setTimeout(() => {
-      this.iceBoostActive = false;
-      console.log("얼음타입 능력 효과 종료: 보스 이동 속도 원상복구"); // 종료 로그 추가
-    }, 6000);
-  }
-}
+//     // 6초 후 효과 해제
+//     setTimeout(() => {
+//       this.iceBoostActive = false;
+//       console.log("얼음타입 능력 효과 종료: 보스 이동 속도 원상복구"); // 종료 로그 추가
+//     }, 6000);
+//   }
+// }
