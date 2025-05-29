@@ -861,4 +861,4 @@ window.story_chapter5_closing = [
         ]
       }
     ]
-] ;
+;
