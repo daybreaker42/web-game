@@ -9,7 +9,7 @@ const DEMO_GAME_RESULT_1 = {
 };
 
 const DEMO_GAME_RESULT_2 = {
-  mode: "score",
+  mode: "story",
   difficulty: "hard",
   stage: 1,
   score: 7000,
