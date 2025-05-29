@@ -201,23 +201,50 @@
 
     <!-- Check save or not -->
     <dialog id="ranking-save-modal" class="pixel-box" style="width: 540px">
-        <div style="padding-top: 20px; text-align: center">
-        게임 결과를 랭킹에 저장하시겠습니까?<br />'아니오'를 누르면 타이틀로 돌아갑니다.<br />
-        <button id="ranking-save-yes" class="pixel-box modal-inner-button" style="margin: 10px 4px">예</button>
-        <button id="ranking-save-no" class="pixel-box modal-inner-button" style="margin: 10px 4px">아니오</button>
-        </div>
-    </dialog>
-    
-    <!-- Input Nickname modal -->
-    <dialog id="nickname-modal" class="pixel-box">
-        <form method="dialog" style="padding: 18px; text-align: center">
-        <div>닉네임을 입력하세요:</div>
-        <input type="text" id="nickname-input" maxlength="10" autocomplete="off" style="margin:12px 0; width: 120px; text-align:center;" required />
-        <br />
-        <button id="nickname-ok" class="pixel-box modal-inner-button" style="margin: 10px 4px">저장</button>
-        </form>
+      <div style="padding-top: 20px; text-align: center">
+        게임 결과를 랭킹에 저장하시겠습니까?<br />'아니오'를 누르면 타이틀로
+        돌아갑니다.<br />
+        <button
+          id="ranking-save-yes"
+          class="pixel-box modal-inner-button"
+          style="margin: 10px 4px"
+        >
+          예
+        </button>
+        <button
+          id="ranking-save-no"
+          class="pixel-box modal-inner-button"
+          style="margin: 10px 4px"
+        >
+          아니오
+        </button>
+      </div>
     </dialog>
 
+    <!-- Input Nickname modal -->
+    <dialog id="nickname-modal" class="pixel-box">
+      <form method="dialog" style="padding: 18px; text-align: center">
+        <div>닉네임을 입력하세요:</div>
+        <input
+        id="nickname-input"
+        class="pixel-input"
+        type="text"
+        maxlength="10"
+        size="10"
+        style="width: 10em;"
+        autocomplete="off"
+        placeholder="" />
+      
+        <br />
+        <button
+          id="nickname-ok"
+          class="pixel-box modal-inner-button"
+          style="margin: 10px 4px"
+        >
+          저장
+        </button>
+      </form>
+    </dialog>
 
     <!-- Confirm skip modal -->
     <dialog id="confirm-skip-modal" class="pixel-box">
