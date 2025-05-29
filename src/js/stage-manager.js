@@ -15,9 +15,12 @@ function proceedToStage(stageIdx) {
   
     // Stage 4는 보스전 전 스토리가 먼저 (chapter4_finale)
     // Stage 1~3은 게임 바로 시작 (스토리는 게임 후)
-    const beforeStage = (stageIdx === 4)
+    const beforeStage = (stageIdx === N_STAGES)
     ? (cb) => playStory(4, cb)
     : (cb) => cb();
+
+    stopBgm();
+    stopSfx();
 
   beforeStage(() => {
     showInfoModal(`Stage ${stageIdx}를 시작합니다.`, () => {
