@@ -416,6 +416,11 @@ class BrickGame extends GameManager {
             this.score += baseScore * 2;
           } else {
             this.score += baseScore;
+          }          // 모든 포켓몬을 구출 리스트에 추가 (중복 방지)
+          if (!this.saved_pokemon.includes(brick.pokeIndex)) {
+            this.saved_pokemon.push(brick.pokeIndex);
+            let pokemonName = window.pokemon && window.pokemon[brick.pokeIndex] ? window.pokemon[brick.pokeIndex].name : "포켓몬";
+            console.log("포켓몬 구출: " + pokemonName);
           }
 
           // 타겟 포켓몬이거나 특별 포켓몬인 경우 슬롯에 추가
@@ -423,12 +428,9 @@ class BrickGame extends GameManager {
             let imagePath = "../assets/images/game/pokemon/" + brick.pokeIndex + ".png";
             this.addPokemonToSlot(imagePath);
           } else if (this.specialPokemon[this.stage] === brick.pokeIndex) {
-            // 특별 포켓몬 구출
-            this.saved_pokemon.push(brick.pokeIndex);
+            // 특별 포켓몬인 경우 추가 처리 (이미 saved_pokemon에 추가됨)
             let imagePath = "../assets/images/game/pokemon/" + brick.pokeIndex + ".png";
             // this.addPokemonToSlot(imagePath);
-            let pokemonName = window.pokemon && window.pokemon[brick.pokeIndex] ? window.pokemon[brick.pokeIndex].name : "포켓몬";
-            // console.log("특별 포켓몬 구출: " + pokemonName);
           }
 
           this.checkWin();
