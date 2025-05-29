@@ -11,13 +11,13 @@
     <!-- Game Root -->
     <div id="game-root">
       <!-- Title Screen-->
-      <section id="title-screen" class="screen">
+      <section id="title-screen" class="screen hidden">
         <div class="logo" alt="Game Logo"></div>
         <p class="press-any">Press any button to start</p>
       </section>
 
       <!-- Main menu Screen-->
-      <section id="main-menu-screen" class="menu screen">
+      <section id="main-menu-screen" class="menu screen hidden">
         <button class="pixel-box pixel-box--menu" id="btn-play">
           게임하기
         </button>
@@ -37,7 +37,7 @@
       </section>
 
       <!-- Select mode Screen-->
-      <section id="select-mode-menu-screen" class="menu screen">
+      <section id="select-mode-menu-screen" class="menu screen hidden">
         <button class="pixel-box pixel-box--menu" id="btn-story">
           스토리 모드
         </button>
@@ -54,7 +54,7 @@
       </section>
 
       <!-- Select Difficulty Screen-->
-      <section id="difficulty-menu-screen" class="menu screen">
+      <section id="difficulty-menu-screen" class="menu screen hidden">
         <h2>난이도를 선택하세요</h2>
         <button
           class="pixel-box pixel-box--menu btn-difficulty"
@@ -84,7 +84,7 @@
       </section>
 
       <!-- Story Screen-->
-      <section id="story-screen" class="screen">
+      <section id="story-screen" class="screen hidden">
         <div id="story-illustration"></div>
         <button id="btn-skip-story" class="btn-skip">> Skip</button>
         <div id="story-textbox" class="hidden">
@@ -95,7 +95,7 @@
       </section>
 
       <!-- CRT console screen -->
-      <section id="crt-console-screen" class="screen">
+      <section id="crt-console-screen" class="screen hidden">
         <div class="crt" id="crt-terminal">
           <pre id="crt-console-text"></pre>
         </div>
@@ -103,7 +103,7 @@
       </section>
 
       <!-- Ranking screen -->
-      <section id="ranking-screen" class="screen">
+      <section id="ranking-screen" class="screen hidden">
         <div class="ranking-container">
           <div class="ranking-row">
             <div class="ranking-label">모드</div>
@@ -140,7 +140,7 @@
       </section>
 
       <!-- Credits screen -->
-      <section id="credits-screen" class="screen">
+      <section id="credits-screen" class="screen hidden">
         <div id="credits-root">
           <div id="credits-scroll"></div>
           <button id="btn-skip-credits" class="btn-skip">> Skip</button>
@@ -148,7 +148,7 @@
       </section>
 
       <!-- game play screen -->
-      <section id="gameplay-screen" class="screen">
+      <section id="gameplay-screen" class="screen hidden">
         <div id="game-container">
           <div class="mode-selection">
             <button id="brickModeButton" class="mode-button active">
@@ -190,7 +190,7 @@
       </section>
 
       <!-- game result screen -->
-      <section id="game-result-screen" class="screen">
+      <section id="game-result-screen" class="screen hidden">
         <div id="game-result-root" class="pixel-box">
           <h2 class="game-result-title">게임 결과</h2>
           <div id="game-result-contents"></div>
@@ -201,23 +201,50 @@
 
     <!-- Check save or not -->
     <dialog id="ranking-save-modal" class="pixel-box" style="width: 540px">
-        <div style="padding-top: 20px; text-align: center">
-        게임 결과를 랭킹에 저장하시겠습니까?<br />'아니오'를 누르면 타이틀로 돌아갑니다.<br />
-        <button id="ranking-save-yes" class="pixel-box modal-inner-button" style="margin: 10px 4px">예</button>
-        <button id="ranking-save-no" class="pixel-box modal-inner-button" style="margin: 10px 4px">아니오</button>
-        </div>
-    </dialog>
-    
-    <!-- Input Nickname modal -->
-    <dialog id="nickname-modal" class="pixel-box">
-        <form method="dialog" style="padding: 18px; text-align: center">
-        <div>닉네임을 입력하세요:</div>
-        <input type="text" id="nickname-input" maxlength="10" autocomplete="off" style="margin:12px 0; width: 120px; text-align:center;" required />
-        <br />
-        <button id="nickname-ok" class="pixel-box modal-inner-button" style="margin: 10px 4px">저장</button>
-        </form>
+      <div style="padding-top: 20px; text-align: center">
+        게임 결과를 랭킹에 저장하시겠습니까?<br />'아니오'를 누르면 타이틀로
+        돌아갑니다.<br />
+        <button
+          id="ranking-save-yes"
+          class="pixel-box modal-inner-button"
+          style="margin: 10px 4px"
+        >
+          예
+        </button>
+        <button
+          id="ranking-save-no"
+          class="pixel-box modal-inner-button"
+          style="margin: 10px 4px"
+        >
+          아니오
+        </button>
+      </div>
     </dialog>
 
+    <!-- Input Nickname modal -->
+    <dialog id="nickname-modal" class="pixel-box">
+      <form method="dialog" style="padding: 18px; text-align: center">
+        <div>닉네임을 입력하세요:</div>
+        <input
+        id="nickname-input"
+        class="pixel-input"
+        type="text"
+        maxlength="10"
+        size="10"
+        style="width: 10em;"
+        autocomplete="off"
+        placeholder="" />
+      
+        <br />
+        <button
+          id="nickname-ok"
+          class="pixel-box modal-inner-button"
+          style="margin: 10px 4px"
+        >
+          저장
+        </button>
+      </form>
+    </dialog>
 
     <!-- Confirm skip modal -->
     <dialog id="confirm-skip-modal" class="pixel-box">
