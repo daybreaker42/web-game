@@ -25,7 +25,6 @@ class GameManager {
             this.ballIconLoaded = true; // 볼 아이콘 로드 완료 플래그
         };
         // MARK: 게임 상태 변수들
-        this.gameState = 'waiting'; // waiting, playing, paused, finished
         this.lastTime = 0;
         this.isGameRunning = false;
         this.isPaused = false;
@@ -346,7 +345,6 @@ class GameManager {
 
             this.isGameRunning = true;
             this.isPaused = false;
-            this.gameState = 'playing';
             this.score = 0;
             this.lives = this.totalLives;
             this.lastTime = performance.now();
@@ -407,7 +405,6 @@ class GameManager {
         }
 
         this.isGameRunning = false;
-        this.gameState = 'waiting';
         this.lastTime = 0;
 
         setTimeout(() => this.startGame(), 100);
@@ -488,8 +485,6 @@ class GameManager {
      */
     endGame() {
         this.isGameRunning = false;
-        this.gameState = 'finished';
-        console.log('게임 종료:', this.mode, this.level, this.stage, this.score);
         if (this.animationFrame) {
             cancelAnimationFrame(this.animationFrame);
         }
