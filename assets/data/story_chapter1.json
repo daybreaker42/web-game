@@ -1,0 +1,131 @@
+[
+    {
+      "image": "stage1-pikachu-in-capsule",
+      "lines": [
+        "“피카츄!!!!”"
+      ]
+    },
+    {
+      "sfx": "bright.mp3",
+      "image": "stage1-pikachu-in-capsule-bright",
+      "lines": [
+        "!",
+        "빛이...?!"
+      ]
+    },
+    {
+      "delay": 2,
+      "sfx": "capsule-open.wav",
+      "lines": ["..."]
+    },
+    {
+      "sfx": "footfall.mp3",
+      "lines": [
+        "발소리가 들려..."
+      ]
+    },
+    {
+      "potrait": "pikachu",
+      "potrait_type": "Normal",
+      "lines": [
+        "피카...?"
+      ]
+    },
+    {
+      "lines": [
+        "“피카츄...? 정말 너 맞지...?”"
+      ]
+    },
+    {
+      "potrait": "pikachu",
+      "potrait_type": "Teary-Eyed",
+      "lines": [
+        "피....피카!!!"
+      ]
+    },
+    {
+      "sfx": "cloth-rustle.mp3",
+      "lines": [
+        "* 피카츄가 당신에게 달려와 안긴다."
+      ]
+    },
+    {
+      "potrait": "pikachu",
+      "potrait_type": "Crying",
+      "lines": [
+        "피카츄! 피카츄!"
+      ]
+    },
+    {
+      "lines": [
+        "“정말... 너를 찾았어.”",
+        "캡슐 안에서 많이 무서웠지?"
+      ]
+    },
+    {
+      "potrait": "pikachu",
+      "potrait_type": "Teary-Eyed",
+      "lines": [
+        "피카... 피카츄..."
+      ]
+    },
+    {
+      "lines": [
+        "“미안... 기다리게 해서.\n다시는 널 혼자 두지 않을게.”"
+      ]
+    },
+    {
+        "potrait": "pikachu",
+        "potrait_type": "Happy",
+        "lines": [
+          "피카!"
+        ]
+      },
+    {
+      "sfx": "together.mp3",
+      "image": "pikachu-together",
+      "image_width": 250,
+      "lines": [
+        "* 피카츄를 사용할 수 있게 되었다!"
+      ]
+    },
+    {
+      "lines": [
+        "피카츄를 찾아서 다행이야.",
+        "하지만... 뭔가 이상해."
+      ]
+    },
+    {
+      "image": "stage1-opened-capsule",
+      "bgm": "hum.mp3",
+      "lines": [
+        "이 캡슐... 단순한 감금 장치가 아닌 것 같아.",
+        "안에 든 포켓몬을 다치지 않게 보호하는 듯한, 이상할 정도로 세심한 구조.",
+        "이런 장치를 만들 수 있는 기술력이 있다면, \n이곳은 단순한 연구소가 아닐지도 몰라."
+      ]
+    },
+    {
+        "lines": [
+          "어? 여기 종이가 떨어져 있어."
+        ]
+    },
+    {
+        "image": "stage1-lab-report-unknown",
+        "lines": [
+          "1. 관찰 개요\n- 신규 샘플(Specimen-X) 격리 후 첫 관찰 개시.\n- 예상보다 빠른 성장 및 적응 속도 확인.",
+          "2. 행동 및 반응\n- 높은 주의력, 환경 변화에 대한 민감한 반응 반복 관찰.",
+          "- 기본 환경에서 낮은 긴장 상태 유지, 외부 자극(소음, 조명 변화)에는 즉각적 경계 반응.",
+          "3. 안정화 실험\n- 특정 청각 자극(소형 금속 방울) 활용 시, 일시적 안정 반응 확인.",
+          "- 실험 도중 방울 소리에 노출된 후, 개체의 움직임이 완만해지고 경계 태도 약화.\n- 반복 노출 시 반응 강도는 점진적으로 감소.",
+          "4. 참고\n- 관찰 및 실험 결과 추가 기록 예정.\n- 해당 개체 관련 정보 외부 유출 금지."
+        ]
+    },
+    {
+        "lines": [
+            "이건... 실험 기록 같은데?",
+            "대체 뭘 연구하고 있었던 거지?",
+            "일단 팽도리를 찾으러 앞으로 가보자."
+    ]   
+    }
+  ]
+  
