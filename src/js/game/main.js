@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // slot 이동
+  // slot 이동 event lister 설정
   document.addEventListener("keydown", (e) => {
     if (e.key >= "1" && e.key <= "4") {
       // 1 ~ 4 키를 누르면 해당하는 slot 선택
