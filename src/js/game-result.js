@@ -26,13 +26,24 @@ const GAME_RESULT_FIELDS = [
 ];
 
 function showGameResultScreen(gameResult) {
-    playBgm(BGM.RESULT);
-    renderGameResult(gameResult);
-    // elById("game-result-back").onclick = handleReturnToTitleScreen;
+  playBgm(BGM.RESULT);
+  renderGameResult(gameResult);
 }
 
 function renderGameResult(gameResult) {
-  let html = "";
+  let title;
+  if (gameResult.mode === "story" && gameResult.game_over === true)
+    title = "GAME OVER";
+  else if (gameResult.mode === "story" && gameResult.stage < N_STAGES)
+    title = "STAGE CLEAR";
+  else title = "GAME RESULT";
+  elById("game-result-title").innerHTML = title;
+
+  if (gameResult.game_over == true)
+    elById("game-result-root").classList.add("gameover");
+  else elById("game-result-root").classList.remove("gameover");
+
+  let contents = "";
   for (const field of GAME_RESULT_FIELDS) {
     if (field.key === "stage" && gameResult.mode === "score") continue;
     let value = gameResult[field.key];
@@ -43,19 +54,18 @@ function renderGameResult(gameResult) {
       const count = Array.isArray(gameResult.saved_pokemon)
         ? gameResult.saved_pokemon.length
         : 0;
-      html += `<div class="game-result-row">
+      contents += `<div class="game-result-row">
             <span class="game-result-label">${field.label}</span>
             <span class="game-result-value">${count}마리</span>
           </div>`;
     } else {
-      html += `<div class="game-result-row">
+      contents += `<div class="game-result-row">
             <span class="game-result-label">${field.label}</span>
             <span class="game-result-value">${value}</span>
           </div>`;
     }
   }
-
-  elById("game-result-contents").innerHTML = html;
+  elById("game-result-contents").innerHTML = contents;
 
   document
     .querySelectorAll(".screen")
@@ -69,69 +79,45 @@ function renderGameResult(gameResult) {
   }
 
   function handleAnyPress(e) {
-    // 키보드/마우스 눌렀을 때만 한 번 실행
     window.removeEventListener("keydown", handleAnyPress);
     window.removeEventListener("mousedown", handleAnyPress);
-
-    // 메시지 숨기기
     if (pressMsg) pressMsg.classList.add("hidden");
-
-    // 기존 버튼 로직 그대로
-    const saveModal = elById("ranking-save-modal");
-    saveModal.showModal();
-
-    elById("ranking-save-yes").onclick = function () {
-      saveModal.close();
-      const nickModal = elById("nickname-modal");
-      elById("nickname-input").value = "";
-      nickModal.showModal();
-
-      elById("nickname-ok").onclick = async function (e) {
-        e.preventDefault();
-        const name = elById("nickname-input").value.trim();
-        if (!name) {
-          nickModal.close();
-          showInfoModal("닉네임을 입력하세요!", function () {
-            nickModal.showModal();
-            elById("nickname-input").focus();
-          });
-          return;
-        }
-
-        nickModal.close();
-
-        let result = false;
-        try {
-          result = await addScoreRecord(
-            gameResult.mode,
-            gameResult.difficulty,
-            name,
-            gameResult.score,
-          );
-        } catch (e) {
-          result = false;
-        }
-        if (result) {
-          showInfoModal(
-            "저장되었습니다.\n타이틀로 돌아갑니다.",
-            handleReturnToTitleScreen,
-          );
-        } else {
-          showInfoModal(
-            "저장에 실패했습니다.\n타이틀로 돌아갑니다.",
-            handleReturnToTitleScreen,
-          );
-        }
-      };
-    };
-
-    elById("ranking-save-no").onclick = function () {
-      saveModal.close();
-      handleReturnToTitleScreen();
-    };
+    showUniModal("랭킹에 점수를 저장하시겠습니까?", {
+      buttons: [
+        {
+          label: "네",
+          callback: () => showNicknameInputModal(gameResult), // ★ 여기!
+          id: "uni-modal-save-yes",
+        },
+        {
+          label: "아니오",
+          callback: () => {
+            // 엔딩 조건: 마지막 스테이지 & 게임오버 아님(클리어)
+            if (
+              gameResult.mode === "story" &&
+              gameResult.stage == N_STAGES &&
+              gameResult.game_over === false
+            ) {
+              // 크레딧 → 크레딧 종료 후 타이틀
+              showCredits(gameResult);
+            } else {
+              // 일반: infoModal 후 타이틀
+              showUniModal("타이틀로 돌아갑니다.", {
+                buttons: [
+                  {
+                    label: "확인",
+                    callback: handleReturnToTitleScreen,
+                  },
+                ],
+              });
+            }
+          },
+          id: "uni-modal-save-no",
+        },
+      ],
+    });
   }
 
-  // 아무 키나/마우스 클릭시 다음 단계
   window.addEventListener("keydown", handleAnyPress, { once: true });
   window.addEventListener("mousedown", handleAnyPress, { once: true });
 }

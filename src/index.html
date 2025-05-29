@@ -191,8 +191,8 @@
 
       <!-- game result screen -->
       <section id="game-result-screen" class="screen hidden">
-        <div id="game-result-root" class="pixel-box">
-          <h2 class="game-result-title">게임 결과</h2>
+        <div id="game-result-root">
+          <h2 id="game-result-title">게임 결과</h2>
           <div id="game-result-contents"></div>
           <p id="press-any-result" class="press-any">
             Press any button to continue
@@ -201,85 +201,29 @@
       </section>
     </div>
 
-    <!-- Check save or not -->
-    <dialog id="ranking-save-modal" class="pixel-box" style="width: 540px">
-      <div style="padding-top: 20px; text-align: center">
-        게임 결과를 랭킹에 저장하시겠습니까?
-        <button
-          id="ranking-save-yes"
-          class="pixel-box modal-inner-button"
-          style="margin: 10px 4px"
+    <dialog id="uni-modal" class="pixel-box">
+      <form
+        id="uni-modal-form"
+        method="dialog"
+        style="padding: 18px; text-align: center"
+      >
+        <div id="uni-modal-content"></div>
+        <div
+          id="uni-modal-input-container"
+          style="margin-top: 12px; display: none"
         >
-          예
-        </button>
-        <button
-          id="ranking-save-no"
-          class="pixel-box modal-inner-button"
-          style="margin: 10px 4px"
-        >
-          아니오
-        </button>
-      </div>
-    </dialog>
-
-    <!-- Input Nickname modal -->
-    <dialog id="nickname-modal" class="pixel-box">
-      <form method="dialog" style="padding: 18px; text-align: center">
-        <div>닉네임을 입력하세요:</div>
-        <input
-          id="nickname-input"
-          class="pixel-input"
-          type="text"
-          maxlength="10"
-          size="10"
-          style="width: 10em"
-          autocomplete="off"
-          placeholder=""
-        />
-
-        <br />
-        <button
-          id="nickname-ok"
-          class="pixel-box modal-inner-button"
-          style="margin: 10px 4px"
-        >
-          저장
-        </button>
+          <input
+            id="uni-modal-input"
+            class="pixel-input"
+            type="text"
+            maxlength="6"
+            size="6"
+            style="width: 7em"
+            autocomplete="off"
+          />
+        </div>
+        <div id="uni-modal-btns" style="margin-top: 18px"></div>
       </form>
-    </dialog>
-
-    <!-- Confirm skip modal -->
-    <dialog id="confirm-skip-modal" class="pixel-box">
-      <div style="padding: 12px; text-align: center">
-        정말로 스킵하시겠습니까?<br />
-        <button
-          id="skip-confirm-yes"
-          class="pixel-box modal-inner-button"
-          style="margin: 10px 4px"
-        >
-          네
-        </button>
-        <button
-          id="skip-confirm-no"
-          class="pixel-box modal-inner-button"
-          style="margin: 10px 4px"
-        >
-          아니오
-        </button>
-      </div>
-    </dialog>
-
-    <dialog id="info-modal" class="pixel-box">
-      <div style="padding: 12px; text-align: center">
-        <span id="info-content"></span>
-        <button
-          id="info-confirm-yes"
-          class="pixel-box modal-inner-button"
-          style="margin: 10px 4px"
-        >
-          확인
-        </button>
-      </div>
     </dialog>
 
     <!-- Option modal -->
