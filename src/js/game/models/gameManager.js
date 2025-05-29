@@ -62,8 +62,8 @@ class GameManager {
 
     // 생명 설정 (모드 및 난이도별) // 주석 추가: 생명 설정 구조화
     this.livesConfig = {
-      brick: { easy: 300, normal: 300, hard: 300 }, // 주석 추가: 벽돌깨기 모드 생명 (현재는 동일)
-      boss: { easy: 1000, normal: 300, hard: 300 }, // 주석 추가: 보스전 모드 생명 (현재는 동일)
+      brick: { easy: 20, normal: 10, hard: 5 }, // 주석 추가: 벽돌깨기 모드 생명 (현재는 동일)
+      boss: { easy: 1000, normal: 500, hard: 250 }, // 주석 추가: 보스전 모드 생명 (현재는 동일)
     };
 
     // 입력 상태
