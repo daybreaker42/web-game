@@ -1,6 +1,6 @@
 // 페이지 로드 시 초기화
 document.addEventListener("DOMContentLoaded", function () {
-  if (DEBUG_MODE) {
+  if (window.DEBUG_MODE) {
     switchGameMode("brick"); // 기본 모드로 초기화
   }
   // 게임 컨트롤 버튼 이벤트 리스너 설정 (한 번만) // 주석 추가
