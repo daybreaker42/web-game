@@ -29,7 +29,7 @@ function playGame(mode, difficulty, stage, onGameEnd) {
   if (mode === "score") {
     gameInstance = new BrickGame(canvas);
   } else if (mode === "story") {
-    if (stage === STORY_SCRIPTS.length) {
+    if (stage === 4) {
       gameInstance = new BossGame(canvas);
     } else {
       gameInstance = new BrickGame(canvas);
@@ -63,7 +63,7 @@ bossModeButton.addEventListener("click", () => {
   switchGameMode("boss");
 });
 
-// 게임 모드 전환 함수
+// 게임 모드 전환 함수 - DEBUG용
 function switchGameMode(gameType) {
   if (gameInstance && typeof gameInstance.endGame === "function") {
     // 현재 실행 중인 게임이 있고, endGame 메서드가 있다면 호출
