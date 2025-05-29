@@ -556,12 +556,16 @@ class BrickGame extends GameManager {
       slot.style.backgroundImage = "none";
       slot.style.backgroundColor = "transparent";
     }
-  }
-  /**
+  }  /**
    * MARK: 승리 조건 확인
    */
   checkWin() {
-    // 난이도별 최소 점수 기준으로 클리어 조건 변경
+    // score 모드는 시간 종료 시까지 계속 진행하므로 클리어 조건 없음
+    if (this.mode === "score") {
+      return false;
+    }
+
+    // story 모드에서만 최소 점수 기준으로 클리어 조건 적용
     const requiredScore = this.requiredScores[this.difficulty] || this.requiredScores.easy;
 
     if (this.score >= requiredScore) {
