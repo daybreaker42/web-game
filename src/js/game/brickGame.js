@@ -564,7 +564,9 @@ class BrickGame extends GameManager {
       slot.style.backgroundImage = "none";
       slot.style.backgroundColor = "transparent";
     }
-  }  /**
+  }
+
+  /**
    * MARK: 승리 조건 확인
    */
   checkWin() {
@@ -578,7 +580,9 @@ class BrickGame extends GameManager {
       return true;
     }
     return false;
-  }/**
+  }
+
+  /**
    * MARK: 공 그리기
    */
   drawBall() {
@@ -867,18 +871,37 @@ class BrickGame extends GameManager {
       }, duration);
     }
   }
-
   /**
-   * MARK: 아이템 사용 메서드 - 첫 번째 슬롯 포켓몬에 자동 적용
+   * MARK: 아이템 사용 메서드 - 현재 선택된 슬롯에 적용
    */
   useItemOnSlot(itemName) {
-    // 첫 번째 포켓몬이 있는 슬롯 찾기
+    // 현재 선택된 슬롯 찾기
     let targetSlotIndex = -1;
-    for (let i = 0; i < 4; i++) {
-      let slot = document.getElementById(`slot-${i}`);
-      if (slot && slot.style.backgroundImage && slot.style.backgroundImage !== "none") {
-        targetSlotIndex = i;
-        break;
+    const selectedFrame = document.querySelector(".pokemon-slot-frame.selected");
+
+    if (selectedFrame) {
+      // 선택된 프레임의 ID에서 인덱스 추출 (slot-frame-0 -> 0)
+      const frameId = selectedFrame.id;
+      const indexMatch = frameId.match(/slot-frame-(\d+)/);
+      if (indexMatch) {
+        const selectedIndex = parseInt(indexMatch[1]);
+
+        // 해당 슬롯에 포켓몬이 있는지 확인
+        const slot = document.getElementById(`slot-${selectedIndex}`);
+        if (slot && slot.style.backgroundImage && slot.style.backgroundImage !== "none") {
+          targetSlotIndex = selectedIndex;
+        }
+      }
+    }
+
+    // 선택된 슬롯에 포켓몬이 없는 경우, 첫 번째 포켓몬이 있는 슬롯으로 폴백
+    if (targetSlotIndex === -1) {
+      for (let i = 0; i < 4; i++) {
+        let slot = document.getElementById(`slot-${i}`);
+        if (slot && slot.style.backgroundImage && slot.style.backgroundImage !== "none") {
+          targetSlotIndex = i;
+          break;
+        }
       }
     }
 
