@@ -41,7 +41,7 @@ class BrickGame extends GameManager {
       4: "#81D4FA", // 얼음
     };
     this.totalPokemonCount = 107;
-
+    
     // MARK: 스테이지별 특별 포켓몬 설정 추가
     this.specialPokemon = {
       1: 105, // stage1: 피카츄
@@ -86,7 +86,7 @@ class BrickGame extends GameManager {
    * 조합에 들어갈 포켓몬 배치 생성 메서드 추가
    */
   generatePokemonForCombination(pattern) {
-    var slotCount = pattern.flat().filter(function (cell) { return cell === 1; }).length;
+    var slotCount = pattern.flat().filter(function(cell) { return cell === 1; }).length;
     var pokemonList = [];
     var currentSpecialPokemon = this.specialPokemon[this.stage];
     var hasSpecialPokemon = false;
@@ -112,7 +112,7 @@ class BrickGame extends GameManager {
     }
 
     // 포켓몬 리스트를 랜덤하게 섞기
-    return pokemonList.sort(function () { return Math.random() - 0.5; });
+    return pokemonList.sort(function() { return Math.random() - 0.5; });
   }
 
   /**
@@ -122,7 +122,7 @@ class BrickGame extends GameManager {
     var patterns = this.getCombinationPatterns();
     var randomPattern = patterns[Math.floor(Math.random() * patterns.length)];
     var pokemonList = this.generatePokemonForCombination(randomPattern);
-
+    
     var pokemonIndex = 0;
     var combination = {
       pattern: randomPattern,
@@ -139,7 +139,7 @@ class BrickGame extends GameManager {
           var brickX = combination.x + col * (this.BRICK_WIDTH + this.BRICK_PADDING);
           var brickY = combination.y + row * (this.BRICK_HEIGHT + this.BRICK_PADDING);
           var pokeIndex = pokemonList[pokemonIndex++];
-
+          
           var imagePath = "../assets/images/game/pokemon/" + pokeIndex + ".png";
           var pokeType = window.pokemon && window.pokemon[pokeIndex] ? window.pokemon[pokeIndex].type : 0;
           var slotColor = this.typeColorMap[pokeType] || "#eee";
@@ -159,7 +159,7 @@ class BrickGame extends GameManager {
           brick.color = slotColor;
           brick.status = 1;
           brick.combination = combination; // 조합 참조 추가
-
+          
           combination.bricks.push(brick);
         }
       }
@@ -195,7 +195,7 @@ class BrickGame extends GameManager {
     }
 
     var self = this;
-    this.targetPokemonImages = this.targetPokemonIndexes.map(function (index) {
+    this.targetPokemonImages = this.targetPokemonIndexes.map(function(index) {
       return "../assets/images/game/pokemon/" + index + ".png";
     });
 
@@ -293,7 +293,7 @@ class BrickGame extends GameManager {
    */
   updateCombinations(timeMultiplier) {
     var currentTime = Date.now();
-
+    
     // 새 조합 생성 (일정 간격으로)
     if (currentTime - this.lastCombinationSpawn > this.combinationSpawnInterval) {
       this.createNewCombination();
@@ -307,11 +307,11 @@ class BrickGame extends GameManager {
 
       // 조합의 모든 벽돌 위치 업데이트
       var self = this;
-      combination.bricks.forEach(function (brick, brickIndex) {
+      combination.bricks.forEach(function(brick, brickIndex) {
         var pattern = combination.pattern;
         var row = 0, col = 0;
         var count = 0;
-
+        
         // 패턴에서 현재 벽돌의 위치 찾기
         for (var r = 0; r < pattern.length; r++) {
           for (var c = 0; c < pattern[r].length; c++) {
@@ -325,7 +325,7 @@ class BrickGame extends GameManager {
             }
           }
         }
-
+        
         brick.x = combination.x + col * (self.BRICK_WIDTH + self.BRICK_PADDING);
         brick.y = combination.y + row * (self.BRICK_HEIGHT + self.BRICK_PADDING);
       });
@@ -337,7 +337,7 @@ class BrickGame extends GameManager {
       }
 
       // 조합의 모든 벽돌이 부서졌는지 확인
-      var activeBricks = combination.bricks.filter(function (brick) { return brick.status === 1; });
+      var activeBricks = combination.bricks.filter(function(brick) { return brick.status === 1; });
       if (activeBricks.length === 0) {
         this.combinations.splice(i, 1);
         this.clearedCombinations++;
@@ -355,7 +355,7 @@ class BrickGame extends GameManager {
       for (var j = 0; j < combination.bricks.length; j++) {
         var brick = combination.bricks[j];
         if (brick.status === 1 && brick.isBrickHit(this.ball)) {
-  // 겹침 영역 계산을 통한 방향 감지
+          // 겹침 영역 계산을 통한 방향 감지
           var overlapLeft = this.ball.x + this.ball.radius - brick.x;
           var overlapRight = brick.x + this.BRICK_WIDTH - (this.ball.x - this.ball.radius);
           var overlapTop = this.ball.y + this.ball.radius - brick.y;
