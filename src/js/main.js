@@ -2,9 +2,6 @@ const DEBUG_MODE = false;
 // const DEBUG_GAME = true;
 
 window.addEventListener("DOMContentLoaded", () => {
-  document.addEventListener("keydown", startFromTitle, { once: true });
-  document.addEventListener("click", startFromTitle, { once: true });
-
   if (DEBUG_MODE) {
     hideAllFade(qsa(".screen"));
 
@@ -22,12 +19,15 @@ window.addEventListener("DOMContentLoaded", () => {
   } else {
     hideAllFade(qsa(".screen"));
     showWithFade(qs("#title-screen"));
+    setupMenuEvents();
+    setupOptionModal();
+    setupAudioSliders();
+    setupButtonSfx();
+    document.addEventListener("keydown", startFromTitle, { once: true });
+    document.addEventListener("click", startFromTitle, { once: true });
   }
 
-  setupMenuEvents();
-  setupOptionModal();
-  setupAudioSliders();
-  setupButtonSfx();
+
   if (!localStorage.getItem("scoreboard")) {
     setScoreboardData(makeEmptyScoreboard());
   }
