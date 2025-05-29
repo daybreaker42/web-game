@@ -15,7 +15,9 @@ function startGameScoreMode(difficulty) {
   stopCloudAnimation();
   playGame("score", selectedDifficulty, null, (gameResult) => {
     saveGameResult(gameResult);
-    console.log("게임 종료:", gameResult);
+    hide(qs("#difficulty-menu-screen"));
+    showWithFade(qs("#game-result-screen"));
+    renderGameResult(gameResult);
   }
   );
 }
