@@ -50,21 +50,12 @@ function onGameEnd(gameResult) {
 //                               Callbacks
 // =============================================================================
 
-function onAllStagesCleared() {
-  // ENDING 스토리 재생
-  playStory(N_STAGES + 1, () => {
-    // story_chapter5_closing
-    showCredits();
-    handleReturnToTitleScreen();
-  });
-}
-
 function onStageClear(gameResult) {
-  alert(`Stage ${currentStageIndex}를 클리어했습니다.`);
-
   if (currentStageIndex === N_STAGES) {
     // Stage 4 클리어
-    onAllStagesCleared();
+    playStory(N_STAGES + 1, () => {
+      showGameResultScreen(gameResult);
+    });
   } else {
     // Stage 1~3 클리어 후 해당 스토리 재생
     playStory(currentStageIndex, () => {
@@ -76,10 +67,7 @@ function onStageClear(gameResult) {
 }
 
 function onStageOver(gameResult) {
-  renderGameOverScreen(gameResult);
-  //   showInfoModal("GAME OVER\n타이틀로 돌아갑니다.", () => {
-  //     handleReturnToTitleScreen();
-  //   });
+  showGameResultScreen(gameResult);
 }
 
 function saveGameResult(gameResult) {

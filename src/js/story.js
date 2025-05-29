@@ -9,22 +9,19 @@ const btnNo = qs("#skip-confirm-no");
 let currentOnSkip = null; // CRT 씬에서 스킵 콜백을 저장
 
 function setupStorySkipHandler(onSkip) {
-  currentOnSkip = onSkip; // 전역 변수에 저장
+  currentOnSkip = onSkip;
   const btnSkipStory = qs("#btn-skip-story");
   if (btnSkipStory) {
-    btnSkipStory.onclick = () => skipModal.showModal();
+    btnSkipStory.onclick = () => {
+      showStorySkipConfirm(() => {
+        hide(qs("#story-screen"));
+        // CRT 화면도 숨기기
+        const crtConsoleScreen = qs("#crt-console-screen");
+        if (crtConsoleScreen) crtConsoleScreen.classList.add("hidden");
+        if (typeof currentOnSkip === "function") currentOnSkip();
+      });
+    };
   }
-  btnYes.onclick = () => {
-    skipModal.close();
-    hide(qs("#story-screen"));
-    // CRT 화면도 숨기기
-    const crtConsoleScreen = qs("#crt-console-screen");
-    if (crtConsoleScreen) {
-      crtConsoleScreen.classList.add("hidden");
-    }
-    if (typeof onSkip === "function") onSkip();
-  };
-  btnNo.onclick = () => skipModal.close();
 }
 
 // ============================================================================
@@ -140,9 +137,12 @@ function showStorySceneConsole(scene, onDone) {
   // CRT 스킵 버튼 이벤트 핸들러 (기존 핸들러 덮어쓰기 방지)
   if (crtSkipBtn && !crtSkipBtn.hasAttribute("data-crt-handler-set")) {
     crtSkipBtn.onclick = () => {
-      if (currentOnSkip) {
-        skipModal.showModal();
-      }
+      showStorySkipConfirm(() => {
+        isSkipped = true;
+        crtConsoleScreen.classList.add("hidden");
+        hide(qs("#story-screen"));
+        if (typeof currentOnSkip === "function") currentOnSkip();
+      });
     };
     crtSkipBtn.setAttribute("data-crt-handler-set", "true");
   }

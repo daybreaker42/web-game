@@ -13,7 +13,7 @@ const modeKor = { story: "스토리 모드", score: "스코어 모드" };
 const difficultyKor = { easy: "쉬움", normal: "보통", hard: "어려움" };
 
 // ========================
-// STAFF 정보 배열
+// STAFF 정보
 // ========================
 const STAFFS = [
   { name: "한성준", role: "???", pokemon: 1 },
@@ -82,12 +82,11 @@ const CREDITS_TEXT = [
 // 크레딧 표시 진입 함수
 // ========================
 
-function showCredits(creditData) {
-  creditData = creditData || TEST_CREDITS_DATA; // 기본값 설정
-  console.log("Showing credits with data:", creditData);
+function showCredits(gameResult) {
+  gameResult = gameResult || TEST_CREDITS_DATA; // 기본값 설정
   hideAllFade(qsa(".screen"));
   showWithFade(elById("credits-screen"));
-  createCreditsContent(creditData);
+  createCreditsContent(gameResult);
   startCreditsScroll();
   setupCreditsBtn();
   playBgm(BGM.CREDITS);
