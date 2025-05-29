@@ -1,4 +1,4 @@
-const GAME_TIME = 3000; // 3초
+const GAME_TIME = 1000 * 3;
 
 const STORY_SCRIPTS = [
   window.story_chapter0_opening, // 0: START 스토리

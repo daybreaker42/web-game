@@ -111,6 +111,11 @@ class BossGame extends GameManager {
     this.keys.upPressed = false;
     this.keys.downPressed = false;
 
+    // MARK: 포켓몬 능력 효과 상태 변수 추가
+    this.electricBoostActive = false; // 전기타입 능력 (점수 2배) 활성 상태
+    this.waterBoostActive = false; // 물타입 능력 (플레이어 속도 증가) 활성 상태  
+    this.iceBoostActive = false; // 얼음타입 능력 (보스 이동 속도 감소) 활성 상태
+
     // 사운드 설정
     this.bossHitSound = new Audio("../assets/sounds/sfx/mewtwo.ogg"); // 피격 사운드 파일 경로
     this.bossHitSound.volume = 0.5; // 사운드 볼륨 설정 (0.0 ~ 1.0)
@@ -357,15 +362,19 @@ class BossGame extends GameManager {
       this.updatePhase2(currentTime, timeMultiplier);
     }
   }
-
   /**
    * MARK: 페이즈 1 업데이트 (일반 이동 + 전방향 공격)
    */
   updatePhase1(currentTime, timeMultiplier) {
+    // MARK: 얼음타입 능력 적용 - 보스 이동 쿨다운 증가
+    const effectiveMoveCooldown = this.iceBoostActive
+      ? this.boss.moveCooldown * 2 // 얼음타입 능력 시 이동 쿨다운 2배 증가
+      : this.boss.moveCooldown;
+
     // 이동 처리
     if (
       !this.boss.isMoving &&
-      currentTime - this.boss.lastMoveTime >= this.boss.moveCooldown
+      currentTime - this.boss.lastMoveTime >= effectiveMoveCooldown
     ) {
       this.startBossMove(); // 보스 이동 시작
     }
@@ -383,13 +392,16 @@ class BossGame extends GameManager {
       this.boss.lastAttackTime = currentTime;
     }
   }
-
   /**
    * MARK: 페이즈 2 업데이트 (순간이동 + 플레이어 조준 공격)
    */
   updatePhase2(currentTime, timeMultiplier) {
+    // MARK: 얼음타입 능력 적용 - 페이즈 2 이동 쿨다운도 증가
+    const phase2MoveCooldown = this.iceBoostActive
+      ? 4000 // 얼음타입 능력 시 4초마다 이동 (기존 2초에서 2배 증가)
+      : 2000; // 기본 2초마다 이동
+
     // 순간이동 처리 (페이즈 2에서는 더 자주 이동)
-    const phase2MoveCooldown = 2000; // 2초마다 이동
     if (
       !this.boss.isMoving &&
       currentTime - this.boss.lastMoveTime >= phase2MoveCooldown
@@ -443,13 +455,18 @@ class BossGame extends GameManager {
     this.boss.isMoving = true;
     this.boss.moveStartTime = performance.now();
   }
-
   /**
    * MARK: 보스 이동 업데이트 (페이즈 1)
    */
   updateBossMovement(currentTime, timeMultiplier) {
     const elapsed = currentTime - this.boss.moveStartTime;
-    const progress = Math.min(elapsed / this.boss.moveDuration, 1);
+
+    // MARK: 얼음타입 능력 적용 - 보스 이동 지속시간 증가 (속도 감소 효과)
+    const effectiveMoveDuration = this.iceBoostActive
+      ? this.boss.moveDuration * 2 // 얼음타입 능력 시 이동시간 2배 증가 (속도 50% 감소)
+      : this.boss.moveDuration;
+
+    const progress = Math.min(elapsed / effectiveMoveDuration, 1);
 
     // 부드러운 이동을 위한 easing 함수 적용
     const easeProgress = 1 - Math.pow(1 - progress, 3);
@@ -650,11 +667,15 @@ class BossGame extends GameManager {
         bullet.y >= this.boss.y && // Y 좌표는 이미지 상단 기준
         bullet.y <= this.boss.y + this.boss.height
       ) {
-        // Y 좌표는 이미지 상단 기준
-
-        // 보스 체력 감소
+        // Y 좌표는 이미지 상단 기준        // 보스 체력 감소
         this.boss.health -= 50;
-        this.score += 100; // 점수 증가
+
+        // MARK: 전기타입 능력 적용 - 점수 2배
+        if (this.electricBoostActive) {
+          this.score += 100 * 2; // 점수 2배 증가
+        } else {
+          this.score += 100; // 기본 점수 증가
+        }
 
         // 총알 제거
         this.playerBullets.splice(i, 1);
@@ -807,7 +828,7 @@ class BossGame extends GameManager {
         this.boss.height,
       );
 
-      // 페이즈 2일 때 추가 효과 (외곽선 등)는 이미지 위에 그려질 수 있음
+      // 페이즈 2일 때 추가 효과 (외곽선 등)은 이미지 위에 그려질 수 있음
       if (this.boss.currentPhase === 2 && !this.boss.isHurt) {
         // 피격 시에는 외곽선 잠시 숨김 (선택사항)
         this.ctx.strokeStyle = "#ff00ff";
@@ -896,12 +917,18 @@ class BossGame extends GameManager {
       this.ctx.restore();
     });
   }
-
   /**
    * MARK: 체력바 그리기
    */
   drawHealthBars() {
-    // 보스 체력바
+    this.drawBossHealthBar();
+    this.drawPlayerHealthBar();
+  }
+
+  /**
+   * MARK: 보스 체력바 그리기 (상단)
+   */
+  drawBossHealthBar() {
     const bossHealthBarWidth = 300;
     const bossHealthBarHeight = 20;
     const bossHealthBarX = (this.canvas.width - bossHealthBarWidth) / 2;
@@ -936,18 +963,63 @@ class BossGame extends GameManager {
       bossHealthBarHeight,
     );
 
-    // 페이즈 표시 추가
-    const phaseText = `Phase ${this.boss.currentPhase}`;
+    // 보스 체력 텍스트
     this.ctx.fillStyle = "#ffffff";
     this.ctx.font = "16px Arial";
     this.ctx.textAlign = "center";
-    this.ctx.fillText(phaseText, this.canvas.width / 2, bossHealthBarY - 10);
-
-    // 보스 체력 텍스트
     this.ctx.fillText(
-      `Boss HP: ${Math.max(0, this.boss.health)} / ${this.boss.maxHealth}`,
+      `뮤츠 : ${Math.max(0, this.boss.health)} / ${this.boss.maxHealth}`,
       this.canvas.width / 2,
       bossHealthBarY + bossHealthBarHeight + 20,
+    );
+  }
+
+  /**
+   * MARK: 플레이어 체력바 그리기 (하단)
+   */
+  drawPlayerHealthBar() {
+    const playerHealthBarWidth = 200;
+    const playerHealthBarHeight = 15;
+    const playerHealthBarX = (this.canvas.width - playerHealthBarWidth) / 2;
+    const playerHealthBarY = this.canvas.height - 50;
+
+    // 플레이어 체력바 배경
+    this.ctx.fillStyle = "#333333";
+    this.ctx.fillRect(
+      playerHealthBarX,
+      playerHealthBarY,
+      playerHealthBarWidth,
+      playerHealthBarHeight,
+    );
+
+    // 플레이어 체력바
+    const playerHealthPercent = this.lives / this.totalLives;
+    this.ctx.fillStyle = playerHealthPercent > 0.3 ? "#44ff44" : "#ffff44";
+    this.ctx.fillRect(
+      playerHealthBarX,
+      playerHealthBarY,
+      playerHealthBarWidth * playerHealthPercent,
+      playerHealthBarHeight,
+    );
+
+    // 플레이어 체력바 외곽선
+    this.ctx.strokeStyle = "#ffffff";
+    this.ctx.lineWidth = 1;
+    this.ctx.strokeRect(
+      playerHealthBarX,
+      playerHealthBarY,
+      playerHealthBarWidth,
+      playerHealthBarHeight,
+    );
+
+    // 플레이어 체력 텍스트
+    this.ctx.fillStyle = "#ffffff";
+    this.ctx.font = "14px Arial";
+    this.ctx.textAlign = "center";
+    this.ctx.fillText(
+      `체력: ${this.lives} / ${this.totalLives}`,
+      this.canvas.width / 2,
+      playerHealthBarY + playerHealthBarHeight + 20,
     );
   }
 
@@ -996,4 +1068,88 @@ class BossGame extends GameManager {
       this.boss.height = newHeight; // 주석 추가
     } // 주석 추가
   } // 주석 추가
+
+  // MARK: 포켓몬 능력 실행 오버라이드 (GameManager에서 상속)
+  executePokemonAbility(slotIndex, pokemonIndex, pokemonType) {
+    // 타입별 능력 실행
+    switch (pokemonType) {
+      case 0: // 풀타입
+        this.executeGrassAbility();
+        break;
+      case 1: // 불타입  
+        this.executeFireAbility();
+        break;
+      case 2: // 전기타입
+        this.executeElectricAbility();
+        break;
+      case 3: // 물타입
+        this.executeWaterAbility();
+        break;
+      case 4: // 얼음타입
+        this.executeIceAbility();
+        break;
+      default:
+        console.log("알 수 없는 타입의 포켓몬 능력입니다.");
+    }
+  }
+
+  // MARK: 풀타입 능력 - 생명력 회복
+  executeGrassAbility() {
+    this.lives += 100; // 생명력 100 회복
+    if (this.lives > this.totalLives) {
+      this.lives = this.totalLives; // 최대 생명력 제한
+    }
+    console.log("풀타입 능력 사용! 생명력 100 회복");
+  }
+
+  // MARK: 불타입 능력 - 플레이어 이동 속도 증가
+  executeFireAbility() {
+    const originalMaxSpeed = this.player.maxSpeed;
+    this.player.maxSpeed = originalMaxSpeed * 1.5; // 1.5배 속도 증가
+
+    console.log("불타입 능력 사용! 플레이어 속도 5초간 증가");
+
+    // 5초 후 원래 속도로 복귀
+    setTimeout(() => {
+      this.player.maxSpeed = originalMaxSpeed;
+    }, 5000);
+  }
+
+  // MARK: 전기타입 능력 - 점수 2배 획득
+  executeElectricAbility() {
+    this.electricBoostActive = true;
+    console.log("전기타입 능력 사용! 8초간 점수 2배 획득");
+
+    // 8초 후 효과 해제
+    setTimeout(() => {
+      this.electricBoostActive = false;
+    }, 8000);
+  }
+
+  // MARK: 물타입 능력 - 플레이어 가속력 증가
+  executeWaterAbility() {
+    this.waterBoostActive = true;
+    const originalAcceleration = this.player.acceleration;
+    this.player.acceleration = originalAcceleration * 1.8; // 1.8배 가속력 증가
+
+    console.log("물타입 능력 사용! 7초간 플레이어 가속력 증가");
+
+    // 7초 후 효과 해제
+    setTimeout(() => {
+      this.waterBoostActive = false;
+      this.player.acceleration = originalAcceleration;
+    }, 7000);
+  }
+  // MARK: 얼음타입 능력 - 보스 이동 속도 감소
+  executeIceAbility() {
+    this.iceBoostActive = true;
+    this.showMessage("얼음타입 능력: 보스 이동 속도 감소!", "success"); // 시각적 피드백 추가
+    console.log("얼음타입 능력 사용! 6초간 보스 이동 속도 감소");
+
+    // 6초 후 효과 해제
+    setTimeout(() => {
+      this.iceBoostActive = false;
+      console.log("얼음타입 능력 효과 종료: 보스 이동 속도 원상복구"); // 종료 로그 추가
+    }, 6000);
+  }
 }
