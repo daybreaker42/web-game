@@ -114,8 +114,12 @@ class BrickGame extends GameManager {
     }
 
     for (let i = 0; i < remainingSlots; i++) {
+      if (availablePokemon.length === 0) break; // 사용 가능한 포켓몬이 없으면 중단
       let randomIndex = Math.floor(Math.random() * availablePokemon.length);
-      combinationList.push({ type: 'pokemon', index: availablePokemon[randomIndex] });
+      let selectedPokemon = availablePokemon[randomIndex];
+      combinationList.push({ type: 'pokemon', index: selectedPokemon });
+      // 선택된 포켓몬을 배열에서 제거하여 중복 방지
+      availablePokemon.splice(randomIndex, 1);
     }
 
     // 조합 리스트를 랜덤하게 섞기
@@ -555,7 +559,9 @@ class BrickGame extends GameManager {
       slot.style.backgroundImage = "none";
       slot.style.backgroundColor = "transparent";
     }
-  }  /**
+  }
+
+  /**
    * MARK: 승리 조건 확인
    */
   checkWin() {
@@ -668,7 +674,9 @@ class BrickGame extends GameManager {
     this.iceBoostActive = false;
 
     super.restartGame(); // 부모 클래스의 재시작 메서드 호출
-  }  /**
+  }
+
+  /**
    * MARK: 기존 조합과 겹치지 않는 Y 위치 찾기 메서드 - 추가됨: 조합 겹침 방지
    */
   findNonOverlappingY(minY, maxY, patternHeight) {
