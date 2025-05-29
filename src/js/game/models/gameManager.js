@@ -24,7 +24,7 @@ class GameManager {
     this.ballIcon.onload = () => {
       this.ballIconLoaded = true; // 볼 아이콘 로드 완료 플래그
     };
-    // MARK: 게임 상태 변수들
+    // 게임 상태 변수들
     this.lastTime = 0;
     this.isGameRunning = false;
     this.isPaused = false;
@@ -32,7 +32,7 @@ class GameManager {
     this.pauseStartTime = 0; // 일시정지했을때 시간 멈추기 용
     this.totalPauseDuration = 0; // 일시정지한 시간
 
-    // MARK: 게임 정보
+    // 게임 정보
     this.mode = null;
     this.difficulty = null;
     this.stage = null;
@@ -42,25 +42,25 @@ class GameManager {
     this.isGameClear = false;
     this.saved_pokemon = [];
 
-    // MARK: 생명 설정 (모드 및 난이도별) // 주석 추가: 생명 설정 구조화
+    // 생명 설정 (모드 및 난이도별) // 주석 추가: 생명 설정 구조화
     this.livesConfig = {
       brick: { easy: 300, normal: 300, hard: 300 }, // 주석 추가: 벽돌깨기 모드 생명 (현재는 동일)
       boss: { easy: 1000, normal: 300, hard: 300 }, // 주석 추가: 보스전 모드 생명 (현재는 동일)
     };
 
-    // MARK: 입력 상태
+    // 입력 상태
     this.keys = {
       rightPressed: false,
       leftPressed: false,
       spacePressed: false,
     };
 
-    // MARK: 공통 게임 오브젝트들
+    // 공통 게임 오브젝트들
     this.ball = null;
     this.paddle = null;
     this.BALL_SPEED = 5; // 공의 기본 속도
 
-    // MARK: 메시지 시스템
+    // 메시지 시스템
     this.persistentMessageElement = null;
 
     // 다음 스테이지로 넘어가기
@@ -68,7 +68,7 @@ class GameManager {
   }
 
   /**
-   * 게임 정보를 설정하는 메서드
+   * MARK: 게임 정보를 설정하는 메서드
    */
   setGameInfo(data) {
     if (!data.mode) {
@@ -143,7 +143,7 @@ class GameManager {
   }
 
   /**
-   * 레벨에 따른 난이도 설정
+   * MARK: 레벨에 따른 난이도 설정
    */
   setDifficultyBydifficulty(difficulty) {
     const currentModeConfig =
