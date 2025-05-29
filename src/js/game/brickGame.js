@@ -442,8 +442,21 @@ class BrickGame extends GameManager {
 
   /**
    * MARK: 포켓몬 슬롯에 추가
-   */
-  addPokemonToSlot(imageSrc) {
+   */  addPokemonToSlot(imageSrc) {
+    // 포켓몬 인덱스와 타입 정보 추출 (전설의 포켓몬과 타입 중복 차단용)
+    let indexMatch = imageSrc.match(/(\d+)\.png/);
+    if (!indexMatch) return;
+    
+    let index = parseInt(indexMatch[1]);
+    let pokemonData = window.pokemon && window.pokemon[index] ? window.pokemon[index] : null;
+    if (!pokemonData) return;
+    
+    // 전설의 포켓몬(타입 5) 차단 로직 추가
+    if (pokemonData.type === 5) {
+      console.log(`전설의 포켓몬 ${pokemonData.name}은(는) 슬롯에 추가할 수 없습니다.`);
+      return; 
+    }
+
     // 중복 방지: 이미 슬롯에 들어가 있는 경우 무시
     for (let i = 0; i < 4; i++) {
       let slot = document.getElementById("slot-" + i);
@@ -451,6 +464,25 @@ class BrickGame extends GameManager {
 
       if (bg.includes(imageSrc)) {
         return; // 이미 들어있는 포켓몬은 중복 추가 안 함
+      }
+    }
+
+    // 타입 중복 방지: 같은 타입의 포켓몬이 이미 슬롯에 있는지 확인
+    for (let i = 0; i < 4; i++) {
+      let slot = document.getElementById("slot-" + i);
+      let bg = slot.style.backgroundImage;
+      
+      if (bg && bg !== "none") {
+        let existingIndexMatch = bg.match(/(\d+)\.png/);
+        if (existingIndexMatch) {
+          let existingIndex = parseInt(existingIndexMatch[1]);
+          let existingPokemon = window.pokemon && window.pokemon[existingIndex] ? window.pokemon[existingIndex] : null;
+          
+          if (existingPokemon && existingPokemon.type === pokemonData.type) {
+            console.log(`같은 타입의 포켓몬이 이미 슬롯에 있습니다: ${existingPokemon.name} (타입 ${existingPokemon.type})`);
+            return; // 같은 타입 포켓몬은 중복 추가 안 함
+          }
+        }
       }
     }
 
@@ -463,13 +495,9 @@ class BrickGame extends GameManager {
         slot.style.backgroundImage = "url(" + imageSrc + ")";
         slot.style.backgroundSize = "cover";
         slot.style.backgroundPosition = "center";
-        let indexMatch = imageSrc.match(/(\d+)\.png/);
-        if (indexMatch) {
-          let index = parseInt(indexMatch[1]);
-          let type = window.pokemon && window.pokemon[index] ? window.pokemon[index].type : 0;
-          let color = this.typeColorMap[type] || "#eee";
-          slot.style.backgroundColor = color;
-        }
+        let color = this.typeColorMap[pokemonData.type] || "#eee";
+        slot.style.backgroundColor = color;
+        console.log(`포켓몬 슬롯에 추가됨: ${pokemonData.name} (타입 ${pokemonData.type})`);
         return;
       }
     }
@@ -483,20 +511,30 @@ class BrickGame extends GameManager {
       slot.style.backgroundImage = "none";
       slot.style.backgroundColor = "transparent";
     }
-  }
-  /**
+  }  /**
    * MARK: 승리 조건 확인
    */
   checkWin() {
-    // 필요한 조합 수를 클리어했다면
-    if (this.clearedCombinations >= this.requiredCombinations) {
-      this.isGameClear = true;
-      this.showMessage("축하합니다! 스테이지를 클리어했습니다!", "success", true);
-      this.endGame();
-      return true;
+    // easy 모드에서는 피카츄/펭도리 없이도 클리어 가능하도록 조건 완화
+    if (this.difficulty === "easy") {
+      // easy 모드: 기본 클리어 조건만 확인 (특별 포켓몬 수집 불필요)
+      if (this.clearedCombinations >= this.requiredCombinations) {
+        this.isGameClear = true;
+        this.showMessage("축하합니다! 스테이지를 클리어했습니다!", "success", true);
+        this.endGame();
+        return true;
+      }
+    } else {
+      // normal/hard 모드: 기존 로직 유지 (필요시 특별 포켓몬 수집 조건 추가 가능)
+      if (this.clearedCombinations >= this.requiredCombinations) {
+        this.isGameClear = true;
+        this.showMessage("축하합니다! 스테이지를 클리어했습니다!", "success", true);
+        this.endGame();
+        return true;
+      }
     }
     return false;
-  }  /**
+  }/**
    * MARK: 공 그리기
    */
   drawBall() {
