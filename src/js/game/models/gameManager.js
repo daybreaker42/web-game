@@ -531,7 +531,7 @@ class GameManager {
       stage: this.stage,
       score: this.score,
       date: new Date().toISOString(),
-      game_over: DEBUG_MODE ? false : true, // 디버그 모드에서는 계속 진행
+      game_over: window.DEBUG_MODE ? false : true, // 디버그 모드에서는 계속 진행
       saved_pokemon: this.saved_pokemon || [],
     };
     this.onGameEnd(result); // 게임 종료 콜백 호출
