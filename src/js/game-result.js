@@ -25,12 +25,16 @@ const GAME_RESULT_FIELDS = [
   },
 ];
 
+function showGameResultScreen(gameResult) {
+    playBgm(BGM.RESULT);
+    renderGameResult(gameResult);
+    // elById("game-result-back").onclick = handleReturnToTitleScreen;
+}
+
 function renderGameResult(gameResult) {
   let html = "";
   for (const field of GAME_RESULT_FIELDS) {
-    // 스코어 모드에서 '스테이지' 필드는 건너뜀
     if (field.key === "stage" && gameResult.mode === "score") continue;
-
     let value = gameResult[field.key];
     if (field.convert) value = field.convert[value] || value;
     if (field.formatter) value = field.formatter(value);
@@ -40,14 +44,14 @@ function renderGameResult(gameResult) {
         ? gameResult.saved_pokemon.length
         : 0;
       html += `<div class="game-result-row">
-          <span class="game-result-label">${field.label}</span>
-          <span class="game-result-value">${count}마리</span>
-        </div>`;
+            <span class="game-result-label">${field.label}</span>
+            <span class="game-result-value">${count}마리</span>
+          </div>`;
     } else {
       html += `<div class="game-result-row">
-          <span class="game-result-label">${field.label}</span>
-          <span class="game-result-value">${value}</span>
-        </div>`;
+            <span class="game-result-label">${field.label}</span>
+            <span class="game-result-value">${value}</span>
+          </div>`;
     }
   }
 
@@ -58,8 +62,21 @@ function renderGameResult(gameResult) {
     .forEach((e) => e.classList.add("hidden"));
   elById("game-result-screen").classList.remove("hidden");
 
-  elById("btn-game-result-ok").onclick = function () {
-    // 랭킹 저장 여부 모달
+  const pressMsg = elById("press-any-key-msg");
+  if (pressMsg) {
+    // 리플로우로 애니메이션 재생
+    void pressMsg.offsetWidth;
+  }
+
+  function handleAnyPress(e) {
+    // 키보드/마우스 눌렀을 때만 한 번 실행
+    window.removeEventListener("keydown", handleAnyPress);
+    window.removeEventListener("mousedown", handleAnyPress);
+
+    // 메시지 숨기기
+    if (pressMsg) pressMsg.classList.add("hidden");
+
+    // 기존 버튼 로직 그대로
     const saveModal = elById("ranking-save-modal");
     saveModal.showModal();
 
@@ -85,7 +102,6 @@ function renderGameResult(gameResult) {
 
         let result = false;
         try {
-          // addScoreRecord가 Promise 또는 boolean 반환 지원
           result = await addScoreRecord(
             gameResult.mode,
             gameResult.difficulty,
@@ -113,5 +129,9 @@ function renderGameResult(gameResult) {
       saveModal.close();
       handleReturnToTitleScreen();
     };
-  };
+  }
+
+  // 아무 키나/마우스 클릭시 다음 단계
+  window.addEventListener("keydown", handleAnyPress, { once: true });
+  window.addEventListener("mousedown", handleAnyPress, { once: true });
 }

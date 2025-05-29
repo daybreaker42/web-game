@@ -21,6 +21,7 @@ const BGM = {
   CREDITS: "credits.mp3",
   INTRO: "intro.mp3",
   RANKING: "ranking.mp3",
+  RESULT: "game-result.mp3",
 };
 const SFX = {
   BUTTON: "button-click.wav",

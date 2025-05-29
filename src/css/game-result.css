@@ -53,12 +53,9 @@
   text-align: right;
   word-break: keep-all;
 }
-
-#btn-game-result-ok {
+#press-any-result {
   position: absolute;
-  /* bottom: ; */
-  margin-top: 18px;
-  font-size: 1.12rem;
-  padding: 10px 32px;
-  bottom: 40px;
+  bottom: 50px;
+  font-size: 2rem;
+  color: black;
 }

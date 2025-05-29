@@ -1,6 +1,15 @@
 .hidden {
   display: none !important;
 }
+
+.press-any {
+  animation: blink 1.2s step-end infinite;
+  margin: 0;
+}
+.press-any.flash-twice {
+  animation: press-any-blink 0.29s steps(2) 1;
+}
+
 .pixel-box {
   font-family: "DOSGothic", monospace;
   font-weight: normal;
