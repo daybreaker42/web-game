@@ -10,7 +10,7 @@
   z-index: 50;
 }
 #game-result-root {
-  min-width: 320px;
+  min-width: 500px;
   max-width: 98vw;
   min-height: 260px;
   box-shadow: 0 6px 36px rgba(0, 0, 0, 0.28);
@@ -28,28 +28,34 @@
   font-family: "DOSGothic", "Sam3KRFont", sans-serif;
   letter-spacing: 2px;
 }
-.game-result-label {
-  font-weight: bold;
-  margin-right: 6px;
+#game-result-contents{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 .game-result-row {
-  font-size: 1.13rem;
-  margin: 12px 0;
-  text-align: left;
-}
-.game-result-pokemon-list {
-  display: flex;
-  gap: 7px;
-  flex-wrap: wrap;
-  margin: 13px 0 18px 0;
-}
-.game-result-pokemon-img {
-  width: 32px;
-  height: 32px;
-  background: #222;
-  border: 1.5px solid #333;
-  object-fit: contain;
-}
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 0 7px 0;
+    border-bottom: 1px solid #2224;
+    font-size: 1.1em;
+    gap: 16px;
+    width: 90%;
+  }
+  .game-result-label {
+    flex: 1 1 110px;
+    font-weight: bold;
+    text-align: left;
+    letter-spacing: 0.02em;
+  }
+  .game-result-value {
+    flex: 2 1 0;
+    text-align: right;
+    word-break: keep-all;
+  }
+  
 #btn-game-result-ok {
   margin-top: 18px;
   font-size: 1.12rem;
