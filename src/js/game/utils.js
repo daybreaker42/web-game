@@ -13,10 +13,10 @@ function isHit(ball, x, y, width, height) {
   // 2. 공의 중심에서 가장 가까운 점까지의 거리 계산
   let distanceX = ball.x - closestX;
   let distanceY = ball.y - closestY;
-  let distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
+  let distanceSquared = distanceX * distanceX + distanceY * distanceY;
 
   // 3. 거리가 공의 반지름보다 작거나 같으면 충돌
-  const hit = distanceSquared <= (ball.radius * ball.radius);
+  const hit = distanceSquared <= ball.radius * ball.radius;
 
   return hit;
 }

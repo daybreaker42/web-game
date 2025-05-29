@@ -3,7 +3,6 @@
   height: 533px;
   background: var(--bg-game-screen) center/cover;
   position: relative;
-  overflow: hidden;
   display: flex;
 }
 .screen {

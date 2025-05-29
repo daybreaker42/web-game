@@ -8,6 +8,7 @@
   --img-logo: url("../../assets/images/logo.png");
   --img-title-bg: url("../../assets/images/background/title_dark.png");
   --img-menu-bg: url("../../assets/images/background/title_0.png");
+  --img-game-result-bg: url("../../assets/images/background/game-result.png");
   --story-sample: url("../../assets/images/story/intro-1.png");
   font-family: "DOSGothic", sans-serif;
 }

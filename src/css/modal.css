@@ -1,5 +1,6 @@
 dialog {
   width: 400px;
+  margin: auto;
 }
 dialog label {
   display: flex;

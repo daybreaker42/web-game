@@ -13,7 +13,12 @@ function startGameStoryMode(difficulty) {
 function startGameScoreMode(difficulty) {
   selectedDifficulty = difficulty;
   stopCloudAnimation();
-  alert("미구현");
+  playGame("score", selectedDifficulty, null, (gameResult) => {
+    saveGameResult(gameResult);
+    hide(qs("#difficulty-menu-screen"));
+    showWithFade(qs("#game-result-screen"));
+    renderGameResult(gameResult);
+  });
 }
 
 // ==================== Setup Menu Events ====================

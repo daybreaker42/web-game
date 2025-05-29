@@ -11,7 +11,7 @@
     <!-- Game Root -->
     <div id="game-root">
       <!-- Title Screen-->
-      <section id="title-screen" class="screen">
+      <section id="title-screen" class="screen hidden">
         <div class="logo" alt="Game Logo"></div>
         <p class="press-any">Press any button to start</p>
       </section>
@@ -146,7 +146,105 @@
           <button id="btn-skip-credits" class="btn-skip">> Skip</button>
         </div>
       </section>
+
+      <!-- game play screen -->
+      <section id="gameplay-screen" class="screen hidden">
+        <div id="game-container">
+          <div class="mode-selection">
+            <button id="brickModeButton" class="mode-button active">
+              벽돌깨기 게임
+            </button>
+            <button id="bossModeButton" class="mode-button">보스전</button>
+          </div>
+
+          <div id="game-info-indicator">
+            <span class="score-info"
+              >SCORE :&nbsp;<span id="score">0</span></span
+            >
+            <span id="timer-container"
+              >TIME :&nbsp;<span id="timer">02:00</span></span
+            >
+          </div>
+          <canvas id="game-canvas" width="800" height="533"></canvas>
+          <div class="controls">
+            <button id="startButton" tabindex="-1">게임 시작</button>
+            <button id="pauseButton" tabindex="-1">일시 정지</button>
+            <button id="restartButton" tabindex="-1">다시 시작</button>
+          </div>
+          <!-- pokemon slot 위에 표시되는 frame -->
+          <div id="pokemon-slot-frame-container">
+            <div id="slot-frame-0" class="pokemon-slot-frame selected"></div>
+            <div id="slot-frame-1" class="pokemon-slot-frame"></div>
+            <div id="slot-frame-2" class="pokemon-slot-frame"></div>
+            <div id="slot-frame-3" class="pokemon-slot-frame"></div>
+          </div>
+          <!-- 실제로 pokemon이 들어가는 slot -->
+          <div id="pokemon-slot-container" class="">
+            <div class="pokemon-slot" id="slot-0"></div>
+            <div class="pokemon-slot" id="slot-1"></div>
+            <div class="pokemon-slot" id="slot-2"></div>
+            <div class="pokemon-slot" id="slot-3"></div>
+          </div>
+          <button id="pause-button" class="pixel-box">일시정지</button>
+        </div>
+      </section>
+
+      <!-- game result screen -->
+      <section id="game-result-screen" class="screen hidden">
+        <div id="game-result-root" class="pixel-box">
+          <h2 class="game-result-title">게임 결과</h2>
+          <div id="game-result-contents"></div>
+          <button id="btn-game-result-ok" class="pixel-box">확인</button>
+        </div>
+      </section>
     </div>
+
+    <!-- Check save or not -->
+    <dialog id="ranking-save-modal" class="pixel-box" style="width: 540px">
+      <div style="padding-top: 20px; text-align: center">
+        게임 결과를 랭킹에 저장하시겠습니까?<br />'아니오'를 누르면 타이틀로
+        돌아갑니다.<br />
+        <button
+          id="ranking-save-yes"
+          class="pixel-box modal-inner-button"
+          style="margin: 10px 4px"
+        >
+          예
+        </button>
+        <button
+          id="ranking-save-no"
+          class="pixel-box modal-inner-button"
+          style="margin: 10px 4px"
+        >
+          아니오
+        </button>
+      </div>
+    </dialog>
+
+    <!-- Input Nickname modal -->
+    <dialog id="nickname-modal" class="pixel-box">
+      <form method="dialog" style="padding: 18px; text-align: center">
+        <div>닉네임을 입력하세요:</div>
+        <input
+        id="nickname-input"
+        class="pixel-input"
+        type="text"
+        maxlength="10"
+        size="10"
+        style="width: 10em;"
+        autocomplete="off"
+        placeholder="" />
+      
+        <br />
+        <button
+          id="nickname-ok"
+          class="pixel-box modal-inner-button"
+          style="margin: 10px 4px"
+        >
+          저장
+        </button>
+      </form>
+    </dialog>
 
     <!-- Confirm skip modal -->
     <dialog id="confirm-skip-modal" class="pixel-box">
@@ -165,6 +263,19 @@
           style="margin: 10px 4px"
         >
           아니오
+        </button>
+      </div>
+    </dialog>
+
+    <dialog id="info-modal" class="pixel-box">
+      <div style="padding: 12px; text-align: center">
+        <span id="info-content"></span>
+        <button
+          id="info-confirm-yes"
+          class="pixel-box modal-inner-button"
+          style="margin: 10px 4px"
+        >
+          확인
         </button>
       </div>
     </dialog>
@@ -209,7 +320,18 @@
     <script src="js/constants.js"></script>
     <script src="js/audio.js"></script>
     <script src="js/animation.js"></script>
+    <script src="js/modal.js"></script>
+    <!-- game 관련 start -->
+    <script src="js/game/models/gameManager.js"></script>
+    s
+    <script src="js/game/utils.js"></script>
+    <script src="js/game/models/brick.js"></script>
+    <script src="js/game/brickGame.js"></script>
+    <script src="js/game/bossGame.js"></script>
+    <script src="js/game/main.js"></script>
+    <!-- game 관련 end -->
     <script src="js/gameplay-manager.js"></script>
+    <script src="js/game-result.js"></script>
     <script src="js/stage-manager.js"></script>
     <script src="js/story-manager.js"></script>
     <script src="js/menu.js"></script>
@@ -217,5 +339,6 @@
     <script src="js/ranking.js"></script>
     <script src="js/credits.js"></script>
     <script src="js/main.js"></script>
+    <!-- game 관련 js script -->
   </body>
 </html>

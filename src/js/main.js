@@ -1,12 +1,33 @@
-window.addEventListener("DOMContentLoaded", () => {
-  //   console.log("Adding event listeners");
-  document.addEventListener("keydown", startFromTitle, { once: true });
-  document.addEventListener("click", startFromTitle, { once: true });
+const DEBUG_MODE = false;
+// const DEBUG_GAME = true;
 
-  setupMenuEvents();
-  setupOptionModal();
-  setupAudioSliders();
-  setupButtonSfx();
+window.addEventListener("DOMContentLoaded", () => {
+  if (DEBUG_MODE) {
+    hideAllFade(qsa(".screen"));
+
+    renderGameResult(DEMO_GAME_RESULT_1);
+    show(qs("#game-result-screen"));
+
+    if (DEBUG_GAME) {
+      show(qs("#gameplay-screen"));
+      playGame("story", 0, 0, (gameResult) => {
+        console.log("Game ended:", gameResult);
+        returnToTitleScreen();
+      });
+    }
+    return;
+  } else {
+    hideAllFade(qsa(".screen"));
+    showWithFade(qs("#title-screen"));
+    setupMenuEvents();
+    setupOptionModal();
+    setupAudioSliders();
+    setupButtonSfx();
+    document.addEventListener("keydown", startFromTitle, { once: true });
+    document.addEventListener("click", startFromTitle, { once: true });
+  }
+
+
   if (!localStorage.getItem("scoreboard")) {
     setScoreboardData(makeEmptyScoreboard());
   }
@@ -37,6 +58,7 @@ function returnToTitleScreen() {
 function startFromTitle(e) {
   if (started) return;
   started = true;
+
   playSfx(SFX.START);
 
   const pressAny = qs(".press-any");
