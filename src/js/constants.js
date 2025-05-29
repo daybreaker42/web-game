@@ -13,7 +13,10 @@ const N_STAGES = STORY_SCRIPTS.length - 2; // 스토리 스크립트 개수 (보
 const BGM = {
   TITLE: "title.mp3",
   STORY: "story.mp3",
-  GAME: "game.mp3",
+  STAGE_1: "stage-1.mp3",
+  STAGE_2: "stage-2.mp3",
+  STAGE_3: "stage-3.mp3",
+  STAGE_4: "stage-4-boss.mp3",
   ENDING: "ending.mp3",
   CREDITS: "credits.mp3",
   INTRO: "intro.mp3",
