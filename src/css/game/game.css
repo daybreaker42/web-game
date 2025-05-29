@@ -167,6 +167,12 @@ canvas {
   box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.4);
 }
 
+/* pokemon slot 보스전에서 숨기기 */
+.boss-mode #pokemon-slot-container,
+.boss-mode #pokemon-slot-frame-container {
+  display: none !important;
+}
+
 #info-modal {
   margin: auto;
 }

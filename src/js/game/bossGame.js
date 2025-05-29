@@ -208,7 +208,16 @@ class BossGame extends GameManager {
     this.bossBullets = [];
     this.laserBullets = []; // 레이저 총알 배열 초기화
     this.playerLastShotTime = 0;
-  } /**
+
+    // 보스전에서 포켓몬 슬롯 숨기기
+    document.body.classList.add('boss-mode');
+    const slotContainer = document.getElementById('pokemon-slot-container');
+    const slotFrameContainer = document.getElementById('pokemon-slot-frame-container');
+    if (slotContainer) slotContainer.style.display = 'none';
+    if (slotFrameContainer) slotFrameContainer.style.display = 'none';
+  }
+
+  /**
    * 게임별 업데이트 로직
    */
   updateGame(timeMultiplier) {
