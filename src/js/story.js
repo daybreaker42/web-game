@@ -136,15 +136,15 @@ function showStorySceneConsole(scene, onDone) {
 
   // CRT 화면의 기존 스킵 버튼 사용
   const crtSkipBtn = crtConsoleScreen.querySelector("#btn-skip-story");
-  
+
   // CRT 스킵 버튼 이벤트 핸들러 (기존 핸들러 덮어쓰기 방지)
-  if (crtSkipBtn && !crtSkipBtn.hasAttribute('data-crt-handler-set')) {
+  if (crtSkipBtn && !crtSkipBtn.hasAttribute("data-crt-handler-set")) {
     crtSkipBtn.onclick = () => {
       if (currentOnSkip) {
         skipModal.showModal();
       }
     };
-    crtSkipBtn.setAttribute('data-crt-handler-set', 'true');
+    crtSkipBtn.setAttribute("data-crt-handler-set", "true");
   }
 
   stopBgm();
@@ -169,14 +169,14 @@ function showStorySceneConsole(scene, onDone) {
 
   function typeNextLine() {
     if (isSkipped) return; // 스킵되었으면 중단
-    
+
     if (idx < scene.lines.length) {
       let i = 0;
       const text = scene.lines[idx];
       crtConsoleText.textContent = "";
       function typeChar() {
         if (isSkipped) return; // 스킵되었으면 중단
-        
+
         if (i <= text.length) {
           crtConsoleText.textContent = text.slice(0, i);
           if (i > 0 && text[i - 1] !== " " && SFX.CRT_TYPE) {
