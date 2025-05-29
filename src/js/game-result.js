@@ -6,7 +6,7 @@ const GAME_RESULT_FIELDS = [
   },
   {
     label: "난이도",
-    key: "level",
+    key: "difficulty",
     convert: { easy: "쉬움", normal: "보통", hard: "어려움" },
   },
   {

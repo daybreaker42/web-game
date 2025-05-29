@@ -34,7 +34,7 @@ class GameManager {
 
     // MARK: 게임 정보
     this.mode = null;
-    this.level = null;
+    this.difficulty = null;
     this.stage = null;
     this.score = 0;
     this.lives = 300; // 기본 생명력
@@ -74,8 +74,8 @@ class GameManager {
     if (!data.mode) {
       throw new Error("게임 mode 설정 안됨");
     }
-    if (!data.level) {
-      throw new Error("게임 level 설정 안됨");
+    if (!data.difficulty) {
+      throw new Error("게임 difficulty 설정 안됨");
     }
 
     try {
@@ -85,18 +85,18 @@ class GameManager {
     } catch (e) {
       throw new Error("받은 data가 JSON 형식이 아닙니다");
     }
-    if (typeof data.mode !== "string" || typeof data.level !== "string") {
+    if (typeof data.mode !== "string" || typeof data.difficulty !== "string") {
       throw new Error("게임 정보의 형식이 유효하지 않습니다");
     }
     this.mode = data.mode;
-    this.level = data.level;
+    this.difficulty = data.difficulty;
     this.stage = data.stage;
 
     // 스테이지별 배경 이미지 로드 (추가된 기능)
     this.loadStageBackground(data.stage);
 
     // 레벨에 따른 난이도 설정
-    this.setDifficultyByLevel(data.level);
+    this.setDifficultyBydifficulty(data.difficulty);
   }
 
   /**
@@ -148,11 +148,11 @@ class GameManager {
   /**
    * 레벨에 따른 난이도 설정
    */
-  setDifficultyByLevel(level) {
+  setDifficultyBydifficulty(difficulty) {
     const currentModeConfig =
       this.livesConfig[this.mode] || this.livesConfig.brick; // 현재 모드의 설정을 가져오거나 기본값(brick) 사용
 
-    switch (level) {
+    switch (difficulty) {
       case "easy":
         this.totalLives = currentModeConfig.easy; // 주석 수정: 모드별 난이도에 따른 생명 설정
         break;
@@ -527,7 +527,7 @@ class GameManager {
 
     const result = {
       mode: this.mode,
-      level: this.level,
+      difficulty: this.difficulty,
       stage: this.stage,
       score: this.score,
       date: new Date().toISOString(),
