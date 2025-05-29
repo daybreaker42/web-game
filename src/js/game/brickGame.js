@@ -324,29 +324,37 @@ class BrickGame extends GameManager {
       let combination = this.combinations[i];
       combination.x += combination.speed * timeMultiplier;
 
-      // 조합의 모든 벽돌 위치 업데이트
+      // 조합의 모든 벽돌 위치 업데이트 - 수정됨: 벽돌 위치 매핑 로직 개선
       let self = this;
       combination.bricks.forEach(function (brick, brickIndex) {
         let pattern = combination.pattern;
         let row = 0, col = 0;
         let count = 0;
+        let found = false; // 위치를 찾았는지 확인하는 플래그 추가
 
-        // 패턴에서 현재 벽돌의 위치 찾기
-        for (let r = 0; r < pattern.length; r++) {
+        // 패턴에서 현재 벽돌의 위치 찾기 - 수정됨: 이중 루프 탈출 문제 해결
+        outerLoop: for (let r = 0; r < pattern.length; r++) {
           for (let c = 0; c < pattern[r].length; c++) {
             if (pattern[r][c] === 1) {
               if (count === brickIndex) {
                 row = r;
                 col = c;
-                break;
+                found = true;
+                break outerLoop; // 라벨을 사용한 이중 루프 완전 탈출
               }
               count++;
             }
           }
         }
 
-        brick.x = combination.x + col * (self.BRICK_WIDTH + self.BRICK_PADDING);
-        brick.y = combination.y + row * (self.BRICK_HEIGHT + self.BRICK_PADDING);
+        // 위치를 찾은 경우에만 좌표 업데이트 - 추가됨: 안전성 검증
+        if (found) {
+          brick.x = combination.x + col * (self.BRICK_WIDTH + self.BRICK_PADDING);
+          brick.y = combination.y + row * (self.BRICK_HEIGHT + self.BRICK_PADDING);
+        } else {
+          // 위치를 찾지 못한 경우 오류 로그 출력 - 추가됨: 디버깅용 로그
+          console.error("벽돌 위치 매핑 실패: brickIndex=" + brickIndex + ", 패턴 크기=" + pattern.length);
+        }
       });
 
       // 화면을 벗어난 조합 제거
