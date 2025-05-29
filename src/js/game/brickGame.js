@@ -21,10 +21,16 @@ class BrickGame extends GameManager {
     this.combinations = []; // 현재 화면에 있는 조합들
     this.combinationSpeed = 2; // 조합 이동 속도
     this.combinationSpawnInterval = 6000; // 조합 생성 기본 간격 (6초) - 수정됨: 간격 조정
-    this.combinationSpawnDelayWhenActive = 3000; // 화면에 조합이 있을 때 추가 대기시간 (3초) - 추가됨: 화면에 조합이 있을 때 대기시간
-    this.lastCombinationSpawn = 0;
+    this.combinationSpawnDelayWhenActive = 3000; // 화면에 조합이 있을 때 추가 대기시간 (3초) - 추가됨: 화면에 조합이 있을 때 대기시간    this.lastCombinationSpawn = 0;
     this.clearedCombinations = 0; // 클리어한 조합 수
-    this.requiredCombinations = 10; // 스테이지 클리어에 필요한 조합 수    // MARK: 이미지 관련 속성
+    this.requiredCombinations = 10; // 스테이지 클리어에 필요한 조합 수 (기본값)
+
+    // MARK: 난이도별 최소 점수 설정 추가
+    this.requiredScores = {
+      easy: 300,   // easy 모드: 300점 이상
+      normal: 500, // normal 모드: 500점 이상
+      hard: 800    // hard 모드: 800점 이상
+    };// MARK: 이미지 관련 속성
     this.paddleImage = null;
     this.ballImage = null; // 공 이미지 추가
 
@@ -515,23 +521,14 @@ class BrickGame extends GameManager {
    * MARK: 승리 조건 확인
    */
   checkWin() {
-    // easy 모드에서는 피카츄/펭도리 없이도 클리어 가능하도록 조건 완화
-    if (this.difficulty === "easy") {
-      // easy 모드: 기본 클리어 조건만 확인 (특별 포켓몬 수집 불필요)
-      if (this.clearedCombinations >= this.requiredCombinations) {
-        this.isGameClear = true;
-        this.showMessage("축하합니다! 스테이지를 클리어했습니다!", "success", true);
-        this.endGame();
-        return true;
-      }
-    } else {
-      // normal/hard 모드: 기존 로직 유지 (필요시 특별 포켓몬 수집 조건 추가 가능)
-      if (this.clearedCombinations >= this.requiredCombinations) {
-        this.isGameClear = true;
-        this.showMessage("축하합니다! 스테이지를 클리어했습니다!", "success", true);
-        this.endGame();
-        return true;
-      }
+    // 난이도별 최소 점수 기준으로 클리어 조건 변경
+    const requiredScore = this.requiredScores[this.difficulty] || this.requiredScores.easy;
+
+    if (this.score >= requiredScore) {
+      this.isGameClear = true;
+      this.showMessage(`축하합니다! 목표 점수 ${requiredScore}점을 달성했습니다!`, "success", true);
+      this.endGame();
+      return true;
     }
     return false;
   }/**
