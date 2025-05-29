@@ -531,7 +531,9 @@ class GameManager {
       game_over: window.DEBUG_MODE ? false : true, // 디버그 모드에서는 계속 진행
       saved_pokemon: this.saved_pokemon || [],
     };
-    this.onGameEnd(result); // 게임 종료 콜백 호출
+    if (!DEBUG_GAME) {
+      this.onGameEnd(result); // 게임 종료 콜백 호출
+    }
   }
 
   // MARK: 하위 클래스에서 구현해야 할 추상 메서드들
