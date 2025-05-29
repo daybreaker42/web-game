@@ -896,12 +896,18 @@ class BossGame extends GameManager {
       this.ctx.restore();
     });
   }
-
   /**
    * MARK: 체력바 그리기
    */
   drawHealthBars() {
-    // 보스 체력바
+    this.drawBossHealthBar();
+    this.drawPlayerHealthBar();
+  }
+
+  /**
+   * MARK: 보스 체력바 그리기 (상단)
+   */
+  drawBossHealthBar() {
     const bossHealthBarWidth = 300;
     const bossHealthBarHeight = 20;
     const bossHealthBarX = (this.canvas.width - bossHealthBarWidth) / 2;
@@ -936,18 +942,63 @@ class BossGame extends GameManager {
       bossHealthBarHeight,
     );
 
-    // 페이즈 표시 추가
-    const phaseText = `Phase ${this.boss.currentPhase}`;
+    // 보스 체력 텍스트
     this.ctx.fillStyle = "#ffffff";
     this.ctx.font = "16px Arial";
     this.ctx.textAlign = "center";
-    this.ctx.fillText(phaseText, this.canvas.width / 2, bossHealthBarY - 10);
-
-    // 보스 체력 텍스트
     this.ctx.fillText(
-      `Boss HP: ${Math.max(0, this.boss.health)} / ${this.boss.maxHealth}`,
+      `뮤츠 : ${Math.max(0, this.boss.health)} / ${this.boss.maxHealth}`,
       this.canvas.width / 2,
       bossHealthBarY + bossHealthBarHeight + 20,
+    );
+  }
+
+  /**
+   * MARK: 플레이어 체력바 그리기 (하단)
+   */
+  drawPlayerHealthBar() {
+    const playerHealthBarWidth = 200;
+    const playerHealthBarHeight = 15;
+    const playerHealthBarX = (this.canvas.width - playerHealthBarWidth) / 2;
+    const playerHealthBarY = this.canvas.height - 50;
+
+    // 플레이어 체력바 배경
+    this.ctx.fillStyle = "#333333";
+    this.ctx.fillRect(
+      playerHealthBarX,
+      playerHealthBarY,
+      playerHealthBarWidth,
+      playerHealthBarHeight,
+    );
+
+    // 플레이어 체력바
+    const playerHealthPercent = this.lives / this.totalLives;
+    this.ctx.fillStyle = playerHealthPercent > 0.3 ? "#44ff44" : "#ffff44";
+    this.ctx.fillRect(
+      playerHealthBarX,
+      playerHealthBarY,
+      playerHealthBarWidth * playerHealthPercent,
+      playerHealthBarHeight,
+    );
+
+    // 플레이어 체력바 외곽선
+    this.ctx.strokeStyle = "#ffffff";
+    this.ctx.lineWidth = 1;
+    this.ctx.strokeRect(
+      playerHealthBarX,
+      playerHealthBarY,
+      playerHealthBarWidth,
+      playerHealthBarHeight,
+    );
+
+    // 플레이어 체력 텍스트
+    this.ctx.fillStyle = "#ffffff";
+    this.ctx.font = "14px Arial";
+    this.ctx.textAlign = "center";
+    this.ctx.fillText(
+      `체력: ${this.lives} / ${this.totalLives}`,
+      this.canvas.width / 2,
+      playerHealthBarY + playerHealthBarHeight + 20,
     );
   }
 

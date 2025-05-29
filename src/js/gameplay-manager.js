@@ -63,23 +63,22 @@ bossModeButton.addEventListener("click", () => {
 });
 
 // 게임 모드 전환 함수
-function switchGameMode(mode) {
+function switchGameMode(gameType) {
   if (gameInstance && typeof gameInstance.endGame === "function") {
     // 현재 실행 중인 게임이 있고, endGame 메서드가 있다면 호출
     gameInstance.endGame();
     console.log(`게임 모드 ${gameInstance.mode} 종료`);
   }
 
-  gameInstance.mode = mode;
-  brickModeButton.classList.toggle("active", mode === "brick");
-  bossModeButton.classList.toggle("active", mode === "boss");
+  brickModeButton.classList.toggle("active", gameType === "brick");
+  bossModeButton.classList.toggle("active", gameType === "boss");
 
-  if (mode === "brick") {
+  if (gameType === "brick") {
     gameInstance = new BrickGame(canvas);
-    gameInstance.setGameInfo({ mode: "brick", difficulty: "easy", stage: 1 });
-  } else if (mode === "boss") {
+    gameInstance.setGameInfo({ mode: "score", difficulty: "easy", stage: 1 });
+  } else if (gameType === "boss") {
     gameInstance = new BossGame(canvas);
-    gameInstance.setGameInfo({ mode: "boss", difficulty: "easy", stage: 4 });
+    gameInstance.setGameInfo({ mode: "score", difficulty: "easy", stage: 4 });
   }
   console.log(`게임 모드 ${gameInstance.mode} 설정 완료`);
   // 게임 초기화
