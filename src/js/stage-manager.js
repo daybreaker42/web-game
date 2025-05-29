@@ -20,7 +20,6 @@ function onGameEnd(gameResult) {
   } else {
     if (currentStageIndex + 1 < STORY_SCRIPTS.length) {
       onStageClear(gameResult); // 클리어 안내
-      proceedToStage(currentStageIndex + 1);
     } else {
       onAllStagesCleared();
     }
