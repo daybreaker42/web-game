@@ -24,10 +24,9 @@ class BrickGame extends GameManager {
     this.combinationSpawnDelayWhenActive = 3000; // 화면에 조합이 있을 때 추가 대기시간 (3초) - 추가됨: 화면에 조합이 있을 때 대기시간
     this.lastCombinationSpawn = 0;
     this.clearedCombinations = 0; // 클리어한 조합 수
-    this.requiredCombinations = 10; // 스테이지 클리어에 필요한 조합 수
-
-    // MARK: 이미지 관련 속성
+    this.requiredCombinations = 10; // 스테이지 클리어에 필요한 조합 수    // MARK: 이미지 관련 속성
     this.paddleImage = null;
+    this.ballImage = null; // 공 이미지 추가
 
     this.targetPokemonImages = [];
     this.targetPokemonIndexes = [];
@@ -468,16 +467,35 @@ class BrickGame extends GameManager {
       return true;
     }
     return false;
-  }
-  /**
+  }  /**
    * MARK: 공 그리기
    */
   drawBall() {
-    this.ctx.beginPath();
-    this.ctx.arc(this.ball.x, this.ball.y, this.ball.radius, 0, Math.PI * 2);
-    this.ctx.fillStyle = this.ball.color;
-    this.ctx.fill();
-    this.ctx.closePath();
+    // 이미지 객체 생성 및 캐싱
+    if (!this.ballImage) {
+      this.ballImage = new Image();
+      this.ballImage.src = "../assets/images/game/object/ball.png";
+    }
+
+    // 이미지가 로드되었는지 확인
+    if (this.ballImage.complete) {
+      // 이미지를 공 크기(radius * 2)로 그리기, 중심점 기준으로 배치
+      let ballSize = this.ball.radius * 2;
+      this.ctx.drawImage(
+        this.ballImage,
+        this.ball.x - this.ball.radius,
+        this.ball.y - this.ball.radius,
+        ballSize,
+        ballSize
+      );
+    } else {
+    // 이미지 로딩 중일 때는 기존 원형으로 대체
+      this.ctx.beginPath();
+      this.ctx.arc(this.ball.x, this.ball.y, this.ball.radius, 0, Math.PI * 2);
+      this.ctx.fillStyle = this.ball.color;
+      this.ctx.fill();
+      this.ctx.closePath();
+    }
   }
   /**
    * MARK: 패들 그리기
