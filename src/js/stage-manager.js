@@ -33,15 +33,17 @@ function onGameEnd(gameResult) {
 
 function onAllStagesCleared(gameResult) {
   alert("축하합니다. 모든 스테이지를 클리어했습니다!\n타이틀로 돌아갑니다.");
-  returnToTitleScreen();
+  handleReturnToTitleScreen();
 }
 
 function onStageClear(gameResult) {
   alert("스테이지를 클리어했습니다.\n다음 스테이지로 진행합니다.");
+  proceedToStage(gameResult.stage + 1);
 }
 
 function onStageOver(gameResult) {
   alert("게임 오버! 타이틀로 돌아갑니다.");
+  handleReturnToTitleScreen();
 }
 
 function saveGameResult(gameResult) {

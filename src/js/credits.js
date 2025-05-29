@@ -174,7 +174,7 @@ function startCreditsScroll() {
     if (pos + scroll.offsetHeight < 80) {
       clearInterval(creditsIntv);
       setTimeout(() => {
-        returnToTitleScreen();
+        handleReturnToTitleScreen();
       }, 900);
     }
   }, 16);
@@ -200,7 +200,7 @@ function setupCreditsBtn() {
   if (yes) {
     yes.onclick = () => {
       modal.close();
-      returnToTitleScreen();
+      handleReturnToTitleScreen();
     };
   }
 
