@@ -6,7 +6,10 @@ const skipModal = qs("#confirm-skip-modal");
 const btnYes = qs("#skip-confirm-yes");
 const btnNo = qs("#skip-confirm-no");
 
+let currentOnSkip = null; // CRT 씬에서 스킵 콜백을 저장
+
 function setupStorySkipHandler(onSkip) {
+  currentOnSkip = onSkip; // 전역 변수에 저장
   const btnSkipStory = qs("#btn-skip-story");
   if (btnSkipStory) {
     btnSkipStory.onclick = () => skipModal.showModal();
@@ -14,6 +17,11 @@ function setupStorySkipHandler(onSkip) {
   btnYes.onclick = () => {
     skipModal.close();
     hide(qs("#story-screen"));
+    // CRT 화면도 숨기기
+    const crtConsoleScreen = qs("#crt-console-screen");
+    if (crtConsoleScreen) {
+      crtConsoleScreen.classList.add("hidden");
+    }
     if (typeof onSkip === "function") onSkip();
   };
   btnNo.onclick = () => skipModal.close();
@@ -124,6 +132,20 @@ function showStorySceneConsole(scene, onDone) {
   }
 
   let idx = 0;
+  let isSkipped = false; // 스킵 상태 추적
+
+  // CRT 화면의 기존 스킵 버튼 사용
+  const crtSkipBtn = crtConsoleScreen.querySelector("#btn-skip-story");
+  
+  // CRT 스킵 버튼 이벤트 핸들러 (기존 핸들러 덮어쓰기 방지)
+  if (crtSkipBtn && !crtSkipBtn.hasAttribute('data-crt-handler-set')) {
+    crtSkipBtn.onclick = () => {
+      if (currentOnSkip) {
+        skipModal.showModal();
+      }
+    };
+    crtSkipBtn.setAttribute('data-crt-handler-set', 'true');
+  }
 
   stopBgm();
   if (storyScreen) {
@@ -146,11 +168,15 @@ function showStorySceneConsole(scene, onDone) {
   }, 920);
 
   function typeNextLine() {
+    if (isSkipped) return; // 스킵되었으면 중단
+    
     if (idx < scene.lines.length) {
       let i = 0;
       const text = scene.lines[idx];
       crtConsoleText.textContent = "";
       function typeChar() {
+        if (isSkipped) return; // 스킵되었으면 중단
+        
         if (i <= text.length) {
           crtConsoleText.textContent = text.slice(0, i);
           if (i > 0 && text[i - 1] !== " " && SFX.CRT_TYPE) {
@@ -165,13 +191,25 @@ function showStorySceneConsole(scene, onDone) {
       }
       typeChar();
     } else {
-      crtConsoleScreen.classList.add("hidden");
-      storyScreen.classList.remove("hidden");
-      crtConsoleScreen.classList.remove("slow-fadein-crt");
-      crtConsoleText.textContent = "";
-      if (onDone) onDone();
+      finishCRTScene();
     }
   }
+
+  function finishCRTScene() {
+    crtConsoleScreen.classList.add("hidden");
+    storyScreen.classList.remove("hidden");
+    crtConsoleScreen.classList.remove("slow-fadein-crt");
+    crtConsoleText.textContent = "";
+    if (onDone) onDone();
+  }
+
+  // btnYes 클릭 시 CRT 씬도 정리하도록 수정
+  const originalBtnYesHandler = btnYes.onclick;
+  btnYes.onclick = () => {
+    isSkipped = true; // 스킵 플래그 설정
+    crtConsoleScreen.classList.add("hidden");
+    originalBtnYesHandler();
+  };
 }
 
 // ============================================================================
