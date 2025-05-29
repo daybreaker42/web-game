@@ -1,4 +1,4 @@
-const GAME_TIME = 1000 * 60 * 2;
+const GAME_TIME = 1000 * 3;
 
 const STORY_SCRIPTS = [
   window.story_intro,
