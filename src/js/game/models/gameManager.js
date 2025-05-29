@@ -129,12 +129,10 @@ class GameManager {
     // 이미지 로드 완료 시 플래그 설정
     this.backgroundImage.onload = () => {
       this.backgroundImageLoaded = true;
-      console.log(`스테이지 ${stage} 배경 이미지 로드 완료`);
     };
 
     // 이미지 로드 실패 시 에러 처리
     this.backgroundImage.onerror = () => {
-      console.error(`스테이지 ${stage} 배경 이미지 로드 실패`);
       this.backgroundImage = null;
       this.backgroundImageLoaded = false;
     };
@@ -142,7 +140,6 @@ class GameManager {
     // 배경 이미지 경로 설정 및 로드 시작
     const imagePath = `../assets/images/game/ui/background-stage-${stage}.png`;
     this.backgroundImage.src = imagePath;
-    console.log(`스테이지 ${stage} 배경 이미지 로드 시작: ${imagePath}`);
   }
 
   /**
