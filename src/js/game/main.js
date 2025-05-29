@@ -28,10 +28,10 @@ function switchGameMode(mode) {
 
   if (mode === "brick") {
     currentGame = new BrickGame(canvas);
-    currentGame.setGameInfo({ mode: "brick", level: "easy", stage: 1 });
+      currentGame.setGameInfo({ mode: "brick", difficulty: "easy", stage: 1 });
   } else if (mode === "boss") {
     currentGame = new BossGame(canvas);
-    currentGame.setGameInfo({ mode: "boss", level: "easy", stage: 4 });
+      currentGame.setGameInfo({ mode: "boss", difficulty: "easy", stage: 4 });
   }
   console.log(`게임 모드 ${currentGameMode} 설정 완료`);
   // 게임 초기화

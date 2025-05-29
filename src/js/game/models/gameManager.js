@@ -72,10 +72,10 @@ class GameManager {
    */
   setGameInfo(data) {
     if (!data.mode) {
-      throw new Error("게임 mode 설정 안됨");
+        throw new Error(`게임 mode 설정 안됨: ${JSON.stringify(data)}`);
     }
     if (!data.difficulty) {
-      throw new Error("게임 difficulty 설정 안됨");
+        throw new Error(`게임 difficulty 설정 안됨: ${JSON.stringify(data)}`);
     }
 
     try {

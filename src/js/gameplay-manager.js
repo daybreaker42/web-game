@@ -1,11 +1,11 @@
 /**
- * playGame(mode, level, stage, onGameEnd)
+ * playGame(mode, difficulty, stage, onGameEnd)
  * - mode: "story" | "score"
- * - level: "easy" | "normal" | "hard"
+ * - difficulty: "easy" | "normal" | "hard"
  * - stage: 스토리 모드는 1 이상의 정수, 점수모드는 null/-1/미사용
  * - onGameEnd: 게임 종료 콜백
  */
-function playGame(mode, level, stage, onGameEnd) {
+function playGame(mode, difficulty, stage, onGameEnd) {
   const canvas = document.getElementById("game-canvas");
 
   window.onkeydown = null;
@@ -14,7 +14,7 @@ function playGame(mode, level, stage, onGameEnd) {
 
   let gameInfo = {
     mode,
-    level,
+    difficulty,
     stage,
   };
 
@@ -37,6 +37,7 @@ function playGame(mode, level, stage, onGameEnd) {
     setTimeout(() => onGameEnd(gameResult), 1800);
   });
 
+  // TODO: 이거 bossGame.js, brickGame.js, game/main.js에 중복 아닌가? (성준)
   window.onkeydown = (e) => gameInstance.keyDownHandler(e);
   window.onkeyup = (e) => gameInstance.keyUpHandler(e);
   canvas.onmousemove = (e) => gameInstance.mouseMoveHandler(e);
