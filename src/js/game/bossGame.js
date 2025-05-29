@@ -111,10 +111,10 @@ class BossGame extends GameManager {
     this.keys.upPressed = false;
     this.keys.downPressed = false;
 
-    // MARK: 포켓몬 능력 효과 상태 변수 추가
-    this.electricBoostActive = false; // 전기타입 능력 (점수 2배) 활성 상태
-    this.waterBoostActive = false; // 물타입 능력 (플레이어 속도 증가) 활성 상태  
-    this.iceBoostActive = false; // 얼음타입 능력 (보스 이동 속도 감소) 활성 상태
+    // // MARK: 포켓몬 능력 효과 상태 변수 추가
+    // this.electricBoostActive = false; // 전기타입 능력 (점수 2배) 활성 상태
+    // this.waterBoostActive = false; // 물타입 능력 (플레이어 속도 증가) 활성 상태  
+    // this.iceBoostActive = false; // 얼음타입 능력 (보스 이동 속도 감소) 활성 상태
 
     // 사운드 설정
     this.bossHitSound = new Audio("../assets/sounds/sfx/mewtwo.ogg"); // 피격 사운드 파일 경로
