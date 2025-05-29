@@ -327,7 +327,9 @@ class BrickGame extends GameManager {
     this.dynamicCollisionDetection();
 
     // 승리 조건 확인
-    this.checkWin();
+    if (!this.isGameClear) {
+      this.checkWin();
+    }
 
     // 모든 객체 그리기
     this.drawBall();
@@ -484,7 +486,9 @@ class BrickGame extends GameManager {
             this.score += 5; // 아이템 획득 점수
           }
 
-          this.checkWin();
+          if (!this.isGameClear) { 
+            this.checkWin();
+          }
           return; // 한 프레임에 하나의 벽돌만 처리
         }
       }
@@ -563,7 +567,6 @@ class BrickGame extends GameManager {
       slot.style.backgroundColor = "transparent";
     }
   }
-
   /**
    * MARK: 승리 조건 확인
    */
@@ -572,9 +575,10 @@ class BrickGame extends GameManager {
     const requiredScore = this.requiredScores[this.difficulty] || this.requiredScores.easy;
 
     if (this.score >= requiredScore) {
+      if (!this.isGameClear) {
+        this.showRescueMessage(`🎉 축하합니다! 목표 점수 ${requiredScore}점 달성! 게임 클리어! 🎉`);
+      }
       this.isGameClear = true;
-      this.showMessage(`축하합니다! 목표 점수 ${requiredScore}점을 달성했습니다!`, "success", true);
-      this.endGame();
       return true;
     }
     return false;
