@@ -1,45 +1,58 @@
-const DEBUG_MODE = false;
-// const DEBUG_GAME = true;
+// window.DEBUG_MODE = true;
+// window.DEBUG_GAME = true;
 
 window.addEventListener("DOMContentLoaded", () => {
-  if (DEBUG_MODE) {
-    hideAllFade(qsa(".screen"));
-
-    renderGameResult(DEMO_GAME_RESULT_1);
-    show(qs("#game-result-screen"));
-
-    if (DEBUG_GAME) {
-      show(qs("#gameplay-screen"));
-      playGame("story", 0, 0, (gameResult) => {
-        console.log("Game ended:", gameResult);
-        returnToTitleScreen();
-      });
-    }
-    return;
-  } else {
-    hideAllFade(qsa(".screen"));
-    showWithFade(qs("#title-screen"));
-    setupMenuEvents();
-    setupOptionModal();
-    setupAudioSliders();
-    setupButtonSfx();
-    document.addEventListener("keydown", startFromTitle, { once: true });
-    document.addEventListener("click", startFromTitle, { once: true });
-  }
-
-
   if (!localStorage.getItem("scoreboard")) {
     setScoreboardData(makeEmptyScoreboard());
   }
-  // DEMO
-  setScoreboardData(DEMO_RANKING_DATA);
+  document.addEventListener("keydown", handleStartFromTitle, { once: true });
+  document.addEventListener("click", handleStartFromTitle, { once: true });
+  
+  if (typeof window.DEBUG_MODE !== "undefined" && window.DEBUG_MODE) {
+    debugMode();
+    return;
+  }
+  console.log("RELEASE_MODE");
+  hideAllFade(qsa(".screen"));
+  showWithFade(qs("#title-screen"));
+  setupMenuEvents();
+  setupOptionModal();
+  setupAudioSliders();
+  setupButtonSfx();
 });
 
-let started = false;
+function debugMode() {
+  console.log("DEBUG_MODE is ON");
+  hideAllFade(qsa(".screen"));
 
-function returnToTitleScreen() {
+  // NOTE: Write your debug code here (e.g. Screen)
+  hideAllFade(qsa(".screen"));
+  showWithFade(qs("#title-screen"));
+  setupMenuEvents();
+  setupOptionModal();
+  setupAudioSliders();
+  setupButtonSfx();
+
+  // Set up debug events
+  if (window.DEBUG_GAME) {
+    console.log("DEBUG_GAME is ON");
+    hideAllFade(qsa(".screen"));
+    document.removeEventListener("keydown", handleStartFromTitle);
+    document.removeEventListener("click", handleStartFromTitle);
+    show(qs("#gameplay-screen"));
+    playGame("story", 0, 0, (gameResult) => {
+      console.log("Game ended:", gameResult);
+      handleReturnToTitleScreen();
+    });
+  }
+  return;
+}
+
+let isStarted = false;
+
+function handleReturnToTitleScreen() {
   console.log("Returning to title screen");
-  started = false;
+  isStarted = false;
   stopBgm();
   hideAllFade(qsa(".screen"));
   showWithFade(qs("#title-screen"));
@@ -50,14 +63,14 @@ function returnToTitleScreen() {
       pressAny.classList.remove("flash-twice", "noblink", "blink");
       void pressAny.offsetWidth;
     }
-    document.addEventListener("keydown", startFromTitle, { once: true });
-    document.addEventListener("click", startFromTitle, { once: true });
+    document.addEventListener("keydown", handleStartFromTitle, { once: true });
+    document.addEventListener("click", handleStartFromTitle, { once: true });
   }, 1000);
 }
 
-function startFromTitle(e) {
-  if (started) return;
-  started = true;
+function handleStartFromTitle(e) {
+  if (isStarted) return;
+  isStarted = true;
 
   playSfx(SFX.START);
 

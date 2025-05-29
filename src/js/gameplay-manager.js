@@ -10,6 +10,9 @@ const canvas = document.getElementById("game-canvas");
  * - onGameEnd: 게임 종료 콜백
  */
 function playGame(mode, difficulty, stage, onGameEnd) {
+  const canvas = document.getElementById("game-canvas");
+
+  console.log("게임 시작:", mode, difficulty, stage);
 
   window.onkeydown = null;
   window.onkeyup = null;

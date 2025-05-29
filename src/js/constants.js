@@ -7,6 +7,7 @@ const STORY_SCRIPTS = [
   window.story_stage3,
   window.story_ending,
 ];
+const N_STAGES = STORY_SCRIPTS.length - 2; // 스토리 스크립트 개수 (보스전 제외)
 
 const BGM = {
   TITLE: "title.mp3",
