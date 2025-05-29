@@ -426,7 +426,8 @@ class BrickGame extends GameManager {
           if (!this.saved_pokemon.includes(brick.pokeIndex)) {
             this.saved_pokemon.push(brick.pokeIndex);
             let pokemonName = window.pokemon && window.pokemon[brick.pokeIndex] ? window.pokemon[brick.pokeIndex].name : "포켓몬";
-            console.log("포켓몬 구출: " + pokemonName);
+            // 화면에 구출 메시지 표시
+            this.showRescueMessage(pokemonName);
           }
 
           // 타겟 포켓몬이거나 특별 포켓몬인 경우 슬롯에 추가
@@ -622,8 +623,7 @@ class BrickGame extends GameManager {
     this.iceBoostActive = false;
 
     super.restartGame(); // 부모 클래스의 재시작 메서드 호출
-  }
-  /**
+  }  /**
    * MARK: 기존 조합과 겹치지 않는 Y 위치 찾기 메서드 - 추가됨: 조합 겹침 방지
    */
   findNonOverlappingY(minY, maxY, patternHeight) {
@@ -664,6 +664,39 @@ class BrickGame extends GameManager {
     // 적절한 위치를 찾지 못한 경우 기본 위치 반환
     console.log("조합 배치: 겹치지 않는 위치를 찾지 못해 기본 위치 사용");
     return minY + Math.random() * (maxY - minY);
+  }
+
+  /**
+   * MARK: 포켓몬 구출 메시지 표시 메서드 추가
+   */
+  showRescueMessage(pokemonName) {
+    // 구출 메시지 컨테이너 가져오기
+    const messageContainer = document.getElementById('rescue-message-container');
+    if (!messageContainer) {
+      console.error('구출 메시지 컨테이너를 찾을 수 없습니다.');
+      return;
+    }
+
+    // 메시지 엘리먼트 생성
+    const messageElement = document.createElement('div');
+    messageElement.className = 'rescue-message';
+    messageElement.textContent = `${pokemonName}을(를) 구출했습니다!`; // 구출 메시지 텍스트
+
+    // 메시지를 컨테이너에 추가
+    messageContainer.appendChild(messageElement);
+
+    // 3초 후 메시지 제거 (페이드아웃 애니메이션 포함)
+    setTimeout(() => {
+      // 페이드아웃 애니메이션 시작
+      messageElement.style.animation = 'rescueMessageHide 0.5s ease-out forwards';
+
+      // 애니메이션 완료 후 DOM에서 제거
+      setTimeout(() => {
+        if (messageElement.parentNode) {
+          messageElement.parentNode.removeChild(messageElement);
+        }
+      }, 500); // 애니메이션 시간(0.5초) 후 제거
+    }, 3000); // 3초 후 페이드아웃 시작
   }
 
   /**
