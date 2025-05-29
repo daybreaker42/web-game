@@ -1,22 +1,25 @@
-const DEBUG_MODE = true;
-const DEBUG_GAME = true;
+const DEBUG_MODE = false;
+// const DEBUG_GAME = true;
 
 window.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("keydown", startFromTitle, { once: true });
   document.addEventListener("click", startFromTitle, { once: true });
 
   if (DEBUG_MODE) {
-    hideAllFade(qsa(".screen"));    
+    hideAllFade(qsa(".screen"));
+
+    renderGameResult(DEMO_GAME_RESULT_1);
+    show(qs("#game-result-screen"));
+
     if (DEBUG_GAME) {
-        show(qs("#gameplay-screen"));
-        playGame("story", 0, 0, (gameResult) => {
-          console.log("Game ended:", gameResult);
-          returnToTitleScreen();
-        });
+      show(qs("#gameplay-screen"));
+      playGame("story", 0, 0, (gameResult) => {
+        console.log("Game ended:", gameResult);
+        returnToTitleScreen();
+      });
     }
     return;
-  }
-  else {
+  } else {
     hideAllFade(qsa(".screen"));
     showWithFade(qs("#title-screen"));
   }

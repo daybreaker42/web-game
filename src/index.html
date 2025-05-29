@@ -87,8 +87,8 @@
       <section id="story-screen" class="screen">
         <div id="story-illustration"></div>
         <button id="btn-skip-story" class="btn-skip">> Skip</button>
-        <div id="story-textbox" class=">
-          <span id="story-potrait" class="></span>
+        <div id="story-textbox" class="hidden">
+          <span id="story-potrait" class="hidden"></span>
           <span id="story-line"></span>
           <span class="story-next-indicator">▼</span>
         </div>
@@ -151,50 +151,53 @@
       <section id="gameplay-screen" class="screen">
         <div id="game-container">
           <div class="mode-selection">
-            <button id="brickModeButton" class="mode-button active">벽돌깨기 게임</button>
+            <button id="brickModeButton" class="mode-button active">
+              벽돌깨기 게임
+            </button>
             <button id="bossModeButton" class="mode-button">보스전</button>
-        </div>
+          </div>
 
-        <div id="game-info-indicator">
-          <span class="score-info">SCORE :&nbsp;<span id="score">0</span></span>
-          <span id="timer-container">TIME :&nbsp;<span id="timer">02:00</span></span>
-        </div>
-        <canvas id="game-canvas" width="800" height="533"></canvas>
-        <div class="controls">
-          <button id="startButton" tabindex="-1">게임 시작</button>
-          <button id="pauseButton" tabindex="-1">일시 정지</button>
-          <button id="restartButton" tabindex="-1">다시 시작</button>
-        </div>
-        <!-- pokemon slot 위에 표시되는 frame -->
-        <div id="pokemon-slot-frame-container">
-          <div id="slot-frame-0" class="pokemon-slot-frame selected"></div>
-          <div id="slot-frame-1" class="pokemon-slot-frame"></div>
-          <div id="slot-frame-2" class="pokemon-slot-frame"></div>
-          <div id="slot-frame-3" class="pokemon-slot-frame"></div>
-        </div>
-        <!-- 실제로 pokemon이 들어가는 slot -->
-        <div id="pokemon-slot-container" class="">
+          <div id="game-info-indicator">
+            <span class="score-info"
+              >SCORE :&nbsp;<span id="score">0</span></span
+            >
+            <span id="timer-container"
+              >TIME :&nbsp;<span id="timer">02:00</span></span
+            >
+          </div>
+          <canvas id="game-canvas" width="800" height="533"></canvas>
+          <div class="controls">
+            <button id="startButton" tabindex="-1">게임 시작</button>
+            <button id="pauseButton" tabindex="-1">일시 정지</button>
+            <button id="restartButton" tabindex="-1">다시 시작</button>
+          </div>
+          <!-- pokemon slot 위에 표시되는 frame -->
+          <div id="pokemon-slot-frame-container">
+            <div id="slot-frame-0" class="pokemon-slot-frame selected"></div>
+            <div id="slot-frame-1" class="pokemon-slot-frame"></div>
+            <div id="slot-frame-2" class="pokemon-slot-frame"></div>
+            <div id="slot-frame-3" class="pokemon-slot-frame"></div>
+          </div>
+          <!-- 실제로 pokemon이 들어가는 slot -->
+          <div id="pokemon-slot-container" class="">
             <div class="pokemon-slot" id="slot-0"></div>
             <div class="pokemon-slot" id="slot-1"></div>
             <div class="pokemon-slot" id="slot-2"></div>
             <div class="pokemon-slot" id="slot-3"></div>
-        </div>
-        <button id="pause-button" class="pixel-box">
-          일시정지
-        </button>
+          </div>
+          <button id="pause-button" class="pixel-box">일시정지</button>
         </div>
       </section>
     </div>
 
     <!-- game result screen -->
     <section id="game-result-screen" class="screen">
-        <div id="game-result-root">
-          <h2 class="game-result-title">게임 결과</h2>
-          <div id="game-result-contents"></div>
-          <button id="btn-game-result-ok" class="pixel-box">확인</button>
-        </div>
-      </section>
-      
+      <div id="game-result-root">
+        <h2 class="game-result-title">게임 결과</h2>
+        <div id="game-result-contents"></div>
+        <button id="btn-game-result-ok" class="pixel-box">확인</button>
+      </div>
+    </section>
 
     <!-- Confirm skip modal -->
     <dialog id="confirm-skip-modal" class="pixel-box">
@@ -222,11 +225,16 @@
         다음 방식으로 조작이 가능합니다.<br />
         <span id="info-content"></span>
         <br />
-        <button id="info-confirm-yes" class="pixel-box modal-inner-button" style="margin: 10px 4px">
+        <button
+          id="info-confirm-yes"
+          class="pixel-box modal-inner-button"
+          style="margin: 10px 4px"
+        >
           알겠어요
         </button>
       </div>
-    </dialog> <!-- 포켓몬 슬롯은 게임플레이 화면으로 이동됨 -->
+    </dialog>
+    <!-- 포켓몬 슬롯은 게임플레이 화면으로 이동됨 -->
 
     <!-- Option modal -->
     <dialog id="options-modal" class="pixel-box">
@@ -269,7 +277,8 @@
     <script src="js/audio.js"></script>
     <script src="js/animation.js"></script>
     <!-- game 관련 start -->
-    <script src="js/game/models/gameManager.js"></script>s
+    <script src="js/game/models/gameManager.js"></script>
+    s
     <script src="js/game/utils.js"></script>
     <script src="js/game/models/brick.js"></script>
     <script src="js/game/brickGame.js"></script>

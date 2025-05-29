@@ -18,8 +18,7 @@ function startGameScoreMode(difficulty) {
     hide(qs("#difficulty-menu-screen"));
     showWithFade(qs("#game-result-screen"));
     renderGameResult(gameResult);
-  }
-  );
+  });
 }
 
 // ==================== Setup Menu Events ====================

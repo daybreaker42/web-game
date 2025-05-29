@@ -5,8 +5,7 @@ function proceedToStage(n) {
   playStory(n, () => {
     playGame("story", selectedDifficulty, n, (gameResult) => {
       onGameEnd(gameResult);
-    }
-  );
+    });
   });
 }
 
@@ -15,7 +14,7 @@ function proceedToStage(n) {
  */
 function onGameEnd(gameResult) {
   saveGameResult(gameResult);
-    hideWithFade(qs('#gameplay-screen'));
+  hideWithFade(qs("#gameplay-screen"));
   if (gameResult.game_over) {
     onStageOver(gameResult);
   } else {
