@@ -32,11 +32,6 @@ class Brick {
   draw(ctx) {
     if (this.status !== 1) return;
 
-    // 테두리
-    ctx.strokeStyle = this.isTarget ? "#FFD700" : "#ffffff";
-    ctx.lineWidth = 3;
-    ctx.strokeRect(this.x, this.y, this.width, this.height);
-
     // 이미지
     if (this.image && this.imageLoaded) {
       ctx.imageSmoothingEnabled = false;
@@ -46,7 +41,19 @@ class Brick {
       ctx.fillRect(this.x, this.y, this.width, this.height);
     }
 
+    // 테두리
+    // ctx.strokeStyle = this.isTarget ? "#FFD700" : "#ffffff";
+    // ctx.lineWidth = 3;
+    // ctx.strokeRect(this.x, this.y, this.width, this.height);
+    ctx.globalAlpha = 0.8;
+    const frameImg = new Image();
+    frameImg.src = 100 <= this.pokeIndex && this.pokeIndex <= 104 ?
+      '../assets/images/game/object/block_legend.png' :
+      '../assets/images/game/object/block_normal.png';
+    ctx.drawImage(frameImg, this.x, this.y, this.width, this.height);
+
     // 느낌표 표시
+    ctx.globalAlpha = 1.0;
     if (this.isTarget) {
       const exMark = new Image();
       exMark.src = "../assets/images/icons/exmark.png";
