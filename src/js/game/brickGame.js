@@ -120,7 +120,7 @@ class BrickGame extends GameManager {
     let patternHeight = randomPattern.length * (this.BRICK_HEIGHT + this.BRICK_PADDING);
 
     // paddle y 위치보다 위쪽에서만 조합 생성하도록 제한
-    let maxY = this.paddle.y - 150 - patternHeight; // 패들보다 충분히 위에서 생성 + 패턴 높이 고려
+    let maxY = this.paddle.y - this.paddleOffset - patternHeight - 10; // 패들보다 충분히 위에서 생성 + 패턴 높이 고려
     let minY = this.BRICK_OFFSET_TOP;
 
     // 기존 조합과 겹치지 않는 Y 위치 찾기 - 추가됨: 겹침 방지 로직
@@ -243,7 +243,7 @@ class BrickGame extends GameManager {
 
       // 공 위치 및 속도 초기화
       this.ball.x = this.canvas.width / 2;
-      this.ball.y = this.canvas.height - 30;
+      this.ball.y = this.canvas.height - this.paddleOffset - 10;
       this.ball.speedX = 0;
       this.ball.speedY = -this.BALL_SPEED;
     } else {
@@ -548,6 +548,7 @@ class BrickGame extends GameManager {
         let brick = combination.bricks[j];
         if (brick.status === 1) {
           brick.draw(this.ctx);
+          console.log(`그리기: 벽돌 ${j} (${brick.x}, ${brick.y}) - 상태: ${brick.status}`);
         }
       }
     }

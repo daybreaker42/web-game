@@ -58,6 +58,7 @@ class GameManager {
     // 공통 게임 오브젝트들
     this.ball = null;
     this.paddle = null;
+    this.paddleOffset = 80;
     this.BALL_SPEED = 5; // 공의 기본 속도
 
     // 메시지 시스템
@@ -184,7 +185,7 @@ class GameManager {
       height: 10,
       width: 110,
       x: (this.canvas.width - 110) / 2,
-      y: this.canvas.height - 100,
+      y: this.canvas.height - this.paddleOffset,
       color: "#4CAF50",
     };
   }
