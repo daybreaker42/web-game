@@ -182,3 +182,62 @@ canvas {
   bottom: 20px;
   right: 20px;
 }
+
+/* 포켓몬 구출 메시지 컨테이너 */
+#rescue-message-container {
+  position: absolute;
+  bottom: 100px; /* 일시정지 버튼과 슬롯 사이 위치 */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 400px;
+  max-height: 200px;
+  z-index: var(--z-index-pause-button);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none; /* 게임 플레이 방해하지 않도록 */
+}
+
+/* 개별 구출 메시지 스타일 */
+.rescue-message {
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-family: "DOSGothic", monospace;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 
+    0 0 0 2px #fff,
+    0 0 10px rgba(0, 0, 0, 0.5);
+  text-shadow: 
+    1px 1px 0 #000,
+    0 0 4px #fff;
+  animation: rescueMessageShow 0.3s ease-out forwards;
+  white-space: nowrap;
+}
+
+/* 구출 메시지 애니메이션 */
+@keyframes rescueMessageShow {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes rescueMessageHide {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.8);
+  }
+}

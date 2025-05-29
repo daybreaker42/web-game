@@ -21,10 +21,16 @@ class BrickGame extends GameManager {
     this.combinations = []; // 현재 화면에 있는 조합들
     this.combinationSpeed = 2; // 조합 이동 속도
     this.combinationSpawnInterval = 6000; // 조합 생성 기본 간격 (6초) - 수정됨: 간격 조정
-    this.combinationSpawnDelayWhenActive = 3000; // 화면에 조합이 있을 때 추가 대기시간 (3초) - 추가됨: 화면에 조합이 있을 때 대기시간
-    this.lastCombinationSpawn = 0;
+    this.combinationSpawnDelayWhenActive = 3000; // 화면에 조합이 있을 때 추가 대기시간 (3초) - 추가됨: 화면에 조합이 있을 때 대기시간    this.lastCombinationSpawn = 0;
     this.clearedCombinations = 0; // 클리어한 조합 수
-    this.requiredCombinations = 10; // 스테이지 클리어에 필요한 조합 수    // MARK: 이미지 관련 속성
+    this.requiredCombinations = 10; // 스테이지 클리어에 필요한 조합 수 (기본값)
+
+    // MARK: 난이도별 최소 점수 설정 추가
+    this.requiredScores = {
+      easy: 300,   // easy 모드: 300점 이상
+      normal: 500, // normal 모드: 500점 이상
+      hard: 800    // hard 모드: 800점 이상
+    };// MARK: 이미지 관련 속성
     this.paddleImage = null;
     this.ballImage = null; // 공 이미지 추가
 
@@ -77,24 +83,31 @@ class BrickGame extends GameManager {
       [[1, 1, 1, 1, 1]] // 가로 5칸
     ];
     return patterns;
-  }
-  /**
-   * MARK: 조합에 들어갈 포켓몬 배치 생성 메서드 추가
+  }  /**
+   * MARK: 조합에 들어갈 포켓몬과 아이템 배치 생성 메서드 수정
    */
   generatePokemonForCombination(pattern) {
     let slotCount = pattern.flat().filter(function (cell) { return cell === 1; }).length;
-    let pokemonList = [];
+    let combinationList = []; // 포켓몬과 아이템을 모두 포함하는 리스트
     let currentSpecialPokemon = this.specialPokemon[this.stage];
     let hasSpecialPokemon = false;
 
     // 특별 포켓몬이 아직 구출되지 않았다면 한 번만 포함
     if (currentSpecialPokemon && !this.saved_pokemon.includes(currentSpecialPokemon)) {
-      pokemonList.push(currentSpecialPokemon);
+      combinationList.push({ type: 'pokemon', index: currentSpecialPokemon });
       hasSpecialPokemon = true;
+    }    // 아이템 최대 1개 추가 (5% 확률)
+    let itemCount = 0;
+    if (Math.random() < 0.05) itemCount = 1; // 5% 확률로 아이템 1개
+
+    let availableItems = ['normal-potion', 'super-potion', 'hyper-potion', 'full-potion'];
+    for (let i = 0; i < itemCount; i++) {
+      let randomItem = availableItems[Math.floor(Math.random() * availableItems.length)];
+      combinationList.push({ type: 'item', name: randomItem });
     }
 
     // 나머지 슬롯을 일반 포켓몬으로 채움
-    let remainingSlots = slotCount - (hasSpecialPokemon ? 1 : 0);
+    let remainingSlots = slotCount - (hasSpecialPokemon ? 1 : 0) - itemCount;
     let availablePokemon = [];
     for (let i = 0; i < this.totalPokemonCount; i++) {
       if (i !== currentSpecialPokemon) {
@@ -104,11 +117,11 @@ class BrickGame extends GameManager {
 
     for (let i = 0; i < remainingSlots; i++) {
       let randomIndex = Math.floor(Math.random() * availablePokemon.length);
-      pokemonList.push(availablePokemon[randomIndex]);
+      combinationList.push({ type: 'pokemon', index: availablePokemon[randomIndex] });
     }
 
-    // 포켓몬 리스트를 랜덤하게 섞기
-    return pokemonList.sort(function () { return Math.random() - 0.5; });
+    // 조합 리스트를 랜덤하게 섞기
+    return combinationList.sort(function () { return Math.random() - 0.5; });
   }
 
   /**
@@ -118,8 +131,8 @@ class BrickGame extends GameManager {
   createNewCombination() {
     let patterns = this.getCombinationPatterns();
     let randomPattern = patterns[Math.floor(Math.random() * patterns.length)];
-    let pokemonList = this.generatePokemonForCombination(randomPattern);
-    let pokemonIndex = 0;
+    let combinationList = this.generatePokemonForCombination(randomPattern); // 포켓몬과 아이템 리스트
+    let itemIndex = 0;
 
     // 조합 크기 계산 - 수정됨: 패턴 크기 고려
     let patternHeight = randomPattern.length * (this.BRICK_HEIGHT + this.BRICK_PADDING);
@@ -139,30 +152,56 @@ class BrickGame extends GameManager {
       speed: this.combinationSpeed
     };
 
-    // 패턴에 따라 벽돌 생성
+    // 패턴에 따라 벽돌 생성 (포켓몬과 아이템 모두 처리)
     for (let row = 0; row < randomPattern.length; row++) {
       for (let col = 0; col < randomPattern[row].length; col++) {
         if (randomPattern[row][col] === 1) {
           let brickX = combination.x + col * (this.BRICK_WIDTH + this.BRICK_PADDING);
           let brickY = combination.y + row * (this.BRICK_HEIGHT + this.BRICK_PADDING);
-          let pokeIndex = pokemonList[pokemonIndex++];
+          let currentItem = combinationList[itemIndex++];
 
-          let imagePath = "../assets/images/game/pokemon/" + pokeIndex + ".png";
-          let pokeType = window.pokemon && window.pokemon[pokeIndex] ? window.pokemon[pokeIndex].type : 0;
-          let slotColor = this.typeColorMap[pokeType] || "#eee";
-          let isTarget = this.targetPokemonIndexes.includes(pokeIndex);
-          let brick = new Brick(
-            brickX,
-            brickY,
-            this.BRICK_WIDTH,
-            this.BRICK_HEIGHT,
-            pokeIndex,
-            pokeType,
-            isTarget,
-            imagePath
-          );
-          brick.type = pokeType;
-          brick.color = slotColor;
+          let brick;
+
+          if (currentItem.type === 'pokemon') {
+            // 포켓몬 블록 생성
+            let pokeIndex = currentItem.index;
+            let imagePath = "../assets/images/game/pokemon/" + pokeIndex + ".png";
+            let pokeType = window.pokemon && window.pokemon[pokeIndex] ? window.pokemon[pokeIndex].type : 0;
+            let slotColor = this.typeColorMap[pokeType] || "#eee";
+            let isTarget = this.targetPokemonIndexes.includes(pokeIndex);
+
+            brick = new Brick(
+              brickX,
+              brickY,
+              this.BRICK_WIDTH,
+              this.BRICK_HEIGHT,
+              pokeIndex,
+              pokeType,
+              isTarget,
+              imagePath
+            );
+            brick.type = pokeType;
+            brick.color = slotColor;
+            brick.blockType = 'pokemon'; // 블록 타입 추가
+          } else if (currentItem.type === 'item') {
+            // 아이템 블록 생성
+            let itemName = currentItem.name;
+            let imagePath = `../assets/images/game/item/outline/${itemName}-outline.png`;
+
+            brick = new Brick(
+              brickX,
+              brickY,
+              this.BRICK_WIDTH,
+              this.BRICK_HEIGHT,
+              null, // 포켓몬 인덱스 없음
+              null, // 포켓몬 타입 없음
+              false, // 타겟 아님
+              imagePath
+            );
+            brick.itemName = itemName; // 아이템 이름 저장
+            brick.blockType = 'item'; // 블록 타입 추가
+            brick.color = '#FFD700'; // 아이템 블록 색상 (골드)
+          }
           brick.status = 1;
           brick.combination = combination; // 조합 참조 추가
 
@@ -288,7 +327,9 @@ class BrickGame extends GameManager {
     this.dynamicCollisionDetection();
 
     // 승리 조건 확인
-    this.checkWin();
+    if (!this.isGameClear) {
+      this.checkWin();
+    }
 
     // 모든 객체 그리기
     this.drawBall();
@@ -400,40 +441,54 @@ class BrickGame extends GameManager {
           } else {
             this.ball.speedY = -this.ball.speedY;
           } brick.status = 0; // 벽돌 부서짐
-          let pokemon = window.pokemon[brick.pokeIndex];
-          let baseScore = 0;
 
-          if (pokemon.type === 5) {
-            // 전설의 포켓몬 - 점수 더 많이 줌
-            baseScore = 50;
-          } else {
-            // 일반 포켓몬 - 10점
-            baseScore = 10;
-          }
+          // 포켓몬 블록과 아이템 블록 처리 분리
+          if (brick.blockType === 'pokemon') {
+            // 포켓몬 블록 처리 (기존 로직)
+            let pokemon = window.pokemon[brick.pokeIndex];
+            let baseScore = 0;
 
-          // MARK: 전기타입 능력 적용 - 점수 2배
-          if (this.electricBoostActive) {
-            this.score += baseScore * 2;
-          } else {
-            this.score += baseScore;
-          }          // 모든 포켓몬을 구출 리스트에 추가 (중복 방지)
-          if (!this.saved_pokemon.includes(brick.pokeIndex)) {
-            this.saved_pokemon.push(brick.pokeIndex);
-            let pokemonName = window.pokemon && window.pokemon[brick.pokeIndex] ? window.pokemon[brick.pokeIndex].name : "포켓몬";
-            console.log("포켓몬 구출: " + pokemonName);
-          }
+            if (pokemon && pokemon.type === 5) {
+              // 전설의 포켓몬 - 점수 더 많이 줌
+              baseScore = 50;
+            } else {
+              // 일반 포켓몬 - 10점
+              baseScore = 10;
+            }
 
-          // 타겟 포켓몬이거나 특별 포켓몬인 경우 슬롯에 추가
-          if (brick.isTarget && this.targetPokemonIndexes.includes(brick.pokeIndex)) {
-            let imagePath = "../assets/images/game/pokemon/" + brick.pokeIndex + ".png";
-            this.addPokemonToSlot(imagePath);
-          } else if (this.specialPokemon[this.stage] === brick.pokeIndex) {
-            // 특별 포켓몬인 경우 추가 처리 (이미 saved_pokemon에 추가됨)
-            let imagePath = "../assets/images/game/pokemon/" + brick.pokeIndex + ".png";
+            // MARK: 전기타입 능력 적용 - 점수 2배
+            if (this.electricBoostActive) {
+              this.score += baseScore * 2;
+            } else {
+              this.score += baseScore;
+            }
+
+            // 모든 포켓몬을 구출 리스트에 추가 (중복 방지)
+            if (!this.saved_pokemon.includes(brick.pokeIndex)) {
+              this.saved_pokemon.push(brick.pokeIndex);
+              let pokemonName = pokemon ? pokemon.name : "포켓몬";
+              // 화면에 구출 메시지 표시
+              this.showRescueMessage(pokemonName);
+            }
+
+            // 타겟 포켓몬이거나 특별 포켓몬인 경우 슬롯에 추가
+            if (brick.isTarget && this.targetPokemonIndexes.includes(brick.pokeIndex)) {
+              let imagePath = "../assets/images/game/pokemon/" + brick.pokeIndex + ".png";
+              this.addPokemonToSlot(imagePath);
+            } else if (this.specialPokemon[this.stage] === brick.pokeIndex) {
+              // 특별 포켓몬인 경우 추가 처리 (이미 saved_pokemon에 추가됨)
+              let imagePath = "../assets/images/game/pokemon/" + brick.pokeIndex + ".png";
             // this.addPokemonToSlot(imagePath);
+            }
+          } else if (brick.blockType === 'item') {
+            // 아이템 블록 처리
+            this.useItemOnSlot(brick.itemName);
+            this.score += 5; // 아이템 획득 점수
           }
 
-          this.checkWin();
+          if (!this.isGameClear) { 
+            this.checkWin();
+          }
           return; // 한 프레임에 하나의 벽돌만 처리
         }
       }
@@ -442,8 +497,21 @@ class BrickGame extends GameManager {
 
   /**
    * MARK: 포켓몬 슬롯에 추가
-   */
-  addPokemonToSlot(imageSrc) {
+   */  addPokemonToSlot(imageSrc) {
+    // 포켓몬 인덱스와 타입 정보 추출 (전설의 포켓몬과 타입 중복 차단용)
+    let indexMatch = imageSrc.match(/(\d+)\.png/);
+    if (!indexMatch) return;
+    
+    let index = parseInt(indexMatch[1]);
+    let pokemonData = window.pokemon && window.pokemon[index] ? window.pokemon[index] : null;
+    if (!pokemonData) return;
+    
+    // 전설의 포켓몬(타입 5) 차단 로직 추가
+    if (pokemonData.type === 5) {
+      console.log(`전설의 포켓몬 ${pokemonData.name}은(는) 슬롯에 추가할 수 없습니다.`);
+      return; 
+    }
+
     // 중복 방지: 이미 슬롯에 들어가 있는 경우 무시
     for (let i = 0; i < 4; i++) {
       let slot = document.getElementById("slot-" + i);
@@ -451,6 +519,25 @@ class BrickGame extends GameManager {
 
       if (bg.includes(imageSrc)) {
         return; // 이미 들어있는 포켓몬은 중복 추가 안 함
+      }
+    }
+
+    // 타입 중복 방지: 같은 타입의 포켓몬이 이미 슬롯에 있는지 확인
+    for (let i = 0; i < 4; i++) {
+      let slot = document.getElementById("slot-" + i);
+      let bg = slot.style.backgroundImage;
+      
+      if (bg && bg !== "none") {
+        let existingIndexMatch = bg.match(/(\d+)\.png/);
+        if (existingIndexMatch) {
+          let existingIndex = parseInt(existingIndexMatch[1]);
+          let existingPokemon = window.pokemon && window.pokemon[existingIndex] ? window.pokemon[existingIndex] : null;
+          
+          if (existingPokemon && existingPokemon.type === pokemonData.type) {
+            console.log(`같은 타입의 포켓몬이 이미 슬롯에 있습니다: ${existingPokemon.name} (타입 ${existingPokemon.type})`);
+            return; // 같은 타입 포켓몬은 중복 추가 안 함
+          }
+        }
       }
     }
 
@@ -463,13 +550,9 @@ class BrickGame extends GameManager {
         slot.style.backgroundImage = "url(" + imageSrc + ")";
         slot.style.backgroundSize = "cover";
         slot.style.backgroundPosition = "center";
-        let indexMatch = imageSrc.match(/(\d+)\.png/);
-        if (indexMatch) {
-          let index = parseInt(indexMatch[1]);
-          let type = window.pokemon && window.pokemon[index] ? window.pokemon[index].type : 0;
-          let color = this.typeColorMap[type] || "#eee";
-          slot.style.backgroundColor = color;
-        }
+        let color = this.typeColorMap[pokemonData.type] || "#eee";
+        slot.style.backgroundColor = color;
+        console.log(`포켓몬 슬롯에 추가됨: ${pokemonData.name} (타입 ${pokemonData.type})`);
         return;
       }
     }
@@ -488,15 +571,20 @@ class BrickGame extends GameManager {
    * MARK: 승리 조건 확인
    */
   checkWin() {
-    // 필요한 조합 수를 클리어했다면
-    if (this.clearedCombinations >= this.requiredCombinations) {
+    // 난이도별 최소 점수 기준으로 클리어 조건 변경
+    const requiredScore = this.requiredScores[this.difficulty] || this.requiredScores.easy;
+
+    if (this.score >= requiredScore) {
+      if (!this.isGameClear) {
+        this.showRescueMessage(`🎉 축하합니다! 목표 점수 ${requiredScore}점 달성! 게임 클리어! 🎉`);
+      }
       this.isGameClear = true;
-      this.showMessage("축하합니다! 스테이지를 클리어했습니다!", "success", true);
-      this.endGame();
       return true;
     }
     return false;
-  }  /**
+  }
+
+  /**
    * MARK: 공 그리기
    */
   drawBall() {
@@ -587,8 +675,7 @@ class BrickGame extends GameManager {
     this.iceBoostActive = false;
 
     super.restartGame(); // 부모 클래스의 재시작 메서드 호출
-  }
-  /**
+  }  /**
    * MARK: 기존 조합과 겹치지 않는 Y 위치 찾기 메서드 - 추가됨: 조합 겹침 방지
    */
   findNonOverlappingY(minY, maxY, patternHeight) {
@@ -629,6 +716,39 @@ class BrickGame extends GameManager {
     // 적절한 위치를 찾지 못한 경우 기본 위치 반환
     console.log("조합 배치: 겹치지 않는 위치를 찾지 못해 기본 위치 사용");
     return minY + Math.random() * (maxY - minY);
+  }
+
+  /**
+   * MARK: 포켓몬 구출 메시지 표시 메서드 추가
+   */
+  showRescueMessage(pokemonName) {
+    // 구출 메시지 컨테이너 가져오기
+    const messageContainer = document.getElementById('rescue-message-container');
+    if (!messageContainer) {
+      console.error('구출 메시지 컨테이너를 찾을 수 없습니다.');
+      return;
+    }
+
+    // 메시지 엘리먼트 생성
+    const messageElement = document.createElement('div');
+    messageElement.className = 'rescue-message';
+    messageElement.textContent = `${pokemonName}을(를) 구출했습니다!`; // 구출 메시지 텍스트
+
+    // 메시지를 컨테이너에 추가
+    messageContainer.appendChild(messageElement);
+
+    // 3초 후 메시지 제거 (페이드아웃 애니메이션 포함)
+    setTimeout(() => {
+      // 페이드아웃 애니메이션 시작
+      messageElement.style.animation = 'rescueMessageHide 0.5s ease-out forwards';
+
+      // 애니메이션 완료 후 DOM에서 제거
+      setTimeout(() => {
+        if (messageElement.parentNode) {
+          messageElement.parentNode.removeChild(messageElement);
+        }
+      }, 500); // 애니메이션 시간(0.5초) 후 제거
+    }, 3000); // 3초 후 페이드아웃 시작
   }
 
   /**
@@ -752,5 +872,92 @@ class BrickGame extends GameManager {
         console.log("얼음타입 능력 효과 종료: 조합 이동 속도 원상복구");
       }, duration);
     }
+  }
+  /**
+   * MARK: 아이템 사용 메서드 - 현재 선택된 슬롯에 적용
+   */
+  useItemOnSlot(itemName) {
+    // 현재 선택된 슬롯 찾기
+    let targetSlotIndex = -1;
+    const selectedFrame = document.querySelector(".pokemon-slot-frame.selected");
+
+    if (selectedFrame) {
+      // 선택된 프레임의 ID에서 인덱스 추출 (slot-frame-0 -> 0)
+      const frameId = selectedFrame.id;
+      const indexMatch = frameId.match(/slot-frame-(\d+)/);
+      if (indexMatch) {
+        const selectedIndex = parseInt(indexMatch[1]);
+
+        // 해당 슬롯에 포켓몬이 있는지 확인
+        const slot = document.getElementById(`slot-${selectedIndex}`);
+        if (slot && slot.style.backgroundImage && slot.style.backgroundImage !== "none") {
+          targetSlotIndex = selectedIndex;
+        }
+      }
+    }
+
+    // 선택된 슬롯에 포켓몬이 없는 경우, 첫 번째 포켓몬이 있는 슬롯으로 폴백
+    if (targetSlotIndex === -1) {
+      for (let i = 0; i < 4; i++) {
+        let slot = document.getElementById(`slot-${i}`);
+        if (slot && slot.style.backgroundImage && slot.style.backgroundImage !== "none") {
+          targetSlotIndex = i;
+          break;
+        }
+      }
+    }
+
+    if (targetSlotIndex === -1) {
+      console.log("아이템을 사용할 포켓몬이 슬롯에 없습니다.");
+      return;
+    }
+
+    // 아이템 효과량 계산
+    let healPercentage = 0;
+    switch (itemName) {
+      case 'normal-potion':
+        healPercentage = 0.2; // 20%
+        break;
+      case 'super-potion':
+        healPercentage = 0.4; // 40%
+        break;
+      case 'hyper-potion':
+        healPercentage = 0.6; // 60%
+        break;
+      case 'full-potion':
+        healPercentage = 1.0; // 100%
+        break;
+      default:
+        healPercentage = 0.2;
+    }
+
+    // 현재 체력과 최대 체력 가져오기
+    const maxHealth = this.pokemonHealthSystem.maxHealth;
+    const currentHealth = this.pokemonHealthSystem.currentHealth[targetSlotIndex];
+
+    // 회복량 계산 (최대 체력 기준)
+    const healAmount = Math.floor(maxHealth * healPercentage);
+    const newHealth = Math.min(maxHealth, currentHealth + healAmount);
+
+    // 체력 업데이트
+    this.pokemonHealthSystem.currentHealth[targetSlotIndex] = newHealth;
+
+    // 기절 상태 해제 (체력이 0보다 커진 경우)
+    if (newHealth > 0 && this.pokemonHealthSystem.isDizzy[targetSlotIndex]) {
+      this.pokemonHealthSystem.isDizzy[targetSlotIndex] = false;
+
+      // 슬롯 UI 원상복구
+      const slot = document.getElementById(`slot-${targetSlotIndex}`);
+      if (slot && this.pokemonHealthSystem.originalImages[targetSlotIndex]) {
+        slot.style.backgroundImage = this.pokemonHealthSystem.originalImages[targetSlotIndex];
+        slot.style.filter = "none"; // 흑백 효과 제거
+      }
+    }
+
+    // 메시지 표시
+    const itemDisplayName = itemName.replace('-', ' ').toUpperCase();
+    this.showRescueMessage(`${itemDisplayName} 사용! (+${healAmount} HP)}`);
+
+    console.log(`아이템 ${itemName} 사용: 슬롯 ${targetSlotIndex + 1} 포켓몬 체력 ${healAmount} 회복 (${currentHealth} → ${newHealth})`);
   }
 }

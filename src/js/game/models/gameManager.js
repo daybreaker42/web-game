@@ -53,7 +53,7 @@ class GameManager {
     // 게임 정보
     this.mode = null;       // score | story
     this.difficulty = null;
-    this.stage = null;
+    this.stage = null;      // 1~3 : 벽돌깨기, 4 : 보스전
     this.score = 0;
     this.lives = 300; // 기본 생명력
     this.totalLives = 300;
@@ -709,16 +709,39 @@ class GameManager {
 
       // 화면에 표시 (두자리 숫자 포맷)
       document.getElementById("timer").textContent =
-        `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-
-      // 시간 초과 시 게임 종료 처리
+        `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;      // 시간 초과 시 게임 종료 처리
       if (timeLeft <= 0) {
-        this.showMessage("시간 초과! 게임 종료", "error"); // this 추가
-        this.isGameRunning = false; // this 추가
+        this.isGameRunning = false;
         cancelAnimationFrame(this.animationFrame);
-        this.endGame();
+
+        // 보스전은 시간 초과 시 무조건 실패
+        if (this.stage === 4) {
+          this.isGameClear = false;
+          this.showMessage("시간 초과! 보스를 시간 내에 처치하지 못했습니다!", "error", true);
+          this.endGame();
+        }
+        // 벽돌깨기 게임에서 최소 점수 달성 여부 확인
+        else if (this.mode === "score" && this.requiredScores) {
+          const requiredScore = this.requiredScores[this.difficulty] || this.requiredScores.easy;
+          if (this.score >= requiredScore) {
+            // 최소 점수 달성 시 게임 클리어
+            this.isGameClear = true;
+            this.showRescueMessage(`⏰ 시간 종료! 목표 점수 ${requiredScore}점 달성으로 게임 클리어! 🎉`);
+            setTimeout(() => {
+              this.endGame();
+            }, 3000);
+          } else {
+            // 최소 점수 미달성 시 게임 오버
+            this.isGameClear = false;
+            this.showMessage("시간 초과! 목표 점수 미달로 게임 오버", "error", true);
+            this.endGame();
+          }
+        } else {
+          // 기타 게임 모드는 기존 로직 유지
+          this.endGame();
+        }
         return;
-      } // 이하 기존 게임 로직 계속...
+      }// 이하 기존 게임 로직 계속...
       // 캔버스 초기화
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
