@@ -721,7 +721,7 @@ class GameManager {
           this.endGame();
         }
         // 벽돌깨기 게임에서 최소 점수 달성 여부 확인
-        else if (this.mode === "score" && this.requiredScores) {
+        else if (this.mode === "story" && this.requiredScores) {
           const requiredScore = this.requiredScores[this.difficulty] || this.requiredScores.easy;
           if (this.score >= requiredScore) {
             // 최소 점수 달성 시 게임 클리어
