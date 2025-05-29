@@ -30,7 +30,6 @@ class Brick {
       };
     }
   }
-
   draw(ctx) {
     try {
       if (this.status !== 1) return;
@@ -44,18 +43,26 @@ class Brick {
         ctx.fillRect(this.x, this.y, this.width, this.height);
       }
 
-      // 테두리
+      // 테두리 - 블록 타입에 따라 다른 프레임 사용
       ctx.globalAlpha = 0.8;
       const frameImg = new Image();
-      const isLegend = this.pokeType === 5; // 전설의 포켓몬인지 여부
-      frameImg.src = isLegend ?
-        '../assets/images/game/object/block_legend.png' :
-        '../assets/images/game/object/block_normal.png';
+
+      if (this.blockType === 'item') {
+        // 아이템 블록 프레임
+        frameImg.src = '../assets/images/game/object/block_item.png';
+      } else {
+      // 포켓몬 블록 프레임 (기존 로직 유지)
+        const isLegend = this.pokeType === 5; // 전설의 포켓몬인지 여부
+        frameImg.src = isLegend ?
+          '../assets/images/game/object/block_legend.png' :
+          '../assets/images/game/object/block_normal.png';
+      }
+
       ctx.drawImage(frameImg, this.x, this.y, this.width, this.height);
 
-      // 느낌표 표시
+      // 느낌표 표시 (포켓몬 타겟에만)
       ctx.globalAlpha = 1.0;
-      if (this.isTarget) {
+      if (this.isTarget && this.blockType === 'pokemon') {
         const exMark = new Image();
         exMark.src = "../assets/images/icons/exmark.png";
         ctx.drawImage(exMark, this.x + this.width - 35, this.y + 5, 30, 30);

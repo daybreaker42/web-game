@@ -4,28 +4,28 @@ window.item = [
     name: "normal-potion",
     effect: {
       type: "heal",
-      amount: 20,
+      amount: 20, // 20% 회복
     },
   },
   {
     name: "super-potion",
     effect: {
       type: "heal",
-      amount: 20,
+      amount: 40, // 40% 회복
     },
   },
   {
     name: "hyper-potion",
     effect: {
       type: "heal",
-      amount: 60,
+      amount: 60, // 60% 회복
     },
   },
   {
     name: "full-potion",
     effect: {
       type: "heal",
-      amount: 100,
+      amount: 100, // 100% 회복
     },
   },
 ];
