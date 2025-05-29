@@ -30,7 +30,7 @@ function debugMode() {
   // NOTE: Write your test code here (e.g. Screen)
   //   testGameResultScreen();
   //   testGame();
-  testMainLogic();?
+  testMainLogic();
 }
 
 let isStarted = false;
