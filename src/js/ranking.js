@@ -102,21 +102,32 @@ function renderScoreboard() {
 }
 
 function addScoreRecord(mode, difficulty, name, score) {
-  let data = getScoreboardData();
-  let arr = data[mode][difficulty];
-  arr.push({
-    rank: 0,
-    name,
-    score,
-    date: new Date().toLocaleString("ko-KR", {
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    }),
-  });
-  arr.sort((a, b) => b.score - a.score);
-  arr.forEach((r, i) => (r.rank = i + 1));
-  data[mode][difficulty] = arr.slice(0, 5); // 5개만 유지
-  setScoreboardData(data);
-}
+    if (mode === "score") mode = MODES.SCORE;
+    if (mode === "story") mode = MODES.STORY;
+    if (!DIFFICULTY.includes(difficulty)) difficulty = "easy"; // 혹시라도
+    
+    try {
+      let data = getScoreboardData();
+      let arr = data[mode][difficulty];
+      arr.push({
+        rank: 0,
+        name,
+        score,
+        date: new Date().toLocaleString("ko-KR", {
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      });
+      arr.sort((a, b) => b.score - a.score);
+      arr.forEach((r, i) => (r.rank = i + 1));
+      data[mode][difficulty] = arr.slice(0, 5); // 5개만 유지
+      setScoreboardData(data);
+      return true;  // 성공
+    } catch (e) {
+      console.error("addScoreRecord 실패:", e);
+      return false; // 실패
+    }
+  }
+  
