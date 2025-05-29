@@ -1,3 +1,5 @@
+const GAME_TIME = 3000; // 3초
+
 const STORY_SCRIPTS = [
   window.story_intro,
   window.story_stage1,
