@@ -168,10 +168,10 @@ class BrickGame extends GameManager {
 
     this.combinations.push(combination);
     console.log("새로운 조합 생성: " + combination.bricks.length + "개 블록");
-    console.log(`조합 내 brick들 좌표 : `);
-    combination.bricks.forEach((brick, index)=>{
-      console.log(`brick ${index} : ${brick.x}, ${brick.y}`);
-    });
+    // console.log(`조합 내 brick들 좌표 : `);
+    // combination.bricks.forEach((brick, index)=>{
+    //   console.log(`brick ${index} : ${brick.x}, ${brick.y}`);
+    // });
   }
   /**
    * MARK: 게임별 초기화 
@@ -316,7 +316,7 @@ class BrickGame extends GameManager {
     if (currentTime - this.lastCombinationSpawn > requiredInterval) {
       this.createNewCombination(); // 새 조합 생성
       this.lastCombinationSpawn = currentTime;
-      console.log("새 조합 생성됨 - 화면에 기존 조합 존재: " + hasActiveCombinationOnScreen); // 추가됨: 조합 생성 로그
+      // console.log("새 조합 생성됨 - 화면에 기존 조합 존재: " + hasActiveCombinationOnScreen); // 추가됨: 조합 생성 로그
     }
 
     // 기존 조합들 이동 및 정리
@@ -353,7 +353,7 @@ class BrickGame extends GameManager {
           brick.y = combination.y + row * (self.BRICK_HEIGHT + self.BRICK_PADDING);
         } else {
           // 위치를 찾지 못한 경우 오류 로그 출력 - 추가됨: 디버깅용 로그
-          console.error("벽돌 위치 매핑 실패: brickIndex=" + brickIndex + ", 패턴 크기=" + pattern.length);
+          // console.error("벽돌 위치 매핑 실패: brickIndex=" + brickIndex + ", 패턴 크기=" + pattern.length);
         }
       });
 
@@ -368,7 +368,7 @@ class BrickGame extends GameManager {
       if (activeBricks.length === 0) {
         this.combinations.splice(i, 1);
         this.clearedCombinations++;
-        console.log("조합 클리어! 총 " + this.clearedCombinations + "개 조합 클리어");
+        // console.log("조합 클리어! 총 " + this.clearedCombinations + "개 조합 클리어");
       }
     }
   }
@@ -416,7 +416,7 @@ class BrickGame extends GameManager {
             let imagePath = "../assets/images/game/pokemon/" + brick.pokeIndex + ".png";
             // this.addPokemonToSlot(imagePath);
             let pokemonName = window.pokemon && window.pokemon[brick.pokeIndex] ? window.pokemon[brick.pokeIndex].name : "포켓몬";
-            console.log("특별 포켓몬 구출: " + pokemonName);
+            // console.log("특별 포켓몬 구출: " + pokemonName);
           }
 
           this.checkWin();
@@ -556,7 +556,7 @@ class BrickGame extends GameManager {
         let brick = combination.bricks[j];
         if (brick.status === 1) {
           brick.draw(this.ctx);
-          console.log(`그리기: 벽돌 ${j} (${brick.x}, ${brick.y}) - 상태: ${brick.status}`);
+          // console.log(`그리기: 벽돌 ${j} (${brick.x}, ${brick.y}) - 상태: ${brick.status}`);
         }
       }
     }

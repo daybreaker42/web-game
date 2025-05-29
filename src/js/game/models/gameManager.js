@@ -33,7 +33,7 @@ class GameManager {
     this.totalPauseDuration = 0; // 일시정지한 시간
 
     // 게임 정보
-    this.mode = null;
+    this.mode = null;       // score | story
     this.difficulty = null;
     this.stage = null;
     this.score = 0;
@@ -299,12 +299,15 @@ class GameManager {
    * UI 업데이트
    */
   updateUI() {
-    this.drawLives();
+    // 벽돌깨기 모드일때만 drawLives, 아니면 해당 로직에서 따로 구현
+    if (this.stage <= 3) {
+      this.drawLives();
+    }
     this.drawScore();
   }
 
   /**
-   * 목숨 표시 (master 요청으로 추가된 메서드)
+   * 목숨 표시
    */
   drawLives() {
     const iconWidth = 30; // 아이콘 너비
@@ -391,7 +394,7 @@ class GameManager {
       // 초기 안내 문구 출력
       const instructions = qs("#info-modal");
       const confirmButton = qs("#info-confirm-yes");
-      this.setInfoModalContent(this.mode === "boss");
+      this.setInfoModalContent(this.stage === 4);
       const result = instructions.showModal();
       confirmButton.addEventListener("click", () => {
         instructions.close();
