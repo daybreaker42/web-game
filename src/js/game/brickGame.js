@@ -17,12 +17,11 @@ class BrickGame extends GameManager {
     this.BRICK_PADDING = 10;
     this.BRICK_OFFSET_TOP = 60;
     this.BRICK_OFFSET_LEFT = 30;
-    this.bricks = [];
-
-    // MARK: 동적 조합 시스템 설정 추가
+    this.bricks = [];    // MARK: 동적 조합 시스템 설정 추가
     this.combinations = []; // 현재 화면에 있는 조합들
     this.combinationSpeed = 2; // 조합 이동 속도
-    this.combinationSpawnInterval = 3000; // 조합 생성 간격 (ms)
+    this.combinationSpawnInterval = 6000; // 조합 생성 기본 간격 (6초) - 수정됨: 간격 조정
+    this.combinationSpawnDelayWhenActive = 3000; // 화면에 조합이 있을 때 추가 대기시간 (3초) - 추가됨: 화면에 조합이 있을 때 대기시간
     this.lastCombinationSpawn = 0;
     this.clearedCombinations = 0; // 클리어한 조합 수
     this.requiredCombinations = 10; // 스테이지 클리어에 필요한 조합 수
@@ -284,17 +283,32 @@ class BrickGame extends GameManager {
     this.drawPaddle();
     this.drawDynamicBricks(); // 동적 벽돌 그리기로 변경
   }
-
   /**
    * 조합 시스템 업데이트 메서드 추가
    */
   updateCombinations(timeMultiplier) {
     let currentTime = Date.now();
 
-    // 새 조합 생성 (일정 간격으로)
-    if (currentTime - this.lastCombinationSpawn > this.combinationSpawnInterval) {
-      this.createNewCombination();
+    // 화면에 조합이 있는지 확인 (화면 경계 내에 조합이 있는지 체크) - 추가됨: 화면 내 조합 존재 여부 확인
+    let hasActiveCombinationOnScreen = false;
+    for (let i = 0; i < this.combinations.length; i++) {
+      let combination = this.combinations[i];
+      // 조합이 화면 안에 있는지 확인 (조합의 시작점이 화면 오른쪽 경계를 넘지 않았으면 화면에 있다고 판단)
+      if (combination.x < this.canvas.width) {
+        hasActiveCombinationOnScreen = true;
+        break;
+      }
+    }
+
+    // 새 조합 생성 조건 개선 - 수정됨: 화면에 조합이 없을 때만 생성하거나, 있을 때는 추가 대기시간 적용
+    let requiredInterval = hasActiveCombinationOnScreen
+      ? this.combinationSpawnInterval + this.combinationSpawnDelayWhenActive  // 화면에 조합이 있으면 기본 간격 + 추가 대기시간
+      : this.combinationSpawnInterval; // 화면에 조합이 없으면 기본 간격만 적용
+
+    if (currentTime - this.lastCombinationSpawn > requiredInterval) {
+      this.createNewCombination(); // 새 조합 생성
       this.lastCombinationSpawn = currentTime;
+      console.log("새 조합 생성됨 - 화면에 기존 조합 존재: " + hasActiveCombinationOnScreen); // 추가됨: 조합 생성 로그
     }
 
     // 기존 조합들 이동 및 정리
