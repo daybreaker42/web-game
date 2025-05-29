@@ -28,12 +28,11 @@ function switchGameMode(mode) {
 
   if (mode === "brick") {
     currentGame = new BrickGame(canvas);
-    currentGame.setGameInfo({ mode: "brick", level: "easy", stage: 1 });
+    currentGame.setGameInfo({ mode: "brick", difficulty: "easy", stage: 1 });
   } else if (mode === "boss") {
     currentGame = new BossGame(canvas);
-    currentGame.setGameInfo({ mode: "boss", level: "easy", stage: 4 });
+    currentGame.setGameInfo({ mode: "boss", difficulty: "easy", stage: 4 });
   }
-  console.log(`게임 모드 ${currentGameMode} 설정 완료`);
   // 게임 초기화
   // 게임 시작은 사용자가 "게임 시작" 버튼을 눌렀을 때 GameManager의 startGame에 의해 처리됩니다.
   // UI(점수, 생명)는 currentGame.startGame() 내부 또는 setGameInfo 후 GameManager에서 업데이트합니다.

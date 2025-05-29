@@ -80,7 +80,7 @@ function renderGameResult(gameResult) {
           });
           return;
         }
-      
+
         nickModal.close();
 
         let result = false;
@@ -98,12 +98,12 @@ function renderGameResult(gameResult) {
         if (result) {
           showInfoModal(
             "저장되었습니다.\n타이틀로 돌아갑니다.",
-            returnToTitleScreen,
+            handleReturnToTitleScreen,
           );
         } else {
           showInfoModal(
             "저장에 실패했습니다.\n타이틀로 돌아갑니다.",
-            returnToTitleScreen,
+            handleReturnToTitleScreen,
           );
         }
       };
@@ -111,7 +111,7 @@ function renderGameResult(gameResult) {
 
     elById("ranking-save-no").onclick = function () {
       saveModal.close();
-      returnToTitleScreen();
+      handleReturnToTitleScreen();
     };
   };
 }
