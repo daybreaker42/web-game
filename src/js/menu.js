@@ -3,12 +3,17 @@
 let selectedDifficulty = null;
 
 function startGameStoryMode(difficulty) {
-  stopCloudAnimation();
-  stopBgm();
-  hide(qs("#difficulty-menu-screen"));
-  selectedDifficulty = difficulty;
-  proceedToStage(0);
-}
+    stopCloudAnimation();
+    stopBgm();
+    hide(qs("#difficulty-menu-screen"));
+    selectedDifficulty = difficulty;
+    
+    // START 스토리부터 시작 (스테이지 0)
+    currentStageIndex = 0; // intro 스테이지
+    playStory(0, () => { // story_opening 재생
+      proceedToStage(1); // Stage 1로 진행
+    });
+  }
 
 function startGameScoreMode(difficulty) {
   selectedDifficulty = difficulty;
