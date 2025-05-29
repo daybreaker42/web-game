@@ -2,9 +2,20 @@ const DEBUG_MODE = true;
 const DEBUG_GAME = true;
 
 window.addEventListener("DOMContentLoaded", () => {
-  //   console.log("Adding event listeners");
   document.addEventListener("keydown", startFromTitle, { once: true });
   document.addEventListener("click", startFromTitle, { once: true });
+
+  if (DEBUG_MODE) {
+    hideAllFade(qsa(".screen"));    
+    if (DEBUG_GAME) {
+        show(qs("#gameplay-screen"));
+        playGame("story", 0, 0, (gameResult) => {
+          console.log("Game ended:", gameResult);
+          returnToTitleScreen();
+        });
+    }
+    return;
+  }
 
   setupMenuEvents();
   setupOptionModal();
@@ -40,17 +51,6 @@ function returnToTitleScreen() {
 function startFromTitle(e) {
   if (started) return;
   started = true;
-
-  if (DEBUG_MODE) {
-    if (DEBUG_GAME) {
-      qsa('.screen').forEach(screen => {
-        screen.classList.add('hidden');
-      });
-      qs('#gameplay-screen').classList.remove('hidden');
-    }
-    return;
-  }
-
 
   playSfx(SFX.START);
 
