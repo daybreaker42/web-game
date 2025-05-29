@@ -25,27 +25,26 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 function debugMode() {
-    console.log("DEBUG_MODE is ON");
-    hideAllFade(qsa(".screen"));
-  
-    // NOTE: Write your debug code here (e.g. Screen)
-    showWithFade(qs("#title-screen"));
-  
-    // Set up debug events
-    if (window.DEBUG_GAME) {
-      console.log("DEBUG_GAME is ON");
-      hideAllFade(qsa(".screen"));
-      document.removeEventListener("keydown", handleStartFromTitle);
-      document.removeEventListener("click", handleStartFromTitle);
-      show(qs("#gameplay-screen"));
-      playGame("story", 0, 0, (gameResult) => {
-        console.log("Game ended:", gameResult);
-        handleReturnToTitleScreen();
-      });
-    }
-    return;
-  }  
+  console.log("DEBUG_MODE is ON");
+  hideAllFade(qsa(".screen"));
 
+  // NOTE: Write your debug code here (e.g. Screen)
+  showWithFade(qs("#title-screen"));
+
+  // Set up debug events
+  if (window.DEBUG_GAME) {
+    console.log("DEBUG_GAME is ON");
+    hideAllFade(qsa(".screen"));
+    document.removeEventListener("keydown", handleStartFromTitle);
+    document.removeEventListener("click", handleStartFromTitle);
+    show(qs("#gameplay-screen"));
+    playGame("story", 0, 0, (gameResult) => {
+      console.log("Game ended:", gameResult);
+      handleReturnToTitleScreen();
+    });
+  }
+  return;
+}
 
 let isStarted = false;
 
