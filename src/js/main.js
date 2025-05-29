@@ -7,7 +7,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
   document.addEventListener("keydown", handleStartFromTitle, { once: true });
   document.addEventListener("click", handleStartFromTitle, { once: true });
-
+  
   if (typeof window.DEBUG_MODE !== "undefined" && window.DEBUG_MODE) {
     debugMode();
     return;
@@ -19,9 +19,6 @@ window.addEventListener("DOMContentLoaded", () => {
   setupOptionModal();
   setupAudioSliders();
   setupButtonSfx();
-
-  // DEMO
-  setScoreboardData(DEMO_RANKING_DATA);
 });
 
 function debugMode() {
@@ -29,7 +26,12 @@ function debugMode() {
   hideAllFade(qsa(".screen"));
 
   // NOTE: Write your debug code here (e.g. Screen)
+  hideAllFade(qsa(".screen"));
   showWithFade(qs("#title-screen"));
+  setupMenuEvents();
+  setupOptionModal();
+  setupAudioSliders();
+  setupButtonSfx();
 
   // Set up debug events
   if (window.DEBUG_GAME) {
