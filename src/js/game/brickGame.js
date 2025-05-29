@@ -103,13 +103,12 @@ class BrickGame extends GameManager {
     for (let i = 0; i < itemCount; i++) {
       let randomItem = availableItems[Math.floor(Math.random() * availableItems.length)];
       combinationList.push({ type: 'item', name: randomItem });
-    }
-
-    // 나머지 슬롯을 일반 포켓몬으로 채움
+    }    // 나머지 슬롯을 일반 포켓몬으로 채움
     let remainingSlots = slotCount - (hasSpecialPokemon ? 1 : 0) - itemCount;
     let availablePokemon = [];
     for (let i = 0; i < this.totalPokemonCount; i++) {
-      if (i !== currentSpecialPokemon) {
+      // 현재 스테이지 특별 포켓몬과 이미 구출된 포켓몬들을 제외
+      if (i !== currentSpecialPokemon && !this.saved_pokemon.includes(i)) {
         availablePokemon.push(i);
       }
     }
