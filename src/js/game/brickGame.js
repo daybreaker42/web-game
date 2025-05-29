@@ -22,7 +22,6 @@ class BrickGame extends GameManager {
     this.combinationSpeed = 2; // 조합 이동 속도
     this.combinationSpawnInterval = 6000; // 조합 생성 기본 간격 (6초) - 수정됨: 간격 조정
     this.combinationSpawnDelayWhenActive = 3000; // 화면에 조합이 있을 때 추가 대기시간 (3초) - 추가됨: 화면에 조합이 있을 때 대기시간    this.lastCombinationSpawn = 0;
-    this.clearedCombinations = 0; // 클리어한 조합 수
     this.requiredCombinations = 10; // 스테이지 클리어에 필요한 조합 수 (기본값)
 
     // MARK: 난이도별 최소 점수 설정 추가
@@ -248,7 +247,6 @@ class BrickGame extends GameManager {
 
     // 조합 시스템 초기화
     this.combinations = [];
-    this.clearedCombinations = 0;
     this.lastCombinationSpawn = 0;
     this.leftBrick = 0;
 
@@ -407,14 +405,6 @@ class BrickGame extends GameManager {
       if (combination.x > this.canvas.width + 200) {
         this.combinations.splice(i, 1);
         continue;
-      }
-
-      // 조합의 모든 벽돌이 부서졌는지 확인
-      let activeBricks = combination.bricks.filter(function (brick) { return brick.status === 1; });
-      if (activeBricks.length === 0) {
-        this.combinations.splice(i, 1);
-        this.clearedCombinations++;
-        // console.log("조합 클리어! 총 " + this.clearedCombinations + "개 조합 클리어");
       }
     }
   }
