@@ -1003,10 +1003,8 @@ class BrickGame extends GameManager {
         break;
       default:
         healPercentage = 0.2;
-    }
-
-    // 현재 체력과 최대 체력 가져오기
-    const maxHealth = this.pokemonHealthSystem.maxHealth;
+    }    // 현재 체력과 최대 체력 가져오기 (주석 추가: 배열 인덱스 접근으로 수정하여 NaN 버그 해결)
+    const maxHealth = this.pokemonHealthSystem.maxHealth[targetSlotIndex];
     const currentHealth = this.pokemonHealthSystem.currentHealth[targetSlotIndex];
 
     // 회복량 계산 (최대 체력 기준)
@@ -1030,7 +1028,7 @@ class BrickGame extends GameManager {
 
     // 메시지 표시
     const itemDisplayName = itemName.replace('-', ' ').toUpperCase();
-    this.showRescueMessage(`${itemDisplayName} 사용! (+${healAmount} HP)}`);
+    this.showRescueMessage(`${itemDisplayName} 사용! (+${healAmount} HP)}`, true);
 
     console.log(`아이템 ${itemName} 사용: 슬롯 ${targetSlotIndex + 1} 포켓몬 체력 ${healAmount} 회복 (${currentHealth} → ${newHealth})`);
   }

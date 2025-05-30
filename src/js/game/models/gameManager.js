@@ -642,7 +642,6 @@ class GameManager {
       }
     }
   }
-
   // MARK: 포켓몬 체력바 그리기 메서드 추가
   drawPokemonHealthBars() {
     // 보스전에선 그리지 않음
@@ -653,6 +652,12 @@ class GameManager {
     const barY = this.canvas.height - 15; // 체력바 Y 위치 (슬롯 바로 아래)
 
     for (let i = 0; i < 4; i++) {
+      // 주석 추가: 슬롯에 포켓몬이 있는지 확인하여 빈 슬롯 HP바 표시 문제 해결
+      const slot = document.getElementById(`slot-${i}`);
+      if (!slot || !slot.style.backgroundImage || slot.style.backgroundImage === "none") {
+        continue; // 포켓몬이 없는 슬롯은 체력바를 그리지 않음
+      }
+
       const barX = i * 64 + 2; // 각 슬롯 위치에 맞춰 체력바 위치 계산
       const healthPercentage = this.pokemonHealthSystem.currentHealth[i] / this.pokemonHealthSystem.maxHealth[i];
 
