@@ -231,6 +231,7 @@ class BrickGame extends GameManager {
     this.initDynamicBrickSystem();
     this.totalLives = this.lives;
   }
+
   /**
    * MARK: 동적 벽돌 시스템 초기화
    */
@@ -239,7 +240,8 @@ class BrickGame extends GameManager {
     this.targetPokemonIndexes = [];
     while (this.targetPokemonIndexes.length < 4) {
       let rand = Math.floor(Math.random() * this.totalPokemonCount);
-      if (!this.targetPokemonIndexes.includes(rand)) {
+      // 전설의 포켓몬과 special 포켓몬은 제외함
+      if (!this.targetPokemonIndexes.includes(rand) && window.pokemon[rand].type !== 5 && rand < 105) {
         this.targetPokemonIndexes.push(rand);
       }
     }
@@ -464,14 +466,10 @@ class BrickGame extends GameManager {
               this.showRescueMessage(pokemonName);
             }
 
-            // 타겟 포켓몬이거나 특별 포켓몬인 경우 슬롯에 추가
+            // 타겟 포켓몬인 경우 슬롯에 추가
             if (brick.isTarget && this.targetPokemonIndexes.includes(brick.pokeIndex)) {
               let imagePath = "../assets/images/game/pokemon/" + brick.pokeIndex + ".png";
               this.addPokemonToSlot(imagePath);
-            } else if (this.specialPokemon[this.stage] === brick.pokeIndex) {
-              // 특별 포켓몬인 경우 추가 처리 (이미 saved_pokemon에 추가됨)
-              let imagePath = "../assets/images/game/pokemon/" + brick.pokeIndex + ".png";
-            // this.addPokemonToSlot(imagePath);
             }
           } else if (brick.blockType === 'item') {
             // 아이템 블록 처리
@@ -490,7 +488,8 @@ class BrickGame extends GameManager {
 
   /**
    * MARK: 포켓몬 슬롯에 추가
-   */  addPokemonToSlot(imageSrc) {
+   */
+  addPokemonToSlot(imageSrc) {
     // 포켓몬 인덱스와 타입 정보 추출 (전설의 포켓몬과 타입 중복 차단용)
     let indexMatch = imageSrc.match(/(\d+)\.png/);
     if (!indexMatch) return;
