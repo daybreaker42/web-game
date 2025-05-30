@@ -476,7 +476,7 @@ class BrickGame extends GameManager {
           } else if (brick.blockType === 'item') {
             // 아이템 블록 처리
             this.useItemOnSlot(brick.itemName);
-            this.score += 5; // 아이템 획득 점수
+            // this.score += 5; // 아이템 획득 점수
           }
 
           if (!this.isGameClear) { 
