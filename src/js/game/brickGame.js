@@ -41,13 +41,15 @@ class BrickGame extends GameManager {
       3: "#4FC3F7", // 물
       4: "#81D4FA", // 얼음
     };
-    this.totalPokemonCount = 107;
-
-    // MARK: 스테이지별 특별 포켓몬 설정 추가
+    this.totalPokemonCount = 107;    // MARK: 스테이지별 특별 포켓몬 설정 추가
     this.specialPokemon = {
       1: 105, // stage1: 피카츄
       2: 106  // stage2: 팽도리
-    };
+    };    // MARK: 포켓몬 능력 상태 관리 변수 추가 (주석 추가: 공 속도 버그 해결을 위한 상태 관리)
+    this.fireBoostActive = false; // 불타입 능력 활성 상태
+    this.originalBallSpeed = null; // 원본 공 속도 저장
+    this.fireBoostTimeout = null; // 불타입 능력 타이머 ID
+    this.fireBoostRemainingTime = 0; // 일시정지 시 남은 시간 저장 (주석 추가: 일시정지 중 타이머 관리)
 
     // MARK: 포켓몬 능력 효과 상태 변수 추가
     this.electricBoostActive = false;
@@ -726,8 +728,7 @@ class BrickGame extends GameManager {
         }
       }
     }
-  }
-  /**
+  }  /**
    * MARK: 게임 재시작
    */
   restartGame() {
@@ -737,6 +738,16 @@ class BrickGame extends GameManager {
     this.electricBoostActive = false;
     this.waterBoostActive = false;
     this.iceBoostActive = false;
+      // 불타입 능력 상태 초기화 추가 (주석 추가: 공 속도 버그 해결)
+    this.fireBoostActive = false;
+    this.originalBallSpeed = null;
+    this.fireBoostRemainingTime = 0; // 일시정지 관련 변수도 초기화 (주석 추가: 완전한 상태 초기화)
+    
+    // 타이머 정리 (주석 추가: 메모리 누수 방지 및 상태 정리)
+    if (this.fireBoostTimeout) {
+      clearTimeout(this.fireBoostTimeout);
+      this.fireBoostTimeout = null;
+    }
 
     super.restartGame(); // 부모 클래스의 재시작 메서드 호출
   }
@@ -860,7 +871,6 @@ class BrickGame extends GameManager {
     this.showMessage(`풀타입 능력: 생명력 ${healAmount} 회복!`, "success");
     console.log(`풀타입 능력 사용: 생명력 ${healAmount} 회복`);
   }
-
   /**
    * MARK: 불타입 능력 - 공 속도 증가
    */
@@ -868,18 +878,45 @@ class BrickGame extends GameManager {
     const speedBoost = 2; // 속도 증가량
     const duration = 5000; // 지속시간 5초
 
-    // 공 속도 증가
-    this.ball.speedX *= (1 + speedBoost / this.BALL_SPEED);
-    this.ball.speedY *= (1 + speedBoost / this.BALL_SPEED);
+    // 중복 사용 방지: 이미 불타입 능력이 활성화되어 있으면 리턴 (주석 추가: 공 속도 중복 증가 버그 해결)
+    if (this.fireBoostActive) {
+      console.log("불타입 능력이 이미 활성화되어 있습니다.");
+      return;
+    }
+
+    this.fireBoostActive = true; // 불타입 능력 활성 상태 플래그 설정 (주석 추가: 중복 사용 방지)
+
+    // 원본 속도 저장 (처음 능력 사용 시에만) (주석 추가: 정확한 속도 복구를 위한 원본 저장)
+    if (!this.originalBallSpeed) {
+      this.originalBallSpeed = {
+        x: this.ball.speedX,
+        y: this.ball.speedY
+      };
+    }
+
+    // 공 속도를 절대값으로 설정하여 안전하게 증가 (주석 추가: 기하급수적 증가 방지)
+    const currentSpeed = Math.sqrt(this.ball.speedX ** 2 + this.ball.speedY ** 2);
+    const direction = {
+      x: this.ball.speedX / currentSpeed,
+      y: this.ball.speedY / currentSpeed
+    };
+    const boostedSpeed = this.BALL_SPEED + speedBoost; // 기본 속도 + 증가량
+    
+    this.ball.speedX = direction.x * boostedSpeed;
+    this.ball.speedY = direction.y * boostedSpeed;
 
     this.showMessage("불타입 능력: 공 속도 증가!", "success");
-    console.log("불타입 능력 사용: 공 속도 증가");
+    console.log(`불타입 능력 사용: 공 속도 ${currentSpeed.toFixed(2)} → ${boostedSpeed} (디버그 출력 추가)`); // 주석 추가: 디버그용 속도 출력
 
-    // 일정 시간 후 속도 원상복구
-    setTimeout(() => {
-      this.ball.speedX /= (1 + speedBoost / this.BALL_SPEED);
-      this.ball.speedY /= (1 + speedBoost / this.BALL_SPEED);
-      console.log("불타입 능력 효과 종료: 공 속도 원상복구");
+    // 일정 시간 후 속도 원상복구 (주석 추가: 원본 속도로 정확히 복구)
+    this.fireBoostTimeout = setTimeout(() => {
+      if (this.originalBallSpeed) {
+        this.ball.speedX = this.originalBallSpeed.x;
+        this.ball.speedY = this.originalBallSpeed.y;
+        console.log(`불타입 능력 효과 종료: 공 속도 원상복구 (${this.originalBallSpeed.x}, ${this.originalBallSpeed.y}) (디버그 출력 추가)`); // 주석 추가: 복구 확인용
+      }
+      this.fireBoostActive = false; // 능력 비활성화 (주석 추가: 상태 초기화)
+      this.originalBallSpeed = null; // 원본 속도 초기화 (주석 추가: 메모리 정리)
     }, duration);
   }
 
@@ -1031,5 +1068,36 @@ class BrickGame extends GameManager {
     this.showRescueMessage(`${itemDisplayName} 사용! (+${healAmount} HP)}`, true);
 
     console.log(`아이템 ${itemName} 사용: 슬롯 ${targetSlotIndex + 1} 포켓몬 체력 ${healAmount} 회복 (${currentHealth} → ${newHealth})`);
+  }
+
+  /**
+   * MARK: 일시정지 토글 오버라이드 (불타입 능력 타이머 관리)
+   */
+  togglePause() {
+    if (this.isGameRunning) {
+      if (!this.isPaused && this.fireBoostActive && this.fireBoostTimeout) {
+        // 일시정지 시작 시: 불타입 능력 타이머 저장 및 정지 (주석 추가: 일시정지 중 타이머 관리)
+        this.fireBoostRemainingTime = this.fireBoostTimeout._idleStart + this.fireBoostTimeout._idleTimeout - Date.now();
+        clearTimeout(this.fireBoostTimeout);
+        this.fireBoostTimeout = null;
+        console.log(`일시정지: 불타입 능력 남은 시간 ${Math.max(0, this.fireBoostRemainingTime)}ms 저장`); // 주석 추가: 디버그용
+      } else if (this.isPaused && this.fireBoostActive && this.fireBoostRemainingTime > 0) {
+        // 일시정지 해제 시: 남은 시간으로 타이머 재시작 (주석 추가: 정확한 타이머 복구)
+        this.fireBoostTimeout = setTimeout(() => {
+          if (this.originalBallSpeed) {
+            this.ball.speedX = this.originalBallSpeed.x;
+            this.ball.speedY = this.originalBallSpeed.y;
+            console.log(`불타입 능력 효과 종료: 공 속도 원상복구 (일시정지 후)`); // 주석 추가: 복구 확인용
+          }
+          this.fireBoostActive = false;
+          this.originalBallSpeed = null;
+        }, this.fireBoostRemainingTime);
+        console.log(`일시정지 해제: 불타입 능력 ${this.fireBoostRemainingTime}ms 후 종료 예정`); // 주석 추가: 디버그용
+        this.fireBoostRemainingTime = 0;
+      }
+    }
+    
+    // 부모 클래스의 일시정지 로직 실행 (주석 추가: 기본 일시정지 기능 유지)
+    super.togglePause();
   }
 }
