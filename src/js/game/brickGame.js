@@ -575,7 +575,7 @@ class BrickGame extends GameManager {
 
     if (this.score >= requiredScore) {
       if (!this.isGameClear) {
-        this.showRescueMessage(`🎉 축하합니다! 목표 점수 ${requiredScore}점 달성! 게임 클리어! 🎉`);
+        this.showRescueMessage(`🎉 축하합니다! 목표 점수 ${requiredScore}점 달성! 게임 클리어! 🎉`, true);
       }
       this.isGameClear = true;
       return true;
@@ -721,8 +721,13 @@ class BrickGame extends GameManager {
 
   /**
    * MARK: 포켓몬 구출 메시지 표시 메서드 추가
+   * 구출 메시지를 표시하고 3초 후에 사라지도록 설정
+   * 공지 메세지면 pokemonName으로 받은 내용만 출력함
+   * @param {string} pokemonName - 구출된 포켓몬의 이름
+   * @param {boolean} isNotice - 공지 메시지 여부 (true: 공지, false: 구출 메시지)
+   * @returns {void}
    */
-  showRescueMessage(pokemonName) {
+  showRescueMessage(pokemonName, isNotice = false) {
     // 구출 메시지 컨테이너 가져오기
     const messageContainer = document.getElementById('rescue-message-container');
     if (!messageContainer) {
@@ -733,8 +738,11 @@ class BrickGame extends GameManager {
     // 메시지 엘리먼트 생성
     const messageElement = document.createElement('div');
     messageElement.className = 'rescue-message';
-    messageElement.textContent = `${pokemonName}을(를) 구출했습니다!`; // 구출 메시지 텍스트
-
+    if (isNotice) {
+      messageElement.textContent = pokemonName;
+    } else {
+      messageElement.textContent = `${pokemonName}을(를) 구출했습니다!`; // 구출 메시지 텍스트
+    }
     // 메시지를 컨테이너에 추가
     messageContainer.appendChild(messageElement);
 
