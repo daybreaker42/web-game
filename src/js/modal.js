@@ -138,14 +138,7 @@ function showNicknameInputModal(gameResult) {
 
           // 콜백 분기
           let afterSaveCallback;
-          if (gameResult.mode === "score" || gameResult.game_over) {
-            afterSaveCallback = handleReturnToTitleScreen;
-          } else {
-            // 스토리 모드 + 클리어 상황 (엔딩)
-            afterSaveCallback = () => {
-              showCredits(gameResult);
-            };
-          }
+          afterSaveCallback = handleReturnToTitleScreen;
 
           if (result) {
             showUniModal("저장되었습니다.<br>타이틀로 돌아갑니다.", {
