@@ -6,6 +6,7 @@
 
 class BrickGame extends GameManager {
   constructor(canvas) {
+    if (window.DEBUG_MODE) console.log('[BrickGame] constructor 호출', canvas); // 디버깅용 로그 추가
     super(canvas);
 
     // MARK: 벽돌깨기 전용 설정
@@ -65,6 +66,7 @@ class BrickGame extends GameManager {
    * MARK: 현재 플레이어 슬롯에 있는 포켓몬들의 타입을 가져오는 헬퍼 메서드
    */
   getCurrentSlotTypes() {
+    if (window.DEBUG_MODE) console.log('[BrickGame] getCurrentSlotTypes 호출'); // 디버깅용 로그 추가
     const slotTypes = new Set();
     for (let i = 0; i < 4; i++) {
       const slotElement = document.getElementById("slot-" + i);
@@ -88,6 +90,7 @@ class BrickGame extends GameManager {
    * MARK: 모든 조합 패턴 정의 메서드 (스테이지 구분 없이 랜덤 선택)
    */
   getCombinationPatterns() {
+    if (window.DEBUG_MODE) console.log('[BrickGame] getCombinationPatterns 호출'); // 디버깅용 로그 추가
     let patterns = [
       // 간단한 패턴들
       [[1, 1], [1, 1]], // 2x2 사각형
@@ -116,6 +119,7 @@ class BrickGame extends GameManager {
    * MARK: 조합에 들어갈 포켓몬과 아이템 배치 생성 메서드 수정
    */
   generatePokemonForCombination(pattern) {
+    if (window.DEBUG_MODE) console.log('[BrickGame] generatePokemonForCombination 호출', pattern); // 디버깅용 로그 추가
     const totalPatternSlots = pattern.flat().filter(cell => cell === 1).length;
     let combinationList = [];
     let addedIndicesThisCombination = new Set(); // 현재 조합에 추가된 포켓몬 인덱스 (중복 방지용)
@@ -194,9 +198,9 @@ class BrickGame extends GameManager {
 
   /**
    * MARK: frame 조합 생성
-   * TODO - frame들 겹치는 문제 해결
    */
   createNewCombination() {
+    if (window.DEBUG_MODE) console.log('[BrickGame] createNewCombination 호출'); // 디버깅용 로그 추가
     let patterns = this.getCombinationPatterns();
     let randomPattern = patterns[Math.floor(Math.random() * patterns.length)];
     let combinationList = this.generatePokemonForCombination(randomPattern);  // 해당 조합에서 사용할 포켓몬, 아이템 등
@@ -290,8 +294,9 @@ class BrickGame extends GameManager {
    * (GameManager 오버라이드)
    */
   initializeGame() {
+    if (window.DEBUG_MODE) console.log('[BrickGame] initializeGame 호출'); // 디버깅용 로그 추가
     // 기본 게임 오브젝트 초기화는 부모에서 처리
-    this.initializeGameObjects();
+    // this.initializeGameObjects();
 
     // 동적 조합 시스템 초기화
     this.initDynamicBrickSystem();
@@ -302,6 +307,7 @@ class BrickGame extends GameManager {
    * MARK: 동적 벽돌 시스템 초기화
    */
   initDynamicBrickSystem() {
+    if (window.DEBUG_MODE) console.log('[BrickGame] initDynamicBrickSystem 호출'); // 디버깅용 로그 추가
     // 타겟 포켓몬 설정 로직은 generatePokemonForCombination으로 이동됨
     // 조합 시스템 관련 변수 초기화
     this.combinations = [];
@@ -322,6 +328,7 @@ class BrickGame extends GameManager {
    * (GameManager 오버라이드)
    */
   updateGame(timeMultiplier) {
+    if (window.DEBUG_MODE) console.log('[BrickGame] updateGame 호출', timeMultiplier); // 디버깅용 로그 추가
     // 공 이동
     this.ball.x += this.ball.speedX * timeMultiplier;
     this.ball.y += this.ball.speedY * timeMultiplier;
@@ -404,6 +411,7 @@ class BrickGame extends GameManager {
    * MARK: 조합 시스템
    */
   updateCombinations(timeMultiplier) {
+    if (window.DEBUG_MODE) console.log('[BrickGame] updateCombinations 호출', timeMultiplier); // 디버깅용 로그 추가
     let currentTime = Date.now();
 
     // 화면에 조합이 있는지 확인 (화면 경계 내에 조합이 있는지 체크) - 추가됨: 화면 내 조합 존재 여부 확인
@@ -478,6 +486,7 @@ class BrickGame extends GameManager {
    * MARK: 동적 벽돌 충돌 감지
    */
   dynamicCollisionDetection() {
+    if (window.DEBUG_MODE) console.log('[BrickGame] dynamicCollisionDetection 호출'); // 디버깅용 로그 추가
     for (let i = 0; i < this.combinations.length; i++) {
       let combination = this.combinations[i];
       for (let j = 0; j < combination.bricks.length; j++) {
@@ -550,6 +559,7 @@ class BrickGame extends GameManager {
    * MARK: 포켓몬 슬롯에 추가
    */
   addPokemonToSlot(imageSrc) {
+    if (window.DEBUG_MODE) console.log('[BrickGame] addPokemonToSlot 호출', imageSrc); // 디버깅용 로그 추가
     // 포켓몬 인덱스와 타입 정보 추출 (전설의 포켓몬과 타입 중복 차단용)
     let indexMatch = imageSrc.match(/(\d+)\.png/); // 정규식 수정: \\d+ -> (\\d+)
     if (!indexMatch || !indexMatch[1]) { // 인덱스 존재 여부 확인
@@ -619,6 +629,7 @@ class BrickGame extends GameManager {
    * MARK: 포켓몬 슬롯 초기화
    */
   clearPokemonSlots() {
+    if (window.DEBUG_MODE) console.log('[BrickGame] clearPokemonSlots 호출'); // 디버깅용 로그 추가
     for (let i = 0; i < 4; i++) {
       let slot = document.getElementById("slot-" + i);
       // 슬롯 요소가 존재하는지 확인 후 스타일 변경
@@ -633,6 +644,7 @@ class BrickGame extends GameManager {
    * MARK: 승리 조건 확인
    */
   checkWin() {
+    if (window.DEBUG_MODE) console.log('[BrickGame] checkWin 호출'); // 디버깅용 로그 추가
     // score 모드는 시간 종료 시까지 계속 진행하므로 클리어 조건 없음
     if (this.mode === "score") {
       return false;
@@ -655,6 +667,7 @@ class BrickGame extends GameManager {
    * MARK: 공 그리기
    */
   drawBall() {
+    if (window.DEBUG_MODE) console.log('[BrickGame] drawBall 호출'); // 디버깅용 로그 추가
     // 이미지 객체 생성 및 캐싱
     if (!this.ballImage) {
       this.ballImage = new Image();
@@ -685,6 +698,7 @@ class BrickGame extends GameManager {
    * MARK: 패들 그리기
    */
   drawPaddle() {
+    if (window.DEBUG_MODE) console.log('[BrickGame] drawPaddle 호출'); // 디버깅용 로그 추가
     // 이미지 객체 생성 및 캐싱을 위한 정적 변수 사용
     if (!this.paddleImage) {
       this.paddleImage = new Image();
@@ -719,6 +733,7 @@ class BrickGame extends GameManager {
    * MARK: 동적 벽돌 그리기 메서드 추가
    */
   drawDynamicBricks() {
+    if (window.DEBUG_MODE) console.log('[BrickGame] drawDynamicBricks 호출'); // 디버깅용 로그 추가
     for (let i = 0; i < this.combinations.length; i++) {
       let combination = this.combinations[i];
       for (let j = 0; j < combination.bricks.length; j++) {
@@ -733,6 +748,7 @@ class BrickGame extends GameManager {
    * MARK: 게임 재시작
    */
   restartGame() {
+    if (window.DEBUG_MODE) console.log('[BrickGame] restartGame 호출'); // 디버깅용 로그 추가
     this.clearPokemonSlots(); // 슬롯 초기화
 
     // MARK: 포켓몬 능력 효과 상태 초기화
@@ -757,6 +773,7 @@ class BrickGame extends GameManager {
    * MARK: 기존 조합과 겹치지 않는 Y 위치 찾기 메서드 - 추가됨: 조합 겹침 방지
    */
   findNonOverlappingY(minY, maxY, patternHeight) {
+    if (window.DEBUG_MODE) console.log('[BrickGame] findNonOverlappingY 호출', minY, maxY, patternHeight); // 디버깅용 로그 추가
     let attempts = 0;
     let maxAttempts = 10; // 최대 시도 횟수
     let safeMargin = 20; // 조합 간 안전 여백
@@ -801,6 +818,7 @@ class BrickGame extends GameManager {
    * MARK: 포켓몬 능력 실행 오버라이드 (GameManager에서 상속)
    */
   executePokemonAbility(slotIndex, pokemonIndex, pokemonType) {
+    if (window.DEBUG_MODE) console.log('[BrickGame] executePokemonAbility 호출', slotIndex, pokemonIndex, pokemonType); // 디버깅용 로그 추가
     // 타입별 능력 실행
     switch (pokemonType) {
       case 0: // 풀타입
@@ -827,6 +845,7 @@ class BrickGame extends GameManager {
    * MARK: 풀타입 능력 - 생명력 회복
    */
   executeGrassAbility() {
+    if (window.DEBUG_MODE) console.log('[BrickGame] executeGrassAbility 호출'); // 디버깅용 로그 추가
     const healAmount = 50; // 회복량
     this.lives = Math.min(this.totalLives, this.lives + healAmount);
     this.showInGameMessage(`풀타입 능력: 생명력 ${healAmount} 회복!`, true);
@@ -836,6 +855,7 @@ class BrickGame extends GameManager {
    * MARK: 불타입 능력 - 공 속도 증가
    */
   executeFireAbility() {
+    if (window.DEBUG_MODE) console.log('[BrickGame] executeFireAbility 호출'); // 디버깅용 로그 추가
     const speedBoost = 2; // 속도 증가량
     const duration = 5000; // 지속시간 5초
 
@@ -885,6 +905,7 @@ class BrickGame extends GameManager {
    * MARK: 전기타입 능력 - 점수 2배 증가 (일정 시간)
    */
   executeElectricAbility() {
+    if (window.DEBUG_MODE) console.log('[BrickGame] executeElectricAbility 호출'); // 디버깅용 로그 추가
     const duration = 8000; // 지속시간 8초
 
     if (!this.electricBoostActive) {
@@ -904,6 +925,7 @@ class BrickGame extends GameManager {
    * MARK: 물타입 능력 - 패들 크기 증가
    */
   executeWaterAbility() {
+    if (window.DEBUG_MODE) console.log('[BrickGame] executeWaterAbility 호출'); // 디버깅용 로그 추가
     const sizeIncrease = 40; // 패들 크기 증가량
     const duration = 7000; // 지속시간 7초
 
@@ -927,6 +949,7 @@ class BrickGame extends GameManager {
    * MARK: 얼음타입 능력 - 조합 이동 속도 감소
    */
   executeIceAbility() {
+    if (window.DEBUG_MODE) console.log('[BrickGame] executeIceAbility 호출'); // 디버깅용 로그 추가
     const slowFactor = 0.3; // 속도 감소 비율 (70% 감소)
     const duration = 6000; // 지속시간 6초
 
@@ -949,6 +972,7 @@ class BrickGame extends GameManager {
    * MARK: 아이템 사용 메서드 - 현재 선택된 슬롯에 적용
    */
   useItemOnSlot(itemName) {
+    if (window.DEBUG_MODE) console.log('[BrickGame] useItemOnSlot 호출', itemName); // 디버깅용 로그 추가
     // 현재 선택된 슬롯 찾기
     let targetSlotIndex = -1;
     const selectedFrame = document.querySelector(".pokemon-slot-frame.selected");
@@ -1035,6 +1059,7 @@ class BrickGame extends GameManager {
    * MARK: 일시정지 토글 오버라이드 (불타입 능력 타이머 관리)
    */
   togglePause() {
+    if (window.DEBUG_MODE) console.log('[BrickGame] togglePause 호출'); // 디버깅용 로그 추가
     if (this.isGameRunning) {
       if (!this.isPaused && this.fireBoostActive && this.fireBoostTimeout) {
         // 일시정지 시작 시: 불타입 능력 타이머 저장 및 정지 (주석 추가: 일시정지 중 타이머 관리)

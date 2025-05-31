@@ -1,4 +1,4 @@
-// window.DEBUG_MODE = true;
+window.DEBUG_MODE = true;
 
 window.addEventListener("DOMContentLoaded", () => {
   if (!localStorage.getItem("scoreboard")) {
