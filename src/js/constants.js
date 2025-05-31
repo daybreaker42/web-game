@@ -23,6 +23,7 @@ const BGM = {
   RANKING: "ranking.mp3",
   RESULT: "game-result.mp3",
 };
+
 const SFX = {
   BUTTON: "button-click.wav",
   START: "press-any-button.mp3",
@@ -30,4 +31,5 @@ const SFX = {
   CRT_TYPE: "crt-type.wav",
   CRT_ON: "crt-on.mp3",
   CRT_OFF: "crt-off.mp3",
+  GAME_OVER: "game-over.mp3",
 };

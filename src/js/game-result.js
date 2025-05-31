@@ -26,7 +26,10 @@ const GAME_RESULT_FIELDS = [
 ];
 
 function showGameResultScreen(gameResult) {
-  playBgm(BGM.RESULT);
+    if (gameResult.game_over)
+        playSfx(SFX.GAME_OVER);
+    else
+        playBgm(BGM.RESULT);
   renderGameResult(gameResult);
 }
 
