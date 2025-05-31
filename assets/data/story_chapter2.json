@@ -198,16 +198,14 @@
         ]
       },
       {
-        "image": "sooth-bell-on-desk",
-        "delay": 2,
+        "image": "stage2-bell-on-desk.png",
         "lines": [
           "* 소중히 보관되어 있는 듯한 작은 방울을 꺼낸다."
         ]
       },
       {
-        "image": "sooth-bell-on-desk",
+        "image": "stage2-bell-on-desk.png",
         "sfx": "bell.mp3",
-        "delay": 2,
         "lines": [
           "* 방울을 흔들자, 맑은 소리가 울려 퍼진다."]
       },
@@ -229,8 +227,8 @@
         "image": "sooth-bell",
         "image_width": 80,
         "lines": [
-          "“뭔진 모르겠지만,\n팽도리랑 피카츄도 좋아하니까...",
-          "일단 가져가볼까.”"
+          "“뭔진 모르겠지만,\n팽도리랑 피카츄도 좋아하니까...”",
+          "“일단 가져가볼까.”"
         ]
       }
   ]
