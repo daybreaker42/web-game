@@ -186,6 +186,7 @@ function showStorySceneConsole(scene, onDone) {
       showStorySkipConfirm(() => {
         isSkipped = true;
         crtConsoleScreen.classList.add("hidden");
+        stopSfx();
         if (typeof currentOnSkip === "function") currentOnSkip();
       });
     };
