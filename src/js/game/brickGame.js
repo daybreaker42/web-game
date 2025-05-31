@@ -340,6 +340,7 @@ class BrickGame extends GameManager {
       // 공이 화면 밖으로 나간 경우: 생명 감소 및 위치/속도 초기화
       this.lives -= 1;
 
+      // 생명 <= 0이면 게임 끝내기
       if (this.lives <= 0) {
         this.isGameClear = false;
         this.showInGameMessage("게임 오버!", true);

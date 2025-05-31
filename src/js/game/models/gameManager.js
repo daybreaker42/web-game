@@ -154,11 +154,13 @@ class GameManager {
     this.backgroundImage.onerror = () => {
       this.backgroundImage = null;
       this.backgroundImageLoaded = false;
+      console.error(`배경 이미지 가져오기 실패!`);
     };
 
     // 배경 이미지 경로 설정 및 로드 시작
     const imagePath = `../assets/images/game/ui/background-stage-${stage}.png`;
     this.backgroundImage.src = imagePath;
+    this.backgroundImageLoaded = true;
   }
 
   /**
@@ -424,7 +426,7 @@ class GameManager {
   }
 
   /**
-   * 목숨 표시
+   * MARK: 목숨 표시
    */
   drawLives() {
     const iconWidth = 30; // 아이콘 너비
@@ -445,13 +447,16 @@ class GameManager {
     }
   }
 
+  /**
+   * MARK: 점수 그리기
+   */
   drawScore() {
     const scoreElement = qs("#score");
     if (scoreElement) scoreElement.textContent = this.score;
   }
 
   /**
-   * 일시정지 토글
+   * MARK: 일시정지 토글
    */
   togglePause() {
     if (this.isGameRunning) {
@@ -479,19 +484,19 @@ class GameManager {
   }
 
   /**
-   * 컨트롤 정보 모달 표시
+   * MARK: 컨트롤 정보 모달 표시
    * @param {boolean} isBossMode - 보스 모드 여부
    * @param {Function} onClose - 모달 닫기 콜백
    */
   showControlInfoModal(isBossMode, onClose) {
     const msg = isBossMode
-      ? "W A S D <br> ↑ ← ↓ →"
-      : "W A S D <br> ↑ ← ↓ → <br>마우스";
+      ? "조작법 <br> W A S D <br> ↑ ← ↓ →"
+      : "조작법 <br> W A S D <br> ↑ ← ↓ → <br>마우스";
     showInfoModal(msg, onClose);
   }
 
   /**
-   * 게임 시작
+   * MARK: 게임 시작
    */
   startGame() {
     if (!this.isGameRunning) {
@@ -503,8 +508,7 @@ class GameManager {
       this.isPaused = false;
       this.score = 0;
       this.lives = this.totalLives;
-      this.lastTime = performance.now();
-      this.gameStartTime = performance.now();
+
       this.pauseStartTime = 0;
       this.totalPauseDuration = 0;
 
@@ -514,13 +518,17 @@ class GameManager {
         this.initializeGame();
       }
 
+      // console.log(`ui 그리기`);
       this.updateUI();
+      // console.log(`배경 그리기`);
       this.drawBackground();
 
+      // console.log(`모달 출력`);
+      // NOTE MARK: 모달 출력 후 게임 시작
       this.showControlInfoModal(this.mode === "boss", () => {
         hideAllFade(qsa(".screen"));
-        showWithFade(qs("#gameplay-screen"));
-
+        this.lastTime = performance.now();
+        this.gameStartTime = performance.now();
         this.animationFrame = requestAnimationFrame((time) =>
           this.update(time),
         );
@@ -531,7 +539,7 @@ class GameManager {
   }
 
   /**
-   * 게임 재시작
+   * MARK: 게임 재시작
    */
   restartGame() {
     if (this.animationFrame) {
@@ -545,7 +553,7 @@ class GameManager {
   }
 
   /**
-   * 배경 이미지 그리기 메서드 (추가된 기능 - 하위 클래스에서 호출)
+   * MARK: 배경 이미지 그리기 메서드 (추가된 기능 - 하위 클래스에서 호출)
    */
   drawBackground() {
     // 스테이지별 배경 이미지 그리기
@@ -557,6 +565,12 @@ class GameManager {
         this.canvas.width,
         this.canvas.height,
       );
+      console.log(`배경 이미지 그리기 완료!`);
+    } else {
+      console.error(`배경 이미지가 로드되지 않았습니다. - ${this.backgroundImageLoaded} / ${this.backgroundImage}`);
+    }
+    if (qs("#gameplay-screen").classList.contains('hidden')) {
+      showWithFade(qs("#gameplay-screen"));
     }
   }
 
@@ -750,7 +764,7 @@ class GameManager {
           this.endGame();
         }
         return;
-      }// 이하 기존 게임 로직 계속...
+      }
       // 캔버스 초기화
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
