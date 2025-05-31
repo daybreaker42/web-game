@@ -14,7 +14,6 @@ function setupStorySkipHandler(onSkip) {
   if (btnSkipStory) {
     btnSkipStory.onclick = () => {
       showStorySkipConfirm(() => {
-        hide(qs("#story-screen"));
         // CRT 화면도 숨기기
         const crtConsoleScreen = qs("#crt-console-screen");
         if (crtConsoleScreen) crtConsoleScreen.classList.add("hidden");
@@ -31,17 +30,29 @@ function showStoryScreen() {
   show(qs("#story-screen"));
 }
 
-function playStory(stageIndex, onStoryEnd) {
+function playStory(stageIndex, finalCallback) {
   console.log(`Playing story for stage ${stageIndex}`);
   showStoryScreen();
+
+  const isEnding = stageIndex > N_STAGES; // ★ 엔딩 여부
+  function afterScenes() {
+    if (isEnding) {
+      console.log("Showing ending illustration");
+      showEndingIllustration(finalCallback);
+    } else {
+      finalCallback();
+    }
+  }
+
   const scenes = STORY_SCRIPTS[stageIndex] || [];
-  setupStorySkipHandler(onStoryEnd);
-  playSceneByIndex(scenes, 0, onStoryEnd);
+  setupStorySkipHandler(afterScenes);
+
+  playSceneByIndex(scenes, 0, afterScenes);
 }
 
 function playSceneByIndex(scenes, idx, onStoryEnd) {
   if (idx >= scenes.length) {
-    if (typeof onStoryEnd === "function") onStoryEnd();
+    onStoryEnd();
     return;
   }
   const scene = scenes[idx];
@@ -75,6 +86,41 @@ function playScene(scene, onDone) {
       showStorySceneNormal(scene, onDone);
     }
   }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 엔딩 : 일러스트 한 장 → 「—— Fin ——」 → 두 번째 클릭으로 종료
+// ─────────────────────────────────────────────────────────────
+function showEndingIllustration(done) {
+  const screen = qs("#story-screen");
+  const illust = qs("#story-illustration");
+  const textbox = qs("#story-textbox");
+  const skipBtn = qs("#btn-skip-story");
+
+  /* 0. 기존 UI 요소 정리 */
+  hideWithFade(textbox); // 자막 박스 사라짐
+  hideWithFade(skipBtn); // 스킵 버튼 사라짐
+  hideWithFade(illust); // 포트레이트 사라짐
+    hideWithFade(screen); // 일러스트가 보임
+    screen.style.backgroundColor = "black";
+    screen.style.background =
+    'url("../assets/images/story/ending-memory.png") no-repeat center/contain';
+    showWithFade(screen); // 일러스트가 보임
+
+  let clickCnt = 0;
+  screen.onclick = () => {
+    clickCnt++;
+
+    if (clickCnt === 1) {
+        showWithFade(qs("#story-fin-text"));
+    } else if (clickCnt === 2) {
+      hideWithFade(illust);
+      hideWithFade(qs("#story-fin-text"));
+
+      screen.onclick = null; // 중복 호출 방지
+      setTimeout(done, 800);
+    }
+  };
 }
 
 // ============================================================================
