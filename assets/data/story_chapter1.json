@@ -20,23 +20,26 @@
     },
     {
       "sfx": "footfall.mp3",
+      "delay": 1,
       "lines": [
-        "* 발소리가 들린다."
       ]
     },
     {
-      "potrait": "pikachu",
+        "image": "stage1-capsule",
+        "potrait": "pikachu",
       "potrait_type": "Normal",
       "lines": [
         "피카...?"
       ]
     },
     {
+      "image": "stage1-capsule",
       "lines": [
         "“피카츄...? 정말 너 맞지...?”"
       ]
     },
     {
+      "image": "stage1-capsule",
       "potrait": "pikachu",
       "potrait_type": "Teary-Eyed",
       "lines": [
