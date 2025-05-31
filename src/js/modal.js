@@ -175,14 +175,3 @@ function showInfoModal(msg, onClose) {
     ],
   });
 }
-
-function showInfoModal(msg, onClose) {
-  showUniModal(msg, {
-    buttons: [
-      {
-        label: "확인",
-        callback: onClose,
-      },
-    ],
-  });
-}
