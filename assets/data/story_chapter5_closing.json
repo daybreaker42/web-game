@@ -1,5 +1,6 @@
 [
     {
+        "bgm": "",
         "stage": "ending",
         "image": "stage4_ruins-light",
         "lines": [
@@ -9,58 +10,214 @@
         ]
       },
       {
+        "image": "sooth-bell",
+        "image_width": 80,
         "potrait": "mewtwo",
-        "potrait_type": "Angry",
+        "potrait_type": "Stunned",
         "lines": [
             "...! 그 방울은... ",
             "그게 왜 네 손에 있는 거지?"
         ]
       },
       {
+        "image": "sooth-bell",
+        "image_width": 80,
         "sfx": "bell.mp3",
-        "image": "stage4_bell",
         "lines": [
           "* 주인공이 조심스럽게 방울을 흔든다.",
-          "맑고 아련한 소리가 유적 전체에 울려퍼진다."
+          "맑고 아련한 소리가 이 공간 전체에 울려퍼진다."
         ]
       },
       {
+        "image": "sooth-bell",
+        "image_width": 80,
         "potrait": "mewtwo",
-        "potrait_type": "Crying",
+        "potrait_type": "Teary-Eyed",
         "lines": [
           "... 그 소리 ...",
           "어릴 적, 나를 안심시켜 주던 유일한 소리였지.",
           "...",
-          "그때의 따뜻함이… 다시 떠오른다.",
-          "왜 이렇게… 마음이 아프지…?"
+          "그때의 따뜻함이... 다시 떠오른다.",
+          "그때로 돌아갈 수만 있다면..."
         ]
       },
       {
-        "potrait": "main_character",
-        "potrait_type": "Gentle",
+        "image": "ending-outside",
         "lines": [
-          "네가 받은 상처를 모두 이해할 순 없지만,",
-          "이 방울 소리처럼, 따뜻한 세상에서 살아가길 바랄게."
+          "“...저기 뮤츠.”",
+          "“아니, ▒▒”",
+          "“나는 네 말대로 고작 10살 밖에 안 먹은 꼬마 아이지만,",
+          "아무래도 널 이긴 것 같으니까 하고 싶은 말을 할게.”",
+          "“네가 인간에게 받았던 씻을 수 없는 상처는 분명 우리\n인간들의 잘못이 맞아.”",
+          "“너를 이해해.”",
+          "“그리고 미안해.”"
         ]
       },
       {
-        "image": "stage4_ruins-peace",
+        "image": "ending-outside",
+        "potrait": "mewtwo",
+        "potrait_type": "Sad",
         "lines": [
-          "* 뮤츠는 마지막으로 방울을 바라본 뒤, 조용히 유적의 빛 속으로 사라진다.",
-          "포켓몬들이 하나둘 깨어나고, 네 곁으로 돌아온다."
+          "..."
         ]
       },
       {
-        "image": "ending_outside",
+        "image": "ending-outside",
+        "lines": [
+          "“그렇지만 네가 이 세상에 태어나서 얻을 수 있었던\n소중한 기억이 있잖아.”",
+          "“그것을 위해서라면 다시 태어나도 좋겠다,\n라는 생각이 들 정도로 소중한 기억.”",
+          "“내 피카츄, 팽도리도 그래.”",
+          "“인간과 함께 하는 수많은 포켓몬들이 그래.”"
+        ]
+      },
+      {
+        "image": "ending-outside",
+        "potrait": "mewtwo",
+        "potrait_type": "Sad",
+        "lines": [
+          "...!"
+        ]
+      },
+      {
+        "image": "ending-outside",
         "bgm": "ending-theme.mp3",
         "lines": [
+          "“그걸 네가 마음대로 빼앗는 건, 어쩌면 같은 일을 되풀이하고 있는 걸지도 몰라.”",
+          "“진정으로 포켓몬들의 행복을 바란다면,",
+          "그들의 미래를 네가 빼앗아서는 안돼.”"
+        ]
+      },
+      {
+        "image": "ending-outside",
+        "potrait": "mewtwo",
+        "potrait_type": "Sad",
+        "lines": [
+          "...",
+          "네 말이... 맞다.",
+          "어리지만 나보다 훨씬 낫구나.",
+          "...",
+          "꼬마.",
+          "너..."
+        ]
+      },
+      {
+        "image": "ending-outside",
+        "lines": [
+          "“응?”"
+        ]
+      },
+      {
+        "image": "ending-outside",
+        "potrait": "mewtwo",
+        "potrait_type": "Sad",
+        "lines": [
+          "너는, 네 포켓몬들을 사랑하나?"
+        ]
+      },
+      {
+        "image": "ending-outside",
+        "lines": [
+          "“당연하지.”",
+          "“내 소중한 친구이자, 가족이야.”",
+          "“있잖아 사실...”",
+          "“그 방울도 내 팽도리랑 피카츄가 너무 좋아하길래 챙긴거였어.”",
+          "“네거 마음대로 만져서 미안.”"
+        ]
+      },
+      {
+        "image": "ending-outside",
+        "potrait": "mewtwo",
+        "potrait_type": "Sad",
+        "lines": [
+          "... 아니, 괜찮다.",
+          "내가 더... 미안하군.\n마음대로 네 가족들을 빼앗아버려서...",
+          "...",
+          "아마 나와 인간이 이렇게 마주하는 일은\n다시는 없을 것이다.",
+          "도저히 그들을 용서할 수 없기에, 영겁의 시간을\n멀리서 지켜보는데만 쓰겠지.",
+          "그렇지만... 너희에겐 잘못이 없다.",
+          "너희 스스로가 만들어 갈 미래를 인정하마.",
+          "다만 약속 하나만 해다오.",
+          "나를 만들고 이용한, 그런 악한 인간들은\n끝없이 나타날 것이다.",
+          "포켓몬을 사랑하는 사람들이 힘을 모아줘.",
+          "그리고 그들에게 최선을 다해 저항해줘.",
+          "그리고 자신의 포켓몬을 사랑해줘.",
+          "...그것 뿐이다."
+        ]
+      },
+      {
+        "image": "ending-outside",
+        "lines": [
+          "“응”"
+        ]
+      },
+      {
+        "image": "ending-outside",
+        "potrait": "mewtwo",
+        "potrait_type": "Sad",
+        "lines": [
+          "...피카츄. 팽도리."
+        ]
+      },
+      {
+        "image": "ending-outside",
+        "potrait": "pikachu",
+        "potrait_type": "",
+        "lines": ["피카...?"]
+    },
+    {
+        "image": "ending-outside",
+        "potrait": "pengdori",
+        "potrait_type": "",
+        "lines": ["도리?"]
+    },
+      {
+        "image": "ending-outside",
+        "potrait": "mewtwo",
+        "potrait_type": "Normal",
+        "lines": [
+          "너희를 사랑하는 이가 있다면, 너희도 그 감정에 진심으로 응해주거라.",
+          "나는 나를 사랑해주었던 이의 진심을 외면했기에,",
+          "결국 내가 제정신이 아닐 때 그 사람을...",
+          "...정신을 차렸을 땐 그녀는 이미 이 세상 사람이 아니었지.",
+          "부디 나와 같은 실수를 반복하지 않길 바라."
+          
+        ]
+      },
+      {
+        "image": "ending-outside",
+          "potrait": "pikachu",
+          "potrait_type": "",
+          "lines": ["피카... (끄덕)"]
+      },
+      {
+        "image": "ending-outside",
+          "potrait": "pengdori",
+          "potrait_type": "",
+          "lines": ["도리 (끄덕)"]
+      },
+      {
+        "image": "ending-outside",
+        "potrait": "mewtwo",
+        "potrait_type": "Normal",
+        "lines": [
+            "할 말도 다했으니, 난 이만 가겠어.",
+            "보이지 않는 곳에서 너희를 늘 지켜보겠다.",
+            "그럼, 이만."
+        ]
+      },
+      {
+        "image": "stage4-ruins-peace",
+        "lines": [
+          "* 뮤츠는 방울을 건네받은 뒤, 조용히 빛 속으로 사라진다."
+        ]
+      },
+      {
+        "bgm": "ending.mp3",
+        "lines": [
           "* 모든 것이 끝났다.",
-          "네 손에 남은 평온의 방울이 조용히 빛난다.",
-          "“나는 다시, 소중한 친구들과 함께 평범한 하루를 살아가리라.”",
-          "",
+          "나는 다시, 소중한 친구들과 함께 평범한 하루를 살아가리라.",
           "그리고 언젠가, 어디선가,",
           "방울 소리를 들으며 미소 짓는 그 아이를 다시 만날 수 있길 바란다.",
-          "",
           "—— Fin ——"
         ]
       }

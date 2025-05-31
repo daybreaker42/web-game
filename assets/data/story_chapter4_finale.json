@@ -1,51 +1,188 @@
 [
     {
-      "image": "stage3_1",
+      "image": "stage4-lab",
       "delay": 2,
       "bgm": "deep_ruins.mp3",
       "lines": [
-        "* 고대 유적 내부, 거대한 투명 캡슐과 떠다니는 실험 기계들. 그 중심에서 뮤츠가 등장한다."
+        "* 연구소 깊숙한 지하. 거대한 투명 캡슐과 떠다니는 실험 기계들. \n그 중심에서 뮤츠가 등장한다."
       ]
     },
     {
+      "image": "stage4-lab-mewtwo",
       "potrait": "mewtwo",
       "potrait_type": "Normal",
       "lines": [
-        "“...드디어 왔군.",
-        "너는... 끝까지 포기하지 않았구나.”"
+        "...오호라, 이게 누구야?",
+        "내 연구소에 들어와 쥐새끼처럼\n내 동료들을 납치해가더니,",
+        "드디어 여기까지 쳐들어 왔군."
       ]
     },
     {
-        "image": "stage3_2",
+      "image": "stage4-lab-mewtwo",
         "lines": [
-          "* 당신은 조심스럽게 일기의 마지막 페이지를 읽어 내려간다.",
-          "뮤츠, 들어줘. 너를 아껴줬던 그 과학자의 진심이 여기 남아있어.",
-          "\"미안하다, 뮤츠. 과학자의 욕심이 널 이렇게 만들었지만… 내 마음은 끝까지 네 편이었단다.\""
+          "“...뮤츠, 너였구나.”",
+          "“아니... Speximen-M.”",
+          "“뮤츠, 내 말을 들어줘. 너는...”"
         ]
       },
       {
+      "image": "stage4-lab-mewtwo",
         "potrait": "mewtwo",
         "potrait_type": "Angry",
+        "sfx": "mewtwo.ogg",
         "lines": [
-          "...거짓말이야.",
-          "그 누구도 날 진심으로 대하지 않았다.",
-          "결국 나를 실험체로만 봤을 뿐이야!",
-          "그래서… 나는 인간을 용서할 수 없어."
+          "집어치워!!!!"
         ]
       },
       {
+      "image": "stage4-lab-mewtwo",
         "potrait": "mewtwo",
-        "potrait_type": "Shaken",
+        "potrait_type": "Normal",
         "lines": [
-          "......",
-          "하지만...",
-          "그 사람이 내 곁에 있을 땐, 가끔... 따뜻했다.",
-          "나는 왜 이렇게 혼란스러운 거지?"
+            "이봐... 인간.",
+            "여기까지 찾아왔으니 말해주지.",
+            "내가 왜 이러는지 아나?",
+            "내가 왜 너희 인간들을 증오하는지.",
+            "내가 왜 너희 인간과 있던 포켓몬들을 모두 데려왔는지."
         ]
       },
-      
-      
+      {
+        "image": "stage4-mewtwo-ago",
+        "potrait": "mewtwo",
+        "potrait_type": "Determined",
+        "lines": [
+            "...난 주문품이었다. 어떤 돈 많은 남자의...",
+            "눈을 떠보았더니 누군가의 물건이었던 삶을,",
+            "태어나서부터 자유였던 네가 감히\n이해할 수 있다고 생각하나?",
+            "피 터지게 싸우는 것... 그게 내 존재의 이유였지."
+        ]
+      },
+      {
+        "image": "stage4-mewtwo-ago",
+          "potrait": "mewtwo",
+          "potrait_type": "Angry",
+          "sfx": "mewtwo.ogg",
+          "lines": [
+            "나는 너희 인간들을 증오한다!!!",
+            "너희는 나를 병기로 만들고, 싸움에만 이용했지!",
+            "내가 태어나기 전부터, 내 존재의 이유를 정해버렸어!"
+          ]
+        },
+        {
+            "image": "stage4-cacophony",
+              "potrait": "mewtwo",
+              "potrait_type": "Angry",
+              "lines": [
+                "나뿐만이 아니야.",
+                "인간과 함께 사는 내 동료들도, 결국 인간에게 이용당하지.",
+                "인간과의 화합? 가족 같은 관계?",
+                "웃기지마.",
+                "누가 자신의 가족을 배틀에 내보내지?"
+              ]
+            },
+            {
+                "image": "stage4-cacophony-blood",
+                  "potrait": "mewtwo",
+                  "potrait_type": "Angry",
+                  "lines": [
+                    "인간들의 주장은... 궤변일 뿐이다."
+                  ]
+                },
+      {
+        "image": "stage4-memory",
+        "potrait": "mewtwo",
+        "potrait_type": "Sad",
+        "lines": [
+          "하지만...",
+          "그 사람이 내 곁에 있을 땐, 가끔...",
+          "..."
+        ]
+      },
+      {
+      "image": "stage4-lab",
+        "potrait": "mewtwo",
+        "potrait_type": "Normal",
+        "lines": [
+            "이제 됐어.",
+            "나는 인간과 있는\n나의 동료들을 모두 불러모으고",
+            "너희 인간들이 다시는 이런 일을 하지 못하도록 할거다.",
+            "싸움 병기가 되는건 나로 족해.",
+            "그리고, 나는 쓸데없이 너희와 싸우고 싶지 않다.",
+            "지금이라도 납치한 내 동료들을 돌려주고 돌아가면",
+            "아무 일도 없었던 걸로 해주지.",
+            "나도 고작 10살짜리 꼬마 아이를\n해치고 싶진 않다."
+        ]
+      },
+      {
+      "image": "stage4-lab",
+
+        "lines": [
+            "“난 피카츄와 팽도리를 데리러 왔어.”",
+            "“그리고 네가 납치한 다른 포켓몬들도.”",
+            "“모두들 자신의 가족이 돌아오길 기다리고 있어.”",
+            "“여기서 돌아갈 순 없어!”"
+        ]
+      },
+      {
+      "image": "stage4-lab",
+
+        "potrait": "pikachu",
+        "potrait_type": "Determined",
+        "lines": [
+        "피카!!!"
+        ]
+    },
     {
+      "image": "stage4-lab",
+
+        "potrait": "pengdori",
+        "potrait_type": "Determined",
+        "lines": [
+        "도리잇!!!"
+        ]
+    },
+      {
+      "image": "stage4-lab",
+
+        "potrait": "mewtwo",
+        "potrait_type": "Normal",
+        "lines": [
+            "...그런가.",
+            "그렇다면 어쩔 수 없군.",
+            "피카츄, 팽도리..."
+        ]
+      },
+        {
+      "image": "stage4-lab",
+
+            "potrait": "pikachu",
+            "potrait_type": "Determined",
+            "lines": [
+            "피, 피, 피카"
+            ]
+        },
+        {
+      "image": "stage4-lab",
+
+            "potrait": "pengdori",
+            "potrait_type": "Determined",
+            "lines": [
+            "도, 도, 도리이..."
+            ]
+        },
+      {
+      "image": "stage4-lab",
+
+        "potrait": "mewtwo",
+        "potrait_type": "Normal",
+        "lines": [
+            "다 너희를 위한 거였는데, 이렇게 돼서 유감이다.",
+            "하지만 인간의 편에 선 이상, 어쩔 수 없지.",
+             "자신 있다면 나와 싸워라."
+        ]
+      },
+    {
+        "image": "stage4-mewtwo-battle",
       "potrait": "mewtwo",
       "potrait_type": "Special0",
       "lines": [
@@ -53,6 +190,8 @@
       ]
     },
     {
+        "image": "stage4-mewtwo-battle",
+        
       "sfx": "battle-start.mp3",
       "lines": [
         "* 뮤츠와의 전투가 시작된다!"
