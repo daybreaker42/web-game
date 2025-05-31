@@ -41,22 +41,21 @@ function onGameEnd(gameResult) {
 // =============================================================================
 
 function onStageClear(gameResult) {
-    if (currentStageIndex === N_STAGES) {
-      // 1. 엔딩 일러스트 → 2. 크레딧 → 3. 게임 결과
-      playStory(N_STAGES + 1, () => {
-        showCredits(gameResult, () => {
-          showGameResultScreen(gameResult);
-        });
+  if (currentStageIndex === N_STAGES) {
+    // 1. 엔딩 일러스트 → 2. 크레딧 → 3. 게임 결과
+    playStory(N_STAGES + 1, () => {
+      showCredits(gameResult, () => {
+        showGameResultScreen(gameResult);
       });
-    } else {
-      // 기존 그대로 (1~3스테이지)
-      playStory(currentStageIndex, () => {
-        stopBgm();
-        proceedToStage(currentStageIndex + 1);
-      });
-    }
+    });
+  } else {
+    // 기존 그대로 (1~3스테이지)
+    playStory(currentStageIndex, () => {
+      stopBgm();
+      proceedToStage(currentStageIndex + 1);
+    });
   }
-  
+}
 
 function onStageOver(gameResult) {
   showGameResultScreen(gameResult);

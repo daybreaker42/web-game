@@ -25,7 +25,6 @@ function playGame(mode, difficulty, stage, onGameEnd) {
     stage,
   };
 
-
   if (mode === "score") {
     gameInstance = new BrickGame(canvas);
   } else if (mode === "story") {

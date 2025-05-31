@@ -94,13 +94,14 @@ function renderGameResult(gameResult) {
           label: "아니오",
           callback: () => {
             showUniModal("타이틀로 돌아갑니다.", {
-                buttons: [
-                  {
-                    label: "확인",
-                    callback: handleReturnToTitleScreen,
-                  },
-                ],
-              });},
+              buttons: [
+                {
+                  label: "확인",
+                  callback: handleReturnToTitleScreen,
+                },
+              ],
+            });
+          },
           id: "uni-modal-save-no",
         },
       ],

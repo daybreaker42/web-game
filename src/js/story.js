@@ -101,18 +101,18 @@ function showEndingIllustration(done) {
   hideWithFade(textbox); // 자막 박스 사라짐
   hideWithFade(skipBtn); // 스킵 버튼 사라짐
   hideWithFade(illust); // 포트레이트 사라짐
-    hideWithFade(screen); // 일러스트가 보임
-    screen.style.backgroundColor = "black";
-    screen.style.background =
+  hideWithFade(screen); // 일러스트가 보임
+  screen.style.backgroundColor = "black";
+  screen.style.background =
     'url("../assets/images/story/ending-memory.png") no-repeat center/contain';
-    showWithFade(screen); // 일러스트가 보임
+  showWithFade(screen); // 일러스트가 보임
 
   let clickCnt = 0;
   screen.onclick = () => {
     clickCnt++;
 
     if (clickCnt === 1) {
-        showWithFade(qs("#story-fin-text"));
+      showWithFade(qs("#story-fin-text"));
     } else if (clickCnt === 2) {
       hideWithFade(illust);
       hideWithFade(qs("#story-fin-text"));
