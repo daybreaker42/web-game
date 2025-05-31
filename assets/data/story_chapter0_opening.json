@@ -39,7 +39,6 @@
     },
     {
       "image": "intro-journey",
-
         "potrait": "pikachu",
         "potrait_type": "Happy",
         "lines": ["피카피카!"]
@@ -83,7 +82,6 @@
       ]
     },
     {
-      "image": "intro-sleeping-friends",
       "lines": [
         "...솔직히 말하자면, ",
         "나와 상관 없는 일이었다면\n그저 그런 사건으로 넘겼을 지도 몰라.",

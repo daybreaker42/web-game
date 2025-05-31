@@ -1,17 +1,46 @@
 [
     {
-        "image": "story2-pengdori-in-capsule",
+        "image": "stage2-pengdori-in-capsule",
         "lines": [
-            "! 저기 팽도리가..."
+            "“! 저기 팽도리가...”"
         ]
       },
     {
+        "image": "stage2-pengdori-in-capsule",
         "potrait": "pengdori",
         "potrait_type": "Dizzy",
         "lines": [
             "..."
         ]
     },
+    {
+        "image": "stage2-pengdori-in-capsule",
+        "lines": [
+            "“팽도리!!!”"
+        ]
+      },
+      {
+        "image": "stage2-pengdori-in-capsule",
+        "potrait": "pengdori",
+        "potrait_type": "Dizzy",
+        "lines": [
+            "..."
+        ]
+    },
+    {
+        "image": "stage2-pengdori-in-capsule",
+        "lines": [
+            "“얼른 열어주자. 피카츄!”"
+        ]
+      },
+      {
+        "image": "stage2-pengdori-in-capsule",
+        "potrait": "pikachu",
+        "potrait_type": "Normal",
+        "lines": [
+          "피카!"
+        ]
+      },
     {
       "image": "stage2_1",
       "delay": 2,
@@ -33,7 +62,7 @@
     {
         "image": "stage2-pengdori-awaken",
         "lines": [
-            "“팽도리!!“"
+            "“팽도리!!”"
     ]
     },
     {
@@ -55,19 +84,19 @@
     },
     {
         "potrait": "pengdori",
-        "potrait_type": "Happy",
+        "potrait_type": "Teary-Eyed",
         "lines": [
             "도리! 도리! 도리!"
         ]
     },
     {
       "lines": [
-        "“팽도리, 너도 나를 찾고 있었구나.”"
+        "“팽도리, 무사했구나. 정말 다행이야...”"
       ]
     },
     {
       "potrait": "pengdori",
-      "potrait_type": "Determined",
+        "potrait_type": "Teary-Eyed",
       "lines": [
         "도리! 도리!"
       ]
@@ -79,14 +108,14 @@
     },
     {
       "potrait": "pengdori",
-      "potrait_type": "Determined",
+      "potrait_type": "Sad",
       "lines": [
-        "도리! 도리!"
+        "도리! 도리..."
       ]
     },
     {
       "lines": [
-        "“이제 다시는 너를 혼자 두지 않을게.”"
+        "“미안해. 이제 다시는 너를 혼자 두지 않을게.”"
       ]
     },
     {
@@ -120,7 +149,7 @@
       },
       {
         "lines": [
-          "앗! 팽도리! 마음대로 만지면 안돼!"
+          "“앗! 팽도리! 마음대로 만지면 안돼!”"
         ]
       },
       {
@@ -134,7 +163,7 @@
         "image": "stage2-computer-desk",
         "lines": [
           "* 팽도리가 무언가를 발견한 듯, 위를 바라본다.",
-          "어...? 이건..."
+          "“어...? 이건...”"
         ]
       },
     {
@@ -148,11 +177,11 @@
         "image": "lab-diary-page",
         "lines": [
           "[실험일지 - 19XX년 XX월 XX일]",
-          "오늘, 처음으로 Specimen-X와 단둘이 마주했다. 그 눈동자엔… 어딘가 외로움과 두려움이 비쳐 신경이 쓰였다.",
-          "동료들은 Specimen-X를 한낱 실험체로만 취급하지만, 난 그저 그렇게만 볼 수 없었다.",
+          "오늘, 처음으로 Specimen-M와 단둘이 마주했다. 그 눈동자엔… 어딘가 외로움과 두려움이 비쳐 신경이 쓰였다.",
+          "동료들은 Specimen-M를 한낱 실험체로만 취급하지만, 난 그저 그렇게만 볼 수 없었다.",
           "",
           "[실험일지 - 19XX년 XX월 XX일]",
-          "오늘은 내가 직접 Specimen-X에게 이름을 지어줬다.",
+          "오늘은 내가 직접 Specimen-M에게 이름을 지어줬다.",
           "▒▒. 이 이름을 부르자, 그 아이의 표정이 처음으로 누그러지는 것 같았다.",
           "둘만의 시간 속에서, 우리는 점차 서로를 이해하게 된 것 같다.",
           "",
@@ -169,34 +198,39 @@
         ]
       },
       {
-        "image": "stage2-bell-on-desk",
+        "image": "sooth-bell-on-desk",
         "delay": 2,
         "lines": [
-          "",
           "* 소중히 보관되어 있는 듯한 작은 방울을 꺼낸다."
         ]
       },
       {
-          "image": "stage2-bell",
+        "image": "sooth-bell-on-desk",
+        "sfx": "bell.mp3",
+        "delay": 2,
+        "lines": [
+          "* 방울을 흔들자, 맑은 소리가 울려 퍼진다."]
+      },
+      {
+          "image": "sooth-bell",
         "image_width": 80,
         "potrait": "pikachu",
           "potrait_type": "Happy",
           "lines": ["피카피카!"]
       },
       {
-        "image": "stage2-bell",
+        "image": "sooth-bell",
         "image_width": 80,
         "potrait": "pengdori",
           "potrait_type": "Joyous",
           "lines": ["도리도리~"]
       },
       {
-        "image": "stage2-bell",
+        "image": "sooth-bell",
         "image_width": 80,
-        "delay": 2,
         "lines": [
-          "뭔진 모르겠지만,\n팽도리랑 피카츄도 좋아하니까...",
-          "일단 가져가볼까."
+          "“뭔진 모르겠지만,\n팽도리랑 피카츄도 좋아하니까...",
+          "일단 가져가볼까.”"
         ]
       }
   ]
