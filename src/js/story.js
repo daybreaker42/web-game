@@ -1,12 +1,14 @@
+let lastImageSrc = null;
+
 // ============================================================================
 //                               Skip Modal
 // ============================================================================
 
 const skipModal = qs("#confirm-skip-modal");
-const btnYes = qs("#skip-confirm-yes");
-const btnNo = qs("#skip-confirm-no");
+const btnYes     = qs("#skip-confirm-yes");
+const btnNo      = qs("#skip-confirm-no");
 
-let currentOnSkip = null; // CRT 씬에서 스킵 콜백을 저장
+let currentOnSkip = null;   // CRT 씬에서 스킵 콜백 저장
 
 function setupStorySkipHandler(onSkip) {
   currentOnSkip = onSkip;
@@ -14,10 +16,9 @@ function setupStorySkipHandler(onSkip) {
   if (btnSkipStory) {
     btnSkipStory.onclick = () => {
       showStorySkipConfirm(() => {
-        hideWithFade(qs("#story-screen")); // 스토리 화면 숨기기
-        // CRT 화면도 숨기기
-        const crtConsoleScreen = qs("#crt-console-screen");
-        if (crtConsoleScreen) crtConsoleScreen.classList.add("hidden");
+        hideWithFade(qs("#story-screen"));           // 스토리 화면 숨김
+        const crt = qs("#crt-console-screen");       // CRT 화면도 숨김
+        if (crt) crt.classList.add("hidden");
         if (typeof currentOnSkip === "function") currentOnSkip();
       });
     };
@@ -25,9 +26,38 @@ function setupStorySkipHandler(onSkip) {
 }
 
 // ============================================================================
+//                              공통 초기화 유틸
+// ============================================================================
+
+function resetStoryScreenState() {
+  // 1. story-screen 전체 배경 초기화
+  const screen = qs("#story-screen");
+  screen.style.background      = "";
+  screen.style.backgroundColor = "";
+
+  // 2. 일러스트 초기화
+  const illu = qs("#story-illustration");
+  illu.style.backgroundImage = "none";
+  illu.style.width           = "0";
+
+  // 3. 텍스트 초기화
+  qs("#story-line").textContent = "";
+  qs("#story-textbox").classList.add("hidden");
+
+  // 4. 엔딩 · 보조 UI 초기화
+  const fin = qs("#story-fin-text");
+  if (fin) fin.classList.add("hidden");
+
+  lastImageSrc = null; // 마지막 이미지 초기화
+}
+
+// ============================================================================
+//                           스토리 입장 / 퇴장 제어
+// ============================================================================
 
 function showStoryScreen() {
-  hide(qs("#difficulty-menu-screen"));
+  hideAllFade(qsa(".screen"));   // 다른 화면 모두 숨김
+  resetStoryScreenState();       // 매번 깨끗하게
   show(qs("#story-screen"));
 }
 
@@ -35,15 +65,15 @@ function playStory(stageIndex, finalCallback) {
   console.log(`Playing story for stage ${stageIndex}`);
   showStoryScreen();
 
-  const isEnding = stageIndex > N_STAGES; // ★ 엔딩 여부
-  function afterScenes() {
+  const isEnding = stageIndex > N_STAGES;
+  const afterScenes = () => {
     if (isEnding) {
       console.log("Showing ending illustration");
       showEndingIllustration(finalCallback);
     } else {
       finalCallback();
     }
-  }
+  };
 
   const scenes = STORY_SCRIPTS[stageIndex] || [];
   setupStorySkipHandler(afterScenes);
@@ -61,31 +91,28 @@ function playSceneByIndex(scenes, idx, onStoryEnd) {
 }
 
 // ============================================================================
-//                                Play Story
+//                         개별 씬 실행 (텍스트 / 콘솔)
 // ============================================================================
-
-let prevIlustration = null;
 
 function playScene(scene, onDone) {
   playSceneAudio(scene);
+
+  // --- 씬 시작 시 무조건 초기화 ---
   qs("#story-line").textContent = "";
-  if (prevIlustration !== scene.image) {
-    qs("#story-illustration").style.backgroundImage = "none";
-    showStoryIlustration(scene);
-  }
+  showStoryIlustration(scene);
 
-  if (scene.delay) {
-    setTimeout(() => runScene(), scene.delay * 1000);
-  } else {
-    runScene();
-  }
-
-  function runScene() {
+  const runScene = () => {
     if (scene.CRT_style) {
       showStorySceneConsole(scene, onDone);
     } else {
       showStorySceneNormal(scene, onDone);
     }
+  };
+
+  if (scene.delay) {
+    setTimeout(runScene, scene.delay * 1000);
+  } else {
+    runScene();
   }
 }
 
@@ -93,44 +120,41 @@ function playScene(scene, onDone) {
 // 엔딩 : 일러스트 한 장 → 「—— Fin ——」 → 두 번째 클릭으로 종료
 // ─────────────────────────────────────────────────────────────
 function showEndingIllustration(done) {
-  const screen = qs("#story-screen");
-  const illust = qs("#story-illustration");
+  const screen  = qs("#story-screen");
+  const illust  = qs("#story-illustration");
   const textbox = qs("#story-textbox");
   const skipBtn = qs("#btn-skip-story");
 
-  /* 0. 기존 UI 요소 정리 */
-  hideWithFade(textbox); // 자막 박스 사라짐
-  hideWithFade(skipBtn); // 스킵 버튼 사라짐
-  hideWithFade(illust); // 포트레이트 사라짐
-  hideWithFade(screen); // 일러스트가 보임
+  hideWithFade(textbox);
+  hideWithFade(skipBtn);
+  hideWithFade(illust);
+
   screen.style.backgroundColor = "black";
   screen.style.background =
-    'url("../assets/images/story/ending-memory.png") no-repeat center/contain';
-  showWithFade(screen); // 일러스트가 보임
+    "url('../assets/images/story/ending-memory.png') no-repeat center/contain";
+  showWithFade(screen);
 
   let clickCnt = 0;
   screen.onclick = () => {
     clickCnt++;
-
     if (clickCnt === 1) {
       showWithFade(qs("#story-fin-text"));
     } else if (clickCnt === 2) {
-      hideWithFade(illust);
       hideWithFade(qs("#story-fin-text"));
-
-      screen.onclick = null; // 중복 호출 방지
+      screen.onclick = null;
       setTimeout(done, 800);
     }
   };
 }
 
 // ============================================================================
-//                                Scene Handlers
+//                       Scene Handlers ― Normal / CRT
 // ============================================================================
 
 function showStorySceneNormal(scene, onDone) {
-  if (scene.image) showStoryIlustration(scene);
+  showStoryIlustration(scene);
   showStoryPotrait(scene);
+
   const indicator = qs(".story-next-indicator");
   let idx = 0;
 
@@ -138,11 +162,12 @@ function showStorySceneNormal(scene, onDone) {
     qs("#story-textbox").classList.add("hidden");
     if (onDone) onDone();
     return;
-  } else {
-    qs("#story-textbox").classList.remove("hidden");
   }
 
-  function advanceLine() {
+  qs("#story-textbox").classList.remove("hidden");
+  qs("#story-line").textContent = "";
+
+  const advanceLine = () => {
     if (idx < scene.lines.length) {
       qs("#story-line").textContent = scene.lines[idx];
       playSfx(SFX.STORY);
@@ -151,7 +176,7 @@ function showStorySceneNormal(scene, onDone) {
         setTimeout(() => indicator.classList.remove("hidden"), 50);
       }
 
-      qs("#story-screen").onclick = function (e) {
+      qs("#story-screen").onclick = e => {
         if (e.target.id === "btn-skip-story") return;
         idx++;
         advanceLine();
@@ -160,148 +185,145 @@ function showStorySceneNormal(scene, onDone) {
       qs("#story-screen").onclick = null;
       if (onDone) onDone();
     }
-  }
+  };
   advanceLine();
 }
 
 function showStorySceneConsole(scene, onDone) {
-  const crtConsoleScreen = qs("#crt-console-screen");
-  const crtConsoleText = qs("#crt-console-text");
-  const storyScreen = qs("#story-screen");
+  const crtScreen = qs("#crt-console-screen");
+  const crtText   = qs("#crt-console-text");
+  const storyScr  = qs("#story-screen");
 
   if (!scene.lines || scene.lines.length === 0) {
-    crtConsoleScreen.classList.add("hidden");
+    crtScreen.classList.add("hidden");
     if (onDone) onDone();
     return;
   }
 
   let idx = 0;
-  let isSkipped = false; // 스킵 상태 추적
+  let skipped = false;
 
-  // CRT 화면의 기존 스킵 버튼 사용
-  const crtSkipBtn = crtConsoleScreen.querySelector("#btn-skip-story");
-
-  // CRT 스킵 버튼 이벤트 핸들러 (기존 핸들러 덮어쓰기 방지)
-  if (crtSkipBtn && !crtSkipBtn.hasAttribute("data-crt-handler-set")) {
+  const crtSkipBtn = crtScreen.querySelector("#btn-skip-story");
+  if (crtSkipBtn && !crtSkipBtn.hasAttribute("data-crt")) {
     crtSkipBtn.onclick = () => {
       showStorySkipConfirm(() => {
-        isSkipped = true;
-        crtConsoleScreen.classList.add("hidden");
+        skipped = true;
+        crtScreen.classList.add("hidden");
         stopSfx();
         if (typeof currentOnSkip === "function") currentOnSkip();
       });
     };
-    crtSkipBtn.setAttribute("data-crt-handler-set", "true");
+    crtSkipBtn.setAttribute("data-crt", "true");
   }
 
   stopBgm();
-  if (storyScreen) {
-    playSfx(SFX.CRT_ON);
-  }
+  playSfx(SFX.CRT_ON);
 
   setTimeout(() => {
-    if (storyScreen) {
-      storyScreen.classList.add("hidden");
-    }
-    crtConsoleText.textContent = "";
-    crtConsoleScreen.classList.remove("hidden");
-    crtConsoleScreen.classList.add("slow-fadein-crt");
+    storyScr.classList.add("hidden");
+    crtText.textContent = "";
+    crtScreen.classList.remove("hidden");
+    crtScreen.classList.add("slow-fadein-crt");
 
-    setTimeout(() => {
-      crtConsoleText.textContent = "";
-      typeNextLine();
-    }, 1800);
+    setTimeout(() => typeNextLine(), 1800);
   }, 920);
 
   function typeNextLine() {
-    if (isSkipped) return; // 스킵되었으면 중단
-
+    if (skipped) return;
     if (idx < scene.lines.length) {
-      let i = 0;
       const text = scene.lines[idx];
-      crtConsoleText.textContent = "";
-      function typeChar() {
-        if (isSkipped) return; // 스킵되었으면 중단
+      let i = 0;
+      crtText.textContent = "";
 
+      (function typeChar() {
+        if (skipped) return;
         if (i <= text.length) {
-          crtConsoleText.textContent = text.slice(0, i);
-          if (i > 0 && text[i - 1] !== " " && SFX.CRT_TYPE) {
-            playSfx(SFX.CRT_TYPE);
-          }
+          crtText.textContent = text.slice(0, i);
+          if (i && text[i - 1] !== " ") playSfx(SFX.CRT_TYPE);
           i++;
           setTimeout(typeChar, 46);
         } else {
           idx++;
           setTimeout(typeNextLine, 500);
         }
-      }
-      typeChar();
+      })();
     } else {
       finishCRTScene();
     }
   }
 
   function finishCRTScene() {
-    crtConsoleScreen.classList.add("hidden");
-    storyScreen.classList.remove("hidden");
-    crtConsoleScreen.classList.remove("slow-fadein-crt");
-    crtConsoleText.textContent = "";
+    crtScreen.classList.add("hidden");
+    storyScr.classList.remove("hidden");
+    crtScreen.classList.remove("slow-fadein-crt");
+    crtText.textContent = "";
     if (onDone) onDone();
   }
 
-  // btnYes 클릭 시 CRT 씬도 정리하도록 수정
-  const originalBtnYesHandler = btnYes.onclick;
+  const originalYes = btnYes.onclick;
   btnYes.onclick = () => {
-    isSkipped = true; // 스킵 플래그 설정
-    crtConsoleScreen.classList.add("hidden");
-    originalBtnYesHandler();
+    skipped = true;
+    crtScreen.classList.add("hidden");
+    originalYes();
   };
 }
 
 // ============================================================================
-//                            Play Scene Utils
+//                           Play Scene Utilities
 // ============================================================================
 
-let prevStorySceneType = "normal";
-
 function playSceneAudio(scene) {
-  if (scene.bgm) {
-    playBgm(scene.bgm);
-  }
-  if (scene.sfx) {
-    playSfx(scene.sfx);
-  }
+  if (scene.bgm) playBgm(scene.bgm);
+  if (scene.sfx) playSfx(scene.sfx);
 }
 
 function showStoryPotrait(scene) {
-  const potraitEl = qs("#story-potrait");
-  const storyLine = qs("#story-line");
+  const pEl = qs("#story-potrait");
+  const line = qs("#story-line");
   if (scene.potrait) {
-    potraitEl.classList.remove("hidden");
-    let folder = scene.potrait;
-    let potraitType = scene.potrait_type || "Normal";
-    potraitEl.style.background = `url('../assets/images/story/potrait/${folder}/${potraitType}.png') center/contain no-repeat`;
-    storyLine.classList.add("with-potrait");
+    pEl.classList.remove("hidden");
+    const folder = scene.potrait;
+    const type   = scene.potrait_type || "Normal";
+    pEl.style.background =
+      `url('../assets/images/story/potrait/${folder}/${type}.png') center/contain no-repeat`;
+    line.classList.add("with-potrait");
   } else {
-    potraitEl.classList.add("hidden");
-    storyLine.classList.remove("with-potrait");
-    potraitEl.style.background = "";
+    pEl.classList.add("hidden");
+    line.classList.remove("with-potrait");
+    pEl.style.background = "";
   }
 }
 
 function showStoryIlustration(scene) {
-  if (prevIlustration === scene.image) return;
-  const storyIlustration = qs("#story-illustration");
-  storyIlustration.classList.remove("fade-in");
-  void storyIlustration.offsetWidth;
-  storyIlustration.classList.add("fade-in");
-  storyIlustration.style.backgroundImage = scene.image
-    ? `url('../assets/images/story/${scene.image}.png')`
-    : "";
-  if (scene.image_width) {
-    storyIlustration.style.width = `${scene.image_width}px`;
-  } else {
-    storyIlustration.style.width = "100%";
+  const illu = qs("#story-illustration");
+
+  if (!scene.image) {
+    illu.style.backgroundImage = "none";
+    illu.style.width = "0";
+    lastImageSrc = null;
+    return;
   }
-  prevIlustration = scene.image;
+
+  if (scene.image === lastImageSrc) {
+    // 필요하다면 폭만 업데이트
+    if (scene.image_width) {
+      illu.style.width = `${scene.image_width}px`;
+    } else {
+      illu.style.width = "100%";
+    }
+    return;
+  }
+
+  illu.classList.remove("fade-in");
+  void illu.offsetWidth;            // Reflow → 애니메이션 재시작
+  illu.classList.add("fade-in");
+
+  illu.style.backgroundImage =
+    `url('../assets/images/story/${scene.image}.png')`;
+  illu.style.width = scene.image_width
+    ? `${scene.image_width}px`
+    : "100%";
+
+  /* 4) 현재 이미지를 기록 */
+  lastImageSrc = scene.image;
 }
