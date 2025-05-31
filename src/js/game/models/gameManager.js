@@ -126,43 +126,32 @@ class GameManager {
     this.onGameEnd = onGameEnd;
   }
   /**
-   * 스테이지별 배경 이미지 로드 메서드 (추가된 기능)
+   * 스테이지별 배경 이미지 로드 메서드 (CSS 기반으로 변경)
    * @param {number} stage - 스테이지 번호 (1~4)
    */
   loadStageBackground(stage) {
-    if (window.DEBUG_MODE) console.log('[GameManager] loadStageBackground 호출', stage); // 디버깅용 로그 추가
-    // 기존 배경 이미지 초기화
-    this.backgroundImage = null;
-    this.backgroundImageLoaded = false;
+    if (window.DEBUG_MODE) console.log('[GameManager] loadStageBackground 호출', stage);
 
     // 스테이지 번호 유효성 검사
     if (stage < 1 || stage > 4) {
-      console.warn(
-        `유효하지 않은 스테이지 번호: ${stage}. 기본 배경을 사용합니다.`,
-      );
+      console.warn(`유효하지 않은 스테이지 번호: ${stage}. 기본 배경을 사용합니다.`);
       return;
     }
 
-    // 배경 이미지 생성 및 로드
-    this.backgroundImage = new Image();
-
-    // 이미지 로드 완료 시 플래그 설정
-    this.backgroundImage.onload = () => {
-      this.backgroundImageLoaded = true;
-    };
-
-    // 이미지 로드 실패 시 에러 처리
-    this.backgroundImage.onerror = () => {
-      this.backgroundImage = null;
-      this.backgroundImageLoaded = false;
-      console.error(`배경 이미지 가져오기 실패!`);
-    };
-
-    // 배경 이미지 경로 설정 및 로드 시작
+    // CSS background-image로 배경 설정
     const imagePath = `../assets/images/game/ui/background-stage-${stage}.png`;
-    this.backgroundImage.src = imagePath;
-    this.backgroundImageLoaded = true;
+    this.canvas.style.backgroundImage = `url(${imagePath})`;
+    this.canvas.style.backgroundSize = 'cover'; // 캔버스 크기에 맞게 조정
+    this.canvas.style.backgroundPosition = 'center'; // 중앙 정렬
+    this.canvas.style.backgroundRepeat = 'no-repeat'; // 반복 방지
+
+    console.log(`배경 이미지 CSS 설정 완료: ${imagePath}`);
+
+    // 기존 배경 이미지 관련 변수들 정리 (더 이상 사용하지 않음)
+    this.backgroundImage = null;
+    this.backgroundImageLoaded = false;
   }
+
   /**
    * MARK: 레벨에 따른 난이도 설정
    */
@@ -512,22 +501,18 @@ class GameManager {
         this.initializeGame();
       }
 
-      // console.log(`ui 그리기`);
       this.updateUI();
-      // console.log(`배경 그리기`);
-      this.drawBackground();
+      this.drawBackground(); // 게임 화면 표시만 처리
 
-      // console.log(`모달 출력`);
-      // NOTE MARK: 모달 출력 후 게임 시작
       this.showControlInfoModal(this.mode === "boss", () => {
         hideAllFade(qsa(".screen"));
+        showWithFade(qs("#gameplay-screen"));
         this.lastTime = performance.now();
         this.gameStartTime = performance.now();
         this.animationFrame = requestAnimationFrame((time) =>
           this.update(time),
         );
         console.log(`${this.mode} 게임을 시작합니다.`);
-        // showInfoModal('게임을 시작합니다!', () => { });
       });
     }
   }
@@ -546,27 +531,18 @@ class GameManager {
     setTimeout(() => this.startGame(), 100);
   }
   /**
-   * MARK: 배경 이미지 그리기 메서드 (추가된 기능 - 하위 클래스에서 호출)
+   * MARK: 배경 이미지 그리기 메서드 제거 (CSS로 대체됨)
    */
   drawBackground() {
-    if (window.DEBUG_MODE) console.log('[GameManager] drawBackground 호출'); // 디버깅용 로그 추가
-    // 스테이지별 배경 이미지 그리기
-    if (this.backgroundImageLoaded && this.backgroundImage) {
-      this.ctx.drawImage(
-        this.backgroundImage,
-        0,
-        0,
-        this.canvas.width,
-        this.canvas.height,
-      );
-      console.log(`배경 이미지 그리기 완료!`);
-    } else {
-      console.error(`배경 이미지가 로드되지 않았습니다. - ${this.backgroundImageLoaded} / ${this.backgroundImage}`);
-    }
+    if (window.DEBUG_MODE) console.log('[GameManager] drawBackground 호출 (CSS 배경 사용으로 변경됨)');
+
+    // CSS 배경 이미지를 사용하므로 더 이상 canvas에 직접 그리지 않음
+    // 게임 화면 표시만 처리
     if (qs("#gameplay-screen").classList.contains('hidden')) {
       showWithFade(qs("#gameplay-screen"));
     }
   }
+
   /**
    * MARK: 포켓몬 체력 소모 메서드 추가
    */
@@ -728,9 +704,9 @@ class GameManager {
       const minutes = Math.floor(timeLeft / 60000);
       const seconds = Math.floor((timeLeft % 60000) / 1000);
 
-      // 화면에 표시 (두자리 숫자 포맷)
       document.getElementById("timer").textContent =
-        `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;      // 시간 초과 시 게임 종료 처리
+        `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+
       if (timeLeft <= 0) {
         this.isGameRunning = false;
         cancelAnimationFrame(this.animationFrame);
@@ -763,16 +739,9 @@ class GameManager {
         }
         return;
       }
-      // 캔버스 초기화
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-      // 배경 그리기 (항상 먼저)
-      if (this.backgroundImageLoaded && this.backgroundImage) {
-        this.drawBackground();
-      } else if (this.stage) {
-        // 배경 이미지가 로드되지 않았지만 스테이지 정보가 있다면 로드 시도
-        this.loadStageBackground(this.stage);
-      }
+      // 캔버스 초기화 (배경 그리기 제거)
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
       // 하위 클래스의 업데이트 메서드 호출
       if (this.updateGame) {
@@ -780,7 +749,8 @@ class GameManager {
       }
 
       this.updateUI();
-    } // 다음 프레임 요청 (게임이 실행 중일 때만)
+    }
+
     if (this.isGameRunning) {
       this.animationFrame = requestAnimationFrame((time) => this.update(time));
     }
