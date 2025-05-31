@@ -23,20 +23,20 @@ const SCOREBOARD_COLUMNS = [
 ];
 
 function resetScoreboardFilters() {
-    // 값 리셋
-    currentMode = MODES.STORY;
-    currentDifficulty = "easy";
-    // 탭 UI 동기화
-    qsa(".ranking-tab").forEach((btn) => {
-      const isStory = btn.dataset.mode !== "score";
-      btn.classList.toggle("active", isStory);
-    });
-    qsa(".difficulty-tab").forEach((btn) => {
-      btn.classList.toggle("active", btn.dataset.difficulty === "easy");
-    });
-    // 테이블 리렌더
-    renderScoreboard();
-  }  
+  // 값 리셋
+  currentMode = MODES.STORY;
+  currentDifficulty = "easy";
+  // 탭 UI 동기화
+  qsa(".ranking-tab").forEach((btn) => {
+    const isStory = btn.dataset.mode !== "score";
+    btn.classList.toggle("active", isStory);
+  });
+  qsa(".difficulty-tab").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.difficulty === "easy");
+  });
+  // 테이블 리렌더
+  renderScoreboard();
+}
 
 function makeEmptyScoreboard() {
   const data = {};
@@ -135,10 +135,14 @@ function addScoreRecord(mode, difficulty, name, score) {
         hour: "2-digit",
         minute: "2-digit",
       }),
+      ts: Date.now(), // ← timestamp
     });
-    arr.sort((a, b) => b.score - a.score);
-    arr.forEach((r, i) => (r.rank = i + 1));
-    data[mode][difficulty] = arr.slice(0, 5); // 5개만 유지
+    arr.sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return b.ts - a.ts; // 최신이 앞으로
+    });
+    data[mode][difficulty] = arr.slice(0, 5);
+    data[mode][difficulty].forEach((r, i) => (r.rank = i + 1));
     setScoreboardData(data);
     return true; // 성공
   } catch (e) {
