@@ -62,8 +62,7 @@ function setupMenuEvents() {
   qs("#btn-ranking-to-main").onclick = () => {
     playBgm(BGM.TITLE);
     hideWithFade(qs("#ranking-screen"));
-    showWithFade(qs("#main-menu-screen"));
-    startCloudAnimation();
+    showMainMenuScreen();
   };
 
   qs("#btn-back-to-select-mode-menu-screen").onclick = () => {
