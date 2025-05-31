@@ -1,9 +1,9 @@
-#main-menu-screen {
+#menu-screen {
   opacity: 1;
   background: var(--img-main-menu-bg) center/cover;
 }
-#main-menu-screen.cleared {
-    background: var(--img-main-menu-cleared-bg) center/cover;
+#menu-screen.cleared {
+  background: var(--img-main-menu-cleared-bg) center/cover;
 }
 #select-mode-menu-screen {
   background: var(--img-main-menu-bg) center/cover;

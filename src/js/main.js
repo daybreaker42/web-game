@@ -20,7 +20,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   hideAllFade(qsa(".screen"));
   showWithFade(qs("#title-screen"));
-  setupMenuEvents();
+  setupStaticButtonEvents();
   setupOptionModal();
   setupAudioSliders();
   setupButtonSfx();
@@ -78,13 +78,12 @@ function handleStartFromTitle(e) {
 
 function showMainMenuScreen() {
   hideAllFade(qsa(".screen"));
-  showWithFade(qs("#main-menu-screen"));
-  if (isCleared)
-    {
-        qs("#main-menu-screen").classList.add("cleared");
-        playBgm(BGM.ENDING);
-    }
-  else {
+  renderMenu("main");
+  showWithFade(qs("#menu-screen"));
+  if (isCleared) {
+    qs("#menu-screen").classList.add("cleared");
+    playBgm(BGM.ENDING);
+  } else {
     playBgm(BGM.TITLE);
     startCloudAnimation();
   }

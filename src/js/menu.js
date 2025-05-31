@@ -1,3 +1,71 @@
+const MENU_TPL = {
+  main: "#tmpl-main",
+  mode: "#tmpl-mode",
+  diff: "#tmpl-difficulty",
+};
+
+const $menuScreen = qs("#menu-screen");
+const $menuButtons = qs("#menu-buttons");
+let menuState = "main"; // 현재 단계
+
+function renderMenu(state) {
+  menuState = state;
+  const tpl = qs(MENU_TPL[state]);
+  $menuButtons.innerHTML = "";
+  $menuButtons.appendChild(tpl.content.cloneNode(true));
+}
+
+$menuButtons.addEventListener("click", (e) => {
+  const btn = e.target.closest("button");
+  if (!btn) return;
+
+  playSfx(SFX.BUTTON);
+  const { action, difficulty } = btn.dataset;
+
+  switch (action) {
+    /* 메인 → 모드 선택 */
+    case "play":
+      renderMenu("mode");
+      break;
+
+    /* 랭킹 화면 */
+    case "ranking":
+      stopCloudAnimation();
+      playBgm(BGM.RANKING);
+      hide($menuScreen);
+      showWithFade(qs("#ranking-screen"));
+      resetScoreboardFilters();
+      break;
+
+    /* 옵션 */
+    case "options":
+      showOptionsModal();
+      break;
+
+    /* 모드 선택 → 난이도 선택 */
+    case "story":
+      selectedMode = "story-mode";
+      renderMenu("diff");
+      break;
+    case "score":
+      selectedMode = "score-mode";
+      renderMenu("diff");
+      break;
+
+    /* 공통 뒤로가기 */
+    case "back":
+      if (menuState === "diff") renderMenu("mode");
+      else if (menuState === "mode") renderMenu("main");
+      break;
+  }
+
+  /* 난이도 버튼 */
+  if (difficulty) {
+    if (selectedMode === "story-mode") startGameStoryMode(difficulty);
+    else startGameScoreMode(difficulty);
+  }
+});
+
 // ==================== Start Game Functions ====================
 
 let selectedDifficulty = null;
@@ -5,7 +73,7 @@ let selectedDifficulty = null;
 function startGameStoryMode(difficulty) {
   stopCloudAnimation();
   stopBgm();
-  hide(qs("#difficulty-menu-screen"));
+  hide(qs("#menu-screen"));
   selectedDifficulty = difficulty;
 
   // START 스토리부터 시작
@@ -18,8 +86,8 @@ function startGameStoryMode(difficulty) {
 function startGameScoreMode(difficulty) {
   selectedDifficulty = difficulty;
   stopCloudAnimation();
+  hide(qs("#menu-screen"));
   playGame("score", selectedDifficulty, null, (gameResult) => {
-    hide(qs("#difficulty-menu-screen"));
     showWithFade(qs("#game-result-screen"));
     renderGameResult(gameResult);
   });
@@ -27,54 +95,14 @@ function startGameScoreMode(difficulty) {
 
 // ==================== Setup Menu Events ====================
 
-function chooseMode(mode) {
-  selectedMode = mode;
-  hide(qs("#select-mode-menu-screen"));
-  show(qs("#difficulty-menu-screen"));
-}
-
-function showMainMenu() {
-  showWithFade(qs("#main-menu-screen"));
-}
-
-function setupMenuEvents() {
-  qs("#btn-story").onclick = () => chooseMode("story-mode");
-  qs("#btn-score").onclick = () => chooseMode("score-mode");
-
-  qs("#btn-play").onclick = () => {
-    hide(qs("#main-menu-screen"));
-    show(qs("#select-mode-menu-screen"));
-  };
-
-  qs("#btn-select-to-main").onclick = () => {
-    hide(qs("#select-mode-menu-screen"));
-    show(qs("#main-menu-screen"));
-  };
-
-  qs("#btn-ranking").onclick = () => {
-    stopCloudAnimation();
-    playBgm(BGM.RANKING);
-    hide(qs("#main-menu-screen"));
-    showWithFade(qs("#ranking-screen"));
-    resetScoreboardFilters();
-  };
-
+function setupStaticButtonEvents() {
   qs("#btn-ranking-to-main").onclick = () => {
     playBgm(BGM.TITLE);
     hideWithFade(qs("#ranking-screen"));
     showMainMenuScreen();
   };
 
-  qs("#btn-back-to-select-mode-menu-screen").onclick = () => {
-    hide(qs("#difficulty-menu-screen"));
-    show(qs("#select-mode-menu-screen"));
+  qs("#modal-close").onclick = () => {
+    qs("#options-modal").close();
   };
-
-  qsa(".btn-difficulty").forEach((btn) => {
-    btn.onclick = () => {
-      const difficulty = btn.dataset.difficulty;
-      if (selectedMode === "story-mode") startGameStoryMode(difficulty);
-      else startGameScoreMode(difficulty);
-    };
-  });
 }

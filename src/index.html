@@ -16,65 +16,37 @@
         <p id="press-any-title" class="press-any">Press any button to start</p>
       </section>
 
-      <!-- Main menu Screen-->
-      <section id="main-menu-screen" class="menu screen hidden">
-        <button class="pixel-box pixel-box--menu" id="btn-play">
-          게임하기
-        </button>
-        <button class="pixel-box pixel-box--menu" id="btn-ranking">
-          랭킹보기
-        </button>
-        <button class="pixel-box pixel-box--menu btn-options" title="Options">
-          환경설정
-        </button>
+      <!-- Menu Screen -->
+      <section id="menu-screen" class="menu screen hidden">
+        <div id="menu-buttons"></div>
       </section>
 
-      <!-- Select mode Screen-->
-      <section id="select-mode-menu-screen" class="menu screen hidden">
-        <button class="pixel-box pixel-box--menu" id="btn-story">
-          스토리 모드
-        </button>
-        <button class="pixel-box pixel-box--menu" id="btn-score">
-          점수 모드
-        </button>
-        <button
-          class="pixel-box pixel-box--menu"
-          id="btn-select-to-main"
-          class="back"
-        >
-          뒤로가기
-        </button>
-      </section>
+      <!-- Templates for menu buttons -->
+      <template id="tmpl-main">
+        <button class="pixel-box" data-action="play">게임하기</button>
+        <button class="pixel-box" data-action="ranking">랭킹보기</button>
+        <button class="pixel-box" data-action="options">환경설정</button>
+      </template>
 
-      <!-- Select Difficulty Screen-->
-      <section id="difficulty-menu-screen" class="menu screen hidden">
+      <template id="tmpl-mode">
+        <button class="pixel-box" data-action="story">스토리 모드</button>
+        <button class="pixel-box" data-action="score">점수 모드</button>
+        <button class="pixel-box" data-action="back">뒤로가기</button>
+      </template>
+
+      <template id="tmpl-difficulty">
         <h2>난이도를 선택하세요</h2>
-        <button
-          class="pixel-box pixel-box--menu btn-difficulty"
-          data-difficulty="easy"
-        >
+        <button class="pixel-box btn-difficulty" data-difficulty="easy">
           쉬움
         </button>
-        <button
-          class="pixel-box pixel-box--menu btn-difficulty"
-          data-difficulty="normal"
-        >
+        <button class="pixel-box btn-difficulty" data-difficulty="normal">
           보통
         </button>
-        <button
-          class="pixel-box pixel-box--menu btn-difficulty"
-          data-difficulty="hard"
-        >
+        <button class="pixel-box btn-difficulty" data-difficulty="hard">
           어려움
         </button>
-        <button
-          class="pixel-box pixel-box--menu"
-          id="btn-back-to-select-mode-menu-screen"
-          class="back"
-        >
-          뒤로가기
-        </button>
-      </section>
+        <button class="pixel-box" data-action="back">뒤로가기</button>
+      </template>
 
       <!-- Story Screen-->
       <section id="story-screen" class="screen hidden">
@@ -136,8 +108,10 @@
       <!-- Credits screen -->
       <section id="credits-screen" class="screen hidden">
         <div id="credits-root">
-          <div id="credits-scroll"></div>
-          <button id="btn-skip-credits" class="btn-skip">> Skip</button>
+          <div id="credits-inner-border">
+            <div id="credits-scroll"></div>
+            <button id="btn-skip-credits" class="btn-skip">> Skip</button>
+          </div>
         </div>
       </section>
 

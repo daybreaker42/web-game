@@ -73,7 +73,7 @@
 /* ========================== Screens Animations ========================== */
 
 #title-screen.fade-in,
-#main-menu-screen.fade-in,
+#menu-screen.fade-in,
 #select-mode-menu-screen.fade-in,
 #difficulty-menu-screen.fade-in,
 #story-screen.fade-in,
@@ -83,7 +83,7 @@
   animation: fade-in 0.5s steps(3, end) 1;
 }
 #title-screen.fade-out,
-#main-menu-screen.fade-out,
+#menu-screen.fade-out,
 #select-mode-menu-screen.fade-out,
 #difficulty-menu-screen.fade-out,
 #story-screen.fade-out,

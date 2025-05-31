@@ -2,7 +2,7 @@ function testMainLogic() {
   document.addEventListener("keydown", handleStartFromTitle, { once: true });
   document.addEventListener("click", handleStartFromTitle, { once: true });
   showWithFade(qs("#title-screen"));
-  setupMenuEvents();
+  setupStaticButtonEvents();
   setupOptionModal();
   setupAudioSliders();
   setupButtonSfx();

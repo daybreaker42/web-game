@@ -165,3 +165,10 @@ function showInfoModal(msg, onClose) {
     ],
   });
 }
+
+function showOptionsModal() {
+  const modal = qs("#options-modal");
+  if (modal) {
+    modal.showModal();
+  }
+}
