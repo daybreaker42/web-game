@@ -26,10 +26,8 @@ const GAME_RESULT_FIELDS = [
 ];
 
 function showGameResultScreen(gameResult) {
-    if (gameResult.game_over)
-        playSfx(SFX.GAME_OVER);
-    else
-        playBgm(BGM.RESULT);
+  if (gameResult.game_over) playSfx(SFX.GAME_OVER);
+  else playBgm(BGM.RESULT);
   renderGameResult(gameResult);
 }
 
@@ -95,26 +93,14 @@ function renderGameResult(gameResult) {
         {
           label: "아니오",
           callback: () => {
-            // 엔딩 조건: 마지막 스테이지 & 게임오버 아님(클리어)
-            if (
-              gameResult.mode === "story" &&
-              gameResult.stage == N_STAGES &&
-              gameResult.game_over === false
-            ) {
-              // 크레딧 → 크레딧 종료 후 타이틀
-              showCredits(gameResult);
-            } else {
-              // 일반: infoModal 후 타이틀
-              showUniModal("타이틀로 돌아갑니다.", {
+            showUniModal("타이틀로 돌아갑니다.", {
                 buttons: [
                   {
                     label: "확인",
                     callback: handleReturnToTitleScreen,
                   },
                 ],
-              });
-            }
-          },
+              });},
           id: "uni-modal-save-no",
         },
       ],

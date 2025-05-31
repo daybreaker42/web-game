@@ -82,15 +82,16 @@ const CREDITS_TEXT = [
 // 크레딧 표시 진입 함수
 // ========================
 
-function showCredits(gameResult) {
-  gameResult = gameResult || TEST_CREDITS_DATA; // 기본값 설정
-  hideAllFade(qsa(".screen"));
-  showWithFade(elById("credits-screen"));
-  createCreditsContent(gameResult);
-  startCreditsScroll();
-  setupCreditsBtn();
-  playBgm(BGM.CREDITS);
-}
+function showCredits(gameResult, onCreditsEnd) {
+    gameResult = gameResult || TEST_CREDITS_DATA;
+    hideAllFade(qsa(".screen"));
+    showWithFade(elById("credits-screen"));
+    createCreditsContent(gameResult);
+    startCreditsScroll(onCreditsEnd); 
+    setupCreditsBtn(onCreditsEnd);    
+    playBgm(BGM.CREDITS);
+  }
+  
 
 // ========================
 // 크레딧 화면 내용 생성
@@ -161,54 +162,47 @@ let creditsSpeed = 1.1,
   creditsIntv = null,
   creditsFastOn = false;
 
-function startCreditsScroll() {
-  const scroll = elById("credits-scroll");
-  let pos = window.innerHeight;
-  scroll.style.transform = `translateY(${pos}px)`;
+function startCreditsScroll(onCreditsEnd) {
+const scroll = elById("credits-scroll");
+let pos = window.innerHeight;
+scroll.style.transform = `translateY(${pos}px)`;
 
-  if (creditsIntv) clearInterval(creditsIntv);
-  creditsIntv = setInterval(() => {
+if (creditsIntv) clearInterval(creditsIntv);
+creditsIntv = setInterval(() => {
     pos -= creditsFastOn ? creditsFast : creditsSpeed;
     scroll.style.transform = `translateY(${pos}px)`;
     if (pos + scroll.offsetHeight < 80) {
-      clearInterval(creditsIntv);
-      setTimeout(() => {
-        handleReturnToTitleScreen();
-      }, 900);
+    clearInterval(creditsIntv);
+    setTimeout(() => {
+        // handleReturnToTitleScreen();
+        if (typeof onCreditsEnd === "function") onCreditsEnd();
+    }, 900);
     }
-  }, 16);
+}, 16);
 }
+  
 
 // ========================
 // 버튼/누름 이벤트 (PC, 모바일 대응)
 // ========================
 function setupCreditsBtn() {
-  const btn = elById("btn-skip-credits");
-  const modal = elById("confirm-skip-modal");
-  const yes = elById("skip-confirm-yes");
-  const no = elById("skip-confirm-no");
-
-  // 1. 스킵 버튼 클릭 시 모달 띄우기
-  if (btn && modal) {
-    btn.onclick = () => {
-      modal.showModal();
-    };
-  }
-
-  // 2. "네" 클릭 시 크레딧 화면 숨기고 타이틀(혹은 메인)로 이동
-  if (yes) {
-    yes.onclick = () => {
-      modal.close();
-      handleReturnToTitleScreen();
-    };
-  }
-
-  // 3. "아니오" 클릭 시 모달 닫기
-  if (no && modal) {
-    no.onclick = () => {
-      modal.close();
-    };
-  }
+    const btn = elById("btn-skip-credits");
+    const modal = elById("confirm-skip-modal");
+    const yes = elById("skip-confirm-yes");
+    const no = elById("skip-confirm-no");
+  
+    if (btn && modal) {
+      btn.onclick = () => modal.showModal();
+    }
+    if (yes) {
+      yes.onclick = () => {
+        modal.close();
+        if (typeof onCreditsEnd === "function") onCreditsEnd();
+      };
+    }
+    if (no && modal) {
+      no.onclick = () => modal.close();
+    }
 
   // ====== (아래는 누르고 있을 때 fast 스크롤 코드 유지) ======
   const enableFast = () => {
