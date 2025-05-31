@@ -71,26 +71,23 @@ function showUniModal(message, options = {}) {
  * @param {Function} onSkip - 스킵 확정 시 실행할 콜백
  */
 function showStorySkipConfirm(onSkip) {
-  showUniModal(
-    "스토리를 스킵하시겠습니까?<br><small>이전으로 돌아갈 수 없습니다.</small>",
-    {
-      buttons: [
-        {
-          label: "네",
-          id: "uni-modal-skip-yes",
-          callback: () => {
-            // 스킵 처리 콜백 실행 (onSkip 직접 전달)
-            if (typeof onSkip === "function") onSkip();
-          },
+  showUniModal("스토리를 스킵하시겠습니까?<br>이전으로 돌아갈 수 없습니다.", {
+    buttons: [
+      {
+        label: "네",
+        id: "uni-modal-skip-yes",
+        callback: () => {
+          // 스킵 처리 콜백 실행 (onSkip 직접 전달)
+          if (typeof onSkip === "function") onSkip();
         },
-        {
-          label: "아니오",
-          id: "uni-modal-skip-no",
-          // 아무 일도 하지 않음 (모달이 자동으로 닫힘)
-        },
-      ],
-    },
-  );
+      },
+      {
+        label: "아니오",
+        id: "uni-modal-skip-no",
+        // 아무 일도 하지 않음 (모달이 자동으로 닫힘)
+      },
+    ],
+  });
 }
 
 function showNicknameInputModal(gameResult) {

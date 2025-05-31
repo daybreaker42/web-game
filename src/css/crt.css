@@ -93,6 +93,3 @@
     filter: brightness(0);
   }
 }
-.crt-off-anim {
-  animation: crt-off 0.84s cubic-bezier(0.6, 0, 0.4, 1) forwards;
-}

@@ -19,11 +19,11 @@
   align-items: center;
   position: relative;
   text-shadow:
-  1px 1px 0 #fff,
-  0 0 2px #aaa;
-font-size: 1.4rem;
+    1px 1px 0 #fff,
+    0 0 2px #aaa;
+  font-size: 1.4rem;
 }
-#game-result-root.gameover{
+#game-result-root.gameover {
   background: var(--img-game-result-gameover-bg) no-repeat center/cover;
 }
 #game-result-title {

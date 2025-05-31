@@ -82,13 +82,13 @@ const CREDITS_TEXT = [
 // 크레딧 표시 진입 함수
 // ========================
 
-function showCredits(gameResult) {
-  gameResult = gameResult || TEST_CREDITS_DATA; // 기본값 설정
+function showCredits(gameResult, onCreditsEnd) {
+  gameResult = gameResult || TEST_CREDITS_DATA;
   hideAllFade(qsa(".screen"));
   showWithFade(elById("credits-screen"));
   createCreditsContent(gameResult);
-  startCreditsScroll();
-  setupCreditsBtn();
+  startCreditsScroll(onCreditsEnd);
+  setupCreditsBtn(onCreditsEnd);
   playBgm(BGM.CREDITS);
 }
 
@@ -161,7 +161,7 @@ let creditsSpeed = 1.1,
   creditsIntv = null,
   creditsFastOn = false;
 
-function startCreditsScroll() {
+function startCreditsScroll(onCreditsEnd) {
   const scroll = elById("credits-scroll");
   let pos = window.innerHeight;
   scroll.style.transform = `translateY(${pos}px)`;
@@ -173,7 +173,8 @@ function startCreditsScroll() {
     if (pos + scroll.offsetHeight < 80) {
       clearInterval(creditsIntv);
       setTimeout(() => {
-        handleReturnToTitleScreen();
+        // handleReturnToTitleScreen();
+        if (typeof onCreditsEnd === "function") onCreditsEnd();
       }, 900);
     }
   }, 16);
@@ -188,26 +189,17 @@ function setupCreditsBtn() {
   const yes = elById("skip-confirm-yes");
   const no = elById("skip-confirm-no");
 
-  // 1. 스킵 버튼 클릭 시 모달 띄우기
   if (btn && modal) {
-    btn.onclick = () => {
-      modal.showModal();
-    };
+    btn.onclick = () => modal.showModal();
   }
-
-  // 2. "네" 클릭 시 크레딧 화면 숨기고 타이틀(혹은 메인)로 이동
   if (yes) {
     yes.onclick = () => {
       modal.close();
-      handleReturnToTitleScreen();
+      if (typeof onCreditsEnd === "function") onCreditsEnd();
     };
   }
-
-  // 3. "아니오" 클릭 시 모달 닫기
   if (no && modal) {
-    no.onclick = () => {
-      modal.close();
-    };
+    no.onclick = () => modal.close();
   }
 
   // ====== (아래는 누르고 있을 때 fast 스크롤 코드 유지) ======
