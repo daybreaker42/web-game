@@ -14,6 +14,7 @@ function setupStorySkipHandler(onSkip) {
   if (btnSkipStory) {
     btnSkipStory.onclick = () => {
       showStorySkipConfirm(() => {
+        hideWithFade(qs("#story-screen")); // 스토리 화면 숨기기
         // CRT 화면도 숨기기
         const crtConsoleScreen = qs("#crt-console-screen");
         if (crtConsoleScreen) crtConsoleScreen.classList.add("hidden");
