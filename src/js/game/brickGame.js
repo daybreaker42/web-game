@@ -342,7 +342,7 @@ class BrickGame extends GameManager {
 
       if (this.lives <= 0) {
         this.isGameClear = false;
-        this.showMessage("게임 오버!", "error", true);
+        this.showInGameMessage("게임 오버!", true);
         this.endGame();
         return;
       }
@@ -795,46 +795,6 @@ class BrickGame extends GameManager {
     return minY + Math.random() * (maxY - minY);
   }
 
-  /**
-   * MARK: 포켓몬 구출 메시지 표시 메서드 추가
-   * 구출 메시지를 표시하고 3초 후에 사라지도록 설정
-   * 공지 메세지면 message으로 받은 내용만 출력함
-   * @param {string} message - 구출된 포켓몬의 이름
-   * @param {boolean} isNotice - 공지 메시지 여부 (true: 공지, false: 구출 메시지)
-   * @returns {void}
-   */
-  showInGameMessage(message, isNotice = false) {
-    // 구출 메시지 컨테이너 가져오기
-    const messageContainer = document.getElementById('rescue-message-container');
-    if (!messageContainer) {
-      console.error('구출 메시지 컨테이너를 찾을 수 없습니다.');
-      return;
-    }
-
-    // 메시지 엘리먼트 생성
-    const messageElement = document.createElement('div');
-    messageElement.className = 'rescue-message';
-    if (isNotice) {
-      messageElement.textContent = message;
-    } else {
-      messageElement.textContent = `${message}을(를) 구출했습니다!`; // 구출 메시지 텍스트
-    }
-    // 메시지를 컨테이너에 추가
-    messageContainer.appendChild(messageElement);
-
-    // 3초 후 메시지 제거 (페이드아웃 애니메이션 포함)
-    setTimeout(() => {
-      // 페이드아웃 애니메이션 시작
-      messageElement.style.animation = 'rescueMessageHide 0.5s ease-out forwards';
-
-      // 애니메이션 완료 후 DOM에서 제거
-      setTimeout(() => {
-        if (messageElement.parentNode) {
-          messageElement.parentNode.removeChild(messageElement);
-        }
-      }, 500); // 애니메이션 시간(0.5초) 후 제거
-    }, 3000); // 3초 후 페이드아웃 시작
-  }
 
   /**
    * MARK: 포켓몬 능력 실행 오버라이드 (GameManager에서 상속)
@@ -868,7 +828,7 @@ class BrickGame extends GameManager {
   executeGrassAbility() {
     const healAmount = 50; // 회복량
     this.lives = Math.min(this.totalLives, this.lives + healAmount);
-    this.showMessage(`풀타입 능력: 생명력 ${healAmount} 회복!`, "success");
+    this.showInGameMessage(`풀타입 능력: 생명력 ${healAmount} 회복!`, true);
     console.log(`풀타입 능력 사용: 생명력 ${healAmount} 회복`);
   }
   /**
@@ -905,7 +865,7 @@ class BrickGame extends GameManager {
     this.ball.speedX = direction.x * boostedSpeed;
     this.ball.speedY = direction.y * boostedSpeed;
 
-    this.showMessage("불타입 능력: 공 속도 증가!", "success");
+    this.showInGameMessage("불타입 능력: 공 속도 증가!", true);
     console.log(`불타입 능력 사용: 공 속도 ${currentSpeed.toFixed(2)} → ${boostedSpeed} (디버그 출력 추가)`); // 주석 추가: 디버그용 속도 출력
 
     // 일정 시간 후 속도 원상복구 (주석 추가: 원본 속도로 정확히 복구)
@@ -928,7 +888,7 @@ class BrickGame extends GameManager {
 
     if (!this.electricBoostActive) {
       this.electricBoostActive = true;
-      this.showMessage("전기타입 능력: 점수 2배 획득!", "success");
+      this.showInGameMessage("전기타입 능력: 점수 2배 획득!", true);
       console.log("전기타입 능력 사용: 점수 2배 획득");
 
       // 일정 시간 후 효과 해제
@@ -950,7 +910,7 @@ class BrickGame extends GameManager {
       this.waterBoostActive = true;
       this.paddle.width += sizeIncrease;
 
-      this.showMessage("물타입 능력: 패들 크기 증가!", "success");
+      this.showInGameMessage("물타입 능력: 패들 크기 증가!", true);
       console.log("물타입 능력 사용: 패들 크기 증가");
 
       // 일정 시간 후 크기 원상복구
@@ -973,7 +933,7 @@ class BrickGame extends GameManager {
       this.iceBoostActive = true;
       this.combinationSpeed *= slowFactor;
 
-      this.showMessage("얼음타입 능력: 조합 이동 속도 감소!", "success");
+      this.showInGameMessage("얼음타입 능력: 조합 이동 속도 감소!", true);
       console.log("얼음타입 능력 사용: 조합 이동 속도 감소");
 
       // 일정 시간 후 속도 원상복구

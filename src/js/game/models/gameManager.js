@@ -369,45 +369,46 @@ class GameManager {
   }
 
   /**
-   * 메시지 표시 시스템
+   * MARK: 포켓몬 구출 메시지 표시 메서드 추가
+   * 구출 메시지를 표시하고 3초 후에 사라지도록 설정
+   * 공지 메세지면 message으로 받은 내용만 출력함
+   * @param {string} message - 구출된 포켓몬의 이름
+   * @param {boolean} isNotice - 공지 메시지 여부 (true: 공지, false: 구출 메시지)
+   * @returns {void}
    */
-  showMessage(text, type, persistent = false) {
-    if (this.persistentMessageElement) {
-      this.persistentMessageElement.remove();
-      this.persistentMessageElement = null;
+  showInGameMessage(message, isNotice = false) {
+    // 구출 메시지 컨테이너 가져오기
+    const messageContainer = document.getElementById('rescue-message-container');
+    if (!messageContainer) {
+      console.error('구출 메시지 컨테이너를 찾을 수 없습니다.');
+      return;
     }
 
-    const messageElement = document.createElement("div");
-    messageElement.textContent = text;
-    messageElement.style.cssText = `
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 20px;
-            border-radius: 10px;
-            font-size: 24px;
-            font-weight: bold;
-            z-index: 100;
-            color: white;
-            background-color: ${type === "success" ? "rgba(76, 175, 80, 0.9)" : "rgba(244, 67, 54, 0.9)"};
-        `;
-
-    const gameContainer = document.getElementById("game-container");
-    if (gameContainer) {
-      gameContainer.appendChild(messageElement);
-    }
-
-    if (persistent) {
-      this.persistentMessageElement = messageElement;
+    // 메시지 엘리먼트 생성
+    const messageElement = document.createElement('div');
+    messageElement.className = 'rescue-message';
+    if (isNotice) {
+      messageElement.textContent = message;
     } else {
+      messageElement.textContent = `${message}을(를) 구출했습니다!`; // 구출 메시지 텍스트
+    }
+    // 메시지를 컨테이너에 추가
+    messageContainer.appendChild(messageElement);
+
+    // 3초 후 메시지 제거 (페이드아웃 애니메이션 포함)
+    setTimeout(() => {
+      // 페이드아웃 애니메이션 시작
+      messageElement.style.animation = 'rescueMessageHide 0.5s ease-out forwards';
+
+      // 애니메이션 완료 후 DOM에서 제거
       setTimeout(() => {
         if (messageElement.parentNode) {
-          messageElement.remove();
+          messageElement.parentNode.removeChild(messageElement);
         }
-      }, 3000);
-    }
+      }, 500); // 애니메이션 시간(0.5초) 후 제거
+    }, 3000); // 3초 후 페이드아웃 시작
   }
+
   /**
    * UI 업데이트
    */
@@ -458,7 +459,7 @@ class GameManager {
       if (this.isPaused) {
         this.pauseStartTime = performance.now();
         cancelAnimationFrame(this.animationFrame);
-        this.showMessage("게임 일시정지", "success", true);
+        this.showInGameMessage("게임 일시정지", true);
       } else {
         // 일시정지 해제 시 - 일시정지 지속 시간 계산하여 누적
         const pauseEndTime = performance.now();
@@ -472,7 +473,7 @@ class GameManager {
           this.persistentMessageElement.remove();
           this.persistentMessageElement = null;
         }
-        this.showMessage("게임 재개", "success");
+        this.showInGameMessage("게임 재개", true);
       }
     }
   }
@@ -525,7 +526,6 @@ class GameManager {
         );
         console.log(`${this.mode} 게임을 시작합니다.`);
         // showInfoModal('게임을 시작합니다!', () => { });
-        // this.showMessage(`게임 시작!`, "success");
       });
     }
   }
@@ -726,7 +726,7 @@ class GameManager {
         // 보스전은 시간 초과 시 무조건 실패
         if (this.stage === 4) {
           this.isGameClear = false;
-          this.showMessage("시간 초과! 보스를 시간 내에 처치하지 못했습니다!", "error", true);
+          this.showInGameMessage("시간 초과! 보스를 시간 내에 처치하지 못했습니다!", true);
           this.endGame();
         }
         // 벽돌깨기 게임에서 최소 점수 달성 여부 확인
@@ -742,7 +742,7 @@ class GameManager {
           } else {
             // 최소 점수 미달성 시 게임 오버
             this.isGameClear = false;
-            this.showMessage("시간 초과! 목표 점수 미달로 게임 오버", "error", true);
+            this.showInGameMessage("시간 초과! 목표 점수 미달로 게임 오버", true);
             this.endGame();
           }
         } else {

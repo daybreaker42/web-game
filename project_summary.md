@@ -23,7 +23,7 @@
     *   `updateUI()`: 점수, 남은 생명 등을 화면에 표시 (DOM 요소 업데이트)
     *   `drawLives()`: 생명 아이콘 표시
     *   `drawScore()`: 현재 점수 표시
-    *   `showMessage(text, type, persistent)`: 화면 중앙에 메시지(성공, 실패, 알림 등) 표시
+    *   `showInGameMessage(text, isNotice)`: 화면 중앙에 메시지(성공, 실패, 알림 등) 표시
 *   **키보드 및 마우스 입력 처리**
     *   `keyDownHandler(e)`, `keyUpHandler(e)`: 키보드 입력 상태(눌림/떼임)를 배열(`keysPressed`)에 기록
     *   `mouseMoveHandler(e)`: 마우스 위치를 받아 패들 위치 업데이트 등에 활용

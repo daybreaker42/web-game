@@ -445,7 +445,7 @@ class BossGame extends GameManager {
     this.shootLaserAttack();
 
     // 페이즈 전환 메시지 표시
-    this.showMessage("보스 페이즈 2! 더욱 강해졌다!", "error");
+    this.showInGameMessage("보스 페이즈 2! 더욱 강해졌다!", true);
   }
 
   /**
@@ -756,14 +756,14 @@ class BossGame extends GameManager {
     // 보스 체력이 0 이하이면 승리
     if (this.boss.health <= 0) {
       this.isGameClear = true;
-      this.showMessage("보스 처치! 승리!", "success", true);
+      this.showInGameMessage("보스 처치! 승리!", "success", true);
       this.endGame();
     }
 
     // 플레이어 생명이 0 이하이면 패배
     if (this.lives <= 0) {
       this.isGameClear = false;
-      this.showMessage("게임 오버!", "error", true);
+      this.showInGameMessage("게임 오버!", "error", true);
       this.endGame();
     }
   }
