@@ -57,7 +57,7 @@ function setupMenuEvents() {
     playBgm(BGM.RANKING);
     hide(qs("#main-menu-screen"));
     showWithFade(qs("#ranking-screen"));
-    renderScoreboard();
+    resetScoreboardFilters();
   };
 
   qs("#btn-ranking-to-main").onclick = () => {

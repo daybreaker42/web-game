@@ -22,6 +22,22 @@ const SCOREBOARD_COLUMNS = [
   },
 ];
 
+function resetScoreboardFilters() {
+    // 값 리셋
+    currentMode = MODES.STORY;
+    currentDifficulty = "easy";
+    // 탭 UI 동기화
+    qsa(".ranking-tab").forEach((btn) => {
+      const isStory = btn.dataset.mode !== "score";
+      btn.classList.toggle("active", isStory);
+    });
+    qsa(".difficulty-tab").forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.difficulty === "easy");
+    });
+    // 테이블 리렌더
+    renderScoreboard();
+  }  
+
 function makeEmptyScoreboard() {
   const data = {};
   Object.values(MODES).forEach((mode) => {
