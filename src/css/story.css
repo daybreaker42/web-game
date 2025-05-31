@@ -21,7 +21,6 @@
     0 0 0 4px #111;
   font-family: "DOSGothic", "Sam3KRFont", "돋움", "Dotum", monospace;
   font-size: 1.3rem;
-  line-height: 1.5;
   width: 90%;
   height: 120px;
   margin: 0 auto 10px auto;
@@ -29,10 +28,11 @@
   text-align: left;
 }
 #story-line {
-  margin: 20px 0 0 5px;
+  margin: 25px 0 0 5px;
 }
 #story-line.with-potrait {
-  margin: 40px 0 0 0;
+  margin: auto 0;
+  width: 580px;
 }
 .story-next-indicator {
   position: absolute;
@@ -63,6 +63,5 @@
   margin-right: 14px;
   background: center/contain no-repeat;
   border: 2px solid #000000;
-  box-shadow: 0 2px 8px #0002;
-  margin: 25px 30px 0 10px;
+  margin: 17px 20px 0 0;
 }
