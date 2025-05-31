@@ -46,9 +46,9 @@
 
 .scoreboard {
   width: 100%;
+  height: 260px;
   margin-top: 10px;
   border: 2px solid #fff;
-  background: rgba(10, 10, 10, 0.77);
   min-height: 220px;
   padding: 14px 8px 22px 8px;
   display: flex;
@@ -91,7 +91,6 @@
   min-width: 68px;
   font-size: 1.14em;
   color: #ffd400;
-  background: linear-gradient(to right, #101010 90%, transparent 100%);
   padding: 4px 12px 4px 0;
   letter-spacing: 0.1em;
   text-align: left;
