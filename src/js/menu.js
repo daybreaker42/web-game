@@ -47,14 +47,6 @@ function setupMenuEvents() {
     show(qs("#select-mode-menu-screen"));
   };
 
-  qs("#btn-credits").onclick = () => {
-    stopCloudAnimation();
-    playBgm(BGM.CREDITS);
-    hideAllFade(qsa(".screen"));
-    showWithFade(qs("#credits-screen"));
-    showCredits();
-  };
-
   qs("#btn-select-to-main").onclick = () => {
     hide(qs("#select-mode-menu-screen"));
     show(qs("#main-menu-screen"));
