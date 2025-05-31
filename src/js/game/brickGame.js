@@ -522,7 +522,7 @@ class BrickGame extends GameManager {
               this.saved_pokemon.push(brick.pokeIndex);
               let pokemonName = pokemon ? pokemon.name : "포켓몬";
               // 화면에 구출 메시지 표시
-              this.showRescueMessage(pokemonName);
+              this.showInGameMessage(pokemonName);
             }
 
             // 타겟 포켓몬인 경우 슬롯에 추가
@@ -642,7 +642,7 @@ class BrickGame extends GameManager {
 
     if (this.score >= requiredScore) {
       if (!this.isGameClear) {
-        this.showRescueMessage(`🎉 축하합니다! 목표 점수 ${requiredScore}점 달성! 게임 클리어! 🎉`, true);
+        this.showInGameMessage(`🎉 축하합니다! 목표 점수 ${requiredScore}점 달성! 게임 클리어! 🎉`, true);
       }
       this.isGameClear = true;
       return true;
@@ -798,12 +798,12 @@ class BrickGame extends GameManager {
   /**
    * MARK: 포켓몬 구출 메시지 표시 메서드 추가
    * 구출 메시지를 표시하고 3초 후에 사라지도록 설정
-   * 공지 메세지면 pokemonName으로 받은 내용만 출력함
-   * @param {string} pokemonName - 구출된 포켓몬의 이름
+   * 공지 메세지면 message으로 받은 내용만 출력함
+   * @param {string} message - 구출된 포켓몬의 이름
    * @param {boolean} isNotice - 공지 메시지 여부 (true: 공지, false: 구출 메시지)
    * @returns {void}
    */
-  showRescueMessage(pokemonName, isNotice = false) {
+  showInGameMessage(message, isNotice = false) {
     // 구출 메시지 컨테이너 가져오기
     const messageContainer = document.getElementById('rescue-message-container');
     if (!messageContainer) {
@@ -815,9 +815,9 @@ class BrickGame extends GameManager {
     const messageElement = document.createElement('div');
     messageElement.className = 'rescue-message';
     if (isNotice) {
-      messageElement.textContent = pokemonName;
+      messageElement.textContent = message;
     } else {
-      messageElement.textContent = `${pokemonName}을(를) 구출했습니다!`; // 구출 메시지 텍스트
+      messageElement.textContent = `${message}을(를) 구출했습니다!`; // 구출 메시지 텍스트
     }
     // 메시지를 컨테이너에 추가
     messageContainer.appendChild(messageElement);
@@ -1065,7 +1065,7 @@ class BrickGame extends GameManager {
 
     // 메시지 표시
     const itemDisplayName = itemName.replace('-', ' ').toUpperCase();
-    this.showRescueMessage(`${itemDisplayName} 사용! (+${healAmount} HP)}`, true);
+    this.showInGameMessage(`${itemDisplayName} 사용! (+${healAmount} HP)}`, true);
 
     console.log(`아이템 ${itemName} 사용: 슬롯 ${targetSlotIndex + 1} 포켓몬 체력 ${healAmount} 회복 (${currentHealth} → ${newHealth})`);
   }

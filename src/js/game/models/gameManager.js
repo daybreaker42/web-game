@@ -524,7 +524,8 @@ class GameManager {
           this.update(time),
         );
         console.log(`${this.mode} 게임을 시작합니다.`);
-        this.showMessage(`게임 시작!`, "success");
+        // showInfoModal('게임을 시작합니다!', () => { });
+        // this.showMessage(`게임 시작!`, "success");
       });
     }
   }
@@ -734,7 +735,7 @@ class GameManager {
           if (this.score >= requiredScore) {
             // 최소 점수 달성 시 게임 클리어
             this.isGameClear = true;
-            this.showRescueMessage(`⏰ 시간 종료! 목표 점수 ${requiredScore}점 달성으로 게임 클리어! 🎉`);
+            this.showInGameMessage(`⏰ 시간 종료! 목표 점수 ${requiredScore}점 달성으로 게임 클리어! 🎉`);
             setTimeout(() => {
               this.endGame();
             }, 3000);
