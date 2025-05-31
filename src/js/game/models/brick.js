@@ -64,7 +64,7 @@ class Brick {
       ctx.globalAlpha = 1.0;
       if (this.isTarget && this.blockType === 'pokemon') {
         const exMark = new Image();
-        exMark.src = "../assets/images/icons/exmark.png";
+        exMark.src = "../assets/images/game/effects/mark.png";
         ctx.drawImage(exMark, this.x + this.width - 35, this.y + 5, 30, 30);
       }
     } catch (e) {
