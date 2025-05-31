@@ -6,6 +6,7 @@
  */
 class BossGame extends GameManager {
   constructor(canvas) {
+    if (window.DEBUG_MODE) console.log('[BossGame] constructor 호출', canvas); // 디버깅용 로그 추가
     super(canvas);
 
     // MARK: 보스전 전용 설정
@@ -129,6 +130,7 @@ class BossGame extends GameManager {
    * 키보드 입력 처리 오버라이드
    */
   keyDownHandler(e) {
+    if (window.DEBUG_MODE) console.log('[BossGame] keyDownHandler 호출', e.key); // 디버깅용 로그 추가
     super.keyDownHandler(e); // 부모 클래스의 기본 처리 먼저 수행        // 보스전 전용 키 처리
     if (e.key === "ArrowUp" || e.key === "w" || e.key === "W") {
       this.keys.upPressed = true;
@@ -140,9 +142,9 @@ class BossGame extends GameManager {
 
   /**
    * 키보드 키 눌림 이벤트 처리 (WASD 키 지원 추가)
-   * @param {KeyboardEvent} e - 키보드 이벤트
    */
   keyDownHandler(e) {
+    if (window.DEBUG_MODE) console.log('[BossGame] keyDownHandler(WASD) 호출', e.key); // 디버깅용 로그 추가
     // 부모 클래스의 기본 키 처리 호출
     super.keyDownHandler(e);
 
@@ -166,6 +168,7 @@ class BossGame extends GameManager {
    * @param {KeyboardEvent} e - 키보드 이벤트
    */
   keyUpHandler(e) {
+    if (window.DEBUG_MODE) console.log('[BossGame] keyUpHandler 호출', e.key); // 디버깅용 로그 추가
     // 부모 클래스의 기본 키 처리 호출
     super.keyUpHandler(e);
 
@@ -188,6 +191,7 @@ class BossGame extends GameManager {
    * MARK: 게임별 초기화
    */
   initializeGame() {
+    if (window.DEBUG_MODE) console.log('[BossGame] initializeGame 호출'); // 디버깅용 로그 추가
     // 플레이어 초기 위치 설정
     this.player.x = this.canvas.width / 2;
     this.player.y = this.canvas.height - 50;
@@ -221,6 +225,7 @@ class BossGame extends GameManager {
    * 게임별 업데이트 로직
    */
   updateGame(timeMultiplier) {
+    if (window.DEBUG_MODE) console.log('[BossGame] updateGame 호출', timeMultiplier); // 디버깅용 로그 추가
     this.updatePlayer(timeMultiplier);
     this.updatePlayerBullets(timeMultiplier);
     this.updateBoss(timeMultiplier);
@@ -242,6 +247,8 @@ class BossGame extends GameManager {
    * MARK: 플레이어 업데이트
    */
   updatePlayer(timeMultiplier) {
+    if (window.DEBUG_MODE) console.log('[BossGame] updatePlayer 호출', timeMultiplier); // 디버깅용 로그 추가
+
     // 자동 발사 처리
     this.shootPlayerBullet();
 
@@ -311,6 +318,7 @@ class BossGame extends GameManager {
    * MARK: 플레이어 총알 발사
    */
   shootPlayerBullet() {
+    if (window.DEBUG_MODE) console.log('[BossGame] shootPlayerBullet 호출'); // 디버깅용 로그 추가
     const currentTime = performance.now();
     if (currentTime - this.playerLastShotTime >= this.playerShotCooldown) {
       // 플레이어 앞 방향으로 총알 발사
@@ -331,6 +339,7 @@ class BossGame extends GameManager {
    * 플레이어 총알 업데이트
    */
   updatePlayerBullets(timeMultiplier) {
+    if (window.DEBUG_MODE) console.log('[BossGame] updatePlayerBullets 호출', timeMultiplier); // 디버깅용 로그 추가
     for (let i = this.playerBullets.length - 1; i >= 0; i--) {
       const bullet = this.playerBullets[i];
 
@@ -354,6 +363,8 @@ class BossGame extends GameManager {
    * MARK: 보스 업데이트
    */
   updateBoss(timeMultiplier) {
+    if (window.DEBUG_MODE) console.log('[BossGame] updateBoss 호출', timeMultiplier); // 디버깅용 로그 추가
+
     const currentTime = performance.now();
 
     // 페이즈 2 전환 체크
@@ -375,6 +386,8 @@ class BossGame extends GameManager {
    * MARK: 페이즈 1 업데이트 (일반 이동 + 전방향 공격)
    */
   updatePhase1(currentTime, timeMultiplier) {
+    if (window.DEBUG_MODE) console.log('[BossGame] updatePhase1 호출', currentTime, timeMultiplier); // 디버깅용 로그 추가
+
     // MARK: 얼음타입 능력 적용 - 보스 이동 쿨다운 증가
     const effectiveMoveCooldown = this.iceBoostActive
       ? this.boss.moveCooldown * 2 // 얼음타입 능력 시 이동 쿨다운 2배 증가
@@ -405,6 +418,8 @@ class BossGame extends GameManager {
    * MARK: 페이즈 2 업데이트 (순간이동 + 플레이어 조준 공격)
    */
   updatePhase2(currentTime, timeMultiplier) {
+    if (window.DEBUG_MODE) console.log('[BossGame] updatePhase2 호출', currentTime, timeMultiplier); // 디버깅용 로그 추가
+
     // MARK: 얼음타입 능력 적용 - 페이즈 2 이동 쿨다운도 증가
     const phase2MoveCooldown = this.iceBoostActive
       ? 4000 // 얼음타입 능력 시 4초마다 이동 (기존 2초에서 2배 증가)
@@ -437,6 +452,7 @@ class BossGame extends GameManager {
    * MARK: 페이즈 2 전환 처리
    */
   triggerPhase2() {
+    if (window.DEBUG_MODE) console.log('[BossGame] triggerPhase2 호출'); // 디버깅용 로그 추가
     this.boss.phase2Triggered = true;
     this.boss.currentPhase = 2;
     this.boss.color = "#8b0000"; // 보스 색깔 변경 (더 어두운 빨간색)
@@ -452,6 +468,7 @@ class BossGame extends GameManager {
    * MARK: 보스 이동 시작 (페이즈 1)
    */
   startBossMove() {
+    if (window.DEBUG_MODE) console.log('[BossGame] startBossMove 호출'); // 디버깅용 로그 추가
     // 랜덤한 목표 위치 설정 (화면 상단 1/3 영역 내)
     const margin = 60; // 화면 가장자리 여백
     this.boss.startX = this.boss.x;
@@ -468,6 +485,7 @@ class BossGame extends GameManager {
    * MARK: 보스 이동 업데이트 (페이즈 1)
    */
   updateBossMovement(currentTime, timeMultiplier) {
+    if (window.DEBUG_MODE) console.log('[BossGame] updateBossMovement 호출', currentTime, timeMultiplier); // 디버깅용 로그 추가
     const elapsed = currentTime - this.boss.moveStartTime;
 
     // MARK: 얼음타입 능력 적용 - 보스 이동 지속시간 증가 (속도 감소 효과)
@@ -497,6 +515,7 @@ class BossGame extends GameManager {
    * MARK: 보스 순간이동 시작 (페이즈 2)
    */
   startBossTeleport() {
+    if (window.DEBUG_MODE) console.log('[BossGame] startBossTeleport 호출'); // 디버깅용 로그 추가
     // 랜덤한 위치로 순간이동
     const margin = 60;
     this.boss.targetX =
@@ -513,6 +532,7 @@ class BossGame extends GameManager {
    * MARK: 보스 순간이동 업데이트 (페이즈 2)
    */
   updateBossTeleport(currentTime) {
+    if (window.DEBUG_MODE) console.log('[BossGame] updateBossTeleport 호출', currentTime); // 디버깅용 로그 추가
     const elapsed = currentTime - this.boss.moveStartTime;
     const progress = elapsed / this.boss.moveDuration;
 
@@ -530,6 +550,7 @@ class BossGame extends GameManager {
    * MARK: 레이저 공격 (페이즈 전환 시)
    */
   shootLaserAttack() {
+    if (window.DEBUG_MODE) console.log('[BossGame] shootLaserAttack 호출'); // 디버깅용 로그 추가
     const rayCount = 16; // 16방향으로 레이저 발사
     const angleStep = (Math.PI * 2) / rayCount;
 
@@ -556,6 +577,7 @@ class BossGame extends GameManager {
    * MARK: 플레이어 조준 공격 (페이즈 2)
    */
   shootTargetedBullets() {
+    if (window.DEBUG_MODE) console.log('[BossGame] shootTargetedBullets 호출'); // 디버깅용 로그 추가
     // 플레이어 방향으로 3발 발사 (중앙 + 좌우 약간 벗어난 각도)
     const dx = this.player.x - this.boss.x;
     const dy = this.player.y - (this.boss.y + this.boss.height / 2);
@@ -585,6 +607,7 @@ class BossGame extends GameManager {
    * MARK: 보스 탄막 발사
    */
   shootBossBullets() {
+    if (window.DEBUG_MODE) console.log('[BossGame] shootBossBullets 호출'); // 디버깅용 로그 추가
     const bulletCount = 8; // 8방향으로 탄막 발사
     const angleStep = (Math.PI * 2) / bulletCount;
     const bulletLifespan = 5000; // 총알 수명: 5000ms (5초)
@@ -610,6 +633,7 @@ class BossGame extends GameManager {
    * MARK: 보스 탄막 업데이트
    */
   updateBossBullets(timeMultiplier) {
+    if (window.DEBUG_MODE) console.log('[BossGame] updateBossBullets 호출', timeMultiplier); // 디버깅용 로그 추가
     const deltaTime = timeMultiplier * this.FRAME_DELAY; // 실제 경과 시간 계산
 
     for (let i = this.bossBullets.length - 1; i >= 0; i--) {
@@ -643,6 +667,7 @@ class BossGame extends GameManager {
    * MARK: 레이저 총알 업데이트
    */
   updateLaserBullets(timeMultiplier) {
+    if (window.DEBUG_MODE) console.log('[BossGame] updateLaserBullets 호출', timeMultiplier); // 디버깅용 로그 추가
     for (let i = this.laserBullets.length - 1; i >= 0; i--) {
       const bullet = this.laserBullets[i];
 
@@ -666,6 +691,7 @@ class BossGame extends GameManager {
    * MARK: 충돌 감지
    */
   checkCollisions() {
+    if (window.DEBUG_MODE) console.log('[BossGame] checkCollisions 호출'); // 디버깅용 로그 추가
     // 플레이어 총알과 보스 충돌
     for (let i = this.playerBullets.length - 1; i >= 0; i--) {
       const bullet = this.playerBullets[i];
@@ -753,6 +779,7 @@ class BossGame extends GameManager {
    * MARK: 게임 종료 조건 확인
    */
   checkGameEnd() {
+    if (window.DEBUG_MODE) console.log('[BossGame] checkGameEnd 호출'); // 디버깅용 로그 추가
     // 보스 체력이 0 이하이면 승리
     if (this.boss.health <= 0) {
       this.isGameClear = true;
@@ -772,6 +799,7 @@ class BossGame extends GameManager {
    * MARK: 플레이어 그리기
    */
   drawPlayer() {
+    if (window.DEBUG_MODE) console.log('[BossGame] drawPlayer 호출'); // 디버깅용 로그 추가
     this.ctx.save();
     this.ctx.translate(this.player.x, this.player.y);
     this.ctx.rotate(this.player.rotation);
@@ -796,6 +824,7 @@ class BossGame extends GameManager {
    * MARK: 보스 그리기
    */
   drawBoss() {
+    if (window.DEBUG_MODE) console.log('[BossGame] drawBoss 호출'); // 디버깅용 로그 추가
     const currentTime = performance.now(); // 현재 시간
     let currentImage = this.boss.image; // 기본 이미지
     let imageToDrawLoaded = this.boss.imageLoaded;
@@ -888,6 +917,7 @@ class BossGame extends GameManager {
    * MARK: 플레이어 총알 그리기
    */
   drawPlayerBullets() {
+    if (window.DEBUG_MODE) console.log('[BossGame] drawPlayerBullets 호출'); // 디버깅용 로그 추가
     this.playerBullets.forEach((bullet) => {
       this.ctx.beginPath();
       this.ctx.arc(bullet.x, bullet.y, bullet.radius, 0, Math.PI * 2);
@@ -900,6 +930,7 @@ class BossGame extends GameManager {
    * MARK: 보스 탄막 그리기
    */
   drawBossBullets() {
+    if (window.DEBUG_MODE) console.log('[BossGame] drawBossBullets 호출'); // 디버깅용 로그 추가
     this.bossBullets.forEach((bullet) => {
       this.ctx.beginPath();
       this.ctx.arc(bullet.x, bullet.y, bullet.radius, 0, Math.PI * 2);
@@ -912,6 +943,7 @@ class BossGame extends GameManager {
    * MARK: 레이저 총알 그리기
    */
   drawLaserBullets() {
+    if (window.DEBUG_MODE) console.log('[BossGame] drawLaserBullets 호출'); // 디버깅용 로그 추가
     this.laserBullets.forEach((laser) => {
       // 레이저 글로우 효과
       this.ctx.save();
@@ -930,6 +962,7 @@ class BossGame extends GameManager {
    * MARK: 체력바 그리기
    */
   drawHealthBars() {
+    if (window.DEBUG_MODE) console.log('[BossGame] drawHealthBars 호출'); // 디버깅용 로그 추가
     this.drawBossHealthBar();
     this.drawPlayerHealthBar();
   }
@@ -938,6 +971,7 @@ class BossGame extends GameManager {
    * MARK: 보스 체력바 그리기 (상단)
    */
   drawBossHealthBar() {
+    if (window.DEBUG_MODE) console.log('[BossGame] drawBossHealthBar 호출'); // 디버깅용 로그 추가
     const bossHealthBarWidth = 300;
     const bossHealthBarHeight = 20;
     const bossHealthBarX = (this.canvas.width - bossHealthBarWidth) / 2;
@@ -987,6 +1021,7 @@ class BossGame extends GameManager {
    * MARK: 플레이어 체력바 그리기 (하단)
    */
   drawPlayerHealthBar() {
+    if (window.DEBUG_MODE) console.log('[BossGame] drawPlayerHealthBar 호출'); // 디버깅용 로그 추가
     const playerHealthBarWidth = 200;
     const playerHealthBarHeight = 15;
     const playerHealthBarX = (this.canvas.width - playerHealthBarWidth) / 2;
@@ -1033,9 +1068,10 @@ class BossGame extends GameManager {
   }
 
   /**
-   * 보스 이미지 크기 조정 공통 함수 // 주석 추가: 메서드 정의 추가
+   * 보스 이미지 크기 조정 공통 함수
    */
   adjustBossImageSize(imageInstance) {
+    if (window.DEBUG_MODE) console.log('[BossGame] adjustBossImageSize 호출', imageInstance); // 디버깅용 로그 추가
     // 주석 추가
     const minWidth = 67.5; // 주석 추가
     const minHeight = 67.5; // 주석 추가

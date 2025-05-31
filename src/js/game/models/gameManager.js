@@ -5,6 +5,7 @@
  */
 class GameManager {
   constructor(canvas) {
+    if (window.DEBUG_MODE) console.log('[GameManager] constructor 호출'); // 디버깅용 로그 추가
     // 캔버스 설정
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
@@ -85,11 +86,11 @@ class GameManager {
     // 다음 스테이지로 넘어가기
     this.onGameEnd = null;
   }
-
   /**
    * MARK: 게임 정보를 설정하는 메서드
    */
   setGameInfo(data) {
+    if (window.DEBUG_MODE) console.log('[GameManager] setGameInfo 호출', data); // 디버깅용 로그 추가
     if (!data.mode) {
         throw new Error(`게임 mode 설정 안됨: ${JSON.stringify(data)}`);
     }
@@ -117,54 +118,45 @@ class GameManager {
     // 레벨에 따른 난이도 설정
     this.setDifficultyBydifficulty(data.difficulty);
   }
-
   /**
    * 다음 스테이지로 넘어가는 함수를 설정함
    */
   setOnGameEnd(onGameEnd) {
+    if (window.DEBUG_MODE) console.log('[GameManager] setOnGameEnd 호출'); // 디버깅용 로그 추가
     this.onGameEnd = onGameEnd;
   }
-
   /**
-   * 스테이지별 배경 이미지 로드 메서드 (추가된 기능)
+   * 스테이지별 배경 이미지 로드 메서드 (CSS 기반으로 변경)
    * @param {number} stage - 스테이지 번호 (1~4)
    */
   loadStageBackground(stage) {
-    // 기존 배경 이미지 초기화
-    this.backgroundImage = null;
-    this.backgroundImageLoaded = false;
+    if (window.DEBUG_MODE) console.log('[GameManager] loadStageBackground 호출', stage);
 
     // 스테이지 번호 유효성 검사
     if (stage < 1 || stage > 4) {
-      console.warn(
-        `유효하지 않은 스테이지 번호: ${stage}. 기본 배경을 사용합니다.`,
-      );
+      console.warn(`유효하지 않은 스테이지 번호: ${stage}. 기본 배경을 사용합니다.`);
       return;
     }
 
-    // 배경 이미지 생성 및 로드
-    this.backgroundImage = new Image();
-
-    // 이미지 로드 완료 시 플래그 설정
-    this.backgroundImage.onload = () => {
-      this.backgroundImageLoaded = true;
-    };
-
-    // 이미지 로드 실패 시 에러 처리
-    this.backgroundImage.onerror = () => {
-      this.backgroundImage = null;
-      this.backgroundImageLoaded = false;
-    };
-
-    // 배경 이미지 경로 설정 및 로드 시작
+    // CSS background-image로 배경 설정
     const imagePath = `../assets/images/game/ui/background-stage-${stage}.png`;
-    this.backgroundImage.src = imagePath;
+    this.canvas.style.backgroundImage = `url(${imagePath})`;
+    this.canvas.style.backgroundSize = 'cover'; // 캔버스 크기에 맞게 조정
+    this.canvas.style.backgroundPosition = 'center'; // 중앙 정렬
+    this.canvas.style.backgroundRepeat = 'no-repeat'; // 반복 방지
+
+    console.log(`배경 이미지 CSS 설정 완료: ${imagePath}`);
+
+    // 기존 배경 이미지 관련 변수들 정리 (더 이상 사용하지 않음)
+    this.backgroundImage = null;
+    this.backgroundImageLoaded = false;
   }
 
   /**
    * MARK: 레벨에 따른 난이도 설정
    */
   setDifficultyBydifficulty(difficulty) {
+    if (window.DEBUG_MODE) console.log('[GameManager] setDifficultyBydifficulty 호출', difficulty); // 디버깅용 로그 추가
     const currentModeConfig =
       this.livesConfig[this.mode] || this.livesConfig.brick; // 현재 모드의 설정을 가져오거나 기본값(brick) 사용
 
@@ -183,11 +175,11 @@ class GameManager {
     }
     this.lives = this.totalLives;
   }
-
   /**
    * 공통 게임 오브젝트 초기화
    */
   initializeGameObjects() {
+    if (window.DEBUG_MODE) console.log('[GameManager] initializeGameObjects 호출'); // 디버깅용 로그 추가
     // 공 초기화
     this.ball = {
       x: this.canvas.width / 2,
@@ -207,11 +199,11 @@ class GameManager {
       color: "#4CAF50",
     };
   }
-
   /**
    * 키보드 입력 처리
    */
   keyDownHandler(e) {
+    // if (window.DEBUG_MODE) console.log('[GameManager] keyDownHandler 호출', e.key); // 디버깅용 로그 추가
     if (
       e.key === "Right" ||
       e.key === "ArrowRight" ||
@@ -242,11 +234,11 @@ class GameManager {
         }
       }
     }
-  }
-  /**
+  }  /**
    * 키보드 입력 해제 처리
    */
   keyUpHandler(e) {
+    // if (window.DEBUG_MODE) console.log('[GameManager] keyUpHandler 호출', e.key); // 디버깅용 로그 추가
     if (
       e.key === "Right" ||
       e.key === "ArrowRight" ||
@@ -268,9 +260,9 @@ class GameManager {
       // const slotIndex = parseInt(e.key) - 1;
       // this.handlePokemonAbilityKey(slotIndex);
     }
-  }
-  // MARK: 포켓몬 능력 키 입력 처리 메서드 추가
+  }  // MARK: 포켓몬 능력 키 입력 처리 메서드 추가
   handlePokemonAbilityKey(slotIndex) {
+    if (window.DEBUG_MODE) console.log('[GameManager] handlePokemonAbilityKey 호출', slotIndex); // 디버깅용 로그 추가
     // 게임이 실행 중이고 일시정지 상태가 아닐 때만 실행
     if (!this.isGameRunning || this.isPaused) return;
 
@@ -309,9 +301,9 @@ class GameManager {
 
     const pokemonIndex = parseInt(indexMatch[1]);
     this.usePokemonAbility(slotIndex, pokemonIndex);
-  }
-  // MARK: 포켓몬 능력 사용 메서드 추가
+  }  // MARK: 포켓몬 능력 사용 메서드 추가
   usePokemonAbility(slotIndex, pokemonIndex) {
+    if (window.DEBUG_MODE) console.log('[GameManager] usePokemonAbility 호출', slotIndex, pokemonIndex); // 디버깅용 로그 추가
     const currentTime = performance.now();
 
     // 포켓몬 타입 확인
@@ -341,17 +333,17 @@ class GameManager {
     // 하위 클래스에서 오버라이드할 수 있는 메서드 호출
     this.executePokemonAbility(slotIndex, pokemonIndex, pokemonType);
   }
-
   // MARK: 포켓몬 능력 실행 메서드 (하위 클래스에서 오버라이드)
   executePokemonAbility(slotIndex, pokemonIndex, pokemonType) {
+    if (window.DEBUG_MODE) console.log('[GameManager] executePokemonAbility 호출', slotIndex, pokemonIndex, pokemonType); // 디버깅용 로그 추가
     // 기본 구현: 하위 클래스에서 오버라이드하여 실제 능력 효과 구현
     console.log(`슬롯 ${slotIndex + 1}의 포켓몬(인덱스: ${pokemonIndex}, 타입: ${pokemonType}) 능력이 사용되었습니다.`);
   }
-
   /**
    * 마우스 이동 처리
    */
   mouseMoveHandler(e) {
+    // if (window.DEBUG_MODE) console.log('[GameManager] mouseMoveHandler 호출', e.clientX, e.clientY); // 디버깅용 로그 추가
     if (this.isGameRunning && !this.isPaused && this.paddle) {
       const rect = this.canvas.getBoundingClientRect();
       const relativeX = e.clientX - rect.left;
@@ -367,16 +359,11 @@ class GameManager {
       }
     }
   }
-
   /**
    * MARK: 포켓몬 구출 메시지 표시 메서드 추가
-   * 구출 메시지를 표시하고 3초 후에 사라지도록 설정
-   * 공지 메세지면 message으로 받은 내용만 출력함
-   * @param {string} message - 구출된 포켓몬의 이름
-   * @param {boolean} isNotice - 공지 메시지 여부 (true: 공지, false: 구출 메시지)
-   * @returns {void}
    */
   showInGameMessage(message, isNotice = false) {
+    if (window.DEBUG_MODE) console.log('[GameManager] showInGameMessage 호출', message, isNotice); // 디버깅용 로그 추가
     // 구출 메시지 컨테이너 가져오기
     const messageContainer = document.getElementById('rescue-message-container');
     if (!messageContainer) {
@@ -408,11 +395,11 @@ class GameManager {
       }, 500); // 애니메이션 시간(0.5초) 후 제거
     }, 3000); // 3초 후 페이드아웃 시작
   }
-
   /**
    * UI 업데이트
    */
   updateUI() {
+    if (window.DEBUG_MODE) console.log('[GameManager] updateUI 호출'); // 디버깅용 로그 추가
     // 벽돌깨기 모드일때만 drawLives, 아니면 해당 로직에서 따로 구현
     if (this.stage <= 3) {
       this.drawLives();
@@ -422,11 +409,11 @@ class GameManager {
     // 포켓몬 체력바 그리기 (추가됨)
     this.drawPokemonHealthBars();
   }
-
   /**
-   * 목숨 표시
+   * MARK: 목숨 표시
    */
   drawLives() {
+    if (window.DEBUG_MODE) console.log('[GameManager] drawLives 호출'); // 디버깅용 로그 추가
     const iconWidth = 30; // 아이콘 너비
     const iconHeight = 30; // 아이콘 높이
     const iconX = this.canvas.width - 100; // 아이콘 위치 (우측 여백 70px)
@@ -444,16 +431,19 @@ class GameManager {
       this.ctx.fillText(`남은 목숨: ${this.lives}`, textX, textY); // 볼 아이콘이 로드되지 않았을 때 텍스트로 표시
     }
   }
-
+  /**
+   * MARK: 점수 그리기
+   */
   drawScore() {
+    if (window.DEBUG_MODE) console.log('[GameManager] drawScore 호출'); // 디버깅용 로그 추가
     const scoreElement = qs("#score");
     if (scoreElement) scoreElement.textContent = this.score;
   }
-
   /**
-   * 일시정지 토글
+   * MARK: 일시정지 토글
    */
   togglePause() {
+    if (window.DEBUG_MODE) console.log('[GameManager] togglePause 호출'); // 디버깅용 로그 추가
     if (this.isGameRunning) {
       this.isPaused = !this.isPaused;
       if (this.isPaused) {
@@ -477,23 +467,21 @@ class GameManager {
       }
     }
   }
-
   /**
-   * 컨트롤 정보 모달 표시
-   * @param {boolean} isBossMode - 보스 모드 여부
-   * @param {Function} onClose - 모달 닫기 콜백
+   * MARK: 컨트롤 정보 모달 표시
    */
   showControlInfoModal(isBossMode, onClose) {
+    if (window.DEBUG_MODE) console.log('[GameManager] showControlInfoModal 호출', isBossMode); // 디버깅용 로그 추가
     const msg = isBossMode
-      ? "W A S D <br> ↑ ← ↓ →"
-      : "W A S D <br> ↑ ← ↓ → <br>마우스";
+      ? "조작법 <br> W A S D <br> ↑ ← ↓ →"
+      : "조작법 <br> W A S D <br> ↑ ← ↓ → <br>마우스";
     showInfoModal(msg, onClose);
   }
-
   /**
-   * 게임 시작
+   * MARK: 게임 시작
    */
   startGame() {
+    if (window.DEBUG_MODE) console.log('[GameManager] startGame 호출'); // 디버깅용 로그 추가
     if (!this.isGameRunning) {
       if (this.animationFrame) {
         cancelAnimationFrame(this.animationFrame);
@@ -503,8 +491,7 @@ class GameManager {
       this.isPaused = false;
       this.score = 0;
       this.lives = this.totalLives;
-      this.lastTime = performance.now();
-      this.gameStartTime = performance.now();
+
       this.pauseStartTime = 0;
       this.totalPauseDuration = 0;
 
@@ -515,25 +502,25 @@ class GameManager {
       }
 
       this.updateUI();
-      this.drawBackground();
+      this.drawBackground(); // 게임 화면 표시만 처리
 
       this.showControlInfoModal(this.mode === "boss", () => {
         hideAllFade(qsa(".screen"));
         showWithFade(qs("#gameplay-screen"));
-
+        this.lastTime = performance.now();
+        this.gameStartTime = performance.now();
         this.animationFrame = requestAnimationFrame((time) =>
           this.update(time),
         );
         console.log(`${this.mode} 게임을 시작합니다.`);
-        // showInfoModal('게임을 시작합니다!', () => { });
       });
     }
   }
-
   /**
-   * 게임 재시작
+   * MARK: 게임 재시작
    */
   restartGame() {
+    if (window.DEBUG_MODE) console.log('[GameManager] restartGame 호출'); // 디버깅용 로그 추가
     if (this.animationFrame) {
       cancelAnimationFrame(this.animationFrame);
     }
@@ -543,20 +530,16 @@ class GameManager {
 
     setTimeout(() => this.startGame(), 100);
   }
-
   /**
-   * 배경 이미지 그리기 메서드 (추가된 기능 - 하위 클래스에서 호출)
+   * MARK: 배경 이미지 그리기 메서드 제거 (CSS로 대체됨)
    */
   drawBackground() {
-    // 스테이지별 배경 이미지 그리기
-    if (this.backgroundImageLoaded && this.backgroundImage) {
-      this.ctx.drawImage(
-        this.backgroundImage,
-        0,
-        0,
-        this.canvas.width,
-        this.canvas.height,
-      );
+    if (window.DEBUG_MODE) console.log('[GameManager] drawBackground 호출 (CSS 배경 사용으로 변경됨)');
+
+    // CSS 배경 이미지를 사용하므로 더 이상 canvas에 직접 그리지 않음
+    // 게임 화면 표시만 처리
+    if (qs("#gameplay-screen").classList.contains('hidden')) {
+      showWithFade(qs("#gameplay-screen"));
     }
   }
 
@@ -564,6 +547,7 @@ class GameManager {
    * MARK: 포켓몬 체력 소모 메서드 추가
    */
   consumePokemonHealth(slotIndex) {
+    if (window.DEBUG_MODE) console.log('[GameManager] consumePokemonHealth 호출', slotIndex); // 디버깅용 로그 추가
     // 체력 소모
     this.pokemonHealthSystem.currentHealth[slotIndex] -= this.pokemonHealthSystem.healthConsumption;
 
@@ -574,6 +558,7 @@ class GameManager {
     }
   }  // MARK: 포켓몬 기절 상태 설정 메서드 추가 (dizzyImages 배열 활용)
   setPokemonDizzy(slotIndex) {
+    if (window.DEBUG_MODE) console.log('[GameManager] setPokemonDizzy 호출', slotIndex); // 디버깅용 로그 추가
     this.pokemonHealthSystem.isDizzy[slotIndex] = true;
 
     const slot = document.getElementById(`slot-${slotIndex}`);
@@ -625,6 +610,7 @@ class GameManager {
 
   // MARK: 포켓몬 체력 회복 메서드 추가
   healPokemonHealth(slotIndex, healAmount = 50) {
+    if (window.DEBUG_MODE) console.log('[GameManager] healPokemonHealth 호출', slotIndex, healAmount); // 디버깅용 로그 추가
     // 체력 회복
     this.pokemonHealthSystem.currentHealth[slotIndex] = Math.min(
       this.pokemonHealthSystem.maxHealth[slotIndex],
@@ -645,6 +631,7 @@ class GameManager {
   }
   // MARK: 포켓몬 체력바 그리기 메서드 추가
   drawPokemonHealthBars() {
+    if (window.DEBUG_MODE) console.log('[GameManager] drawPokemonHealthBars 호출'); // 디버깅용 로그 추가
     // 보스전에선 그리지 않음
     if (this.stage === 4) return;
 
@@ -693,6 +680,7 @@ class GameManager {
    * 메인 게임 루프 - 하위 클래스에서 오버라이드
    */
   update(currentTime = 0) {
+    if (window.DEBUG_MODE) console.log('[GameManager] update 호출', currentTime); // 디버깅용 로그 추가
     const deltaTime = currentTime - this.lastTime;
 
     // 프레임 딜레이를 고려한 업데이트
@@ -716,9 +704,9 @@ class GameManager {
       const minutes = Math.floor(timeLeft / 60000);
       const seconds = Math.floor((timeLeft % 60000) / 1000);
 
-      // 화면에 표시 (두자리 숫자 포맷)
       document.getElementById("timer").textContent =
-        `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;      // 시간 초과 시 게임 종료 처리
+        `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+
       if (timeLeft <= 0) {
         this.isGameRunning = false;
         cancelAnimationFrame(this.animationFrame);
@@ -750,17 +738,10 @@ class GameManager {
           this.endGame();
         }
         return;
-      }// 이하 기존 게임 로직 계속...
-      // 캔버스 초기화
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-      // 배경 그리기 (항상 먼저)
-      if (this.backgroundImageLoaded && this.backgroundImage) {
-        this.drawBackground();
-      } else if (this.stage) {
-        // 배경 이미지가 로드되지 않았지만 스테이지 정보가 있다면 로드 시도
-        this.loadStageBackground(this.stage);
       }
+
+      // 캔버스 초기화 (배경 그리기 제거)
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
       // 하위 클래스의 업데이트 메서드 호출
       if (this.updateGame) {
@@ -768,7 +749,8 @@ class GameManager {
       }
 
       this.updateUI();
-    } // 다음 프레임 요청 (게임이 실행 중일 때만)
+    }
+
     if (this.isGameRunning) {
       this.animationFrame = requestAnimationFrame((time) => this.update(time));
     }
@@ -778,6 +760,7 @@ class GameManager {
    * 게임 종료
    */
   endGame() {
+    if (window.DEBUG_MODE) console.log('[GameManager] endGame 호출'); // 디버깅용 로그 추가
     this.isGameRunning = false;
     if (this.animationFrame) {
       cancelAnimationFrame(this.animationFrame);
@@ -802,6 +785,7 @@ class GameManager {
    * 게임별 초기화 - 하위 클래스에서 구현
    */
   initializeGame() {
+    if (window.DEBUG_MODE) console.log('[GameManager] initializeGame 호출'); // 디버깅용 로그 추가
     // 하위 클래스에서 구현
   }
 
@@ -809,6 +793,7 @@ class GameManager {
    * 게임별 업데이트 로직 - 하위 클래스에서 구현
    */
   updateGame(timeMultiplier) {
+    if (window.DEBUG_MODE) console.log('[GameManager] updateGame 호출', timeMultiplier); // 디버깅용 로그 추가
     // 하위 클래스에서 구현
   }
 }
