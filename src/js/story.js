@@ -140,7 +140,6 @@ function showStorySceneConsole(scene, onDone) {
       showStorySkipConfirm(() => {
         isSkipped = true;
         crtConsoleScreen.classList.add("hidden");
-        hide(qs("#story-screen"));
         if (typeof currentOnSkip === "function") currentOnSkip();
       });
     };
@@ -149,15 +148,14 @@ function showStorySceneConsole(scene, onDone) {
 
   stopBgm();
   if (storyScreen) {
-    storyScreen.classList.add("crt-off-anim");
     playSfx(SFX.CRT_ON);
   }
 
   setTimeout(() => {
     if (storyScreen) {
       storyScreen.classList.add("hidden");
-      storyScreen.classList.remove("crt-off-anim");
     }
+    crtConsoleText.textContent = "";
     crtConsoleScreen.classList.remove("hidden");
     crtConsoleScreen.classList.add("slow-fadein-crt");
 
