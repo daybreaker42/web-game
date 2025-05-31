@@ -11,6 +11,9 @@
   transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1);
   background: var(--img-title-bg) center/cover;
 }
+#title-screen.cleared {
+  background: var(--img-title-cleared-bg) center/cover;
+}
 #press-any-title {
   position: relative;
   top: -50px;

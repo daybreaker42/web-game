@@ -39,8 +39,10 @@
 }
 .pixel-box--menu {
   width: 300px;
-  font-size: 1.4rem;
+  height: 65px;
+  font-size: 1.8rem;
   padding: 0.7rem 1.8rem;
+  margin: 0.5rem auto;
 }
 .pixel-input {
   font-family:

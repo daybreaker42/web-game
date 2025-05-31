@@ -99,10 +99,10 @@
   animation: fade-out 0.8s steps(3, end) 1;
 }
 #story-fin-text.fade-in {
-  animation: fade-in-fast 0.8s steps(3, end) 1;
+  animation: fade-in-fast 0.4s steps(3, end) 1;
 }
 #story-fin-text.fade-out {
-  animation: fade-out-fast 0.8s steps(3, end) 1;
+  animation: fade-out-fast 0.4s steps(3, end) 1;
 }
 .fade-in {
   animation: fade-in 0.3s steps(3, end) 1;

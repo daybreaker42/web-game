@@ -1,12 +1,15 @@
 #main-menu-screen {
   opacity: 1;
-  background: var(--img-menu-bg) center/cover;
+  background: var(--img-main-menu-bg) center/cover;
+}
+#main-menu-screen.cleared {
+    background: var(--img-main-menu-cleared-bg) center/cover;
 }
 #select-mode-menu-screen {
-  background: var(--img-menu-bg) center/cover;
+  background: var(--img-main-menu-bg) center/cover;
 }
 #difficulty-menu-screen {
-  background: var(--img-menu-bg) center/cover;
+  background: var(--img-main-menu-bg) center/cover;
 }
 #difficulty-menu-screen h2 {
   font-size: 1.6rem;
