@@ -30,7 +30,6 @@ function onGameEnd(gameResult) {
   if (gameResult.game_over) {
     onStageOver(gameResult);
   } else {
-    saveGameResult(gameResult);
     hideWithFade(qs("#gameplay-screen"));
     onStageClear(gameResult);
   }
