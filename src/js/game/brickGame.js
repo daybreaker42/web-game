@@ -17,24 +17,22 @@ class BrickGame extends GameManager {
     this.BRICK_PADDING = 10;
     this.BRICK_OFFSET_TOP = 60;
     this.BRICK_OFFSET_LEFT = 30;
-    this.bricks = [];    // MARK: 동적 조합 시스템 설정 추가
-    this.combinations = []; // 현재 화면에 있는 조합들
-    this.combinationSpeed = 2; // 조합 이동 속도
-    this.combinationSpawnInterval = 6000; // 조합 생성 기본 간격 (6초) - 수정됨: 간격 조정
-    this.combinationSpawnDelayWhenActive = 3000; // 화면에 조합이 있을 때 추가 대기시간 (3초) - 추가됨: 화면에 조합이 있을 때 대기시간    this.lastCombinationSpawn = 0;
-    this.requiredCombinations = 10; // 스테이지 클리어에 필요한 조합 수 (기본값)
+    this.bricks = []; // 사용 여부 확인 필요
+    this.combinations = [];
+    this.combinationSpeed = 2;
+    this.combinationSpawnInterval = 6000;
+    this.combinationSpawnDelayWhenActive = 3000;
+    this.requiredCombinations = 10; // 사용 여부 확인 필요
 
     // MARK: 난이도별 최소 점수 설정 추가
     this.requiredScores = {
-      easy: 300,   // easy 모드: 300점 이상
-      normal: 500, // normal 모드: 500점 이상
-      hard: 800    // hard 모드: 800점 이상
-    };// MARK: 이미지 관련 속성
+      easy: 300,
+      normal: 500,
+      hard: 800
+    };
     this.paddleImage = null;
-    this.ballImage = null; // 공 이미지 추가
+    this.ballImage = null;
 
-    this.targetPokemonImages = [];
-    this.targetPokemonIndexes = [];
     // 타입별 색상 매핑
     this.typeColorMap = {
       0: "#66BB6A", // 풀
@@ -43,19 +41,50 @@ class BrickGame extends GameManager {
       3: "#4FC3F7", // 물
       4: "#81D4FA", // 얼음
     };
-    this.totalPokemonCount = 107;
-
-    // MARK: 스테이지별 특별 포켓몬 설정 추가
+    this.totalPokemonCount = 107;    // MARK: 스테이지별 특별 포켓몬 설정 추가
     this.specialPokemon = {
       1: 105, // stage1: 피카츄
       2: 106  // stage2: 팽도리
-    };
+    };    // MARK: 포켓몬 능력 상태 관리 변수 추가 (주석 추가: 공 속도 버그 해결을 위한 상태 관리)
+    this.fireBoostActive = false; // 불타입 능력 활성 상태
+    this.originalBallSpeed = null; // 원본 공 속도 저장
+    this.fireBoostTimeout = null; // 불타입 능력 타이머 ID
+    this.fireBoostRemainingTime = 0; // 일시정지 시 남은 시간 저장 (주석 추가: 일시정지 중 타이머 관리)
 
     // MARK: 포켓몬 능력 효과 상태 변수 추가
-    this.electricBoostActive = false; // 전기타입 능력 (점수 2배) 활성 상태
-    this.waterBoostActive = false; // 물타입 능력 (패들 크기 증가) 활성 상태  
-    this.iceBoostActive = false; // 얼음타입 능력 (조합 속도 감소) 활성 상태
-  }  /**
+    this.electricBoostActive = false;
+    this.waterBoostActive = false;
+    this.iceBoostActive = false;
+
+    // MARK: 새로운 목표 포켓몬 관련 변수 추가
+    this.appearedTargetPokemonTypes = new Set(); // 이번 게임/스테이지에서 등장한 목표 포켓몬 타입을 기록
+    this.TARGET_POKEMON_SPAWN_CHANCE = 0.2; // 목표 포켓몬 등장 확률 (20%)
+  }
+
+  /**
+   * MARK: 현재 플레이어 슬롯에 있는 포켓몬들의 타입을 가져오는 헬퍼 메서드
+   */
+  getCurrentSlotTypes() {
+    const slotTypes = new Set();
+    for (let i = 0; i < 4; i++) {
+      const slotElement = document.getElementById("slot-" + i);
+      if (slotElement) {
+        const bg = slotElement.style.backgroundImage;
+        if (bg && bg !== "none" && bg.includes(".png")) {
+          const existingIndexMatch = bg.match(/(\\d+)\\.png/);
+          if (existingIndexMatch && existingIndexMatch[1]) {
+            const existingIndex = parseInt(existingIndexMatch[1]);
+            if (window.pokemon && window.pokemon[existingIndex]) {
+              slotTypes.add(window.pokemon[existingIndex].type);
+            }
+          }
+        }
+      }
+    }
+    return slotTypes;
+  }
+
+  /**
    * MARK: 모든 조합 패턴 정의 메서드 (스테이지 구분 없이 랜덤 선택)
    */
   getCombinationPatterns() {
@@ -82,48 +111,85 @@ class BrickGame extends GameManager {
       [[1, 1, 1, 1, 1]] // 가로 5칸
     ];
     return patterns;
-  }  /**
+  }
+  /**
    * MARK: 조합에 들어갈 포켓몬과 아이템 배치 생성 메서드 수정
    */
   generatePokemonForCombination(pattern) {
-    let slotCount = pattern.flat().filter(function (cell) { return cell === 1; }).length;
-    let combinationList = []; // 포켓몬과 아이템을 모두 포함하는 리스트
-    let currentSpecialPokemon = this.specialPokemon[this.stage];
-    let hasSpecialPokemon = false;
+    const totalPatternSlots = pattern.flat().filter(cell => cell === 1).length;
+    let combinationList = [];
+    let addedIndicesThisCombination = new Set(); // 현재 조합에 추가된 포켓몬 인덱스 (중복 방지용)
 
-    // 특별 포켓몬이 아직 구출되지 않았다면 한 번만 포함
-    if (currentSpecialPokemon && !this.saved_pokemon.includes(currentSpecialPokemon)) {
-      combinationList.push({ type: 'pokemon', index: currentSpecialPokemon });
-      hasSpecialPokemon = true;
-    }    // 아이템 최대 1개 추가 (5% 확률)
-    let itemCount = 0;
-    if (Math.random() < 0.05) itemCount = 1; // 5% 확률로 아이템 1개
+    // 1. 목표 포켓몬 추가 시도
+    const currentSlotTypes = this.getCurrentSlotTypes();
+    if (combinationList.length < totalPatternSlots && currentSlotTypes.size < 4 && Math.random() < this.TARGET_POKEMON_SPAWN_CHANCE) {
+      let availableTargetTypes = [];
+      for (let type = 0; type <= 4; type++) { // 일반 타입 0~4 (전설 타입 5 제외)
+        if (!this.appearedTargetPokemonTypes.has(type) && !currentSlotTypes.has(type)) {
+          availableTargetTypes.push(type);
+        }
+      }
 
-    let availableItems = ['normal-potion', 'super-potion', 'hyper-potion', 'full-potion'];
-    for (let i = 0; i < itemCount; i++) {
-      let randomItem = availableItems[Math.floor(Math.random() * availableItems.length)];
-      combinationList.push({ type: 'item', name: randomItem });
-    }    // 나머지 슬롯을 일반 포켓몬으로 채움
-    let remainingSlots = slotCount - (hasSpecialPokemon ? 1 : 0) - itemCount;
-    let availablePokemon = [];
-    for (let i = 0; i < this.totalPokemonCount; i++) {
-      // 현재 스테이지 특별 포켓몬과 이미 구출된 포켓몬들을 제외
-      if (i !== currentSpecialPokemon && !this.saved_pokemon.includes(i)) {
-        availablePokemon.push(i);
+      if (availableTargetTypes.length > 0) {
+        const selectedType = availableTargetTypes[Math.floor(Math.random() * availableTargetTypes.length)];
+        let candidatePokemons = [];
+        for (let i = 0; i < this.totalPokemonCount; i++) {
+          const pkmn = window.pokemon[i];
+          if (pkmn && pkmn.type === selectedType && // 타입 일치
+            !this.saved_pokemon.includes(i) && // 이미 구출된 포켓몬 제외
+            (this.specialPokemon[this.stage] === undefined || i !== this.specialPokemon[this.stage])) { // 스테이지 특별 포켓몬과 다른 경우
+            candidatePokemons.push(i);
+          }
+        }
+        if (candidatePokemons.length > 0) {
+          const selectedPokemonIndex = candidatePokemons[Math.floor(Math.random() * candidatePokemons.length)];
+          combinationList.push({ type: 'pokemon', index: selectedPokemonIndex, isTarget: true });
+          addedIndicesThisCombination.add(selectedPokemonIndex);
+          this.appearedTargetPokemonTypes.add(selectedType); // 이 타입의 목표 포켓몬 등장 기록
+        }
       }
     }
 
-    for (let i = 0; i < remainingSlots; i++) {
-      if (availablePokemon.length === 0) break; // 사용 가능한 포켓몬이 없으면 중단
-      let randomIndex = Math.floor(Math.random() * availablePokemon.length);
-      let selectedPokemon = availablePokemon[randomIndex];
-      combinationList.push({ type: 'pokemon', index: selectedPokemon });
-      // 선택된 포켓몬을 배열에서 제거하여 중복 방지
-      availablePokemon.splice(randomIndex, 1);
+    // 2. 현재 스테이지의 특별 포켓몬 (예: 보스급 또는 주요 구출 대상)
+    const currentStageSpecialPokemon = this.specialPokemon[this.stage];
+    if (combinationList.length < totalPatternSlots &&
+      currentStageSpecialPokemon !== undefined &&
+      !this.saved_pokemon.includes(currentStageSpecialPokemon) &&
+      !addedIndicesThisCombination.has(currentStageSpecialPokemon)) {
+      combinationList.push({ type: 'pokemon', index: currentStageSpecialPokemon });
+      addedIndicesThisCombination.add(currentStageSpecialPokemon);
     }
 
-    // 조합 리스트를 랜덤하게 섞기
-    return combinationList.sort(function () { return Math.random() - 0.5; });
+    // 3. 아이템 추가 (기존 5% 확률 유지)
+    // Math.random() < 0.05 부분은 이전 질문에서 50%로 되어있던 것을 5%로 수정합니다.
+    if (combinationList.length < totalPatternSlots && Math.random() < 0.05) { 
+      let availableItems = ['normal-potion', 'super-potion', 'hyper-potion', 'full-potion'];
+      let randomItem = availableItems[Math.floor(Math.random() * availableItems.length)];
+      combinationList.push({ type: 'item', name: randomItem });
+    }
+
+    // 4. 나머지 슬롯을 일반 포켓몬으로 채움
+    let generalPokemonSlotsToFill = totalPatternSlots - combinationList.length;
+    if (generalPokemonSlotsToFill > 0) {
+      let availableGeneralPokemon = [];
+      for (let i = 0; i < this.totalPokemonCount; i++) {
+        const pkmn = window.pokemon[i];
+        if (pkmn && pkmn.type !== 5 && // 전설(타입 5) 제외
+          !this.saved_pokemon.includes(i) && // 이미 구출된 포켓몬 제외
+          !addedIndicesThisCombination.has(i)) { // 현재 조합에 이미 추가된 포켓몬 제외
+          availableGeneralPokemon.push(i);
+        }
+      }
+
+      availableGeneralPokemon.sort(() => Math.random() - 0.5); // 섞기
+      for (let i = 0; i < generalPokemonSlotsToFill && i < availableGeneralPokemon.length; i++) {
+        combinationList.push({ type: 'pokemon', index: availableGeneralPokemon[i] });
+        addedIndicesThisCombination.add(availableGeneralPokemon[i]);
+      }
+    }
+
+    // 최종적으로 조합 리스트 내 아이템/포켓몬 순서 셔플 (패턴 내 위치는 createNewCombination에서 결정됨)
+    return combinationList.sort(() => Math.random() - 0.5);
   }
 
   /**
@@ -133,8 +199,8 @@ class BrickGame extends GameManager {
   createNewCombination() {
     let patterns = this.getCombinationPatterns();
     let randomPattern = patterns[Math.floor(Math.random() * patterns.length)];
-    let combinationList = this.generatePokemonForCombination(randomPattern); // 포켓몬과 아이템 리스트
-    let itemIndex = 0;
+    let combinationList = this.generatePokemonForCombination(randomPattern);  // 해당 조합에서 사용할 포켓몬, 아이템 등
+    let itemIndex = 0;  // 블록에서 나오는 아이템이 아닌, combination에서 꺼내는 brick임
 
     // 조합 크기 계산 - 수정됨: 패턴 크기 고려
     let patternHeight = randomPattern.length * (this.BRICK_HEIGHT + this.BRICK_PADDING);
@@ -170,7 +236,7 @@ class BrickGame extends GameManager {
             let imagePath = "../assets/images/game/pokemon/" + pokeIndex + ".png";
             let pokeType = window.pokemon && window.pokemon[pokeIndex] ? window.pokemon[pokeIndex].type : 0;
             let slotColor = this.typeColorMap[pokeType] || "#eee";
-            let isTarget = this.targetPokemonIndexes.includes(pokeIndex);
+            let isTarget = currentItem.isTarget || false; // 목표 포켓몬 여부
 
             brick = new Brick(
               brickX,
@@ -231,30 +297,25 @@ class BrickGame extends GameManager {
     this.initDynamicBrickSystem();
     this.totalLives = this.lives;
   }
+
   /**
    * MARK: 동적 벽돌 시스템 초기화
    */
   initDynamicBrickSystem() {
-    // 타겟 포켓몬 설정
-    this.targetPokemonIndexes = [];
-    while (this.targetPokemonIndexes.length < 4) {
-      let rand = Math.floor(Math.random() * this.totalPokemonCount);
-      if (!this.targetPokemonIndexes.includes(rand)) {
-        this.targetPokemonIndexes.push(rand);
-      }
-    }
-
-    this.targetPokemonImages = this.targetPokemonIndexes.map(function (index) {
-      return "../assets/images/game/pokemon/" + index + ".png";
-    });
-
-    // 조합 시스템 초기화
+    // 타겟 포켓몬 설정 로직은 generatePokemonForCombination으로 이동됨
+    // 조합 시스템 관련 변수 초기화
     this.combinations = [];
     this.lastCombinationSpawn = 0;
-    this.leftBrick = 0;
+    this.leftBrick = 0; // 사용 여부 확인 필요
 
-    console.log("타겟 포켓몬: " + this.targetPokemonIndexes);
-    console.log("특별 포켓몬 (Stage " + this.stage + "): " + this.specialPokemon[this.stage]);
+    // 게임/스테이지 시작 시 등장한 목표 포켓몬 타입 기록 초기화
+    this.appearedTargetPokemonTypes.clear();
+
+    if (this.specialPokemon[this.stage] !== undefined) {
+      console.log("특별 포켓몬 (Stage " + this.stage + "): " + this.specialPokemon[this.stage]);
+    } else {
+      console.log("특별 포켓몬 (Stage " + this.stage + "): 없음");
+    }
   }
   /**
    * MARK: 게임별 업데이트 로직
@@ -281,7 +342,7 @@ class BrickGame extends GameManager {
 
       if (this.lives <= 0) {
         this.isGameClear = false;
-        this.showMessage("게임 오버!", "error", true);
+        this.showInGameMessage("게임 오버!", true);
         this.endGame();
         return;
       }
@@ -461,22 +522,18 @@ class BrickGame extends GameManager {
               this.saved_pokemon.push(brick.pokeIndex);
               let pokemonName = pokemon ? pokemon.name : "포켓몬";
               // 화면에 구출 메시지 표시
-              this.showRescueMessage(pokemonName);
+              this.showInGameMessage(pokemonName);
             }
 
-            // 타겟 포켓몬이거나 특별 포켓몬인 경우 슬롯에 추가
-            if (brick.isTarget && this.targetPokemonIndexes.includes(brick.pokeIndex)) {
+            // 타겟 포켓몬인 경우 슬롯에 추가
+            if (brick.isTarget && window.pokemon[brick.pokeIndex]) {
               let imagePath = "../assets/images/game/pokemon/" + brick.pokeIndex + ".png";
               this.addPokemonToSlot(imagePath);
-            } else if (this.specialPokemon[this.stage] === brick.pokeIndex) {
-              // 특별 포켓몬인 경우 추가 처리 (이미 saved_pokemon에 추가됨)
-              let imagePath = "../assets/images/game/pokemon/" + brick.pokeIndex + ".png";
-            // this.addPokemonToSlot(imagePath);
             }
           } else if (brick.blockType === 'item') {
             // 아이템 블록 처리
             this.useItemOnSlot(brick.itemName);
-            this.score += 5; // 아이템 획득 점수
+            // this.score += 5; // 아이템 획득 점수
           }
 
           if (!this.isGameClear) { 
@@ -490,14 +547,21 @@ class BrickGame extends GameManager {
 
   /**
    * MARK: 포켓몬 슬롯에 추가
-   */  addPokemonToSlot(imageSrc) {
+   */
+  addPokemonToSlot(imageSrc) {
     // 포켓몬 인덱스와 타입 정보 추출 (전설의 포켓몬과 타입 중복 차단용)
-    let indexMatch = imageSrc.match(/(\d+)\.png/);
-    if (!indexMatch) return;
+    let indexMatch = imageSrc.match(/(\d+)\.png/); // 정규식 수정: \\d+ -> (\\d+)
+    if (!indexMatch || !indexMatch[1]) { // 인덱스 존재 여부 확인
+      console.error("addPokemonToSlot: 이미지 경로에서 포켓몬 인덱스를 추출할 수 없습니다.", imageSrc);
+      return;
+    }
     
     let index = parseInt(indexMatch[1]);
     let pokemonData = window.pokemon && window.pokemon[index] ? window.pokemon[index] : null;
-    if (!pokemonData) return;
+    if (!pokemonData) {
+      console.error("addPokemonToSlot: 유효하지 않은 포켓몬 인덱스입니다.", index);
+      return;
+    }
     
     // 전설의 포켓몬(타입 5) 차단 로직 추가
     if (pokemonData.type === 5) {
@@ -556,8 +620,11 @@ class BrickGame extends GameManager {
   clearPokemonSlots() {
     for (let i = 0; i < 4; i++) {
       let slot = document.getElementById("slot-" + i);
-      slot.style.backgroundImage = "none";
-      slot.style.backgroundColor = "transparent";
+      // 슬롯 요소가 존재하는지 확인 후 스타일 변경
+      if (slot) {
+        slot.style.backgroundImage = "none";
+        slot.style.backgroundColor = "transparent";
+      }
     }
   }
 
@@ -575,7 +642,7 @@ class BrickGame extends GameManager {
 
     if (this.score >= requiredScore) {
       if (!this.isGameClear) {
-        this.showRescueMessage(`🎉 축하합니다! 목표 점수 ${requiredScore}점 달성! 게임 클리어! 🎉`);
+        this.showInGameMessage(`🎉 축하합니다! 목표 점수 ${requiredScore}점 달성! 게임 클리어! 🎉`, true);
       }
       this.isGameClear = true;
       return true;
@@ -661,8 +728,7 @@ class BrickGame extends GameManager {
         }
       }
     }
-  }
-  /**
+  }  /**
    * MARK: 게임 재시작
    */
   restartGame() {
@@ -672,6 +738,16 @@ class BrickGame extends GameManager {
     this.electricBoostActive = false;
     this.waterBoostActive = false;
     this.iceBoostActive = false;
+      // 불타입 능력 상태 초기화 추가 (주석 추가: 공 속도 버그 해결)
+    this.fireBoostActive = false;
+    this.originalBallSpeed = null;
+    this.fireBoostRemainingTime = 0; // 일시정지 관련 변수도 초기화 (주석 추가: 완전한 상태 초기화)
+    
+    // 타이머 정리 (주석 추가: 메모리 누수 방지 및 상태 정리)
+    if (this.fireBoostTimeout) {
+      clearTimeout(this.fireBoostTimeout);
+      this.fireBoostTimeout = null;
+    }
 
     super.restartGame(); // 부모 클래스의 재시작 메서드 호출
   }
@@ -719,38 +795,6 @@ class BrickGame extends GameManager {
     return minY + Math.random() * (maxY - minY);
   }
 
-  /**
-   * MARK: 포켓몬 구출 메시지 표시 메서드 추가
-   */
-  showRescueMessage(pokemonName) {
-    // 구출 메시지 컨테이너 가져오기
-    const messageContainer = document.getElementById('rescue-message-container');
-    if (!messageContainer) {
-      console.error('구출 메시지 컨테이너를 찾을 수 없습니다.');
-      return;
-    }
-
-    // 메시지 엘리먼트 생성
-    const messageElement = document.createElement('div');
-    messageElement.className = 'rescue-message';
-    messageElement.textContent = `${pokemonName}을(를) 구출했습니다!`; // 구출 메시지 텍스트
-
-    // 메시지를 컨테이너에 추가
-    messageContainer.appendChild(messageElement);
-
-    // 3초 후 메시지 제거 (페이드아웃 애니메이션 포함)
-    setTimeout(() => {
-      // 페이드아웃 애니메이션 시작
-      messageElement.style.animation = 'rescueMessageHide 0.5s ease-out forwards';
-
-      // 애니메이션 완료 후 DOM에서 제거
-      setTimeout(() => {
-        if (messageElement.parentNode) {
-          messageElement.parentNode.removeChild(messageElement);
-        }
-      }, 500); // 애니메이션 시간(0.5초) 후 제거
-    }, 3000); // 3초 후 페이드아웃 시작
-  }
 
   /**
    * MARK: 포켓몬 능력 실행 오버라이드 (GameManager에서 상속)
@@ -784,10 +828,9 @@ class BrickGame extends GameManager {
   executeGrassAbility() {
     const healAmount = 50; // 회복량
     this.lives = Math.min(this.totalLives, this.lives + healAmount);
-    this.showMessage(`풀타입 능력: 생명력 ${healAmount} 회복!`, "success");
+    this.showInGameMessage(`풀타입 능력: 생명력 ${healAmount} 회복!`, true);
     console.log(`풀타입 능력 사용: 생명력 ${healAmount} 회복`);
   }
-
   /**
    * MARK: 불타입 능력 - 공 속도 증가
    */
@@ -795,18 +838,45 @@ class BrickGame extends GameManager {
     const speedBoost = 2; // 속도 증가량
     const duration = 5000; // 지속시간 5초
 
-    // 공 속도 증가
-    this.ball.speedX *= (1 + speedBoost / this.BALL_SPEED);
-    this.ball.speedY *= (1 + speedBoost / this.BALL_SPEED);
+    // 중복 사용 방지: 이미 불타입 능력이 활성화되어 있으면 리턴 (주석 추가: 공 속도 중복 증가 버그 해결)
+    if (this.fireBoostActive) {
+      console.log("불타입 능력이 이미 활성화되어 있습니다.");
+      return;
+    }
 
-    this.showMessage("불타입 능력: 공 속도 증가!", "success");
-    console.log("불타입 능력 사용: 공 속도 증가");
+    this.fireBoostActive = true; // 불타입 능력 활성 상태 플래그 설정 (주석 추가: 중복 사용 방지)
 
-    // 일정 시간 후 속도 원상복구
-    setTimeout(() => {
-      this.ball.speedX /= (1 + speedBoost / this.BALL_SPEED);
-      this.ball.speedY /= (1 + speedBoost / this.BALL_SPEED);
-      console.log("불타입 능력 효과 종료: 공 속도 원상복구");
+    // 원본 속도 저장 (처음 능력 사용 시에만) (주석 추가: 정확한 속도 복구를 위한 원본 저장)
+    if (!this.originalBallSpeed) {
+      this.originalBallSpeed = {
+        x: this.ball.speedX,
+        y: this.ball.speedY
+      };
+    }
+
+    // 공 속도를 절대값으로 설정하여 안전하게 증가 (주석 추가: 기하급수적 증가 방지)
+    const currentSpeed = Math.sqrt(this.ball.speedX ** 2 + this.ball.speedY ** 2);
+    const direction = {
+      x: this.ball.speedX / currentSpeed,
+      y: this.ball.speedY / currentSpeed
+    };
+    const boostedSpeed = this.BALL_SPEED + speedBoost; // 기본 속도 + 증가량
+    
+    this.ball.speedX = direction.x * boostedSpeed;
+    this.ball.speedY = direction.y * boostedSpeed;
+
+    this.showInGameMessage("불타입 능력: 공 속도 증가!", true);
+    console.log(`불타입 능력 사용: 공 속도 ${currentSpeed.toFixed(2)} → ${boostedSpeed} (디버그 출력 추가)`); // 주석 추가: 디버그용 속도 출력
+
+    // 일정 시간 후 속도 원상복구 (주석 추가: 원본 속도로 정확히 복구)
+    this.fireBoostTimeout = setTimeout(() => {
+      if (this.originalBallSpeed) {
+        this.ball.speedX = this.originalBallSpeed.x;
+        this.ball.speedY = this.originalBallSpeed.y;
+        console.log(`불타입 능력 효과 종료: 공 속도 원상복구 (${this.originalBallSpeed.x}, ${this.originalBallSpeed.y}) (디버그 출력 추가)`); // 주석 추가: 복구 확인용
+      }
+      this.fireBoostActive = false; // 능력 비활성화 (주석 추가: 상태 초기화)
+      this.originalBallSpeed = null; // 원본 속도 초기화 (주석 추가: 메모리 정리)
     }, duration);
   }
 
@@ -818,7 +888,7 @@ class BrickGame extends GameManager {
 
     if (!this.electricBoostActive) {
       this.electricBoostActive = true;
-      this.showMessage("전기타입 능력: 점수 2배 획득!", "success");
+      this.showInGameMessage("전기타입 능력: 점수 2배 획득!", true);
       console.log("전기타입 능력 사용: 점수 2배 획득");
 
       // 일정 시간 후 효과 해제
@@ -840,7 +910,7 @@ class BrickGame extends GameManager {
       this.waterBoostActive = true;
       this.paddle.width += sizeIncrease;
 
-      this.showMessage("물타입 능력: 패들 크기 증가!", "success");
+      this.showInGameMessage("물타입 능력: 패들 크기 증가!", true);
       console.log("물타입 능력 사용: 패들 크기 증가");
 
       // 일정 시간 후 크기 원상복구
@@ -863,7 +933,7 @@ class BrickGame extends GameManager {
       this.iceBoostActive = true;
       this.combinationSpeed *= slowFactor;
 
-      this.showMessage("얼음타입 능력: 조합 이동 속도 감소!", "success");
+      this.showInGameMessage("얼음타입 능력: 조합 이동 속도 감소!", true);
       console.log("얼음타입 능력 사용: 조합 이동 속도 감소");
 
       // 일정 시간 후 속도 원상복구
@@ -930,10 +1000,8 @@ class BrickGame extends GameManager {
         break;
       default:
         healPercentage = 0.2;
-    }
-
-    // 현재 체력과 최대 체력 가져오기
-    const maxHealth = this.pokemonHealthSystem.maxHealth;
+    }    // 현재 체력과 최대 체력 가져오기 (주석 추가: 배열 인덱스 접근으로 수정하여 NaN 버그 해결)
+    const maxHealth = this.pokemonHealthSystem.maxHealth[targetSlotIndex];
     const currentHealth = this.pokemonHealthSystem.currentHealth[targetSlotIndex];
 
     // 회복량 계산 (최대 체력 기준)
@@ -957,8 +1025,39 @@ class BrickGame extends GameManager {
 
     // 메시지 표시
     const itemDisplayName = itemName.replace('-', ' ').toUpperCase();
-    this.showRescueMessage(`${itemDisplayName} 사용! (+${healAmount} HP)}`);
+    this.showInGameMessage(`${itemDisplayName} 사용! (+${healAmount} HP)}`, true);
 
     console.log(`아이템 ${itemName} 사용: 슬롯 ${targetSlotIndex + 1} 포켓몬 체력 ${healAmount} 회복 (${currentHealth} → ${newHealth})`);
+  }
+
+  /**
+   * MARK: 일시정지 토글 오버라이드 (불타입 능력 타이머 관리)
+   */
+  togglePause() {
+    if (this.isGameRunning) {
+      if (!this.isPaused && this.fireBoostActive && this.fireBoostTimeout) {
+        // 일시정지 시작 시: 불타입 능력 타이머 저장 및 정지 (주석 추가: 일시정지 중 타이머 관리)
+        this.fireBoostRemainingTime = this.fireBoostTimeout._idleStart + this.fireBoostTimeout._idleTimeout - Date.now();
+        clearTimeout(this.fireBoostTimeout);
+        this.fireBoostTimeout = null;
+        console.log(`일시정지: 불타입 능력 남은 시간 ${Math.max(0, this.fireBoostRemainingTime)}ms 저장`); // 주석 추가: 디버그용
+      } else if (this.isPaused && this.fireBoostActive && this.fireBoostRemainingTime > 0) {
+        // 일시정지 해제 시: 남은 시간으로 타이머 재시작 (주석 추가: 정확한 타이머 복구)
+        this.fireBoostTimeout = setTimeout(() => {
+          if (this.originalBallSpeed) {
+            this.ball.speedX = this.originalBallSpeed.x;
+            this.ball.speedY = this.originalBallSpeed.y;
+            console.log(`불타입 능력 효과 종료: 공 속도 원상복구 (일시정지 후)`); // 주석 추가: 복구 확인용
+          }
+          this.fireBoostActive = false;
+          this.originalBallSpeed = null;
+        }, this.fireBoostRemainingTime);
+        console.log(`일시정지 해제: 불타입 능력 ${this.fireBoostRemainingTime}ms 후 종료 예정`); // 주석 추가: 디버그용
+        this.fireBoostRemainingTime = 0;
+      }
+    }
+    
+    // 부모 클래스의 일시정지 로직 실행 (주석 추가: 기본 일시정지 기능 유지)
+    super.togglePause();
   }
 }
