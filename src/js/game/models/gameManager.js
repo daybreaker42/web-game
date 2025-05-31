@@ -14,10 +14,10 @@ class GameManager {
     this.FPS = 60;
     this.FRAME_DELAY = 1000 / this.FPS;
 
-    // MARK: 배경 이미지 시스템 추가
+    // MARK: 배경 이미지 시스템
     this.backgroundImage = null;
     this.backgroundImageLoaded = false;
-    // MARK: 목숨 아이콘 이미지 추가
+    // MARK: 목숨 아이콘 이미지
     this.ballIcon = new Image();
     this.ballIcon.src = "../assets/images/game/object/ball.png"; // 볼 아이콘 경로 설정
     this.ballIconLoaded = false;
@@ -25,14 +25,17 @@ class GameManager {
       this.ballIconLoaded = true; // 볼 아이콘 로드 완료 플래그
     };
 
-    // MARK: 포켓몬 능력 시스템 추가
+    // MARK: 포켓몬 능력 시스템
     this.pokemonAbilitySystem = {
       cooldowns: [0, 0, 0, 0], // 각 슬롯별 쿨타임 (밀리초)
       lastUsed: [0, 0, 0, 0], // 각 슬롯별 마지막 사용 시간
       defaultCooldown: 3000, // 기본 쿨타임: 3초
       throttleInterval: 200, // 입력 throttling 간격: 200ms
       lastInputTime: [0, 0, 0, 0], // 각 슬롯별 마지막 입력 시간
-    };    // MARK: 포켓몬 체력 시스템 추가
+      cooldownTimers: [null, null, null, null], // MARK: 각 슬롯별 시각적 쿨다운 타이머 관리
+    };
+
+    // MARK: 포켓몬 체력 시스템
     this.pokemonHealthSystem = {
       maxHealth: [100, 100, 100, 100], // 각 슬롯별 최대 체력
       currentHealth: [100, 100, 100, 100], // 각 슬롯별 현재 체력
@@ -60,10 +63,10 @@ class GameManager {
     this.isGameClear = false;
     this.saved_pokemon = [];
 
-    // 생명 설정 (모드 및 난이도별) // 주석 추가: 생명 설정 구조화
+    // 생명 설정 (모드 및 난이도별) // 주석: 생명 설정 구조화
     this.livesConfig = {
-      brick: { easy: 20, normal: 10, hard: 5 }, // 주석 추가: 벽돌깨기 모드 생명 (현재는 동일)
-      boss: { easy: 1000, normal: 500, hard: 250 }, // 주석 추가: 보스전 모드 생명 (현재는 동일)
+      brick: { easy: 20, normal: 10, hard: 5 }, // 주석: 벽돌깨기 모드 생명 (현재는 동일)
+      boss: { easy: 1000, normal: 500, hard: 250 }, // 주석: 보스전 모드 생명 (현재는 동일)
     };
 
     // 입력 상태
@@ -101,21 +104,19 @@ class GameManager {
       if (typeof data === "string") {
         data = JSON.parse(data);
       }
-    } catch (e) {
-      throw new Error("받은 data가 JSON 형식이 아닙니다");
-    }
-    if (typeof data.mode !== "string" || typeof data.difficulty !== "string") {
-      throw new Error("게임 정보의 형식이 유효하지 않습니다");
-    }
-    this.mode = data.mode;
-    this.difficulty = data.difficulty;
-    this.stage = data.stage;
+      this.mode = data.mode;
+      this.difficulty = data.difficulty;
+      this.stage = data.stage || 1;
+      this.saved_pokemon = data.saved_pokemon || [];
 
-    // 스테이지별 배경 이미지 로드 (추가된 기능)
-    this.loadStageBackground(data.stage);
+      // Set lives according to mode and difficulty
+      this.setDifficultyBydifficulty(data.difficulty);
 
-    // 레벨에 따른 난이도 설정
-    this.setDifficultyBydifficulty(data.difficulty);
+      console.log("게임 정보 설정 완료:", this);
+    } catch (error) {
+      console.error("게임 정보 설정 오류:", error);
+      throw error;
+    }
   }
 
   /**
@@ -130,34 +131,29 @@ class GameManager {
    * @param {number} stage - 스테이지 번호 (1~4)
    */
   loadStageBackground(stage) {
-    // 기존 배경 이미지 초기화
-    this.backgroundImage = null;
+    this.backgroundImage = new Image();
     this.backgroundImageLoaded = false;
 
-    // 스테이지 번호 유효성 검사
-    if (stage < 1 || stage > 4) {
-      console.warn(
-        `유효하지 않은 스테이지 번호: ${stage}. 기본 배경을 사용합니다.`,
-      );
-      return;
-    }
-
-    // 배경 이미지 생성 및 로드
-    this.backgroundImage = new Image();
-
-    // 이미지 로드 완료 시 플래그 설정
-    this.backgroundImage.onload = () => {
-      this.backgroundImageLoaded = true;
+    // 스테이지별 배경 이미지 경로 설정
+    const backgroundPaths = {
+      1: "../assets/images/background/stage1.png",
+      2: "../assets/images/background/stage2.png",
+      3: "../assets/images/background/stage3.png",
+      4: "../assets/images/background/stage4.png"
     };
 
-    // 이미지 로드 실패 시 에러 처리
+    const imagePath = backgroundPaths[stage] || backgroundPaths[1];
+
+    this.backgroundImage.onload = () => {
+      this.backgroundImageLoaded = true;
+      console.log(`스테이지 ${stage} 배경 이미지 로드 완료`);
+    };
+
     this.backgroundImage.onerror = () => {
-      this.backgroundImage = null;
+      console.warn(`스테이지 ${stage} 배경 이미지 로드 실패: ${imagePath}`);
       this.backgroundImageLoaded = false;
     };
 
-    // 배경 이미지 경로 설정 및 로드 시작
-    const imagePath = `../assets/images/game/ui/background-stage-${stage}.png`;
     this.backgroundImage.src = imagePath;
   }
 
@@ -165,46 +161,39 @@ class GameManager {
    * MARK: 레벨에 따른 난이도 설정
    */
   setDifficultyBydifficulty(difficulty) {
-    const currentModeConfig =
-      this.livesConfig[this.mode] || this.livesConfig.brick; // 현재 모드의 설정을 가져오거나 기본값(brick) 사용
+    const gameType = this.stage >= 4 ? 'boss' : 'brick';
+    const difficultyConfig = this.livesConfig[gameType];
 
-    switch (difficulty) {
-      case "easy":
-        this.totalLives = currentModeConfig.easy; // 주석 수정: 모드별 난이도에 따른 생명 설정
-        break;
-      case "normal":
-        this.totalLives = currentModeConfig.normal; // 주석 수정: 모드별 난이도에 따른 생명 설정
-        break;
-      case "hard":
-        this.totalLives = currentModeConfig.hard; // 주석 수정: 모드별 난이도에 따른 생명 설정
-        break;
-      default:
-        this.totalLives = currentModeConfig.normal; // 주석 수정: 기본값으로 normal 난이도 생명 설정
+    if (difficultyConfig && difficultyConfig[difficulty]) {
+      this.lives = difficultyConfig[difficulty];
+      this.totalLives = this.lives;
+      console.log(`난이도 ${difficulty} 설정 완료: ${gameType} 모드, 생명력 ${this.lives}`);
+    } else {
+      console.warn(`Unknown difficulty: ${difficulty}, using default lives`);
     }
-    this.lives = this.totalLives;
   }
 
   /**
    * 공통 게임 오브젝트 초기화
    */
   initializeGameObjects() {
-    // 공 초기화
-    this.ball = {
-      x: this.canvas.width / 2,
-      y: this.canvas.height - 30,
-      speedX: 0,
-      speedY: -this.BALL_SPEED,
-      radius: 10,
-      color: "#ffeb3b",
+    // 패들 초기화 (벽돌깨기에서 주로 사용)
+    this.paddle = {
+      x: (this.canvas.width - 80) / 2,
+      y: this.canvas.height - this.paddleOffset,
+      width: 80,
+      height: 10,
+      speed: 8,
     };
 
-    // 패들 초기화
-    this.paddle = {
-      height: 10,
-      width: 110,
-      x: (this.canvas.width - 110) / 2,
-      y: this.canvas.height - this.paddleOffset,
-      color: "#4CAF50",
+    // 공 초기화 (벽돌깨기에서 주로 사용)
+    this.ball = {
+      x: this.canvas.width / 2,
+      y: this.canvas.height - this.paddleOffset - 20,
+      radius: 8,
+      dx: this.BALL_SPEED,
+      dy: -this.BALL_SPEED,
+      speed: this.BALL_SPEED,
     };
   }
 
@@ -219,30 +208,23 @@ class GameManager {
       e.key === "D"
     ) {
       this.keys.rightPressed = true;
-    } else {
-      this.keys.rightPressed = false;
-      if (
-        e.key === "Left" ||
-        e.key === "ArrowLeft" ||
-        e.key === "a" ||
-        e.key === "A"
-      ) {
-        this.keys.leftPressed = true;
-      } else {
-        this.keys.leftPressed = false;
-        if (e.code === "Space") {
-          this.keys.spacePressed = true;
-          this.togglePause(); // 스페이스바로 일시정지 토글
-        } else {
-          this.keys.spacePressed = false;
-          if (e.key >= "1" && e.key <= "4") {
-            // MARK: 포켓몬 능력 사용 처리 추가
-            this.handlePokemonAbilityKey(parseInt(e.key) - 1);
-          }
-        }
-      }
+    } else if (
+      e.key === "Left" ||
+      e.key === "ArrowLeft" ||
+      e.key === "a" ||
+      e.key === "A"
+    ) {
+      this.keys.leftPressed = true;
+    } else if (e.code === "Space") {
+      this.keys.spacePressed = true;
+      this.togglePause(); // 스페이스바로 일시정지 토글
+    } else if (e.key >= "1" && e.key <= "4") {
+      // MARK: 포켓몬 능력 사용 처리
+      const slotIndex = parseInt(e.key) - 1;
+      this.handlePokemonAbilityKey(slotIndex);
     }
   }
+
   /**
    * 키보드 입력 해제 처리
    */
@@ -263,13 +245,10 @@ class GameManager {
       this.keys.leftPressed = false;
     } else if (e.code === "Space") {
       this.keys.spacePressed = false; // 스페이스바 입력 해제
-    } else if (e.key >= "1" && e.key <= "4") {
-      // MARK: 포켓몬 능력 사용 처리 추가
-      // const slotIndex = parseInt(e.key) - 1;
-      // this.handlePokemonAbilityKey(slotIndex);
     }
   }
-  // MARK: 포켓몬 능력 키 입력 처리 메서드 추가
+
+  // MARK: 포켓몬 능력 키 입력 처리 메서드
   handlePokemonAbilityKey(slotIndex) {
     // 게임이 실행 중이고 일시정지 상태가 아닐 때만 실행
     if (!this.isGameRunning || this.isPaused) return;
@@ -310,7 +289,8 @@ class GameManager {
     const pokemonIndex = parseInt(indexMatch[1]);
     this.usePokemonAbility(slotIndex, pokemonIndex);
   }
-  // MARK: 포켓몬 능력 사용 메서드 추가
+
+  // MARK: 포켓몬 능력 사용 메서드
   usePokemonAbility(slotIndex, pokemonIndex) {
     const currentTime = performance.now();
 
@@ -332,20 +312,267 @@ class GameManager {
     const typeName = typeNames[pokemonType] || "미지타입";
     console.log(`${typeName} 능력 사용!`);
 
-    // 체력 소모 처리 (추가됨)
-    this.consumePokemonHealth(slotIndex);
+    // 체력 소모 처리
+    this.pokemonHealthSystem.currentHealth[slotIndex] -= this.pokemonHealthSystem.healthConsumption;
 
-    // 쿨타임 설정
+    if (this.pokemonHealthSystem.currentHealth[slotIndex] <= 0) {
+      this.pokemonHealthSystem.currentHealth[slotIndex] = 0;
+      this.pokemonHealthSystem.isDizzy[slotIndex] = true;
+
+      // 기절 상태 이미지로 변경
+      const slot = document.getElementById(`slot-${slotIndex}`);
+      if (slot) {
+        // 원본 이미지 저장 (아직 저장되지 않은 경우에만)
+        if (!this.pokemonHealthSystem.originalImages[slotIndex]) {
+          this.pokemonHealthSystem.originalImages[slotIndex] = slot.style.backgroundImage;
+        }
+
+        // 기절 이미지로 변경
+        const dizzyImagePath = `url('../assets/images/pokemon/${pokemonIndex}_dizzy.png')`;
+        slot.style.backgroundImage = dizzyImagePath;
+        this.pokemonHealthSystem.dizzyImages[slotIndex] = dizzyImagePath;
+      }
+
+      console.log(`슬롯 ${slotIndex + 1} 포켓몬이 기절했습니다!`);
+    }
+
+    // 쿨타임 설정 및 시각적 효과 시작 // MARK: 시각적 쿨다운 효과 연동
     this.pokemonAbilitySystem.lastUsed[slotIndex] = currentTime;
+    this.startCooldownVisualEffect(slotIndex); // MARK: 시각적 쿨다운 효과 시작
 
-    // 하위 클래스에서 오버라이드할 수 있는 메서드 호출
-    this.executePokemonAbility(slotIndex, pokemonIndex, pokemonType);
+    // 타입별 특수 효과 (게임 로직에 따라 구현)
+    switch (pokemonType) {
+      case 0: // 풀타입
+        console.log("풀타입 능력: 체력 회복 효과!");
+        break;
+      case 1: // 불타입
+        console.log("불타입 능력: 화염 공격!");
+        break;
+      case 2: // 전기타입
+        console.log("전기타입 능력: 전기 공격!");
+        break;
+      case 3: // 물타입
+        console.log("물타입 능력: 물 공격!");
+        break;
+      case 4: // 얼음타입
+        console.log("얼음타입 능력: 얼음 공격!");
+        break;
+      default:
+        console.log("알 수 없는 타입의 능력!");
+        break;
+    }
+
+    // 체력 UI 업데이트
+    this.updateHealthUI(slotIndex);
   }
 
-  // MARK: 포켓몬 능력 실행 메서드 (하위 클래스에서 오버라이드)
-  executePokemonAbility(slotIndex, pokemonIndex, pokemonType) {
-    // 기본 구현: 하위 클래스에서 오버라이드하여 실제 능력 효과 구현
-    console.log(`슬롯 ${slotIndex + 1}의 포켓몬(인덱스: ${pokemonIndex}, 타입: ${pokemonType}) 능력이 사용되었습니다.`);
+  // MARK: 쿨다운 시각적 효과 시작 메서드
+  startCooldownVisualEffect(slotIndex) {
+    const slotFrame = document.getElementById(`slot-frame-${slotIndex}`);
+    if (!slotFrame) return;
+
+    // 쿨다운 클래스 및 능력 준비 클래스 제거
+    slotFrame.classList.add('cooldown');
+    slotFrame.classList.remove('ability-ready');
+
+    // 기존 쿨다운 타이머가 있다면 제거 (중복 방지)
+    if (this.pokemonAbilitySystem.cooldownTimers && this.pokemonAbilitySystem.cooldownTimers[slotIndex]) {
+      clearInterval(this.pokemonAbilitySystem.cooldownTimers[slotIndex]);
+    }
+
+    // 쿨다운 타이머 배열 초기화 (처음 실행 시)
+    if (!this.pokemonAbilitySystem.cooldownTimers) {
+      this.pokemonAbilitySystem.cooldownTimers = [null, null, null, null];
+    }
+
+    // 쿨다운 진행률 업데이트를 위한 타이머 설정
+    const startTime = performance.now();
+    const updateInterval = 50; // 50ms마다 업데이트 (부드러운 애니메이션)
+
+    this.pokemonAbilitySystem.cooldownTimers[slotIndex] = setInterval(() => {
+      const currentTime = performance.now();
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / this.pokemonAbilitySystem.defaultCooldown, 1);
+
+      // CSS 변수로 진행률 설정 (360도 기준)
+      const progressDegrees = progress * 360;
+      slotFrame.style.setProperty('--cooldown-progress', `${progressDegrees}deg`);
+
+      // 쿨다운 완료 체크
+      if (progress >= 1) {
+        this.endCooldownVisualEffect(slotIndex);
+      }
+    }, updateInterval);
+  }
+
+  // MARK: 쿨다운 시각적 효과 종료 메서드  
+  endCooldownVisualEffect(slotIndex) {
+    const slotFrame = document.getElementById(`slot-frame-${slotIndex}`);
+    if (!slotFrame) return;
+
+    // 쿨다운 타이머 정리
+    if (this.pokemonAbilitySystem.cooldownTimers && this.pokemonAbilitySystem.cooldownTimers[slotIndex]) {
+      clearInterval(this.pokemonAbilitySystem.cooldownTimers[slotIndex]);
+      this.pokemonAbilitySystem.cooldownTimers[slotIndex] = null;
+    }
+
+    // 쿨다운 클래스 제거 및 능력 준비 클래스
+    slotFrame.classList.remove('cooldown');
+    slotFrame.style.removeProperty('--cooldown-progress');
+
+    // 포켓몬이 있고 기절 상태가 아니면 능력 준비 상태로 설정
+    const slot = document.getElementById(`slot-${slotIndex}`);
+    if (slot && slot.style.backgroundImage && slot.style.backgroundImage !== "none" &&
+      !this.pokemonHealthSystem.isDizzy[slotIndex]) {
+      slotFrame.classList.add('ability-ready');
+    }
+  }
+
+  // MARK: 게임 시작 시 모든 슬롯의 쿨다운 상태 초기화 메서드
+  initializeCooldownVisualEffects() {
+    for (let i = 0; i < 4; i++) {
+      this.endCooldownVisualEffect(i);
+    }
+  }
+
+  // MARK: 슬롯에 포켓몬이 배치될 때 호출되는 메서드 (기존 코드에서 호출해야 함)
+  onPokemonSlotUpdated(slotIndex) {
+    const slot = document.getElementById(`slot-${slotIndex}`);
+    const slotFrame = document.getElementById(`slot-frame-${slotIndex}`);
+
+    if (!slot || !slotFrame) return;
+
+    // 포켓몬이 있는지 확인
+    const hasPokemon = slot.style.backgroundImage && slot.style.backgroundImage !== "none";
+    const isDizzy = this.pokemonHealthSystem.isDizzy[slotIndex];
+    const isOnCooldown = this.isCooldownActive(slotIndex);
+
+    if (hasPokemon && !isDizzy && !isOnCooldown) {
+      // 포켓몬이 있고, 기절하지 않았고, 쿨다운이 아니면 능력 준비 상태
+      slotFrame.classList.add('ability-ready');
+    } else {
+      // 그 외의 경우는 능력 준비 상태 해제
+      slotFrame.classList.remove('ability-ready');
+    }
+  }
+
+  // MARK: 쿨다운 활성 상태 체크 헬퍼 메서드
+  isCooldownActive(slotIndex) {
+    const currentTime = performance.now();
+    return (currentTime - this.pokemonAbilitySystem.lastUsed[slotIndex]) < this.pokemonAbilitySystem.defaultCooldown;
+  }
+
+  /**
+   * 체력 UI 업데이트 메서드
+   */
+  updateHealthUI(slotIndex) {
+    const healthBar = document.querySelector(`#slot-${slotIndex} .health-bar`);
+    if (healthBar) {
+      const healthPercentage = (this.pokemonHealthSystem.currentHealth[slotIndex] / this.pokemonHealthSystem.maxHealth[slotIndex]) * 100;
+      healthBar.style.width = `${healthPercentage}%`;
+
+      // 체력에 따른 색상 변경
+      if (healthPercentage > 60) {
+        healthBar.style.backgroundColor = '#4CAF50'; // 녹색
+      } else if (healthPercentage > 30) {
+        healthBar.style.backgroundColor = '#FF9800'; // 주황색
+      } else {
+        healthBar.style.backgroundColor = '#F44336'; // 빨간색
+      }
+    }
+  }
+
+  /**
+   * 아이템 사용 처리 메서드
+   */
+  useItemOnSlot(slotIndex, itemType) {
+    if (itemType === 'potion') {
+      // 회복 물약 사용
+      if (this.pokemonHealthSystem.isDizzy[slotIndex]) {
+        // 기절 상태 해제
+        this.pokemonHealthSystem.isDizzy[slotIndex] = false;
+        this.pokemonHealthSystem.currentHealth[slotIndex] = this.pokemonHealthSystem.maxHealth[slotIndex];
+
+        // 원본 이미지로 복구
+        const slot = document.getElementById(`slot-${slotIndex}`);
+        if (slot && this.pokemonHealthSystem.originalImages[slotIndex]) {
+          slot.style.backgroundImage = this.pokemonHealthSystem.originalImages[slotIndex];
+          this.pokemonHealthSystem.originalImages[slotIndex] = null;
+          this.pokemonHealthSystem.dizzyImages[slotIndex] = null;
+        }
+
+        console.log(`슬롯 ${slotIndex + 1} 포켓몬이 회복되었습니다!`);
+
+        // MARK: 회복 시 슬롯 상태 업데이트
+        this.onPokemonSlotUpdated(slotIndex);
+      } else {
+        // 일반 체력 회복
+        this.pokemonHealthSystem.currentHealth[slotIndex] = Math.min(
+          this.pokemonHealthSystem.currentHealth[slotIndex] + 50,
+          this.pokemonHealthSystem.maxHealth[slotIndex]
+        );
+        console.log(`슬롯 ${slotIndex + 1} 포켓몬 체력이 회복되었습니다!`);
+      }
+
+      this.updateHealthUI(slotIndex);
+    }
+  }
+
+  /**
+   * 게임 상태 관리 메서드들
+   */
+  startGame() {
+    this.isGameRunning = true;
+    this.gameStartTime = performance.now();
+    this.totalPauseDuration = 0;
+    console.log("게임 시작!");
+  }
+
+  pauseGame() {
+    if (this.isGameRunning && !this.isPaused) {
+      this.isPaused = true;
+      this.pauseStartTime = performance.now();
+      console.log("게임 일시정지");
+    }
+  }
+
+  resumeGame() {
+    if (this.isGameRunning && this.isPaused) {
+      this.isPaused = false;
+      this.totalPauseDuration += performance.now() - this.pauseStartTime;
+      console.log("게임 재개");
+    }
+  }
+
+  togglePause() {
+    if (this.isPaused) {
+      this.resumeGame();
+    } else {
+      this.pauseGame();
+    }
+  }
+
+  stopGame() {
+    this.isGameRunning = false;
+    this.isPaused = false;
+    if (this.animationFrame) {
+      cancelAnimationFrame(this.animationFrame);
+    }
+    console.log("게임 종료");
+  }
+
+  /**
+   * 게임 루프 메서드 (각 게임 모드에서 오버라이드)
+   */
+  gameLoop() {
+  // 기본 게임 루프 - 각 게임 모드에서 구현
+  }
+
+  /**
+   * 렌더링 메서드 (각 게임 모드에서 오버라이드)
+   */
+  render() {
+  // 기본 렌더링 - 각 게임 모드에서 구현
   }
 
   /**
@@ -355,459 +582,15 @@ class GameManager {
     if (this.isGameRunning && !this.isPaused && this.paddle) {
       const rect = this.canvas.getBoundingClientRect();
       const relativeX = e.clientX - rect.left;
+      const scaleX = this.canvas.width / rect.width;
+      this.paddle.x = (relativeX * scaleX) - (this.paddle.width / 2);
 
-      if (relativeX > 0 && relativeX < this.canvas.width) {
-        if (relativeX - this.paddle.width / 2 < 0) {
-          this.paddle.x = 0;
-        } else if (relativeX + this.paddle.width / 2 > this.canvas.width) {
-          this.paddle.x = this.canvas.width - this.paddle.width;
-        } else {
-          this.paddle.x = relativeX - this.paddle.width / 2;
-        }
+      // 패들이 화면 밖으로 나가지 않도록 제한
+      if (this.paddle.x < 0) {
+        this.paddle.x = 0;
+      } else if (this.paddle.x > this.canvas.width - this.paddle.width) {
+        this.paddle.x = this.canvas.width - this.paddle.width;
       }
     }
-  }
-
-  /**
-   * 메시지 표시 시스템
-   */
-  showMessage(text, type, persistent = false) {
-    if (this.persistentMessageElement) {
-      this.persistentMessageElement.remove();
-      this.persistentMessageElement = null;
-    }
-
-    const messageElement = document.createElement("div");
-    messageElement.textContent = text;
-    messageElement.style.cssText = `
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 20px;
-            border-radius: 10px;
-            font-size: 24px;
-            font-weight: bold;
-            z-index: 100;
-            color: white;
-            background-color: ${type === "success" ? "rgba(76, 175, 80, 0.9)" : "rgba(244, 67, 54, 0.9)"};
-        `;
-
-    const gameContainer = document.getElementById("game-container");
-    if (gameContainer) {
-      gameContainer.appendChild(messageElement);
-    }
-
-    if (persistent) {
-      this.persistentMessageElement = messageElement;
-    } else {
-      setTimeout(() => {
-        if (messageElement.parentNode) {
-          messageElement.remove();
-        }
-      }, 3000);
-    }
-  }
-  /**
-   * UI 업데이트
-   */
-  updateUI() {
-    // 벽돌깨기 모드일때만 drawLives, 아니면 해당 로직에서 따로 구현
-    if (this.stage <= 3) {
-      this.drawLives();
-    }
-    this.drawScore();
-
-    // 포켓몬 체력바 그리기 (추가됨)
-    this.drawPokemonHealthBars();
-  }
-
-  /**
-   * 목숨 표시
-   */
-  drawLives() {
-    const iconWidth = 30; // 아이콘 너비
-    const iconHeight = 30; // 아이콘 높이
-    const iconX = this.canvas.width - 100; // 아이콘 위치 (우측 여백 70px)
-    const iconY = 10; // 아이콘 위치 (상단 여백 10px)
-    const textX = iconX + iconWidth + 5; // 텍스트 위치 (아이콘 옆)
-    const textY = iconY + iconHeight / 2 + 5; // 텍스트 수직 정렬
-    if (this.ballIconLoaded) {
-      this.ctx.drawImage(this.ballIcon, iconX, iconY, iconWidth, iconHeight); // 볼 아이콘 그리기
-
-      this.ctx.font = "20px DOSGothic"; // 폰트 설정
-      this.ctx.fillStyle = "#fff"; // 텍스트 색상
-      this.ctx.textAlign = "left"; // 텍스트 정렬
-      this.ctx.fillText(`X ${this.lives}`, textX, textY); // 남은 목숨 표시
-    } else {
-      this.ctx.fillText(`남은 목숨: ${this.lives}`, textX, textY); // 볼 아이콘이 로드되지 않았을 때 텍스트로 표시
-    }
-  }
-
-  drawScore() {
-    const scoreElement = qs("#score");
-    if (scoreElement) scoreElement.textContent = this.score;
-  }
-
-  /**
-   * 일시정지 토글
-   */
-  togglePause() {
-    if (this.isGameRunning) {
-      this.isPaused = !this.isPaused;
-      if (this.isPaused) {
-        this.pauseStartTime = performance.now();
-        cancelAnimationFrame(this.animationFrame);
-        this.showMessage("게임 일시정지", "success", true);
-      } else {
-        // 일시정지 해제 시 - 일시정지 지속 시간 계산하여 누적
-        const pauseEndTime = performance.now();
-        this.totalPauseDuration += pauseEndTime - this.pauseStartTime;
-        this.lastTime = performance.now();
-        this.animationFrame = requestAnimationFrame((time) =>
-          this.update(time),
-        );
-
-        if (this.persistentMessageElement) {
-          this.persistentMessageElement.remove();
-          this.persistentMessageElement = null;
-        }
-        this.showMessage("게임 재개", "success");
-      }
-    }
-  }
-
-  /**
-   * 컨트롤 정보 모달 표시
-   * @param {boolean} isBossMode - 보스 모드 여부
-   * @param {Function} onClose - 모달 닫기 콜백
-   */
-  showControlInfoModal(isBossMode, onClose) {
-    const msg = isBossMode
-      ? "W A S D <br> ↑ ← ↓ →"
-      : "W A S D <br> ↑ ← ↓ → <br>마우스";
-    showInfoModal(msg, onClose);
-  }
-
-  /**
-   * 게임 시작
-   */
-  startGame() {
-    if (!this.isGameRunning) {
-      if (this.animationFrame) {
-        cancelAnimationFrame(this.animationFrame);
-      }
-
-      this.isGameRunning = true;
-      this.isPaused = false;
-      this.score = 0;
-      this.lives = this.totalLives;
-      this.lastTime = performance.now();
-      this.gameStartTime = performance.now();
-      this.pauseStartTime = 0;
-      this.totalPauseDuration = 0;
-
-      this.initializeGameObjects();
-
-      if (this.initializeGame) {
-        this.initializeGame();
-      }
-
-      this.updateUI();
-      this.drawBackground();
-
-      this.showControlInfoModal(this.mode === "boss", () => {
-        hideAllFade(qsa(".screen"));
-        showWithFade(qs("#gameplay-screen"));
-
-        this.animationFrame = requestAnimationFrame((time) =>
-          this.update(time),
-        );
-        console.log(`${this.mode} 게임을 시작합니다.`);
-        this.showMessage(`게임 시작!`, "success");
-      });
-    }
-  }
-
-  /**
-   * 게임 재시작
-   */
-  restartGame() {
-    if (this.animationFrame) {
-      cancelAnimationFrame(this.animationFrame);
-    }
-
-    this.isGameRunning = false;
-    this.lastTime = 0;
-
-    setTimeout(() => this.startGame(), 100);
-  }
-
-  /**
-   * 배경 이미지 그리기 메서드 (추가된 기능 - 하위 클래스에서 호출)
-   */
-  drawBackground() {
-    // 스테이지별 배경 이미지 그리기
-    if (this.backgroundImageLoaded && this.backgroundImage) {
-      this.ctx.drawImage(
-        this.backgroundImage,
-        0,
-        0,
-        this.canvas.width,
-        this.canvas.height,
-      );
-    }
-  }
-
-  /**
-   * MARK: 포켓몬 체력 소모 메서드 추가
-   */
-  consumePokemonHealth(slotIndex) {
-    // 체력 소모
-    this.pokemonHealthSystem.currentHealth[slotIndex] -= this.pokemonHealthSystem.healthConsumption;
-
-    // 체력이 0 이하로 떨어진 경우 기절 상태 처리
-    if (this.pokemonHealthSystem.currentHealth[slotIndex] <= 0) {
-      this.pokemonHealthSystem.currentHealth[slotIndex] = 0;
-      this.setPokemonDizzy(slotIndex);
-    }
-  }  // MARK: 포켓몬 기절 상태 설정 메서드 추가 (dizzyImages 배열 활용)
-  setPokemonDizzy(slotIndex) {
-    this.pokemonHealthSystem.isDizzy[slotIndex] = true;
-
-    const slot = document.getElementById(`slot-${slotIndex}`);
-    if (!slot) return;
-
-    // 원본 이미지 저장 (아직 저장되지 않은 경우)
-    if (!this.pokemonHealthSystem.originalImages[slotIndex]) {
-      this.pokemonHealthSystem.originalImages[slotIndex] = slot.style.backgroundImage;
-    }
-
-    // 포켓몬 인덱스 추출
-    const bgImage = slot.style.backgroundImage;
-    const indexMatch = bgImage.match(/(\d+)\.png/);
-    if (!indexMatch) return;
-
-    const pokemonIndex = parseInt(indexMatch[1]);
-    const dizzyImagePath = `../assets/images/game/pokemon/potrait/dizzy/${pokemonIndex}.png`;
-
-    // dizzyImages 배열에 이미 저장된 이미지가 있는지 확인
-    if (this.pokemonHealthSystem.dizzyImages[slotIndex]) {
-      // 이미 로드된 기절 이미지 사용
-      slot.style.backgroundImage = `url(${dizzyImagePath})`;
-      slot.style.filter = "grayscale(1)"; // 흑백 효과 적용
-      console.log(`슬롯 ${slotIndex + 1} 포켓몬이 기절했습니다. 저장된 기절 이미지 사용.`);
-      return;
-    }
-
-    // 기절 이미지 존재 여부 확인 및 dizzyImages 배열에 저장
-    const testImage = new Image();
-    testImage.onload = () => {
-      // 성공적으로 로드된 경우 dizzyImages 배열에 저장
-      this.pokemonHealthSystem.dizzyImages[slotIndex] = testImage;
-
-      // 기절 이미지가 존재하는 경우 교체
-      slot.style.backgroundImage = `url(${dizzyImagePath})`;
-      slot.style.filter = "grayscale(1)"; // 흑백 효과 적용
-      console.log(`슬롯 ${slotIndex + 1} 포켓몬이 기절했습니다. 기절 이미지로 교체됩니다.`);
-    };
-    testImage.onerror = () => {
-      // 로드 실패한 경우 null로 표시하여 흑백 효과만 사용
-      this.pokemonHealthSystem.dizzyImages[slotIndex] = null;
-
-      // 기절 이미지가 없는 경우 흑백 효과만 적용
-      slot.style.filter = "grayscale(1)"; // 흑백 효과 적용
-      console.log(`슬롯 ${slotIndex + 1} 포켓몬이 기절했습니다. 흑백 효과만 적용됩니다.`);
-    };
-    testImage.src = dizzyImagePath;
-  }
-
-  // MARK: 포켓몬 체력 회복 메서드 추가
-  healPokemonHealth(slotIndex, healAmount = 50) {
-    // 체력 회복
-    this.pokemonHealthSystem.currentHealth[slotIndex] = Math.min(
-      this.pokemonHealthSystem.maxHealth[slotIndex],
-      this.pokemonHealthSystem.currentHealth[slotIndex] + healAmount
-    );
-
-    // 기절 상태에서 회복된 경우 원본 이미지 복원
-    if (this.pokemonHealthSystem.isDizzy[slotIndex] && this.pokemonHealthSystem.currentHealth[slotIndex] > 0) {
-      this.pokemonHealthSystem.isDizzy[slotIndex] = false;
-
-      const slot = document.getElementById(`slot-${slotIndex}`);
-      if (slot && this.pokemonHealthSystem.originalImages[slotIndex]) {
-        slot.style.backgroundImage = this.pokemonHealthSystem.originalImages[slotIndex];
-        slot.style.filter = "none"; // 흑백 효과 제거
-        console.log(`슬롯 ${slotIndex + 1} 포켓몬이 회복되었습니다.`);
-      }
-    }
-  }
-  // MARK: 포켓몬 체력바 그리기 메서드 추가
-  drawPokemonHealthBars() {
-    // 보스전에선 그리지 않음
-    if (this.stage === 4) return;
-
-    const barWidth = 60; // 체력바 너비
-    const barHeight = 6; // 체력바 높이
-    const barY = this.canvas.height - 15; // 체력바 Y 위치 (슬롯 바로 아래)
-
-    for (let i = 0; i < 4; i++) {
-      // 주석 추가: 슬롯에 포켓몬이 있는지 확인하여 빈 슬롯 HP바 표시 문제 해결
-      const slot = document.getElementById(`slot-${i}`);
-      if (!slot || !slot.style.backgroundImage || slot.style.backgroundImage === "none") {
-        continue; // 포켓몬이 없는 슬롯은 체력바를 그리지 않음
-      }
-
-      const barX = i * 64 + 2; // 각 슬롯 위치에 맞춰 체력바 위치 계산
-      const healthPercentage = this.pokemonHealthSystem.currentHealth[i] / this.pokemonHealthSystem.maxHealth[i];
-
-      // 배경 (회색 바)
-      this.ctx.fillStyle = "#333333";
-      this.ctx.fillRect(barX, barY, barWidth, barHeight);
-
-      // 체력바 색상 결정 (체력에 따라 색상 변화)
-      let healthColor;
-      if (healthPercentage > 0.6) {
-        healthColor = "#4CAF50"; // 초록색 (양호)
-      } else if (healthPercentage > 0.3) {
-        healthColor = "#FF9800"; // 주황색 (주의)
-      } else {
-        healthColor = "#F44336"; // 빨간색 (위험)
-      }
-
-      // 현재 체력바
-      if (healthPercentage > 0) {
-        this.ctx.fillStyle = healthColor;
-        this.ctx.fillRect(barX, barY, barWidth * healthPercentage, barHeight);
-      }
-
-      // 체력바 테두리
-      this.ctx.strokeStyle = "#FFFFFF";
-      this.ctx.lineWidth = 1;
-      this.ctx.strokeRect(barX, barY, barWidth, barHeight);
-    }
-  }
-
-  /**
-   * 메인 게임 루프 - 하위 클래스에서 오버라이드
-   */
-  update(currentTime = 0) {
-    const deltaTime = currentTime - this.lastTime;
-
-    // 프레임 딜레이를 고려한 업데이트
-    // 현재 시간과 마지막 업데이트 시간의 차이를 계산하여 프레임 딜레이보다 작으면 다음 프레임으로 넘어감
-    if (deltaTime < this.FRAME_DELAY) {
-      this.animationFrame = requestAnimationFrame((time) => this.update(time));
-      return;
-    }
-
-    this.lastTime = currentTime - (deltaTime % this.FRAME_DELAY);
-    const timeMultiplier = deltaTime / this.FRAME_DELAY; // FPS 기반 시간 보정치
-
-    // 게임이 실행 중이고 일시정지가 아닌 경우에만 업데이트
-    if (this.isGameRunning && !this.isPaused) {
-      // 남은 시간 (ms)
-      const elapsedTime =
-        currentTime - this.gameStartTime - this.totalPauseDuration;
-      const timeLeft = Math.max(0, GAME_TIME - elapsedTime);
-
-      // 분과 초 계산
-      const minutes = Math.floor(timeLeft / 60000);
-      const seconds = Math.floor((timeLeft % 60000) / 1000);
-
-      // 화면에 표시 (두자리 숫자 포맷)
-      document.getElementById("timer").textContent =
-        `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;      // 시간 초과 시 게임 종료 처리
-      if (timeLeft <= 0) {
-        this.isGameRunning = false;
-        cancelAnimationFrame(this.animationFrame);
-
-        // 보스전은 시간 초과 시 무조건 실패
-        if (this.stage === 4) {
-          this.isGameClear = false;
-          this.showMessage("시간 초과! 보스를 시간 내에 처치하지 못했습니다!", "error", true);
-          this.endGame();
-        }
-        // 벽돌깨기 게임에서 최소 점수 달성 여부 확인
-        else if (this.mode === "story" && this.requiredScores) {
-          const requiredScore = this.requiredScores[this.difficulty] || this.requiredScores.easy;
-          if (this.score >= requiredScore) {
-            // 최소 점수 달성 시 게임 클리어
-            this.isGameClear = true;
-            this.showRescueMessage(`⏰ 시간 종료! 목표 점수 ${requiredScore}점 달성으로 게임 클리어! 🎉`);
-            setTimeout(() => {
-              this.endGame();
-            }, 3000);
-          } else {
-            // 최소 점수 미달성 시 게임 오버
-            this.isGameClear = false;
-            this.showMessage("시간 초과! 목표 점수 미달로 게임 오버", "error", true);
-            this.endGame();
-          }
-        } else {
-          // 기타 게임 모드는 기존 로직 유지
-          this.endGame();
-        }
-        return;
-      }// 이하 기존 게임 로직 계속...
-      // 캔버스 초기화
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-      // 배경 그리기 (항상 먼저)
-      if (this.backgroundImageLoaded && this.backgroundImage) {
-        this.drawBackground();
-      } else if (this.stage) {
-        // 배경 이미지가 로드되지 않았지만 스테이지 정보가 있다면 로드 시도
-        this.loadStageBackground(this.stage);
-      }
-
-      // 하위 클래스의 업데이트 메서드 호출
-      if (this.updateGame) {
-        this.updateGame(timeMultiplier);
-      }
-
-      this.updateUI();
-    } // 다음 프레임 요청 (게임이 실행 중일 때만)
-    if (this.isGameRunning) {
-      this.animationFrame = requestAnimationFrame((time) => this.update(time));
-    }
-  }
-
-  /**
-   * 게임 종료
-   */
-  endGame() {
-    this.isGameRunning = false;
-    if (this.animationFrame) {
-      cancelAnimationFrame(this.animationFrame);
-    }
-
-    const result = {
-      mode: this.mode,
-      difficulty: this.difficulty,
-      stage: this.stage,
-      score: this.score,
-      date: new Date().toISOString(),
-      game_over: window.DEBUG_MODE ? false : true, // 디버그 모드에서는 계속 진행
-      saved_pokemon: this.saved_pokemon || [],
-    };
-    if (!window.DEBUG_GAME) {
-      this.onGameEnd(result); // 게임 종료 콜백 호출
-    }
-  }
-
-  // MARK: 하위 클래스에서 구현해야 할 추상 메서드들
-  /**
-   * 게임별 초기화 - 하위 클래스에서 구현
-   */
-  initializeGame() {
-    // 하위 클래스에서 구현
-  }
-
-  /**
-   * 게임별 업데이트 로직 - 하위 클래스에서 구현
-   */
-  updateGame(timeMultiplier) {
-    // 하위 클래스에서 구현
   }
 }

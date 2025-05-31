@@ -284,8 +284,7 @@ class BrickGame extends GameManager {
     // combination.bricks.forEach((brick, index)=>{
     //   console.log(`brick ${index} : ${brick.x}, ${brick.y}`);
     // });
-  }
-  /**
+  }  /**
    * MARK: 게임별 초기화 
    * (GameManager 오버라이드)
    */
@@ -296,6 +295,9 @@ class BrickGame extends GameManager {
     // 동적 조합 시스템 초기화
     this.initDynamicBrickSystem();
     this.totalLives = this.lives;
+
+    // 주석: 쿨다운 시각적 효과 초기화
+    this.initializeCooldownVisualEffects();
   }
 
   /**
@@ -596,9 +598,7 @@ class BrickGame extends GameManager {
           }
         }
       }
-    }
-
-    // 빈 슬롯 찾아서 추가
+    }    // 빈 슬롯 찾아서 추가
     for (let i = 0; i < 4; i++) {
       let slot = document.getElementById("slot-" + i);
       let bg = slot.style.backgroundImage;
@@ -610,11 +610,13 @@ class BrickGame extends GameManager {
         let color = this.typeColorMap[pokemonData.type] || "#eee";
         slot.style.backgroundColor = color;
         console.log(`포켓몬 슬롯에 추가됨: ${pokemonData.name} (타입 ${pokemonData.type})`);
+
+        // 주석: 포켓몬 슬롯 업데이트 시 쿨다운 시각적 상태 업데이트
+        this.onPokemonSlotUpdated(i);
         return;
       }
     }
-  }
-  /**
+  }  /**
    * MARK: 포켓몬 슬롯 초기화
    */
   clearPokemonSlots() {
@@ -624,6 +626,22 @@ class BrickGame extends GameManager {
       if (slot) {
         slot.style.backgroundImage = "none";
         slot.style.backgroundColor = "transparent";
+      }
+
+      // 주석: 슬롯 초기화 시 쿨다운 시각적 상태도 업데이트
+      this.onPokemonSlotUpdated(i);
+    }
+
+    // 주석: 포켓몬 체력 시스템 및 능력 쿨다운도 함께 초기화
+    this.pokemonHealthSystem.isDizzy.fill(false);
+    this.pokemonHealthSystem.currentHealth.fill(100);
+    this.pokemonHealthSystem.maxHealth.fill(100);
+
+    // 주석: 모든 쿨다운 타이머 정리
+    for (let i = 0; i < 4; i++) {
+      if (this.pokemonAbilitySystem.cooldownTimers[i]) {
+        clearInterval(this.pokemonAbilitySystem.cooldownTimers[i]);
+        this.pokemonAbilitySystem.cooldownTimers[i] = null;
       }
     }
   }
@@ -742,12 +760,14 @@ class BrickGame extends GameManager {
     this.fireBoostActive = false;
     this.originalBallSpeed = null;
     this.fireBoostRemainingTime = 0; // 일시정지 관련 변수도 초기화 (주석 추가: 완전한 상태 초기화)
-    
     // 타이머 정리 (주석 추가: 메모리 누수 방지 및 상태 정리)
     if (this.fireBoostTimeout) {
       clearTimeout(this.fireBoostTimeout);
       this.fireBoostTimeout = null;
     }
+
+    // 주석: 게임 재시작 시 쿨다운 시각적 효과도 재초기화
+    this.initializeCooldownVisualEffects();
 
     super.restartGame(); // 부모 클래스의 재시작 메서드 호출
   }
@@ -1049,9 +1069,7 @@ class BrickGame extends GameManager {
     const newHealth = Math.min(maxHealth, currentHealth + healAmount);
 
     // 체력 업데이트
-    this.pokemonHealthSystem.currentHealth[targetSlotIndex] = newHealth;
-
-    // 기절 상태 해제 (체력이 0보다 커진 경우)
+    this.pokemonHealthSystem.currentHealth[targetSlotIndex] = newHealth;    // 기절 상태 해제 (체력이 0보다 커진 경우)
     if (newHealth > 0 && this.pokemonHealthSystem.isDizzy[targetSlotIndex]) {
       this.pokemonHealthSystem.isDizzy[targetSlotIndex] = false;
 
@@ -1061,6 +1079,9 @@ class BrickGame extends GameManager {
         slot.style.backgroundImage = this.pokemonHealthSystem.originalImages[targetSlotIndex];
         slot.style.filter = "none"; // 흑백 효과 제거
       }
+
+      // 주석: 기절 상태 해제 시 쿨다운 시각적 상태 업데이트
+      this.onPokemonSlotUpdated(targetSlotIndex);
     }
 
     // 메시지 표시

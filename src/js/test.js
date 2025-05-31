@@ -17,12 +17,11 @@ function testGame() {
   hideAllFade(qsa(".screen"));
   show(qs("#gameplay-screen"));
   if (!gameInstance) {
-    gameInstacne = new BrickGame(canvas);
+    gameInstance = new BrickGame(canvas);
   }
-  gameInstance.setGameInfo({ mode: "story", difficulty: "easy", stage: 1 });
-  gameInstance.setOnGameEnd(null);
-  gameInstance.
-  playGame("story", 0, 0, (gameResult) => {
+  // gameInstance.setGameInfo({ mode: "story", difficulty: "easy", stage: 1 });
+  // gameInstance.setOnGameEnd(null);
+  playGame("story", 'easy', 0, (gameResult) => {
     console.log("Game ended:", gameResult);
     handleReturnToTitleScreen();
   });
