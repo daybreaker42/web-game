@@ -334,32 +334,15 @@ class GameManager {
       }
 
       console.log(`슬롯 ${slotIndex + 1} 포켓몬이 기절했습니다!`);
-    }
-
-    // 쿨타임 설정 및 시각적 효과 시작 // MARK: 시각적 쿨다운 효과 연동
+    }    // 쿨타임 설정 및 시각적 효과 시작 // MARK: 시각적 쿨다운 효과 연동
     this.pokemonAbilitySystem.lastUsed[slotIndex] = currentTime;
     this.startCooldownVisualEffect(slotIndex); // MARK: 시각적 쿨다운 효과 시작
 
-    // 타입별 특수 효과 (게임 로직에 따라 구현)
-    switch (pokemonType) {
-      case 0: // 풀타입
-        console.log("풀타입 능력: 체력 회복 효과!");
-        break;
-      case 1: // 불타입
-        console.log("불타입 능력: 화염 공격!");
-        break;
-      case 2: // 전기타입
-        console.log("전기타입 능력: 전기 공격!");
-        break;
-      case 3: // 물타입
-        console.log("물타입 능력: 물 공격!");
-        break;
-      case 4: // 얼음타입
-        console.log("얼음타입 능력: 얼음 공격!");
-        break;
-      default:
-        console.log("알 수 없는 타입의 능력!");
-        break;
+    // MARK: 주석 추가 - 실제 게임별 능력 실행 메서드 호출 (각 게임 클래스에서 오버라이드)
+    if (typeof this.executePokemonAbility === 'function') {
+      this.executePokemonAbility(slotIndex, pokemonIndex, pokemonType);
+    } else {
+      console.warn('executePokemonAbility 메서드가 구현되지 않았습니다.');
     }
 
     // 체력 UI 업데이트
