@@ -1,67 +1,84 @@
 #story-screen {
-  animation: fade-in-slow 0.5s steps(3, end) 1;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  justify-content: flex-start;
-}
-#story-illustration {
-  flex: 1 1 70%;
-  width: 100%;
-  background: url("") center/contain no-repeat;
-}
-#story-textbox {
-  position: relative;
-  display: flex;
-  padding: 0 16px 12px 16px;
-  background: #fff;
-  border: 2px solid #111;
-  box-shadow:
-    0 0 0 2px #fff,
-    0 0 0 4px #111;
-  font-family: "DOSGothic", "Sam3KRFont", "돋움", "Dotum", monospace;
-  font-size: 1.3rem;
-  width: 90%;
-  height: 120px;
-  margin: 0 auto 10px auto;
-  white-space: pre-line;
-  text-align: left;
-}
-#story-line {
-  margin: 25px 0 0 5px;
-}
-#story-line.with-potrait {
-  margin: auto 0;
-  width: 580px;
-}
-.story-next-indicator {
-  position: absolute;
-  right: 20px;
-  bottom: 8px;
-  font-size: 1.5em;
-  color: #222;
-  pointer-events: none;
-  user-select: none;
-  opacity: 0.85;
-}
-.btn-skip {
-  position: absolute;
-  left: 30px;
-  top: 20px;
-  margin-top: 12px;
-  font-family: inherit;
-  font-size: 1.3rem;
-  padding: 4px 14px;
-  border: 1.5px solid #111;
-  background: #fff;
-  cursor: pointer;
-}
-#story-potrait {
-  display: inline-block;
-  width: 80px;
-  height: 80px;
-  margin-right: 14px;
-  background: center/contain no-repeat;
-  border: 2px solid #000000;
-  margin: 17px 20px 0 0;
-}
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;            /* flexbox 내부 크기 오버플로 방지 */
+    position: relative;
+  }
+  
+  #story-illustration {
+    flex: 1 1 auto;           /* 남은 공간을 전부 차지 */
+    width: 100%;
+    background: url("") center/contain no-repeat;
+    min-height: 0;            /* flexbox 오버플로 방지 */
+  }
+  
+  #story-textbox {
+    position: relative;     /* ←★ 기준 프레임 만들기 */
+    display: flex;
+    align-items: flex-start;
+    width: 90%;
+    height: 120px;
+    margin: 0 auto 10px auto;
+    padding: 0 16px 12px 16px;
+    background: #fff;
+    border: 2px solid #111;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #111;
+    font-family: "DOSGothic","Sam3KRFont","Dotum",monospace;
+    font-size: 1.3rem;
+    white-space: pre-line;
+    text-align: left;
+  }
+  #story-line {
+    margin: 25px 0 0 5px;
+  }
+  
+  #story-line.with-potrait {
+    margin: auto 0;
+    width: 580px;
+  }
+  
+  .story-next-indicator {
+    position: absolute;  /* ←★ 부모(#story-textbox)에 붙는다 */
+    right: 20px;
+    bottom: 8px;
+    font-size: 1.5em;
+    color: #222;
+    pointer-events: none;
+    user-select: none;
+    opacity: 0.85;
+  }
+  
+  .btn-skip {
+    position: absolute;
+    left: 30px;
+    top: 20px;
+    margin-top: 12px;
+    font-family: inherit;
+    font-size: 1.3rem;
+    padding: 4px 14px;
+    border: 1.5px solid #111;
+    background: #fff;
+    cursor: pointer;
+  }
+  
+  #story-potrait {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    margin-right: 14px;
+    background: center/contain no-repeat;
+    border: 2px solid #000000;
+    margin: 17px 20px 0 0;
+  }
+  
+    #story-fin-text {
+    position: absolute;
+    width: 200px;
+    height: 100px;
+    top: 75%;
+    left: 65%;
+    background: url("../../assets/images/story/fin-text.png") center/contain no-repeat;
+    font-weight: bold;
+    z-index: 10;
+  }
