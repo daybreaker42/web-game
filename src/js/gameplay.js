@@ -24,6 +24,7 @@ function playGame(mode, difficulty, stage, onGameEnd) {
     difficulty,
     stage,
   };
+  if (window.DEBUG_MODE) console.log(`gameInfo: ${JSON.stringify(gameInfo)}`);
 
   if (mode === "score") {
     gameInstance = new BrickGame(canvas);
