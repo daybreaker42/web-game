@@ -441,9 +441,9 @@ class GameManager {
         const pauseEndTime = performance.now();
         this.totalPauseDuration += pauseEndTime - this.pauseStartTime;
         this.lastTime = performance.now();
-        this.animationFrame = requestAnimationFrame((time) =>
-          this.update(time),
-        );
+        this.animationFrame = requestAnimationFrame((time) => {
+          this.update(time);
+        });
 
         if (this.persistentMessageElement) {
           this.persistentMessageElement.remove();
@@ -489,14 +489,14 @@ class GameManager {
     }
   }
 
+
   startAnimation() {
+
     hideAllFade(qsa(".screen"));
-        showWithFade(qs("#gameplay-screen"));
-        this.lastTime = performance.now();
-        this.gameStartTime = performance.now();
-        this.animationFrame = requestAnimationFrame((time) =>
-          this.update(time),
-        );
+    showWithFade(qs("#gameplay-screen"));
+    this.lastTime = performance.now();
+    this.gameStartTime = performance.now();
+    this.animationFrame = requestAnimationFrame((time) => this.update(time));
     console.log(`${this.mode} 게임을 시작합니다.`);
   }
   /**
