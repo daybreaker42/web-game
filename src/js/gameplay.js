@@ -24,6 +24,7 @@ function playGame(mode, difficulty, stage, onGameEnd) {
     difficulty,
     stage,
   };
+  if (window.DEBUG_MODE) console.log(`gameInfo: ${JSON.stringify(gameInfo)}`);
 
   if (mode === "score") {
     gameInstance = new BrickGame(canvas);
@@ -41,11 +42,6 @@ function playGame(mode, difficulty, stage, onGameEnd) {
   gameInstance.setOnGameEnd(function (gameResult) {
     setTimeout(() => onGameEnd(gameResult), 1800);
   });
-
-  // TODO: 이거 bossGame.js, brickGame.js, game/main.js에 중복 아닌가? (성준)
-  window.onkeydown = (e) => gameInstance.keyDownHandler(e);
-  window.onkeyup = (e) => gameInstance.keyUpHandler(e);
-  canvas.onmousemove = (e) => gameInstance.mouseMoveHandler(e);
 
   gameInstance.startGame();
 }

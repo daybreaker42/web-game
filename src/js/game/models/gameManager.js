@@ -5,7 +5,7 @@
  */
 class GameManager {
   constructor(canvas) {
-    if (window.DEBUG_MODE) console.log('[GameManager] constructor 호출'); // 디버깅용 로그 추가
+    if (window.DEBUG_MODE) console.log('[GameManager] constructor 호출');
     // 캔버스 설정
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
@@ -27,21 +27,8 @@ class GameManager {
     };
 
     // MARK: 포켓몬 능력 시스템 추가
-    this.pokemonAbilitySystem = {
-      cooldowns: [0, 0, 0, 0], // 각 슬롯별 쿨타임 (밀리초)
-      lastUsed: [0, 0, 0, 0], // 각 슬롯별 마지막 사용 시간
-      defaultCooldown: 3000, // 기본 쿨타임: 3초
-      throttleInterval: 200, // 입력 throttling 간격: 200ms
-      lastInputTime: [0, 0, 0, 0], // 각 슬롯별 마지막 입력 시간
-    };    // MARK: 포켓몬 체력 시스템 추가
-    this.pokemonHealthSystem = {
-      maxHealth: [100, 100, 100, 100], // 각 슬롯별 최대 체력
-      currentHealth: [100, 100, 100, 100], // 각 슬롯별 현재 체력
-      healthConsumption: 20, // 능력 사용 시 소모 체력
-      isDizzy: [false, false, false, false], // 각 슬롯별 기절 상태
-      dizzyImages: [null, null, null, null], // 기절 상태 이미지
-      originalImages: [null, null, null, null], // 원본 이미지 저장
-    };
+    this.pokemonAbilitySystem = JSON.parse(JSON.stringify(POKEMON_ABLILITY_SYSTEM));
+    this.pokemonHealthSystem = JSON.parse(JSON.stringify(POKEMON_HEALTH_SYSTEM));
 
     // 게임 상태 변수들
     this.lastTime = 0;
@@ -50,6 +37,8 @@ class GameManager {
     this.gameStartTime = 0; // 게임 시작 시간 저장
     this.pauseStartTime = 0; // 일시정지했을때 시간 멈추기 용
     this.totalPauseDuration = 0; // 일시정지한 시간
+    this.ballInitialX = this.canvas.width / 2;
+    this.ballInitialY = this.canvas.height - this.paddleOffset - 20;
 
     // 게임 정보
     this.mode = null;       // score | story
@@ -60,12 +49,11 @@ class GameManager {
     this.totalLives = 300;
     this.isGameClear = false;
     this.saved_pokemon = [];
+    // MARK: 난이도별 최소 점수 설정
+    this.requiredScores = MIN_REQUIRED_SCORE;
 
     // 생명 설정 (모드 및 난이도별) // 주석 추가: 생명 설정 구조화
-    this.livesConfig = {
-      brick: { easy: 20, normal: 10, hard: 5 }, // 주석 추가: 벽돌깨기 모드 생명 (현재는 동일)
-      boss: { easy: 1000, normal: 500, hard: 250 }, // 주석 추가: 보스전 모드 생명 (현재는 동일)
-    };
+    this.livesConfig = LIVES_CONFIG;
 
     // 입력 상태
     this.keys = {
@@ -80,9 +68,6 @@ class GameManager {
     this.paddleOffset = 80;
     this.BALL_SPEED = 5; // 공의 기본 속도
 
-    // 메시지 시스템
-    this.persistentMessageElement = null;
-
     // 다음 스테이지로 넘어가기
     this.onGameEnd = null;
   }
@@ -90,7 +75,7 @@ class GameManager {
    * MARK: 게임 정보를 설정하는 메서드
    */
   setGameInfo(data) {
-    if (window.DEBUG_MODE) console.log('[GameManager] setGameInfo 호출', data); // 디버깅용 로그 추가
+    if (window.DEBUG_MODE) console.log('[GameManager] setGameInfo 호출', data);
     if (!data.mode) {
         throw new Error(`게임 mode 설정 안됨: ${JSON.stringify(data)}`);
     }
@@ -122,7 +107,7 @@ class GameManager {
    * 다음 스테이지로 넘어가는 함수를 설정함
    */
   setOnGameEnd(onGameEnd) {
-    if (window.DEBUG_MODE) console.log('[GameManager] setOnGameEnd 호출'); // 디버깅용 로그 추가
+    if (window.DEBUG_MODE) console.log('[GameManager] setOnGameEnd 호출');
     this.onGameEnd = onGameEnd;
   }
   /**
@@ -156,7 +141,7 @@ class GameManager {
    * MARK: 레벨에 따른 난이도 설정
    */
   setDifficultyBydifficulty(difficulty) {
-    if (window.DEBUG_MODE) console.log('[GameManager] setDifficultyBydifficulty 호출', difficulty); // 디버깅용 로그 추가
+    if (window.DEBUG_MODE) console.log('[GameManager] setDifficultyBydifficulty 호출', difficulty);
     const currentModeConfig =
       this.livesConfig[this.mode] || this.livesConfig.brick; // 현재 모드의 설정을 가져오거나 기본값(brick) 사용
 
@@ -179,11 +164,11 @@ class GameManager {
    * 공통 게임 오브젝트 초기화
    */
   initializeGameObjects() {
-    if (window.DEBUG_MODE) console.log('[GameManager] initializeGameObjects 호출'); // 디버깅용 로그 추가
+    if (window.DEBUG_MODE) console.log('[GameManager] initializeGameObjects 호출');
     // 공 초기화
     this.ball = {
       x: this.canvas.width / 2,
-      y: this.canvas.height - 30,
+      y: this.ballInitialY,
       speedX: 0,
       speedY: -this.BALL_SPEED,
       radius: 10,
@@ -203,7 +188,7 @@ class GameManager {
    * 키보드 입력 처리
    */
   keyDownHandler(e) {
-    // if (window.DEBUG_MODE) console.log('[GameManager] keyDownHandler 호출', e.key); // 디버깅용 로그 추가
+    // if (window.DEBUG_MODE) console.log('[GameManager] keyDownHandler 호출', e.key);
     if (
       e.key === "Right" ||
       e.key === "ArrowRight" ||
@@ -238,7 +223,7 @@ class GameManager {
    * 키보드 입력 해제 처리
    */
   keyUpHandler(e) {
-    // if (window.DEBUG_MODE) console.log('[GameManager] keyUpHandler 호출', e.key); // 디버깅용 로그 추가
+    // if (window.DEBUG_MODE) console.log('[GameManager] keyUpHandler 호출', e.key);
     if (
       e.key === "Right" ||
       e.key === "ArrowRight" ||
@@ -262,7 +247,7 @@ class GameManager {
     }
   }  // MARK: 포켓몬 능력 키 입력 처리 메서드 추가
   handlePokemonAbilityKey(slotIndex) {
-    if (window.DEBUG_MODE) console.log('[GameManager] handlePokemonAbilityKey 호출', slotIndex); // 디버깅용 로그 추가
+    if (window.DEBUG_MODE) console.log('[GameManager] handlePokemonAbilityKey 호출', slotIndex);
     // 게임이 실행 중이고 일시정지 상태가 아닐 때만 실행
     if (!this.isGameRunning || this.isPaused) return;
 
@@ -301,9 +286,11 @@ class GameManager {
 
     const pokemonIndex = parseInt(indexMatch[1]);
     this.usePokemonAbility(slotIndex, pokemonIndex);
-  }  // MARK: 포켓몬 능력 사용 메서드 추가
+  }
+
+  // MARK: 포켓몬 능력 사용 메서드
   usePokemonAbility(slotIndex, pokemonIndex) {
-    if (window.DEBUG_MODE) console.log('[GameManager] usePokemonAbility 호출', slotIndex, pokemonIndex); // 디버깅용 로그 추가
+    if (window.DEBUG_MODE) console.log('[GameManager] usePokemonAbility 호출', slotIndex, pokemonIndex);
     const currentTime = performance.now();
 
     // 포켓몬 타입 확인
@@ -335,7 +322,7 @@ class GameManager {
   }
   // MARK: 포켓몬 능력 실행 메서드 (하위 클래스에서 오버라이드)
   executePokemonAbility(slotIndex, pokemonIndex, pokemonType) {
-    if (window.DEBUG_MODE) console.log('[GameManager] executePokemonAbility 호출', slotIndex, pokemonIndex, pokemonType); // 디버깅용 로그 추가
+    if (window.DEBUG_MODE) console.log('[GameManager] executePokemonAbility 호출', slotIndex, pokemonIndex, pokemonType);
     // 기본 구현: 하위 클래스에서 오버라이드하여 실제 능력 효과 구현
     console.log(`슬롯 ${slotIndex + 1}의 포켓몬(인덱스: ${pokemonIndex}, 타입: ${pokemonType}) 능력이 사용되었습니다.`);
   }
@@ -343,7 +330,7 @@ class GameManager {
    * 마우스 이동 처리
    */
   mouseMoveHandler(e) {
-    // if (window.DEBUG_MODE) console.log('[GameManager] mouseMoveHandler 호출', e.clientX, e.clientY); // 디버깅용 로그 추가
+    // if (window.DEBUG_MODE) console.log('[GameManager] mouseMoveHandler 호출', e.clientX, e.clientY);
     if (this.isGameRunning && !this.isPaused && this.paddle) {
       const rect = this.canvas.getBoundingClientRect();
       const relativeX = e.clientX - rect.left;
@@ -363,7 +350,7 @@ class GameManager {
    * MARK: 포켓몬 구출 메시지 표시 메서드 추가
    */
   showInGameMessage(message, isNotice = false) {
-    if (window.DEBUG_MODE) console.log('[GameManager] showInGameMessage 호출', message, isNotice); // 디버깅용 로그 추가
+    if (window.DEBUG_MODE) console.log('[GameManager] showInGameMessage 호출', message, isNotice);
     // 구출 메시지 컨테이너 가져오기
     const messageContainer = document.getElementById('rescue-message-container');
     if (!messageContainer) {
@@ -396,24 +383,29 @@ class GameManager {
     }, 3000); // 3초 후 페이드아웃 시작
   }
   /**
-   * UI 업데이트
+   * UI 업데이트 - 모두 brick에서만 수행
+   * - 생명 그리기
+   * - 스코어 그리기
+   * - 포켓몬 체력바 그리기
    */
   updateUI() {
-    if (window.DEBUG_MODE) console.log('[GameManager] updateUI 호출'); // 디버깅용 로그 추가
-    // 벽돌깨기 모드일때만 drawLives, 아니면 해당 로직에서 따로 구현
+    if (window.DEBUG_MODE) console.log('[GameManager] updateUI 호출');
+    // 벽돌깨기 모드일때만 생명, 스코어, 포켓몬 체력바 그리기
     if (this.stage <= 3) {
+      // 생명 그리기
       this.drawLives();
+      // 스코어 그리기
+      this.drawScore();
+      // 포켓몬 체력바 그리기
+      this.drawPokemonHealthBars();
     }
-    this.drawScore();
 
-    // 포켓몬 체력바 그리기 (추가됨)
-    this.drawPokemonHealthBars();
   }
   /**
    * MARK: 목숨 표시
    */
   drawLives() {
-    if (window.DEBUG_MODE) console.log('[GameManager] drawLives 호출'); // 디버깅용 로그 추가
+    if (window.DEBUG_MODE) console.log('[GameManager] drawLives 호출');
     const iconWidth = 30; // 아이콘 너비
     const iconHeight = 30; // 아이콘 높이
     const iconX = this.canvas.width - 100; // 아이콘 위치 (우측 여백 70px)
@@ -435,23 +427,26 @@ class GameManager {
    * MARK: 점수 그리기
    */
   drawScore() {
-    if (window.DEBUG_MODE) console.log('[GameManager] drawScore 호출'); // 디버깅용 로그 추가
+    if (window.DEBUG_MODE) console.log('[GameManager] drawScore 호출');
     const scoreElement = qs("#score");
     if (scoreElement) scoreElement.textContent = this.score;
   }
+
   /**
    * MARK: 일시정지 토글
    */
   togglePause() {
-    if (window.DEBUG_MODE) console.log('[GameManager] togglePause 호출'); // 디버깅용 로그 추가
+    if (window.DEBUG_MODE) console.log('[GameManager] togglePause 호출');
     if (this.isGameRunning) {
       this.isPaused = !this.isPaused;
       if (this.isPaused) {
+        if (window.DEBUG_MODE) console.log('[GameManager] togglePause() - 게임 paused');
         this.pauseStartTime = performance.now();
         cancelAnimationFrame(this.animationFrame);
         this.showInGameMessage("게임 일시정지", true);
       } else {
         // 일시정지 해제 시 - 일시정지 지속 시간 계산하여 누적
+        if (window.DEBUG_MODE) console.log('[GameManager] togglePause() - 게임 resumed');
         const pauseEndTime = performance.now();
         this.totalPauseDuration += pauseEndTime - this.pauseStartTime;
         this.lastTime = performance.now();
@@ -459,29 +454,15 @@ class GameManager {
           this.update(time),
         );
 
-        if (this.persistentMessageElement) {
-          this.persistentMessageElement.remove();
-          this.persistentMessageElement = null;
-        }
         this.showInGameMessage("게임 재개", true);
       }
     }
   }
   /**
-   * MARK: 컨트롤 정보 모달 표시
-   */
-  showControlInfoModal(isBossMode, onClose) {
-    if (window.DEBUG_MODE) console.log('[GameManager] showControlInfoModal 호출', isBossMode); // 디버깅용 로그 추가
-    const msg = isBossMode
-      ? "조작법 <br> W A S D <br> ↑ ← ↓ →"
-      : "조작법 <br> W A S D <br> ↑ ← ↓ → <br>마우스";
-    showInfoModal(msg, onClose);
-  }
-  /**
    * MARK: 게임 시작
    */
   startGame() {
-    if (window.DEBUG_MODE) console.log('[GameManager] startGame 호출'); // 디버깅용 로그 추가
+    if (window.DEBUG_MODE) console.log('[GameManager] startGame 호출');
     if (!this.isGameRunning) {
       if (this.animationFrame) {
         cancelAnimationFrame(this.animationFrame);
@@ -504,23 +485,31 @@ class GameManager {
       this.updateUI();
       this.drawBackground(); // 게임 화면 표시만 처리
 
-      this.showControlInfoModal(this.mode === "boss", () => {
+      const howToPlayMessage = ('조작법: <br>' + (this.mode === 'boss'
+        ? "W A S D <br> ↑ ← ↓ →"
+        : "W A S D <br> ↑ ← ↓ → <br>마우스"));
+      const hr = '<br>---------------------</br>';
+      const clearInfoMessage = `클리어 조건: ${this.requiredScores[this.difficulty]}점 넘기기`;
+      showInfoModal(howToPlayMessage + hr + clearInfoMessage, () => {
+        if (window.DEBUG_MODE) console.log('[GameManager] startAnimation 호출');
         hideAllFade(qsa(".screen"));
         showWithFade(qs("#gameplay-screen"));
+
         this.lastTime = performance.now();
         this.gameStartTime = performance.now();
+        console.log(`${this.mode} 게임을 시작합니다.`);
         this.animationFrame = requestAnimationFrame((time) =>
           this.update(time),
         );
-        console.log(`${this.mode} 게임을 시작합니다.`);
       });
     }
   }
+
   /**
    * MARK: 게임 재시작
    */
   restartGame() {
-    if (window.DEBUG_MODE) console.log('[GameManager] restartGame 호출'); // 디버깅용 로그 추가
+    if (window.DEBUG_MODE) console.log('[GameManager] restartGame 호출');
     if (this.animationFrame) {
       cancelAnimationFrame(this.animationFrame);
     }
@@ -540,14 +529,14 @@ class GameManager {
     // 게임 화면 표시만 처리
     if (qs("#gameplay-screen").classList.contains('hidden')) {
       showWithFade(qs("#gameplay-screen"));
-    }
+    } ``
   }
 
   /**
    * MARK: 포켓몬 체력 소모 메서드 추가
    */
   consumePokemonHealth(slotIndex) {
-    if (window.DEBUG_MODE) console.log('[GameManager] consumePokemonHealth 호출', slotIndex); // 디버깅용 로그 추가
+    if (window.DEBUG_MODE) console.log('[GameManager] consumePokemonHealth 호출', slotIndex);
     // 체력 소모
     this.pokemonHealthSystem.currentHealth[slotIndex] -= this.pokemonHealthSystem.healthConsumption;
 
@@ -558,7 +547,7 @@ class GameManager {
     }
   }  // MARK: 포켓몬 기절 상태 설정 메서드 추가 (dizzyImages 배열 활용)
   setPokemonDizzy(slotIndex) {
-    if (window.DEBUG_MODE) console.log('[GameManager] setPokemonDizzy 호출', slotIndex); // 디버깅용 로그 추가
+    if (window.DEBUG_MODE) console.log('[GameManager] setPokemonDizzy 호출', slotIndex);
     this.pokemonHealthSystem.isDizzy[slotIndex] = true;
 
     const slot = document.getElementById(`slot-${slotIndex}`);
@@ -610,7 +599,7 @@ class GameManager {
 
   // MARK: 포켓몬 체력 회복 메서드 추가
   healPokemonHealth(slotIndex, healAmount = 50) {
-    if (window.DEBUG_MODE) console.log('[GameManager] healPokemonHealth 호출', slotIndex, healAmount); // 디버깅용 로그 추가
+    if (window.DEBUG_MODE) console.log('[GameManager] healPokemonHealth 호출', slotIndex, healAmount);
     // 체력 회복
     this.pokemonHealthSystem.currentHealth[slotIndex] = Math.min(
       this.pokemonHealthSystem.maxHealth[slotIndex],
@@ -631,9 +620,7 @@ class GameManager {
   }
   // MARK: 포켓몬 체력바 그리기 메서드 추가
   drawPokemonHealthBars() {
-    if (window.DEBUG_MODE) console.log('[GameManager] drawPokemonHealthBars 호출'); // 디버깅용 로그 추가
-    // 보스전에선 그리지 않음
-    if (this.stage === 4) return;
+    if (window.DEBUG_MODE) console.log('[GameManager] drawPokemonHealthBars 호출');
 
     const barWidth = 60; // 체력바 너비
     const barHeight = 6; // 체력바 높이
@@ -680,7 +667,7 @@ class GameManager {
    * 메인 게임 루프 - 하위 클래스에서 오버라이드
    */
   update(currentTime = 0) {
-    if (window.DEBUG_MODE) console.log('[GameManager] update 호출', currentTime); // 디버깅용 로그 추가
+    if (window.DEBUG_MODE) console.log('[GameManager] update 호출', currentTime);
     const deltaTime = currentTime - this.lastTime;
 
     // 프레임 딜레이를 고려한 업데이트
@@ -760,7 +747,7 @@ class GameManager {
    * 게임 종료
    */
   endGame() {
-    if (window.DEBUG_MODE) console.log('[GameManager] endGame 호출'); // 디버깅용 로그 추가
+    if (window.DEBUG_MODE) console.log('[GameManager] endGame 호출');
     this.isGameRunning = false;
     if (this.animationFrame) {
       cancelAnimationFrame(this.animationFrame);
@@ -785,7 +772,7 @@ class GameManager {
    * 게임별 초기화 - 하위 클래스에서 구현
    */
   initializeGame() {
-    if (window.DEBUG_MODE) console.log('[GameManager] initializeGame 호출'); // 디버깅용 로그 추가
+    if (window.DEBUG_MODE) console.log('[GameManager] initializeGame 호출');
     // 하위 클래스에서 구현
   }
 
@@ -793,7 +780,7 @@ class GameManager {
    * 게임별 업데이트 로직 - 하위 클래스에서 구현
    */
   updateGame(timeMultiplier) {
-    if (window.DEBUG_MODE) console.log('[GameManager] updateGame 호출', timeMultiplier); // 디버깅용 로그 추가
+    if (window.DEBUG_MODE) console.log('[GameManager] updateGame 호출', timeMultiplier);
     // 하위 클래스에서 구현
   }
 }

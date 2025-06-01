@@ -16,12 +16,8 @@ function testGame() {
   console.log("DEBUG_GAME is ON");
   hideAllFade(qsa(".screen"));
   show(qs("#gameplay-screen"));
-  if (!gameInstance) {
-    gameInstacne = new BrickGame(canvas);
-  }
-  gameInstance.setGameInfo({ mode: "story", difficulty: "easy", stage: 1 });
-  gameInstance.setOnGameEnd(null);
-  gameInstance.playGame("story", 0, 0, (gameResult) => {
+
+  playGame("story", 'easy', 1, (gameResult) => {
     console.log("Game ended:", gameResult);
     handleReturnToTitleScreen();
   });
