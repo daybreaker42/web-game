@@ -27,21 +27,8 @@ class GameManager {
     };
 
     // MARK: 포켓몬 능력 시스템 추가
-    this.pokemonAbilitySystem = {
-      cooldowns: [0, 0, 0, 0], // 각 슬롯별 쿨타임 (밀리초)
-      lastUsed: [0, 0, 0, 0], // 각 슬롯별 마지막 사용 시간
-      defaultCooldown: 3000, // 기본 쿨타임: 3초
-      throttleInterval: 200, // 입력 throttling 간격: 200ms
-      lastInputTime: [0, 0, 0, 0], // 각 슬롯별 마지막 입력 시간
-    };    // MARK: 포켓몬 체력 시스템 추가
-    this.pokemonHealthSystem = {
-      maxHealth: [100, 100, 100, 100], // 각 슬롯별 최대 체력
-      currentHealth: [100, 100, 100, 100], // 각 슬롯별 현재 체력
-      healthConsumption: 20, // 능력 사용 시 소모 체력
-      isDizzy: [false, false, false, false], // 각 슬롯별 기절 상태
-      dizzyImages: [null, null, null, null], // 기절 상태 이미지
-      originalImages: [null, null, null, null], // 원본 이미지 저장
-    };
+    this.pokemonAbilitySystem = JSON.parse(JSON.stringify(POKEMON_ABLILITY_SYSTEM));
+    this.pokemonHealthSystem = JSON.parse(JSON.stringify(POKEMON_HEALTH_SYSTEM));
 
     // 게임 상태 변수들
     this.lastTime = 0;
@@ -62,10 +49,7 @@ class GameManager {
     this.saved_pokemon = [];
 
     // 생명 설정 (모드 및 난이도별) // 주석 추가: 생명 설정 구조화
-    this.livesConfig = {
-      brick: { easy: 20, normal: 10, hard: 5 }, // 주석 추가: 벽돌깨기 모드 생명 (현재는 동일)
-      boss: { easy: 1000, normal: 500, hard: 250 }, // 주석 추가: 보스전 모드 생명 (현재는 동일)
-    };
+    this.livesConfig = LIVES_CONFIG;
 
     // 입력 상태
     this.keys = {

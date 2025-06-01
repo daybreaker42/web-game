@@ -13,11 +13,11 @@ class BrickGame extends GameManager {
     this.leftBrick = 0;
 
     // MARK: 벽돌 관련 설정
-    this.BRICK_WIDTH = 80;
-    this.BRICK_HEIGHT = 80;
-    this.BRICK_PADDING = 10;
-    this.BRICK_OFFSET_TOP = 60;
-    this.BRICK_OFFSET_LEFT = 30;
+    this.BRICK_WIDTH = BRICK_WIDTH;
+    this.BRICK_HEIGHT = BRICK_HEIFHT;
+    this.BRICK_PADDING = BRICK_PADDING;
+    this.BRICK_OFFSET_TOP = BRICK_OFFSET_TOP;
+    this.BRICK_OFFSET_LEFT = BRICK_OFFSET_LEFT;
     this.bricks = []; // 사용 여부 확인 필요
     this.combinations = [];
     this.combinationSpeed = 2;
@@ -25,12 +25,8 @@ class BrickGame extends GameManager {
     this.combinationSpawnDelayWhenActive = 3000;
     this.requiredCombinations = 10; // 사용 여부 확인 필요
 
-    // MARK: 난이도별 최소 점수 설정 추가
-    this.requiredScores = {
-      easy: 300,
-      normal: 500,
-      hard: 800
-    };
+    // MARK: 난이도별 최소 점수 설정
+    this.requiredScores = REQUIRED_SCORE;
     this.paddleImage = null;
     this.ballImage = null;
 
@@ -42,11 +38,9 @@ class BrickGame extends GameManager {
       3: "#4FC3F7", // 물
       4: "#81D4FA", // 얼음
     };
-    this.totalPokemonCount = 107;    // MARK: 스테이지별 특별 포켓몬 설정 추가
-    this.specialPokemon = {
-      1: 105, // stage1: 피카츄
-      2: 106  // stage2: 팽도리
-    };    // MARK: 포켓몬 능력 상태 관리 변수 추가 (주석 추가: 공 속도 버그 해결을 위한 상태 관리)
+    this.totalPokemonCount = TOTAL_POKEMON_COUNT;
+    this.specialPokemon = SPECIAL_POKEMON;
+    // MARK: 포켓몬 능력 상태 관리 변수 추가 (주석 추가: 공 속도 버그 해결을 위한 상태 관리)
     this.fireBoostActive = false; // 불타입 능력 활성 상태
     this.originalBallSpeed = null; // 원본 공 속도 저장
     this.fireBoostTimeout = null; // 불타입 능력 타이머 ID
@@ -59,7 +53,7 @@ class BrickGame extends GameManager {
 
     // MARK: 새로운 목표 포켓몬 관련 변수 추가
     this.appearedTargetPokemonTypes = new Set(); // 이번 게임/스테이지에서 등장한 목표 포켓몬 타입을 기록
-    this.TARGET_POKEMON_SPAWN_CHANCE = 0.2; // 목표 포켓몬 등장 확률 (20%)
+    this.TARGET_POKEMON_SPAWN_CHANCE = TARGET_POKEMON_SPAWN_CHANCE;
   }
 
   /**
