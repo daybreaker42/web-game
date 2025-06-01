@@ -191,8 +191,6 @@
     },
     {
         "image": "stage4-mewtwo-battle",
-        
-      "sfx": "battle-start.mp3",
       "lines": [
         "* 뮤츠와의 전투가 시작된다!"
       ]

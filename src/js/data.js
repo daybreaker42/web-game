@@ -980,8 +980,6 @@ window.story_chapter4_finale = [
     },
     {
         "image": "stage4-mewtwo-battle",
-        
-      "sfx": "battle-start.mp3",
       "lines": [
         "* 뮤츠와의 전투가 시작된다!"
       ]
@@ -1242,7 +1240,6 @@ window.story_chapter5_closing = [
         ]
       },
       {
-        "image": "stage4-ruins-peace",
         "sfx": "bell.mp3",
         "lines": [
           "* 뮤츠는 방울을 건네받은 뒤, 조용히 빛 속으로 사라진다."
