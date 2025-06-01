@@ -1,5 +1,8 @@
 // window.DEBUG_MODE = true;
 
+let isStarted = false;
+let isCleared = false;
+
 window.addEventListener("DOMContentLoaded", () => {
   if (!localStorage.getItem("scoreboard")) {
     setScoreboardData(makeEmptyScoreboard());
@@ -17,7 +20,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   hideAllFade(qsa(".screen"));
   showWithFade(qs("#title-screen"));
-  setupMenuEvents();
+  setupStaticButtonEvents();
   setupOptionModal();
   setupAudioSliders();
   setupButtonSfx();
@@ -31,9 +34,8 @@ function debugMode() {
   //   testGameResultScreen();
   // testGame();
   testMainLogic();
+  //   testCredits();
 }
-
-let isStarted = false;
 
 function handleReturnToTitleScreen() {
   console.log("Returning to title screen");
@@ -76,7 +78,13 @@ function handleStartFromTitle(e) {
 
 function showMainMenuScreen() {
   hideAllFade(qsa(".screen"));
-  showWithFade(qs("#main-menu-screen"));
-  playBgm(BGM.TITLE);
-  startCloudAnimation();
+  renderMenu("main");
+  showWithFade(qs("#menu-screen"));
+  if (isCleared) {
+    qs("#menu-screen").classList.add("cleared");
+    playBgm(BGM.ENDING);
+  } else {
+    playBgm(BGM.TITLE);
+    startCloudAnimation();
+  }
 }

@@ -2,7 +2,7 @@ function testMainLogic() {
   document.addEventListener("keydown", handleStartFromTitle, { once: true });
   document.addEventListener("click", handleStartFromTitle, { once: true });
   showWithFade(qs("#title-screen"));
-  setupMenuEvents();
+  setupStaticButtonEvents();
   setupOptionModal();
   setupAudioSliders();
   setupButtonSfx();
@@ -19,6 +19,14 @@ function testGame() {
 
   playGame("story", 'easy', 1, (gameResult) => {
     console.log("Game ended:", gameResult);
+    handleReturnToTitleScreen();
+  });
+}
+
+function testCredits() {
+  console.log("DEBUG_CREDITS is ON");
+  showCredits(TEST_CREDITS_DATA, () => {
+    console.log("Credits ended");
     handleReturnToTitleScreen();
   });
 }

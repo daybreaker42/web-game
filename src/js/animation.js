@@ -23,19 +23,19 @@ function preloadCloudFrames(frameCount, basePath) {
 function startCloudAnimation() {
   const root = document.documentElement;
   const frameCount = 3;
-  const basePath = "../assets/images/background/title_";
+  const basePath = "../assets/images/background/main-menu-";
   let frameIdx = 0;
   let frames = [];
 
   preloadCloudFrames(frameCount, basePath).then((loadedFrames) => {
     frames = loadedFrames;
     if (frames[0] && frames[0].src) {
-      root.style.setProperty("--img-menu-bg", `url('${frames[0].src}')`);
+      root.style.setProperty("--img-main-menu-bg", `url('${frames[0].src}')`);
     }
     cloudAnimTimer = setInterval(() => {
       const img = frames[frameIdx];
       if (img && img.src) {
-        root.style.setProperty("--img-menu-bg", `url('${img.src}')`);
+        root.style.setProperty("--img-main-menu-bg", `url('${img.src}')`);
       }
       frameIdx = (frameIdx + 1) % frameCount;
     }, 600);

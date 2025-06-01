@@ -30,7 +30,6 @@ function onGameEnd(gameResult) {
   if (gameResult.game_over) {
     onStageOver(gameResult);
   } else {
-    saveGameResult(gameResult);
     hideWithFade(qs("#gameplay-screen"));
     onStageClear(gameResult);
   }
@@ -43,6 +42,7 @@ function onGameEnd(gameResult) {
 function onStageClear(gameResult) {
   if (currentStageIndex === N_STAGES) {
     // 1. 엔딩 일러스트 → 2. 크레딧 → 3. 게임 결과
+    isCleared = true;
     playStory(N_STAGES + 1, () => {
       showCredits(gameResult, () => {
         showGameResultScreen(gameResult);

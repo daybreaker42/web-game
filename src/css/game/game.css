@@ -186,10 +186,10 @@ canvas {
   font-size: 16px;
   font-weight: bold;
   text-align: center;
-  box-shadow: 
+  box-shadow:
     0 0 0 2px #fff,
     0 0 10px rgba(0, 0, 0, 0.5);
-  text-shadow: 
+  text-shadow:
     1px 1px 0 #000,
     0 0 4px #fff;
   animation: rescueMessageShow 0.3s ease-out forwards;

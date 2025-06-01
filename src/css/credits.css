@@ -5,20 +5,32 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: none; /* 불투명 오버레이 필요하면 rgba(0,0,0,0.45) 정도 추천 */
   z-index: 50; /* 게임 내 다른 화면보다 위에 오도록 */
+  /* background: white; → 삭제, 오버레이 느낌으로 변경 */
 }
 
 #credits-root {
   position: relative;
   width: 560px;
   height: 100%;
-  background: var(--bg, #181a20);
-  box-shadow: 0 6px 36px rgba(0, 0, 0, 0.37);
+  background: #03040b;
+  color: #fff;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border: 2.5px solid #202840;
+  /* 가장자리(바깥)에는 border 없음! */
+  padding: 0;
+}
+
+.credits-inner-border {
+  /* 실제 '네모 안쪽에' border가 들어가는 부분 */
+  height: 100%;
+  width: 100%;
+  border: 2.5px solid #ffffff; /* 이게 네모 안쪽에 생김! */
+  border-radius: 13px;
+  box-sizing: border-box;
+  padding: 0 28px; /* 안쪽에 패딩 */
+  background: inherit; /* 배경색 그대로 상속 */
 }
 
 #credits-scroll {
@@ -27,27 +39,34 @@
   width: 100%;
   bottom: -100%;
   will-change: transform;
+  padding: 0 30px;
   /* 스크롤되는 영역이 패널 내에서 움직임 */
 }
 
 .credit-title {
   text-align: center;
   font-size: 2rem;
-  color: var(--accent, #00ffe1);
+  color: #00ffe1; /* 네온 청록 */
   margin: 56px 0 36px 0;
   letter-spacing: 2px;
   font-family: "DOSGothic", sans-serif;
+  text-shadow:
+    0 0 12px #00ffe1a0,
+    0 0 36px #00ffe155;
 }
 
 .credit-section {
   margin: 20px 0 16px 0;
   font-size: 1.22rem;
   text-align: center;
+  color: #ffd700; /* 골드 */
+  text-shadow: 0 0 8px #ffd70066;
 }
 
 .credit-section strong {
-  color: var(--accent, #00ffe1);
+  color: #ff4d80; /* 강조 핑크/레드 */
 }
+
 #pokemon-list {
   display: flex;
   justify-content: center;
@@ -55,19 +74,22 @@
   flex-wrap: wrap;
   margin: 26px 0 20px 0;
 }
+
 .pokemon-img {
   width: 34px;
   height: 34px;
   object-fit: contain;
   border-radius: 8px;
   background: #222;
-  border: 1.5px solid #333;
+  border: 1.5px solid #00ffe1; /* 네온 청록 */
+  box-shadow: 0 0 7px #00ffe177;
 }
 
-#credits-skip-btn {
-  position: absolute;
-  top: 23px;
-  right: 23px;
-  padding: 7px 22px;
-  font-size: 1rem;
+/* ======= Staff Info ======= */
+.credit-staff {
+  /* flex 등 기존 유지 */
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 1.3e;
 }
