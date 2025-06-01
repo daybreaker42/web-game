@@ -349,7 +349,7 @@ class BrickGame extends GameManager {
 
       // 공 위치 및 속도 초기화
       this.ball.x = this.canvas.width / 2;
-      this.ball.y = this.canvas.height - this.paddleOffset - 10;
+      this.ball.y = this.ballInitialY;
       this.ball.speedX = 0;
       this.ball.speedY = -this.BALL_SPEED;
     } else {

@@ -37,6 +37,8 @@ class GameManager {
     this.gameStartTime = 0; // 게임 시작 시간 저장
     this.pauseStartTime = 0; // 일시정지했을때 시간 멈추기 용
     this.totalPauseDuration = 0; // 일시정지한 시간
+    this.ballInitialX = this.canvas.width / 2;
+    this.ballInitialY = this.canvas.height - this.paddleOffset - 20;
 
     // 게임 정보
     this.mode = null;       // score | story
@@ -166,7 +168,7 @@ class GameManager {
     // 공 초기화
     this.ball = {
       x: this.canvas.width / 2,
-      y: this.canvas.height - 30,
+      y: this.ballInitialY,
       speedX: 0,
       speedY: -this.BALL_SPEED,
       radius: 10,
