@@ -488,25 +488,19 @@ class GameManager {
         : "W A S D <br> ↑ ← ↓ → <br>마우스"));
       const hr = '<br>---------------------</br>';
       const clearInfoMessage = `클리어 조건: ${this.requiredScores[this.difficulty]}점 넘기기`;
-      showInfoModal(howToPlayMessage + hr + clearInfoMessage, this.startAnimation)
-    }
-  }
+      showInfoModal(howToPlayMessage + hr + clearInfoMessage, () => {
+        if (window.DEBUG_MODE) console.log('[GameManager] startAnimation 호출');
+        hideAllFade(qsa(".screen"));
+        showWithFade(qs("#gameplay-screen"));
 
-  /**
-   * MARK: 애니메이션 시작
-   * - 게임 시작 시 호출되어 애니메이션 프레임을 시작합니다.
-   */
-  startAnimation() {
-    if (window.DEBUG_MODE) console.log('[GameManager] startAnimation 호출');
-    hideAllFade(qsa(".screen"));
-    showWithFade(qs("#gameplay-screen"));
-    this.lastTime = performance.now();
-    this.gameStartTime = performance.now();
-    console.log(`${this.mode} 게임을 시작합니다.`);
-    this.animationFrame = requestAnimationFrame((time) =>
-      this.update(time),
-    );
-    // this.update()
+        this.lastTime = performance.now();
+        this.gameStartTime = performance.now();
+        console.log(`${this.mode} 게임을 시작합니다.`);
+        this.animationFrame = requestAnimationFrame((time) =>
+          this.update(time),
+        );
+      });
+    }
   }
 
   /**
