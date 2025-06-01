@@ -1052,6 +1052,7 @@ class BrickGame extends GameManager {
    */
   togglePause() {
     if (window.DEBUG_MODE) console.log('[BrickGame] togglePause 호출'); // 디버깅용 로그 추가
+
     if (this.isGameRunning) {
       if (!this.isPaused && this.fireBoostActive && this.fireBoostTimeout) {
         // 일시정지 시작 시: 불타입 능력 타이머 저장 및 정지 (주석 추가: 일시정지 중 타이머 관리)
@@ -1075,7 +1076,7 @@ class BrickGame extends GameManager {
       }
     }
     
-    // 부모 클래스의 일시정지 로직 실행 (주석 추가: 기본 일시정지 기능 유지)
+    // 부모 클래스의 일시정지 로직 실행
     super.togglePause();
   }
 }

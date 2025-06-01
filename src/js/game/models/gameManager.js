@@ -284,7 +284,9 @@ class GameManager {
 
     const pokemonIndex = parseInt(indexMatch[1]);
     this.usePokemonAbility(slotIndex, pokemonIndex);
-  }  // MARK: 포켓몬 능력 사용 메서드 추가
+  }
+
+  // MARK: 포켓몬 능력 사용 메서드
   usePokemonAbility(slotIndex, pokemonIndex) {
     if (window.DEBUG_MODE) console.log('[GameManager] usePokemonAbility 호출', slotIndex, pokemonIndex);
     const currentTime = performance.now();
@@ -379,7 +381,7 @@ class GameManager {
     }, 3000); // 3초 후 페이드아웃 시작
   }
   /**
-   * UI 업데이트
+   * UI 업데이트 - 모두 brick에서만 수행
    * - 생명 그리기
    * - 스코어 그리기
    * - 포켓몬 체력바 그리기
@@ -427,6 +429,7 @@ class GameManager {
     const scoreElement = qs("#score");
     if (scoreElement) scoreElement.textContent = this.score;
   }
+
   /**
    * MARK: 일시정지 토글
    */
