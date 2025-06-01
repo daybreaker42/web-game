@@ -1,7 +1,7 @@
 body {
   min-height: 100vh;
   min-width: 100vw;
-  background-color: #21253e;
+  background-color: #ffffff;
   color: var(--fg);
   background-image: url("../../assets/images/gba.png");
   background-repeat: no-repeat;
@@ -10,6 +10,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden
 }
 h1,
 h2,
