@@ -47,6 +47,8 @@ class GameManager {
     this.totalLives = 300;
     this.isGameClear = false;
     this.saved_pokemon = [];
+    // MARK: 난이도별 최소 점수 설정
+    this.requiredScores = MIN_REQUIRED_SCORE;
 
     // 생명 설정 (모드 및 난이도별) // 주석 추가: 생명 설정 구조화
     this.livesConfig = LIVES_CONFIG;
@@ -452,16 +454,6 @@ class GameManager {
     }
   }
   /**
-   * MARK: 컨트롤 정보 모달 표시
-   */
-  showControlInfoModal(isBossMode, onClose) {
-    if (window.DEBUG_MODE) console.log('[GameManager] showControlInfoModal 호출', isBossMode); // 디버깅용 로그 추가
-    const msg = isBossMode
-      ? "조작법 <br> W A S D <br> ↑ ← ↓ →"
-      : "조작법 <br> W A S D <br> ↑ ← ↓ → <br>마우스";
-    showInfoModal(msg, onClose);
-  }
-  /**
    * MARK: 게임 시작
    */
   startGame() {
@@ -488,17 +480,24 @@ class GameManager {
       this.updateUI();
       this.drawBackground(); // 게임 화면 표시만 처리
 
-      this.showControlInfoModal(this.mode === "boss", () => {
-        hideAllFade(qsa(".screen"));
+      const howToPlayMessage = ('조작법: <br>' + (this.mode === 'boss'
+        ? "W A S D <br> ↑ ← ↓ →"
+        : "W A S D <br> ↑ ← ↓ → <br>마우스"));
+      const hr = '<br>---------------------</br>';
+      const clearInfoMessage = `클리어 조건: ${this.requiredScores[this.difficulty]}점 넘기기`;
+      showInfoModal(howToPlayMessage + hr + clearInfoMessage, this.startAnimation)
+    }
+  }
+
+  startAnimation() {
+    hideAllFade(qsa(".screen"));
         showWithFade(qs("#gameplay-screen"));
         this.lastTime = performance.now();
         this.gameStartTime = performance.now();
         this.animationFrame = requestAnimationFrame((time) =>
           this.update(time),
         );
-        console.log(`${this.mode} 게임을 시작합니다.`);
-      });
-    }
+    console.log(`${this.mode} 게임을 시작합니다.`);
   }
   /**
    * MARK: 게임 재시작

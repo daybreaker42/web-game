@@ -14,7 +14,7 @@ class BrickGame extends GameManager {
 
     // MARK: 벽돌 관련 설정
     this.BRICK_WIDTH = BRICK_WIDTH;
-    this.BRICK_HEIGHT = BRICK_HEIFHT;
+    this.BRICK_HEIGHT = BRICK_HEIGHT;
     this.BRICK_PADDING = BRICK_PADDING;
     this.BRICK_OFFSET_TOP = BRICK_OFFSET_TOP;
     this.BRICK_OFFSET_LEFT = BRICK_OFFSET_LEFT;
@@ -25,8 +25,6 @@ class BrickGame extends GameManager {
     this.combinationSpawnDelayWhenActive = 3000;
     this.requiredCombinations = 10; // 사용 여부 확인 필요
 
-    // MARK: 난이도별 최소 점수 설정
-    this.requiredScores = REQUIRED_SCORE;
     this.paddleImage = null;
     this.ballImage = null;
 
