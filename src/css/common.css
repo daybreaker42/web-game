@@ -45,6 +45,12 @@
   gap: 30px;
 }
 
+#menu-buttons h2 {
+    font-size: 1.7rem;
+    text-shadow: 2px 2px 0 #fff, 0 0 1px #aaa;
+    margin: 0;
+}
+
 #menu-buttons button {
   width: 300px;
   height: 65px;
