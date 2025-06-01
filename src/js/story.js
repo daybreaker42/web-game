@@ -117,7 +117,7 @@ function playScene(scene, onDone) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// 엔딩 : 일러스트 한 장 → 「—— Fin ——」 → 두 번째 클릭으로 종료
+// 엔딩 : 일러스트 한 장 -> 「—— Fin ——」 -> 두 번째 클릭으로 종료
 // ─────────────────────────────────────────────────────────────
 function showEndingIllustration(done) {
   const screen  = qs("#story-screen");
@@ -144,6 +144,12 @@ function showEndingIllustration(done) {
       hideWithFade(screen);
       screen.onclick = null;
       setTimeout(done, 800);
+      setTimeout(() => {
+        show(skipBtn);
+        show(textbox);
+        show(illust);
+      }
+      , 1000);
     }
   };
 }
