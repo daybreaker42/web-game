@@ -141,6 +141,7 @@ function showEndingIllustration(done) {
       showWithFade(qs("#story-fin-text"));
     } else if (clickCnt === 2) {
       hideWithFade(qs("#story-fin-text"));
+      hideWithFade(screen);
       screen.onclick = null;
       setTimeout(done, 800);
     }
