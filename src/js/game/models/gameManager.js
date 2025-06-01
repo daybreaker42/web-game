@@ -380,17 +380,22 @@ class GameManager {
   }
   /**
    * UI 업데이트
+   * - 생명 그리기
+   * - 스코어 그리기
+   * - 포켓몬 체력바 그리기
    */
   updateUI() {
     if (window.DEBUG_MODE) console.log('[GameManager] updateUI 호출');
-    // 벽돌깨기 모드일때만 drawLives, 아니면 해당 로직에서 따로 구현
+    // 벽돌깨기 모드일때만 생명, 스코어, 포켓몬 체력바 그리기
     if (this.stage <= 3) {
+      // 생명 그리기
       this.drawLives();
+      // 스코어 그리기
+      this.drawScore();
+      // 포켓몬 체력바 그리기
+      this.drawPokemonHealthBars();
     }
-    this.drawScore();
 
-    // 포켓몬 체력바 그리기 (추가됨)
-    this.drawPokemonHealthBars();
   }
   /**
    * MARK: 목숨 표시
@@ -617,8 +622,6 @@ class GameManager {
   // MARK: 포켓몬 체력바 그리기 메서드 추가
   drawPokemonHealthBars() {
     if (window.DEBUG_MODE) console.log('[GameManager] drawPokemonHealthBars 호출');
-    // 보스전에선 그리지 않음
-    if (this.stage === 4) return;
 
     const barWidth = 60; // 체력바 너비
     const barHeight = 6; // 체력바 높이
