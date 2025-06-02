@@ -28,8 +28,6 @@ class BrickGame extends GameManager {
     this.paddleImage = null;
     this.ballImage = null;
 
-    this.ballBounceSound = new Audio("../assets/sounds/sfx/ball-bounce.wav"); // 공 충돌 소리 경로 (벽돌/벽/패들 모든 충돌)
-    this.ballBounceSound.volume = 0.5; // 사운드 볼륨 설정 (0.0 ~ 1.0)
     this.lastBallBounceSoundTime = 0; // 마지막 사운드 재생 시간 (throttling용, 0.3초)
 
     // 타입별 색상 매핑
@@ -418,9 +416,10 @@ class BrickGame extends GameManager {
     const currentTime = performance.now(); // 현재 시간 측정
     if (currentTime - this.lastBallBounceSoundTime > 300) { // 0.3초 간격으로 제한
       this.ballBounceSound.currentTime = 0; // 사운드를 처음부터 재생
-      this.ballBounceSound.play().catch(error =>
-        console.error("Error playing ball bounce sound:", error)
-      );
+      // this.ballBounceSound.play().catch(error =>
+      //   console.error("Error playing ball bounce sound:", error)
+      // );
+      playSfx(SFX.BALL_BOUNCE); // SFX로 변경
       this.lastBallBounceSoundTime = currentTime; // 마지막 사운드 재생 시간 업데이트
     }
   }

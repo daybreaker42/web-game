@@ -119,8 +119,6 @@ class BossGame extends GameManager {
     // this.iceBoostActive = false; // 얼음타입 능력 (보스 이동 속도 감소) 활성 상태
 
     // 사운드 설정
-    this.bossHitSound = new Audio("../assets/sounds/sfx/mewtwo.ogg"); // 피격 사운드 파일 경로
-    this.bossHitSound.volume = 0.5; // 사운드 볼륨 설정 (0.0 ~ 1.0)
     this.lastHitSoundTime = 0; // 마지막 사운드 재생 시간 (throttling용)
     this.HIT_SOUND_THROTTLE_MS = 1200; // 사운드 재생 최소 간격 (밀리초)
     this.lastHurtAnimationTime = 0; // 마지막 피격 애니메이션 시작 시간 (throttling용)
@@ -726,11 +724,7 @@ class BossGame extends GameManager {
         if (currentTime - this.lastHitSoundTime > this.HIT_SOUND_THROTTLE_MS) {
           // 주석 추가: 사운드 재생 throttling 조건
           this.bossHitSound.currentTime = 0; // 사운드를 처음부터 재생
-          this.bossHitSound
-            .play()
-            .catch((error) =>
-              console.error("Error playing boss hit sound:", error),
-            ); // 사운드 재생 및 오류 처리
+          playSfx(SFX.MEWTWO_HURT);
           this.lastHitSoundTime = currentTime; // 마지막 사운드 재생 시간 업데이트
         }
       }

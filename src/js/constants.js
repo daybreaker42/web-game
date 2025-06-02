@@ -1,4 +1,4 @@
-const GAME_TIME = 1000 * 60 * 3;
+const GAME_TIME = 1000 * 1;
 
 const STORY_SCRIPTS = [
   window.story_chapter0_opening, // 0: START 스토리
@@ -32,6 +32,9 @@ const SFX = {
   CRT_ON: "crt-on.mp3",
   CRT_OFF: "crt-off.mp3",
   GAME_OVER: "game-over.mp3",
+  // game
+  MEWTWO_HURT: 'mewtwo.ogg',
+  BALL_BOUNCE: 'ball-bounce.wav',
 };
 
 // gameManager config
@@ -66,7 +69,7 @@ const BRICK_OFFSET_LEFT = 30;
 
 // 난이도별 최소 점수
 const MIN_REQUIRED_SCORE = {
-  easy: 300,
+  easy: 0,
   normal: 500,
   hard: 800
 };
