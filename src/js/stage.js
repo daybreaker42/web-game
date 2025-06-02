@@ -1,20 +1,31 @@
 let currentStageIndex = 0;
+let accumulatedGameResult = {
+  // ... curGameResult
+  score: 0,
+  saved_pokemon: [],
+};
 
 function proceedToStage(stageIdx) {
   currentStageIndex = stageIdx;
   console.log(`Proceeding to stage ${stageIdx}`);
 
-  // Stage 4는 보스전 전 스토리가 먼저 (chapter4_finale)
-  // Stage 1~3은 게임 바로 시작 (스토리는 게임 후)
+  // stage 1 시작 전 누적 데이터 초기화
+  if (stageIdx === 1) {
+    accumulatedGameResult = {
+      score: 0,
+      saved_pokemon: [],
+    };
+  }
+
+  // Stage 4는 게임 이전에 스토리 재생
   const beforeStage =
-    stageIdx === N_STAGES ? (cb) => playStory(4, cb) : (cb) => cb();
+    stageIdx === N_STAGES ? (cb) => playStory(N_STAGES, cb) : (cb) => cb();
 
   stopBgm();
   stopSfx();
 
   beforeStage(() => {
     if (stageIdx === N_STAGES) hideWithFade(qs("#story-screen"));
-    // if (stageIdx === N_STAGES) hideWithFade(qs("#story-screen"));
     playGame("story", selectedDifficulty, stageIdx, (gameResult) => {
       onGameEnd(gameResult);
     });
@@ -26,7 +37,10 @@ function proceedToStage(stageIdx) {
  */
 function onGameEnd(gameResult) {
   stopBgm();
+  
   console.log("게임 종료:", gameResult);
+  accumulateGameResult(gameResult);
+
   if (gameResult.game_over) {
     onStageOver(gameResult);
   } else {
@@ -44,8 +58,10 @@ function onStageClear(gameResult) {
     // 1. 엔딩 일러스트 → 2. 크레딧 → 3. 게임 결과
     isCleared = true;
     playStory(N_STAGES + 1, () => {
-      showCredits(gameResult, () => {
-        showGameResultScreen(gameResult);
+      accumulateGameResult(gameResult);
+      console.log("Accumulated Game Result:", accumulatedGameResult);
+      showCredits(accumulatedGameResult, () => {
+        showGameResultScreen(accumulatedGameResult);
       });
     });
   } else {
@@ -58,15 +74,17 @@ function onStageClear(gameResult) {
 }
 
 function onStageOver(gameResult) {
-  showGameResultScreen(gameResult);
+  accumulateGameResult(gameResult);
+  showGameResultScreen(accumulatedGameResult);
 }
 
-function saveGameResult(gameResult) {
-  addScoreRecord(
-    gameResult.mode,
-    gameResult.difficulty,
-    gameResult.name,
-    gameResult.score,
-  );
-  console.log("게임 결과 저장:", gameResult);
+function accumulateGameResult(gameResult) {
+  accumulatedGameResult = {
+    ... gameResult,
+    score: accumulatedGameResult.score + gameResult.score,
+    saved_pokemon: [
+      ...accumulatedGameResult.saved_pokemon,
+      ...gameResult.saved_pokemon,
+    ],
+  };
 }
