@@ -1107,7 +1107,7 @@ class BossGame extends GameManager {
     this.ctx.font = "14px Arial";
     this.ctx.textAlign = "center";
     this.ctx.fillText(
-      `체력: ${this.lives} / ${this.totalLives}`,
+      `플레이어 HP: ${this.lives} / ${this.totalLives}`,
       this.canvas.width / 2,
       playerHealthBarY + playerHealthBarHeight + 20,
     );
