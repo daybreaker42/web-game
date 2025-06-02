@@ -66,14 +66,15 @@ canvas {
   left: 10px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  z-index: var(--z-index-indicator); /* z-index를 높여서 다른 요소 위에 표시 */
-
-  font-size: 18px;
-  font-weight: bold;
-  color: #ffffff; /* 텍스트 색상을 흰색으로 변경하여 가독성 확보 */
-  background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  gap: 5px;
+  z-index: var(--z-index-indicator);
+  font-size: 30px;
+  color: white;
+  text-shadow:
+  -2px -2px 0 black,
+   2px -2px 0 black,
+  -2px  2px 0 black,
+   2px  2px 0 black;
 }
 .score-info {
   display: flex;
