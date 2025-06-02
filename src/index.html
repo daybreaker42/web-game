@@ -126,12 +126,16 @@
           </div>
 
           <div id="game-info-indicator">
-            <span class="score-info"
-              >SCORE :&nbsp;<span id="score">0</span></span
-            >
-            <span id="timer-container"
-              >TIME :&nbsp;<span id="timer">00:00</span></span
-            >
+            <div id="score-info">
+                <label class="score-label">SCORE</label>
+                <span>: </span>
+                <span id="score">0</span>
+            </div>
+            <div id="timer-container">
+              <label class="timer-label">TIME</label>
+                <span>: </span>
+                <span id="timer">00:00</span>
+            </div>
           </div>
           <canvas id="game-canvas" width="800" height="533"></canvas>
           <div class="controls hidden">

@@ -37,7 +37,13 @@ class Brick {
       // 이미지
       if (this.image && this.imageLoaded) {
         ctx.imageSmoothingEnabled = false;
-        ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+        if (this.blockType === 'item') {
+            const itemSize = 0.7;
+            ctx.drawImage(this.image, this.x + this.width * 0.15, this.y + this.height * 0.15, this.width * itemSize, this.height * itemSize);
+            }
+        else {
+            ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+        }
       } else {
         ctx.fillStyle = "#ccc";
         ctx.fillRect(this.x, this.y, this.width, this.height);
