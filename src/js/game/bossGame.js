@@ -745,7 +745,7 @@ class BossGame extends GameManager {
 
       if (distance < bullet.radius + this.player.radius) {
         // 플레이어 생명 감소
-        this.lives -= 10;
+        this.lives -= BOSS_POWER.phase1;
 
         // 탄막 제거
         this.bossBullets.splice(i, 1);
@@ -761,7 +761,7 @@ class BossGame extends GameManager {
 
       if (distance < laser.radius + this.player.radius) {
         // 플레이어 생명 감소 (레이저는 더 강함)
-        this.lives -= laser.damage || 15;
+        this.lives -= BOSS_POWER.laser;
 
         // 레이저 제거
         this.laserBullets.splice(i, 1);

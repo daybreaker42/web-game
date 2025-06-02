@@ -487,11 +487,17 @@ class GameManager {
       this.updateUI();
       this.drawBackground(); // 게임 화면 표시만 처리
 
+      // 조작법 안내
       const howToPlayMessage = ('조작법: <br>' + (this.mode === 'boss'
         ? "W A S D <br> ↑ ← ↓ →"
         : "W A S D <br> ↑ ← ↓ → <br>마우스"));
+      // 구분선
       const hr = '<br>---------------------</br>';
-      const clearInfoMessage = `클리어 조건: ${this.requiredScores[this.difficulty]}점 넘기기`;
+      // 클리어 조건 메세지
+      const clearInfoMessage = (`클리어 조건: ` + (this.mode === 'boss'
+        ? `${this.boss.name}을(를) 쓰러뜨려라!`
+        : `${this.requiredScores[this.difficulty]}점을 넘겨라!`));
+        
       showInfoModal(howToPlayMessage + hr + clearInfoMessage, () => {
         if (window.DEBUG_MODE) console.log('[GameManager] startAnimation 호출');
         hideAllFade(qsa(".screen"));

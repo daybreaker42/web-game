@@ -82,3 +82,8 @@ const TARGET_POKEMON_SPAWN_CHANCE = 0.2; // 목표 포켓몬 등장 확률 (20%)
 
 // bossGame config
 const PLAYER_POWER = 30; // 플레이어 공격력
+const BOSS_POWER = {
+  phase1: 10,
+  laser: 20,
+  phase2: 15
+};

@@ -31,6 +31,7 @@ finished
 - 일시정지 모달창 디자인 수정 -> showInGameMessage으로 showMessage 관련 모두 변경
 - 시작할 때 안내 메세지 수정
 3. 게임 일시정지 모달창 디자인 수정 -> 보류
+- 공 사운드 추가
 
 0524
 
