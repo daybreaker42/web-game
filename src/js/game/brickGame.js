@@ -287,8 +287,6 @@ class BrickGame extends GameManager {
    */
   initializeGame() {
     if (window.DEBUG_MODE) console.log('[BrickGame] initializeGame 호출'); // 디버깅용 로그 추가
-    // 기본 게임 오브젝트 초기화는 부모에서 처리
-    // this.initializeGameObjects();
 
     // 동적 조합 시스템 초기화
     this.initDynamicBrickSystem();
@@ -341,6 +339,7 @@ class BrickGame extends GameManager {
 
       // 생명 <= 0이면 게임 끝내기
       if (this.lives <= 0) {
+        if (window.DEBUG_MODE) console.log('[BrickGame] 생명 0으로 게임 오버'); // 디버깅용 로그 추가
         this.isGameClear = false;
         this.showInGameMessage("게임 오버!", true);
         this.endGame();
@@ -838,7 +837,7 @@ class BrickGame extends GameManager {
    */
   executeGrassAbility() {
     if (window.DEBUG_MODE) console.log('[BrickGame] executeGrassAbility 호출'); // 디버깅용 로그 추가
-    const healAmount = 50; // 회복량
+    const healAmount = 1; // 회복량
     this.lives = Math.min(this.totalLives, this.lives + healAmount);
     this.showInGameMessage(`풀타입 능력: 생명력 ${healAmount} 회복!`, true);
     console.log(`풀타입 능력 사용: 생명력 ${healAmount} 회복`);

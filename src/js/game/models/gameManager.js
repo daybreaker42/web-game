@@ -45,7 +45,7 @@ class GameManager {
     this.difficulty = null;
     this.stage = null;      // 1~3 : 벽돌깨기, 4 : 보스전
     this.score = 0;
-    this.lives = 300; // 기본 생명력
+    this.lives = 300; // 현재 유저가 가진 생명령, startGame에서 livesConfig으로 difficulty마다 초기화
     this.totalLives = 300;
     this.isGameClear = false;
     this.saved_pokemon = [];
@@ -700,6 +700,7 @@ class GameManager {
 
         // 보스전은 시간 초과 시 무조건 실패
         if (this.stage === 4) {
+          if (window.DEBUG_MODE) console.log('[GameManager] 보스전 시간 초과 처리');
           this.isGameClear = false;
           this.showInGameMessage("시간 초과! 보스를 시간 내에 처치하지 못했습니다!", true);
           this.endGame();
@@ -716,12 +717,14 @@ class GameManager {
             }, 3000);
           } else {
             // 최소 점수 미달성 시 게임 오버
+            if (window.DEBUG_MODE) console.log('[GameManager] 벽돌깨기 게임 시간 초과 처리');
             this.isGameClear = false;
             this.showInGameMessage("시간 초과! 목표 점수 미달로 게임 오버", true);
             this.endGame();
           }
         } else {
           // 기타 게임 모드는 기존 로직 유지
+          if (window.DEBUG_MODE) console.log('[GameManager] 기타 게임 시간 초과 처리');
           this.endGame();
         }
         return;
