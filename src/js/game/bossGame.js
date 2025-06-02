@@ -723,7 +723,7 @@ class BossGame extends GameManager {
         // 피격 사운드 재생 처리 (1초 throttling)
         if (currentTime - this.lastHitSoundTime > this.HIT_SOUND_THROTTLE_MS) {
           // 주석 추가: 사운드 재생 throttling 조건
-          this.bossHitSound.currentTime = 0; // 사운드를 처음부터 재생
+          this.lastHitSoundTime = 0; // 사운드를 처음부터 재생
           playSfx(SFX.MEWTWO_HURT);
           this.lastHitSoundTime = currentTime; // 마지막 사운드 재생 시간 업데이트
         }
