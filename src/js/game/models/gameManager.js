@@ -15,6 +15,29 @@ class GameManager {
     this.FPS = 60;
     this.FRAME_DELAY = 1000 / this.FPS;
 
+    // MARK: 난이도별 최소 점수 설정
+    this.requiredScores = MIN_REQUIRED_SCORE;
+
+    // 생명 설정 (모드 및 난이도별) // 주석 추가: 생명 설정 구조화
+    this.livesConfig = LIVES_CONFIG;
+
+    // 입력 상태
+    this.keys = {
+      rightPressed: false,
+      leftPressed: false,
+      spacePressed: false,
+    };
+
+    // 공통 게임 오브젝트들
+    this.ball = null;
+    this.paddle = null;
+    this.paddleOffset = 80;
+    this.BALL_SPEED = 5; // 공의 기본 속도
+
+    // 다음 스테이지로 넘어가기
+    this.onGameEnd = null;
+
+
     // MARK: 배경 이미지 시스템 추가
     this.backgroundImage = null;
     this.backgroundImageLoaded = false;
@@ -49,27 +72,6 @@ class GameManager {
     this.totalLives = 300;
     this.isGameClear = false;
     this.saved_pokemon = [];
-    // MARK: 난이도별 최소 점수 설정
-    this.requiredScores = MIN_REQUIRED_SCORE;
-
-    // 생명 설정 (모드 및 난이도별) // 주석 추가: 생명 설정 구조화
-    this.livesConfig = LIVES_CONFIG;
-
-    // 입력 상태
-    this.keys = {
-      rightPressed: false,
-      leftPressed: false,
-      spacePressed: false,
-    };
-
-    // 공통 게임 오브젝트들
-    this.ball = null;
-    this.paddle = null;
-    this.paddleOffset = 80;
-    this.BALL_SPEED = 5; // 공의 기본 속도
-
-    // 다음 스테이지로 넘어가기
-    this.onGameEnd = null;
   }
   /**
    * MARK: 게임 정보를 설정하는 메서드
@@ -167,7 +169,7 @@ class GameManager {
     if (window.DEBUG_MODE) console.log('[GameManager] initializeGameObjects 호출');
     // 공 초기화
     this.ball = {
-      x: this.canvas.width / 2,
+      x: this.ballInitialX,
       y: this.ballInitialY,
       speedX: 0,
       speedY: -this.BALL_SPEED,

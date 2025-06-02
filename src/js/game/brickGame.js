@@ -335,6 +335,7 @@ class BrickGame extends GameManager {
 
     if (ballIsOutOfScreenLeft || ballIsOutOfScreenRight || ballIsOutOfScreenTop || ballIsOutOfScreenBottom || isBallMissing) {
       // 공이 화면 밖으로 나간 경우: 생명 감소 및 위치/속도 초기화
+      // if (window.DEBUG_MODE) console.log('[BrickGame] 공이 화면 밖으로 나감'); // 디버깅용 로그 추가
       this.lives -= 1;
 
       // 생명 <= 0이면 게임 끝내기
@@ -347,10 +348,11 @@ class BrickGame extends GameManager {
       }
 
       // 공 위치 및 속도 초기화
-      this.ball.x = this.canvas.width / 2;
+      this.ball.x = this.ballInitialX;
       this.ball.y = this.ballInitialY;
       this.ball.speedX = 0;
       this.ball.speedY = -this.BALL_SPEED;
+      // if (window.DEBUG_MODE) console.log(`[BrickGame] 공 위치 초기화: (${this.ball.x.toFixed(2)}, ${this.ball.y.toFixed(2)})`); // 디버깅용 로그 추가
     } else {
       // 공이 화면 안에 있는 경우: 일반 벽 충돌(바운스) 처리
       // 좌우 벽 충돌
@@ -396,6 +398,8 @@ class BrickGame extends GameManager {
     this.drawBall();
     this.drawPaddle();
     this.drawDynamicBricks(); // 동적 벽돌 그리기로 변경
+
+    // if (window.DEBUG_MODE) console.log(`[BrickGame] 공의 좌표: (${this.ball.x.toFixed(2)}, ${this.ball.y.toFixed(2)})`);
   }  
 
   /**
