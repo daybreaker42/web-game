@@ -55,6 +55,9 @@ class BrickGame extends GameManager {
     // MARK: 새로운 목표 포켓몬 관련 변수 추가
     this.appearedTargetPokemonTypes = new Set(); // 이번 게임/스테이지에서 등장한 목표 포켓몬 타입을 기록
     this.TARGET_POKEMON_SPAWN_CHANCE = TARGET_POKEMON_SPAWN_CHANCE;
+
+    // MARK: 포켓몬 슬롯 관리 배열 추가 (주석 추가: 배경 이미지 파싱 방식 대신 배열로 관리)
+    this.slotPokemon = [null, null, null, null]; // 각 슬롯에 저장된 포켓몬 정보 (null = 빈 슬롯)
   }
 
   /**
@@ -63,21 +66,15 @@ class BrickGame extends GameManager {
   getCurrentSlotTypes() {
     if (window.DEBUG_MODE) console.log('[BrickGame] getCurrentSlotTypes 호출'); // 디버깅용 로그 추가
     const slotTypes = new Set();
+
+    // 주석 추가: 배열 기반으로 타입 확인 (기존 DOM 파싱 방식 대신)
     for (let i = 0; i < 4; i++) {
-      const slotElement = document.getElementById("slot-" + i);
-      if (slotElement) {
-        const bg = slotElement.style.backgroundImage;
-        if (bg && bg !== "none" && bg.includes(".png")) {
-          const existingIndexMatch = bg.match(/(\\d+)\\.png/);
-          if (existingIndexMatch && existingIndexMatch[1]) {
-            const existingIndex = parseInt(existingIndexMatch[1]);
-            if (window.pokemon && window.pokemon[existingIndex]) {
-              slotTypes.add(window.pokemon[existingIndex].type);
-            }
-          }
-        }
+      const pokemonInfo = this.slotPokemon[i];
+      if (pokemonInfo && window.pokemon && window.pokemon[pokemonInfo.index]) {
+        slotTypes.add(window.pokemon[pokemonInfo.index].type);
       }
     }
+
     return slotTypes;
   }
 
@@ -582,9 +579,10 @@ class BrickGame extends GameManager {
    */
   addPokemonToSlot(imageSrc) {
     if (window.DEBUG_MODE) console.log('[BrickGame] addPokemonToSlot 호출', imageSrc); // 디버깅용 로그 추가
-    // 포켓몬 인덱스와 타입 정보 추출 (전설의 포켓몬과 타입 중복 차단용)
-    let indexMatch = imageSrc.match(/(\d+)\.png/); // 정규식 수정: \\d+ -> (\\d+)
-    if (!indexMatch || !indexMatch[1]) { // 인덱스 존재 여부 확인
+
+    // 포켓몬 인덱스 추출 (주석 추가: 한 번만 파싱하여 배열에 저장)
+    let indexMatch = imageSrc.match(/(\d+)\.png/);
+    if (!indexMatch || !indexMatch[1]) {
       console.error("addPokemonToSlot: 이미지 경로에서 포켓몬 인덱스를 추출할 수 없습니다.", imageSrc);
       return;
     }
@@ -596,65 +594,69 @@ class BrickGame extends GameManager {
       return;
     }
     
-    // 전설의 포켓몬(타입 5) 차단 로직 추가
+    // 전설의 포켓몬(타입 5) 차단 로직
     if (pokemonData.type === 5) {
       console.log(`전설의 포켓몬 ${pokemonData.name}은(는) 슬롯에 추가할 수 없습니다.`);
       return; 
     }
 
-    // 중복 방지: 이미 슬롯에 들어가 있는 경우 무시
+    // 중복 방지: 이미 슬롯에 들어가 있는 경우 무시 (주석 추가: 배열에서 중복 확인)
     for (let i = 0; i < 4; i++) {
-      let slot = document.getElementById("slot-" + i);
-      let bg = slot.style.backgroundImage;
-
-      if (bg.includes(imageSrc)) {
+      const existingPokemon = this.slotPokemon[i];
+      if (existingPokemon && existingPokemon.index === index) {
         return; // 이미 들어있는 포켓몬은 중복 추가 안 함
       }
     }
 
-    // 타입 중복 방지: 같은 타입의 포켓몬이 이미 슬롯에 있는지 확인
+    // 타입 중복 방지: 같은 타입의 포켓몬이 이미 슬롯에 있는지 확인 (주석 추가: 배열에서 타입 중복 확인)
     for (let i = 0; i < 4; i++) {
-      let slot = document.getElementById("slot-" + i);
-      let bg = slot.style.backgroundImage;
-      
-      if (bg && bg !== "none") {
-        let existingIndexMatch = bg.match(/(\d+)\.png/);
-        if (existingIndexMatch) {
-          let existingIndex = parseInt(existingIndexMatch[1]);
-          let existingPokemon = window.pokemon && window.pokemon[existingIndex] ? window.pokemon[existingIndex] : null;
-          
-          if (existingPokemon && existingPokemon.type === pokemonData.type) {
-            console.log(`같은 타입의 포켓몬이 이미 슬롯에 있습니다: ${existingPokemon.name} (타입 ${existingPokemon.type})`);
-            return; // 같은 타입 포켓몬은 중복 추가 안 함
-          }
+      const existingPokemon = this.slotPokemon[i];
+      if (existingPokemon && window.pokemon[existingPokemon.index] &&
+        window.pokemon[existingPokemon.index].type === pokemonData.type) {
+        console.log(`같은 타입의 포켓몬이 이미 슬롯에 있습니다: ${window.pokemon[existingPokemon.index].name} (타입 ${pokemonData.type})`);
+        return; // 같은 타입 포켓몬은 중복 추가 안 함
+      }
+    }
+
+    // 빈 슬롯 찾아서 추가 (주석 추가: 배열과 DOM 모두 업데이트)
+    for (let i = 0; i < 4; i++) {
+      if (!this.slotPokemon[i]) { // 배열에서 빈 슬롯 확인
+        const slot = document.getElementById("slot-" + i);
+        if (slot) {
+          // DOM 업데이트
+          slot.style.backgroundImage = "url(" + imageSrc + ")";
+          slot.style.backgroundSize = "cover";
+          slot.style.backgroundPosition = "center";
+          let color = this.typeColorMap[pokemonData.type] || "#eee";
+          slot.style.backgroundColor = color;
+
+          // 배열 업데이트 (주석 추가: 포켓몬 정보 객체로 저장)
+          this.slotPokemon[i] = {
+            index: index,
+            type: pokemonData.type,
+            name: pokemonData.name,
+            imageSrc: imageSrc
+          };
+
+          console.log(`포켓몬 슬롯에 추가됨: ${pokemonData.name} (타입 ${pokemonData.type}) - 슬롯 ${i}`);
+          return;
         }
       }
     }
-
-    // 빈 슬롯 찾아서 추가
-    for (let i = 0; i < 4; i++) {
-      let slot = document.getElementById("slot-" + i);
-      let bg = slot.style.backgroundImage;
-
-      if (!bg || bg === "none") {
-        slot.style.backgroundImage = "url(" + imageSrc + ")";
-        slot.style.backgroundSize = "cover";
-        slot.style.backgroundPosition = "center";
-        let color = this.typeColorMap[pokemonData.type] || "#eee";
-        slot.style.backgroundColor = color;
-        console.log(`포켓몬 슬롯에 추가됨: ${pokemonData.name} (타입 ${pokemonData.type})`);
-        return;
-      }
-    }
   }
+
   /**
    * MARK: 포켓몬 슬롯 초기화
    */
   clearPokemonSlots() {
     if (window.DEBUG_MODE) console.log('[BrickGame] clearPokemonSlots 호출'); // 디버깅용 로그 추가
+
+    // 배열 초기화 (주석 추가: 배열과 DOM 모두 초기화)
+    this.slotPokemon = [null, null, null, null];
+
+    // DOM 초기화
     for (let i = 0; i < 4; i++) {
       let slot = document.getElementById("slot-" + i);
-      // 슬롯 요소가 존재하는지 확인 후 스타일 변경
       if (slot) {
         slot.style.backgroundImage = "none";
         slot.style.backgroundColor = "transparent";
@@ -995,30 +997,28 @@ class BrickGame extends GameManager {
    */
   useItemOnSlot(itemName) {
     if (window.DEBUG_MODE) console.log('[BrickGame] useItemOnSlot 호출', itemName); // 디버깅용 로그 추가
+
     // 현재 선택된 슬롯 찾기
     let targetSlotIndex = -1;
     const selectedFrame = document.querySelector(".pokemon-slot-frame.selected");
 
     if (selectedFrame) {
-      // 선택된 프레임의 ID에서 인덱스 추출 (slot-frame-0 -> 0)
       const frameId = selectedFrame.id;
       const indexMatch = frameId.match(/slot-frame-(\d+)/);
       if (indexMatch) {
         const selectedIndex = parseInt(indexMatch[1]);
 
-        // 해당 슬롯에 포켓몬이 있는지 확인
-        const slot = document.getElementById(`slot-${selectedIndex}`);
-        if (slot && slot.style.backgroundImage && slot.style.backgroundImage !== "none") {
+        // 주석 추가: 배열에서 포켓몬 존재 여부 확인 (DOM 파싱 대신)
+        if (this.slotPokemon[selectedIndex]) {
           targetSlotIndex = selectedIndex;
         }
       }
     }
 
-    // 선택된 슬롯에 포켓몬이 없는 경우, 첫 번째 포켓몬이 있는 슬롯으로 폴백
+    // 선택된 슬롯에 포켓몬이 없는 경우, 첫 번째 포켓몬이 있는 슬롯으로 폴백 (주석 추가: 배열에서 검색)
     if (targetSlotIndex === -1) {
       for (let i = 0; i < 4; i++) {
-        let slot = document.getElementById(`slot-${i}`);
-        if (slot && slot.style.backgroundImage && slot.style.backgroundImage !== "none") {
+        if (this.slotPokemon[i]) {
           targetSlotIndex = i;
           break;
         }
@@ -1047,34 +1047,30 @@ class BrickGame extends GameManager {
         break;
       default:
         healPercentage = 0.2;
-    }    // 현재 체력과 최대 체력 가져오기 (주석 추가: 배열 인덱스 접근으로 수정하여 NaN 버그 해결)
+    }
+
     const maxHealth = this.pokemonHealthSystem.maxHealth[targetSlotIndex];
     const currentHealth = this.pokemonHealthSystem.currentHealth[targetSlotIndex];
-
-    // 회복량 계산 (최대 체력 기준)
     const healAmount = Math.floor(maxHealth * healPercentage);
     const newHealth = Math.min(maxHealth, currentHealth + healAmount);
 
-    // 체력 업데이트
     this.pokemonHealthSystem.currentHealth[targetSlotIndex] = newHealth;
 
-    // 기절 상태 해제 (체력이 0보다 커진 경우)
     if (newHealth > 0 && this.pokemonHealthSystem.isDizzy[targetSlotIndex]) {
       this.pokemonHealthSystem.isDizzy[targetSlotIndex] = false;
-
-      // 슬롯 UI 원상복구
       const slot = document.getElementById(`slot-${targetSlotIndex}`);
       if (slot && this.pokemonHealthSystem.originalImages[targetSlotIndex]) {
         slot.style.backgroundImage = this.pokemonHealthSystem.originalImages[targetSlotIndex];
-        slot.style.filter = "none"; // 흑백 효과 제거
+        slot.style.filter = "none";
       }
     }
 
-    // 메시지 표시
     const itemDisplayName = itemName.replace('-', ' ').toUpperCase();
     this.showInGameMessage(`${itemDisplayName} 사용! (+${healAmount} HP)}`, true);
 
-    console.log(`아이템 ${itemName} 사용: 슬롯 ${targetSlotIndex + 1} 포켓몬 체력 ${healAmount} 회복 (${currentHealth} → ${newHealth})`);
+    // 주석 추가: 배열에서 포켓몬 이름 가져오기 (DOM 파싱 대신)
+    const pokemonName = this.slotPokemon[targetSlotIndex] ? this.slotPokemon[targetSlotIndex].name : "포켓몬";
+    console.log(`아이템 ${itemName} 사용: 슬롯 ${targetSlotIndex + 1} ${pokemonName} 체력 ${healAmount} 회복 (${currentHealth} → ${newHealth})`);
   }
 
   /**

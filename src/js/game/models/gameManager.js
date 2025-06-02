@@ -247,13 +247,11 @@ class GameManager {
       // const slotIndex = parseInt(e.key) - 1;
       // this.handlePokemonAbilityKey(slotIndex);
     }
-  }  // MARK: 포켓몬 능력 키 입력 처리 메서드 추가
+  }  // MARK: 포켓몬 능력 키 입력 처리 메서드 수정
   handlePokemonAbilityKey(slotIndex) {
     if (window.DEBUG_MODE) console.log('[GameManager] handlePokemonAbilityKey 호출', slotIndex);
-    // 게임이 실행 중이고 일시정지 상태가 아닐 때만 실행
     if (!this.isGameRunning || this.isPaused) return;
 
-    // 현재 선택된 슬롯 프레임 찾기 // 주석 추가: 현재 선택된 슬롯 확인 로직
     let currentSelectedIndex = -1;
     const selectedFrame = document.querySelector(".pokemon-slot-frame.selected");
 
@@ -265,30 +263,25 @@ class GameManager {
       }
     }
 
-    // 현재 선택된 슬롯과 키 입력이 다르면 슬롯 전환만 수행 // 주석 추가: 슬롯 전환 우선 로직
     if (currentSelectedIndex !== slotIndex) {
-      // 슬롯 전환 로직
       this.switchToSlot(slotIndex);
-      return; // 능력 사용하지 않고 종료
+      return;
     }
 
-    // 현재 선택된 슬롯과 키 입력이 같으면 능력 사용 로직 진행 // 주석 추가: 능력 사용 조건 확인
     const currentTime = performance.now();
 
-    // Throttling 체크: 너무 빠른 연속 입력 방지
     if (currentTime - this.pokemonAbilitySystem.lastInputTime[slotIndex] < this.pokemonAbilitySystem.throttleInterval) {
       return;
     }
     this.pokemonAbilitySystem.lastInputTime[slotIndex] = currentTime;
 
-    // 해당 슬롯에 포켓몬이 있는지 확인
-    const slot = document.getElementById(`slot-${slotIndex}`);
-    if (!slot || !slot.style.backgroundImage || slot.style.backgroundImage === "none") {
+    // 주석 추가: 슬롯 포켓몬 배열에서 포켓몬 존재 확인 (BrickGame에서만 사용 가능)
+    if (this.slotPokemon && !this.slotPokemon[slotIndex]) {
       console.log(`슬롯 ${slotIndex + 1}에 포켓몬이 없습니다.`);
       return;
     }
 
-    // 기절 상태 체크 (추가됨)
+    // 기절 상태 체크
     if (this.pokemonHealthSystem.isDizzy[slotIndex]) {
       console.log(`슬롯 ${slotIndex + 1} 포켓몬이 기절 상태입니다. 회복할 때까지 능력을 사용할 수 없습니다.`);
       return;
@@ -301,33 +294,52 @@ class GameManager {
       return;
     }
 
-    // 포켓몬 인덱스 추출
-    const bgImage = slot.style.backgroundImage;
-    const indexMatch = bgImage.match(/(\d+)\.png/);
-    if (!indexMatch) return;
+    // 주석 추가: 포켓몬 인덱스를 배열에서 가져오기 (DOM 파싱 대신)
+    let pokemonIndex;
+    if (this.slotPokemon && this.slotPokemon[slotIndex]) {
+      pokemonIndex = this.slotPokemon[slotIndex].index;
+    } else {
+      // 폴백: DOM에서 추출 (하위 호환성)
+      const slot = document.getElementById(`slot-${slotIndex}`);
+      if (!slot || !slot.style.backgroundImage || slot.style.backgroundImage === "none") {
+        console.log(`슬롯 ${slotIndex + 1}에 포켓몬이 없습니다.`);
+        return;
+      }
+      const bgImage = slot.style.backgroundImage;
+      const indexMatch = bgImage.match(/(\d+)\.png/);
+      if (!indexMatch) return;
+      pokemonIndex = parseInt(indexMatch[1]);
+    }
 
-    const pokemonIndex = parseInt(indexMatch[1]);
     this.usePokemonAbility(slotIndex, pokemonIndex);
   }
 
-  // MARK: 슬롯 전환 메서드 추가
+  // MARK: 슬롯 전환 메서드 수정
   switchToSlot(targetSlotIndex) {
-    if (window.DEBUG_MODE) console.log('[GameManager] switchToSlot 호출', targetSlotIndex); // 주석 추가: 슬롯 전환 로직
+    if (window.DEBUG_MODE) console.log('[GameManager] switchToSlot 호출', targetSlotIndex);
+    
+    // 주석 추가: 슬롯 포켓몬 배열에서 포켓몬 존재 확인 (BrickGame에서만 사용)
+    let hasPokemon = false;
+    if (this.slotPokemon && this.slotPokemon[targetSlotIndex]) {
+      hasPokemon = true;
+    } else {
+      // 폴백: DOM에서 확인 (하위 호환성)
+      const slot = document.getElementById(`slot-${targetSlotIndex}`);
+      hasPokemon = slot && slot.style.backgroundImage && slot.style.backgroundImage !== "none";
+    }
 
-    // 해당 슬롯에 포켓몬이 있는지 확인
-    const slot = document.getElementById(`slot-${targetSlotIndex}`);
-    if (!slot || !slot.style.backgroundImage || slot.style.backgroundImage === "none") {
+    if (!hasPokemon) {
       console.log(`슬롯 ${targetSlotIndex + 1}에 포켓몬이 없어 전환할 수 없습니다.`);
       return;
     }
 
-    // 기존에 선택된 프레임에서 selected 클래스 제거 // 주석 추가: 이전 선택 해제
+    // 기존에 선택된 프레임에서 selected 클래스 제거
     const currentSelected = document.querySelector(".pokemon-slot-frame.selected");
     if (currentSelected) {
       currentSelected.classList.remove("selected");
     }
 
-    // 새로운 슬롯 프레임에 selected 클래스 추가 // 주석 추가: 새 슬롯 선택
+    // 새로운 슬롯 프레임에 selected 클래스 추가
     const targetFrame = document.getElementById(`slot-frame-${targetSlotIndex}`);
     if (targetFrame) {
       targetFrame.classList.add("selected");
