@@ -1,4 +1,4 @@
-const GAME_TIME = 1000 * 10;
+const GAME_TIME = 1000 * 60;
 
 const STORY_SCRIPTS = [
   window.story_chapter0_opening, // 0: START 스토리
@@ -22,6 +22,7 @@ const BGM = {
   INTRO: "intro.mp3",
   RANKING: "ranking.mp3",
   RESULT: "game-result.mp3",
+  ITEM: "item.mp3"
 };
 
 const SFX = {
