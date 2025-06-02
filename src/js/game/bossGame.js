@@ -18,7 +18,7 @@ class BossGame extends GameManager {
       x: this.canvas.width / 2,
       y: this.canvas.height - 50,
       power: PLAYER_POWER, // 플레이어 공격력
-      rotation: 0, // 라디안 단위
+      rotation: Math.PI / 2, // 라디안 단위
       velocityX: 0,
       velocityY: 0,
       maxSpeed: 8,
@@ -195,8 +195,8 @@ class BossGame extends GameManager {
     if (window.DEBUG_MODE) console.log('[BossGame] initializeGame 호출'); // 디버깅용 로그 추가
     // 플레이어 초기 위치 설정
     this.player.x = this.canvas.width / 2;
-    this.player.y = this.canvas.height - 50;
-    this.player.rotation = 0;
+    this.player.y = this.canvas.height - 90;
+    this.player.rotation = -Math.PI / 2;
     this.player.velocityX = 0;
     this.player.velocityY = 0;
 

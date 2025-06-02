@@ -144,8 +144,8 @@ class GameManager {
    */
   setDifficultyBydifficulty(difficulty) {
     if (window.DEBUG_MODE) console.log('[GameManager] setDifficultyBydifficulty 호출', difficulty);
-    const currentModeConfig =
-      this.livesConfig[this.mode] || this.livesConfig.brick; // 현재 모드의 설정을 가져오거나 기본값(brick) 사용
+    const gameStage = this.stage === 4 ? 'boss' : 'brick';
+    const currentModeConfig = this.livesConfig[gameStage];
 
     switch (difficulty) {
       case "easy":
@@ -488,16 +488,16 @@ class GameManager {
       this.drawBackground(); // 게임 화면 표시만 처리
 
       // 조작법 안내
-      const howToPlayMessage = ('조작법: <br>' + (this.mode === 'boss'
-        ? "W A S D <br> ↑ ← ↓ →"
-        : "W A S D <br> ↑ ← ↓ → <br>마우스"));
+      const howToPlayMessage = ('조작법: <br>' + (this.stage === 4
+        ? "W A S D <br> ↑ ← ↓ →<br>주의: 마우스 사용 불가!"                // 보스전 조작법
+        : "W A S D <br> ↑ ← ↓ → <br>마우스"));    // 벽돌 게임 조작법
       // 구분선
       const hr = '<br>---------------------</br>';
       // 클리어 조건 메세지
-      const clearInfoMessage = (`클리어 조건: ` + (this.mode === 'boss'
-        ? `${this.boss.name}을(를) 쓰러뜨려라!`
-        : `${this.requiredScores[this.difficulty]}점을 넘겨라!`));
-        
+      const clearInfoMessage = (`클리어 조건: ` + (this.stage === 4
+        ? `${this.boss.name}을(를) 쓰러뜨려라!`                     // 보스전 클리어 조건
+        : `${this.requiredScores[this.difficulty]}점을 넘겨라!`));  // 벽돌 게임 클리어 조건
+
       showInfoModal(howToPlayMessage + hr + clearInfoMessage, () => {
         if (window.DEBUG_MODE) console.log('[GameManager] startAnimation 호출');
         hideAllFade(qsa(".screen"));
