@@ -37,7 +37,7 @@ const SFX = {
 // gameManager config
 const LIVES_CONFIG = {
   brick: { easy: 20, normal: 10, hard: 5 }, // 주석 추가: 벽돌깨기 모드 생명 (현재는 동일)
-  boss: { easy: 1000, normal: 500, hard: 250 }, // 주석 추가: 보스전 모드 생명 (현재는 동일)
+  boss: { easy: 1000, normal: 500, hard: 400 }, // 주석 추가: 보스전 모드 생명 (현재는 동일)
 };
 
 const POKEMON_ABLILITY_SYSTEM = {
