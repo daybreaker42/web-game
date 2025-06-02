@@ -408,11 +408,25 @@ class BrickGame extends GameManager {
   }  
 
   /**
+   * MARK: 벽돌 충돌 사운드 재생 (throttling 적용)
+   */
+  playBrickHitSound() {
+    const currentTime = performance.now(); // Date.now()에서 performance.now()로 변경
+    if (currentTime - this.lastBrickHitSoundTime > 300) { // 0.3초 간격으로 제한
+      this.brickHitSound.currentTime = 0; // 사운드를 처음부터 재생
+      this.brickHitSound.play().catch(error =>
+        console.error("Error playing brick hit sound:", error)
+      );
+      this.lastBrickHitSoundTime = currentTime; // 마지막 사운드 재생 시간 업데이트
+    }
+  }
+
+  /**
    * MARK: 조합 시스템
    */
   updateCombinations(timeMultiplier) {
     if (window.DEBUG_MODE) console.log('[BrickGame] updateCombinations 호출', timeMultiplier); // 디버깅용 로그 추가
-    let currentTime = Date.now();
+    let currentTime = performance.now(); // Date.now()에서 performance.now()로 변경
 
     // 화면에 조합이 있는지 확인 (화면 경계 내에 조합이 있는지 체크) - 추가됨: 화면 내 조합 존재 여부 확인
     let hasActiveCombinationOnScreen = false;
@@ -504,7 +518,12 @@ class BrickGame extends GameManager {
             this.ball.speedX = -this.ball.speedX;
           } else {
             this.ball.speedY = -this.ball.speedY;
-          } brick.status = 0; // 벽돌 부서짐
+          }
+
+          brick.status = 0; // 벽돌 부서짐
+
+          // 벽돌 충돌 사운드 재생 (함수로 분리) - 수정된 부분
+          this.playBrickHitSound();
 
           // 포켓몬 블록과 아이템 블록 처리 분리
           if (brick.blockType === 'pokemon') {
@@ -1064,7 +1083,7 @@ class BrickGame extends GameManager {
     if (this.isGameRunning) {
       if (!this.isPaused && this.fireBoostActive && this.fireBoostTimeout) {
         // 일시정지 시작 시: 불타입 능력 타이머 저장 및 정지 (주석 추가: 일시정지 중 타이머 관리)
-        this.fireBoostRemainingTime = this.fireBoostTimeout._idleStart + this.fireBoostTimeout._idleTimeout - Date.now();
+        this.fireBoostRemainingTime = this.fireBoostTimeout._idleStart + this.fireBoostTimeout._idleTimeout - performance.now(); // Date.now()에서 performance.now()로 변경
         clearTimeout(this.fireBoostTimeout);
         this.fireBoostTimeout = null;
         console.log(`일시정지: 불타입 능력 남은 시간 ${Math.max(0, this.fireBoostRemainingTime)}ms 저장`); // 주석 추가: 디버그용
