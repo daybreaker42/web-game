@@ -37,7 +37,7 @@ function proceedToStage(stageIdx) {
  */
 function onGameEnd(gameResult) {
   stopBgm();
-  
+
   console.log("게임 종료:", gameResult);
   accumulateGameResult(gameResult);
 
@@ -80,7 +80,7 @@ function onStageOver(gameResult) {
 
 function accumulateGameResult(gameResult) {
   accumulatedGameResult = {
-    ... gameResult,
+    ...gameResult,
     score: accumulatedGameResult.score + gameResult.score,
     saved_pokemon: [
       ...accumulatedGameResult.saved_pokemon,

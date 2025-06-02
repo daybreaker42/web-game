@@ -5,10 +5,10 @@ let lastImageSrc = null;
 // ============================================================================
 
 const skipModal = qs("#confirm-skip-modal");
-const btnYes     = qs("#skip-confirm-yes");
-const btnNo      = qs("#skip-confirm-no");
+const btnYes = qs("#skip-confirm-yes");
+const btnNo = qs("#skip-confirm-no");
 
-let currentOnSkip = null;   // CRT 씬에서 스킵 콜백 저장
+let currentOnSkip = null; // CRT 씬에서 스킵 콜백 저장
 
 function setupStorySkipHandler(onSkip) {
   currentOnSkip = onSkip;
@@ -16,8 +16,8 @@ function setupStorySkipHandler(onSkip) {
   if (btnSkipStory) {
     btnSkipStory.onclick = () => {
       showStorySkipConfirm(() => {
-        hideWithFade(qs("#story-screen"));           // 스토리 화면 숨김
-        const crt = qs("#crt-console-screen");       // CRT 화면도 숨김
+        hideWithFade(qs("#story-screen")); // 스토리 화면 숨김
+        const crt = qs("#crt-console-screen"); // CRT 화면도 숨김
         if (crt) crt.classList.add("hidden");
         if (typeof currentOnSkip === "function") currentOnSkip();
       });
@@ -32,13 +32,13 @@ function setupStorySkipHandler(onSkip) {
 function resetStoryScreenState() {
   // 1. story-screen 전체 배경 초기화
   const screen = qs("#story-screen");
-  screen.style.background      = "";
+  screen.style.background = "";
   screen.style.backgroundColor = "";
 
   // 2. 일러스트 초기화
   const illu = qs("#story-illustration");
   illu.style.backgroundImage = "none";
-  illu.style.width           = "0";
+  illu.style.width = "0";
 
   // 3. 텍스트 초기화
   qs("#story-line").textContent = "";
@@ -56,8 +56,8 @@ function resetStoryScreenState() {
 // ============================================================================
 
 function showStoryScreen() {
-  hideAllFade(qsa(".screen"));   // 다른 화면 모두 숨김
-  resetStoryScreenState();       // 매번 깨끗하게
+  hideAllFade(qsa(".screen")); // 다른 화면 모두 숨김
+  resetStoryScreenState(); // 매번 깨끗하게
   show(qs("#story-screen"));
 }
 
@@ -120,8 +120,8 @@ function playScene(scene, onDone) {
 // 엔딩 : 일러스트 한 장 -> 「—— Fin ——」 -> 두 번째 클릭으로 종료
 // ─────────────────────────────────────────────────────────────
 function showEndingIllustration(done) {
-  const screen  = qs("#story-screen");
-  const illust  = qs("#story-illustration");
+  const screen = qs("#story-screen");
+  const illust = qs("#story-illustration");
   const textbox = qs("#story-textbox");
   const skipBtn = qs("#btn-skip-story");
 
@@ -148,8 +148,7 @@ function showEndingIllustration(done) {
         show(skipBtn);
         show(textbox);
         show(illust);
-      }
-      , 1000);
+      }, 1000);
     }
   };
 }
@@ -183,7 +182,7 @@ function showStorySceneNormal(scene, onDone) {
         setTimeout(() => indicator.classList.remove("hidden"), 50);
       }
 
-      qs("#story-screen").onclick = e => {
+      qs("#story-screen").onclick = (e) => {
         if (e.target.id === "btn-skip-story") return;
         idx++;
         advanceLine();
@@ -198,8 +197,8 @@ function showStorySceneNormal(scene, onDone) {
 
 function showStorySceneConsole(scene, onDone) {
   const crtScreen = qs("#crt-console-screen");
-  const crtText   = qs("#crt-console-text");
-  const storyScr  = qs("#story-screen");
+  const crtText = qs("#crt-console-text");
+  const storyScr = qs("#story-screen");
 
   if (!scene.lines || scene.lines.length === 0) {
     crtScreen.classList.add("hidden");
@@ -290,9 +289,8 @@ function showStoryPotrait(scene) {
   if (scene.potrait) {
     pEl.classList.remove("hidden");
     const folder = scene.potrait;
-    const type   = scene.potrait_type || "Normal";
-    pEl.style.background =
-      `url('../assets/images/story/potrait/${folder}/${type}.png') center/contain no-repeat`;
+    const type = scene.potrait_type || "Normal";
+    pEl.style.background = `url('../assets/images/story/potrait/${folder}/${type}.png') center/contain no-repeat`;
     line.classList.add("with-potrait");
   } else {
     pEl.classList.add("hidden");
@@ -322,14 +320,11 @@ function showStoryIlustration(scene) {
   }
 
   illu.classList.remove("fade-in");
-  void illu.offsetWidth;            // Reflow → 애니메이션 재시작
+  void illu.offsetWidth; // Reflow → 애니메이션 재시작
   illu.classList.add("fade-in");
 
-  illu.style.backgroundImage =
-    `url('../assets/images/story/${scene.image}.png')`;
-  illu.style.width = scene.image_width
-    ? `${scene.image_width}px`
-    : "100%";
+  illu.style.backgroundImage = `url('../assets/images/story/${scene.image}.png')`;
+  illu.style.width = scene.image_width ? `${scene.image_width}px` : "100%";
 
   /* 4) 현재 이미지를 기록 */
   lastImageSrc = scene.image;

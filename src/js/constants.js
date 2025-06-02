@@ -22,7 +22,7 @@ const BGM = {
   INTRO: "intro.mp3",
   RANKING: "ranking.mp3",
   RESULT: "game-result.mp3",
-  ITEM: "item.mp3"
+  ITEM: "item.mp3",
 };
 
 const SFX = {
@@ -34,11 +34,11 @@ const SFX = {
   CRT_OFF: "crt-off.mp3",
   GAME_OVER: "game-over.mp3",
   // game
-  MEWTWO_HURT: 'mewtwo.ogg',
-  BALL_BOUNCE: 'ball-bounce.mp3',
-  ITEM: 'item.wav',
-  CLEAR: 'clear.wav',
-  PAUSE: 'pause.wav',
+  MEWTWO_HURT: "mewtwo.ogg",
+  BALL_BOUNCE: "ball-bounce.mp3",
+  ITEM: "item.wav",
+  CLEAR: "clear.wav",
+  PAUSE: "pause.wav",
 };
 
 // gameManager config
@@ -75,22 +75,22 @@ const BRICK_OFFSET_LEFT = 30;
 const MIN_REQUIRED_SCORE = {
   easy: 30,
   normal: 500,
-  hard: 800
+  hard: 800,
 };
 
 const TOTAL_POKEMON_COUNT = 107;
 
 const SPECIAL_POKEMON = {
   1: 105, // stage1: 피카츄
-  2: 106  // stage2: 팽도리
+  2: 106, // stage2: 팽도리
 };
 
-const TARGET_POKEMON_SPAWN_CHANCE = 0.2; // 목표 포켓몬 등장 확률 (20%)
+const TARGET_POKEMON_SPAWN_CHANCE = 1; // 목표 포켓몬 등장 확률 (20%)
 
 // bossGame config
 const PLAYER_POWER = 30; // 플레이어 공격력
 const BOSS_POWER = {
   phase1: 10,
   laser: 20,
-  phase2: 15
+  phase2: 15,
 };

@@ -16,10 +16,10 @@ function testGame() {
   console.log("DEBUG_GAME is ON");
   hideAllFade(qsa(".screen"));
   show(qs("#gameplay-screen"));
-  show(qs('.controls'));
-  show(qs('.mode-selection'));
+  show(qs(".controls"));
+  show(qs(".mode-selection"));
 
-  playGame("story", 'easy', 1, (gameResult) => {
+  playGame("story", "easy", 1, (gameResult) => {
     console.log("Game ended:", gameResult);
     handleReturnToTitleScreen();
   });

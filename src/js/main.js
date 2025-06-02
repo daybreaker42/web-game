@@ -1,4 +1,4 @@
-// window.DEBUG_MODE = true;
+window.DEBUG_MODE = true;
 
 let isStarted = false;
 let isCleared = false;
@@ -32,8 +32,8 @@ function debugMode() {
 
   // NOTE: Write your test code here (e.g. Screen)
   //   testGameResultScreen();
-  // testGame();
-  testMainLogic();
+  testGame();
+  //   testMainLogic();
   //   testCredits();
 }
 
