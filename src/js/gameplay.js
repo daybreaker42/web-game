@@ -62,6 +62,7 @@ bossModeButton.addEventListener("click", () => {
 function switchGameMode(gameType) {
   if (gameInstance && typeof gameInstance.endGame === "function") {
     // 현재 실행 중인 게임이 있고, endGame 메서드가 있다면 호출
+    gameInstance.setOnGameEnd(null);
     gameInstance.endGame();
     console.log(`게임 모드 ${gameInstance.mode} 종료`);
   }

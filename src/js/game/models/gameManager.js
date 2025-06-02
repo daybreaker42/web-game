@@ -767,7 +767,7 @@ class GameManager {
       game_over: window.DEBUG_MODE ? false : true, // 디버그 모드에서는 계속 진행
       saved_pokemon: this.saved_pokemon || [],
     };
-    if (!window.DEBUG_GAME) {
+    if (!window.DEBUG_GAME && this.onGameEnd) {
       this.onGameEnd(result); // 게임 종료 콜백 호출
     }
   }
