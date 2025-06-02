@@ -28,6 +28,10 @@ class BrickGame extends GameManager {
     this.paddleImage = null;
     this.ballImage = null;
 
+    this.brickHitSound = new Audio("../assets/sounds/sfx/ball-bounce.wav"); // 공 튀기기 소리 경로
+    this.brickHitSound.volume = 0.5; // 사운드 볼륨 설정 (0.0 ~ 1.0)
+    this.lastBrickHitSoundTime = 0; // 마지막 사운드 재생 시간 (throttling용, 0.3초)
+
     // 타입별 색상 매핑
     this.typeColorMap = {
       0: "#66BB6A", // 풀
@@ -38,6 +42,7 @@ class BrickGame extends GameManager {
     };
     this.totalPokemonCount = TOTAL_POKEMON_COUNT;
     this.specialPokemon = SPECIAL_POKEMON;
+
     // MARK: 포켓몬 능력 상태 관리 변수 추가 (주석 추가: 공 속도 버그 해결을 위한 상태 관리)
     this.fireBoostActive = false; // 불타입 능력 활성 상태
     this.originalBallSpeed = null; // 원본 공 속도 저장

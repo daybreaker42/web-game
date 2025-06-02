@@ -36,8 +36,8 @@ const SFX = {
 
 // gameManager config
 const LIVES_CONFIG = {
-  brick: { easy: 20, normal: 10, hard: 5 }, // 주석 추가: 벽돌깨기 모드 생명 (현재는 동일)
-  boss: { easy: 1000, normal: 500, hard: 400 }, // 주석 추가: 보스전 모드 생명 (현재는 동일)
+  brick: { easy: 20, normal: 15, hard: 10 }, // 주석 추가: 벽돌깨기 모드 생명 (현재는 동일)
+  boss: { easy: 1000, normal: 700, hard: 500 }, // 주석 추가: 보스전 모드 생명 (현재는 동일)
 };
 
 const POKEMON_ABLILITY_SYSTEM = {
@@ -79,3 +79,6 @@ const SPECIAL_POKEMON = {
 };
 
 const TARGET_POKEMON_SPAWN_CHANCE = 0.2; // 목표 포켓몬 등장 확률 (20%)
+
+// bossGame config
+const PLAYER_POWER = 30; // 플레이어 공격력

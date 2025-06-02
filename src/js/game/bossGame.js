@@ -17,6 +17,7 @@ class BossGame extends GameManager {
     this.player = {
       x: this.canvas.width / 2,
       y: this.canvas.height - 50,
+      power: PLAYER_POWER, // 플레이어 공격력
       rotation: 0, // 라디안 단위
       velocityX: 0,
       velocityY: 0,
@@ -703,14 +704,7 @@ class BossGame extends GameManager {
         bullet.y <= this.boss.y + this.boss.height
       ) {
         // Y 좌표는 이미지 상단 기준        // 보스 체력 감소
-        this.boss.health -= 50;
-
-        // MARK: 전기타입 능력 적용 - 점수 2배
-        if (this.electricBoostActive) {
-          this.score += 100 * 2; // 점수 2배 증가
-        } else {
-          this.score += 100; // 기본 점수 증가
-        }
+        this.boss.health -= this.player.power;
 
         // 총알 제거
         this.playerBullets.splice(i, 1);
