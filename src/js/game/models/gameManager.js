@@ -31,7 +31,7 @@ class GameManager {
     // 공통 게임 오브젝트들
     this.ball = null;
     this.paddle = null;
-    this.paddleOffset = 80;
+    this.paddleOffset = 100;
     this.BALL_SPEED = 5; // 공의 기본 속도
 
     // 다음 스테이지로 넘어가기
