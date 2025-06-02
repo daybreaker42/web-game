@@ -345,7 +345,7 @@ class BrickGame extends GameManager {
       if (this.lives <= 0) {
         if (window.DEBUG_MODE) console.log('[BrickGame] 생명 0으로 게임 오버'); // 디버깅용 로그 추가
         this.isGameClear = false;
-        this.showInGameMessage("게임 오버!", true);
+        this.showInGameMessage("게임 오버.. 포켓몬 구출에 실패했습니다.", true);
         this.endGame();
         return;
       }
@@ -677,7 +677,7 @@ class BrickGame extends GameManager {
 
     if (this.score >= requiredScore) {
       if (!this.isGameClear) {
-        this.showInGameMessage(`🎉 축하합니다! 목표 점수 ${requiredScore}점 달성! 게임 클리어! 🎉`, true);
+        this.showInGameMessage(`목표 점수 ${requiredScore}점을(를) 달성했습니다!`, true);
       }
       this.isGameClear = true;
       return true;
