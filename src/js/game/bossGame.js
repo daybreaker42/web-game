@@ -456,11 +456,69 @@ class BossGame extends GameManager {
     this.boss.currentPhase = 2;
     this.boss.color = "#8b0000"; // 보스 색깔 변경 (더 어두운 빨간색)
 
+    // 주석 추가: 페이즈 2 전환 시 이미지 경로를 _2로 변경
+    this.updateBossImagesToPhase2();
+
     // 레이저 공격 발사
     this.shootLaserAttack();
 
     // 페이즈 전환 메시지 표시
     this.showInGameMessage("보스 페이즈 2! 뮤츠가 더욱 강해집니다!", true);
+  }
+
+  /**
+   * MARK: 페이즈 2 이미지 업데이트 메서드 추가
+   */
+  updateBossImagesToPhase2() {
+    if (window.DEBUG_MODE) console.log('[BossGame] updateBossImagesToPhase2 호출'); // 디버깅용 로그 추가
+
+    // 주석 추가: 페이즈 2 이미지 경로 설정 (_1을 _2로 변경)
+    const phase2NormalPath = "../assets/images/game/boss/mewtwo_normal_2.png";
+    const phase2HurtPath = "../assets/images/game/boss/mewtwo_hurt_2.png";
+    const phase2AttackPath = "../assets/images/game/boss/mewtwo_attack_2.png";
+
+    // 주석 추가: 기본 이미지 교체
+    this.boss.imagePath = phase2NormalPath;
+    this.boss.image = new Image();
+    this.boss.imageLoaded = false;
+    this.boss.image.onload = () => {
+      this.boss.imageLoaded = true;
+      this.adjustBossImageSize(this.boss.image); // 이미지 크기 조정
+      console.log(`보스 페이즈 2 일반 이미지 로드 완료: ${phase2NormalPath}`);
+    };
+    this.boss.image.onerror = () => {
+      console.error(`보스 페이즈 2 일반 이미지 로드 실패: ${phase2NormalPath}`);
+      this.boss.imageLoaded = false;
+    };
+    this.boss.image.src = phase2NormalPath;
+
+    // 주석 추가: 피격 이미지 교체
+    this.boss.imagePathHurt = phase2HurtPath;
+    this.boss.imageHurt = new Image();
+    this.boss.imageHurtLoaded = false;
+    this.boss.imageHurt.onload = () => {
+      this.boss.imageHurtLoaded = true;
+      console.log(`보스 페이즈 2 피격 이미지 로드 완료: ${phase2HurtPath}`);
+    };
+    this.boss.imageHurt.onerror = () => {
+      console.error(`보스 페이즈 2 피격 이미지 로드 실패: ${phase2HurtPath}`);
+      this.boss.imageHurtLoaded = false;
+    };
+    this.boss.imageHurt.src = phase2HurtPath;
+
+    // 주석 추가: 공격 이미지 교체
+    this.boss.imagePathAttack = phase2AttackPath;
+    this.boss.imageAttack = new Image();
+    this.boss.imageAttackLoaded = false;
+    this.boss.imageAttack.onload = () => {
+      this.boss.imageAttackLoaded = true;
+      console.log(`보스 페이즈 2 공격 이미지 로드 완료: ${phase2AttackPath}`);
+    };
+    this.boss.imageAttack.onerror = () => {
+      console.error(`보스 페이즈 2 공격 이미지 로드 실패: ${phase2AttackPath}`);
+      this.boss.imageAttackLoaded = false;
+    };
+    this.boss.imageAttack.src = phase2AttackPath;
   }
 
   /**
