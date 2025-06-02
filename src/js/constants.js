@@ -69,7 +69,7 @@ const BRICK_OFFSET_LEFT = 30;
 
 // 난이도별 최소 점수
 const MIN_REQUIRED_SCORE = {
-  easy: 0,
+  easy: 30,
   normal: 500,
   hard: 800
 };
