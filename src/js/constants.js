@@ -38,6 +38,7 @@ const SFX = {
   BALL_BOUNCE: 'ball-bounce.mp3',
   ITEM: 'item.wav',
   CLEAR: 'clear.wav',
+  PAUSE: 'pause.wav',
 };
 
 // gameManager config

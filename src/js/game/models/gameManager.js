@@ -511,6 +511,7 @@ class GameManager {
     if (this.isGameRunning) {
       this.isPaused = !this.isPaused;
       if (this.isPaused) {
+        playSfx(SFX.PAUSE);
         if (window.DEBUG_MODE) console.log('[GameManager] togglePause() - 게임 paused');
         this.pauseStartTime = performance.now();
         cancelAnimationFrame(this.animationFrame);
