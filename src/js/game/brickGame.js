@@ -287,8 +287,6 @@ class BrickGame extends GameManager {
    */
   initializeGame() {
     if (window.DEBUG_MODE) console.log('[BrickGame] initializeGame 호출'); // 디버깅용 로그 추가
-    // 기본 게임 오브젝트 초기화는 부모에서 처리
-    // this.initializeGameObjects();
 
     // 동적 조합 시스템 초기화
     this.initDynamicBrickSystem();
@@ -328,19 +326,21 @@ class BrickGame extends GameManager {
     // 조합 생성 및 이동 시스템 추가
     this.updateCombinations(timeMultiplier);
 
-    // 화면 밖 감지 조건 정의
-    let ballIsOutOfScreenLeft = this.ball.x <= -this.ball.radius;
-    let ballIsOutOfScreenTop = this.ball.y <= -this.ball.radius;
+    // MARK: 공 화면 밖 감지
+    let ballIsOutOfScreenLeft = this.ball.x < -this.ball.radius;
+    let ballIsOutOfScreenTop = this.ball.y < -this.ball.radius;
     let ballIsOutOfScreenRight = this.ball.x - this.ball.radius > this.canvas.width;
     let ballIsOutOfScreenBottom = this.ball.y + this.ball.radius > this.canvas.height;
     let isBallMissing = isNaN(this.ball.x) || isNaN(this.ball.y);
 
     if (ballIsOutOfScreenLeft || ballIsOutOfScreenRight || ballIsOutOfScreenTop || ballIsOutOfScreenBottom || isBallMissing) {
       // 공이 화면 밖으로 나간 경우: 생명 감소 및 위치/속도 초기화
+      // if (window.DEBUG_MODE) console.log('[BrickGame] 공이 화면 밖으로 나감'); // 디버깅용 로그 추가
       this.lives -= 1;
 
       // 생명 <= 0이면 게임 끝내기
       if (this.lives <= 0) {
+        if (window.DEBUG_MODE) console.log('[BrickGame] 생명 0으로 게임 오버'); // 디버깅용 로그 추가
         this.isGameClear = false;
         this.showInGameMessage("게임 오버!", true);
         this.endGame();
@@ -348,10 +348,11 @@ class BrickGame extends GameManager {
       }
 
       // 공 위치 및 속도 초기화
-      this.ball.x = this.canvas.width / 2;
+      this.ball.x = this.ballInitialX;
       this.ball.y = this.ballInitialY;
       this.ball.speedX = 0;
       this.ball.speedY = -this.BALL_SPEED;
+      // if (window.DEBUG_MODE) console.log(`[BrickGame] 공 위치 초기화: (${this.ball.x.toFixed(2)}, ${this.ball.y.toFixed(2)})`); // 디버깅용 로그 추가
     } else {
       // 공이 화면 안에 있는 경우: 일반 벽 충돌(바운스) 처리
       // 좌우 벽 충돌
@@ -397,6 +398,8 @@ class BrickGame extends GameManager {
     this.drawBall();
     this.drawPaddle();
     this.drawDynamicBricks(); // 동적 벽돌 그리기로 변경
+
+    // if (window.DEBUG_MODE) console.log(`[BrickGame] 공의 좌표: (${this.ball.x.toFixed(2)}, ${this.ball.y.toFixed(2)})`);
   }  
 
   /**
@@ -838,7 +841,7 @@ class BrickGame extends GameManager {
    */
   executeGrassAbility() {
     if (window.DEBUG_MODE) console.log('[BrickGame] executeGrassAbility 호출'); // 디버깅용 로그 추가
-    const healAmount = 50; // 회복량
+    const healAmount = 1; // 회복량
     this.lives = Math.min(this.totalLives, this.lives + healAmount);
     this.showInGameMessage(`풀타입 능력: 생명력 ${healAmount} 회복!`, true);
     console.log(`풀타입 능력 사용: 생명력 ${healAmount} 회복`);

@@ -15,6 +15,29 @@ class GameManager {
     this.FPS = 60;
     this.FRAME_DELAY = 1000 / this.FPS;
 
+    // MARK: 난이도별 최소 점수 설정
+    this.requiredScores = MIN_REQUIRED_SCORE;
+
+    // 생명 설정 (모드 및 난이도별) // 주석 추가: 생명 설정 구조화
+    this.livesConfig = LIVES_CONFIG;
+
+    // 입력 상태
+    this.keys = {
+      rightPressed: false,
+      leftPressed: false,
+      spacePressed: false,
+    };
+
+    // 공통 게임 오브젝트들
+    this.ball = null;
+    this.paddle = null;
+    this.paddleOffset = 80;
+    this.BALL_SPEED = 5; // 공의 기본 속도
+
+    // 다음 스테이지로 넘어가기
+    this.onGameEnd = null;
+
+
     // MARK: 배경 이미지 시스템 추가
     this.backgroundImage = null;
     this.backgroundImageLoaded = false;
@@ -45,31 +68,10 @@ class GameManager {
     this.difficulty = null;
     this.stage = null;      // 1~3 : 벽돌깨기, 4 : 보스전
     this.score = 0;
-    this.lives = 300; // 기본 생명력
+    this.lives = 300; // 현재 유저가 가진 생명령, startGame에서 livesConfig으로 difficulty마다 초기화
     this.totalLives = 300;
     this.isGameClear = false;
     this.saved_pokemon = [];
-    // MARK: 난이도별 최소 점수 설정
-    this.requiredScores = MIN_REQUIRED_SCORE;
-
-    // 생명 설정 (모드 및 난이도별) // 주석 추가: 생명 설정 구조화
-    this.livesConfig = LIVES_CONFIG;
-
-    // 입력 상태
-    this.keys = {
-      rightPressed: false,
-      leftPressed: false,
-      spacePressed: false,
-    };
-
-    // 공통 게임 오브젝트들
-    this.ball = null;
-    this.paddle = null;
-    this.paddleOffset = 80;
-    this.BALL_SPEED = 5; // 공의 기본 속도
-
-    // 다음 스테이지로 넘어가기
-    this.onGameEnd = null;
   }
   /**
    * MARK: 게임 정보를 설정하는 메서드
@@ -167,7 +169,7 @@ class GameManager {
     if (window.DEBUG_MODE) console.log('[GameManager] initializeGameObjects 호출');
     // 공 초기화
     this.ball = {
-      x: this.canvas.width / 2,
+      x: this.ballInitialX,
       y: this.ballInitialY,
       speedX: 0,
       speedY: -this.BALL_SPEED,
@@ -700,6 +702,7 @@ class GameManager {
 
         // 보스전은 시간 초과 시 무조건 실패
         if (this.stage === 4) {
+          if (window.DEBUG_MODE) console.log('[GameManager] 보스전 시간 초과 처리');
           this.isGameClear = false;
           this.showInGameMessage("시간 초과! 보스를 시간 내에 처치하지 못했습니다!", true);
           this.endGame();
@@ -716,12 +719,14 @@ class GameManager {
             }, 3000);
           } else {
             // 최소 점수 미달성 시 게임 오버
+            if (window.DEBUG_MODE) console.log('[GameManager] 벽돌깨기 게임 시간 초과 처리');
             this.isGameClear = false;
             this.showInGameMessage("시간 초과! 목표 점수 미달로 게임 오버", true);
             this.endGame();
           }
         } else {
           // 기타 게임 모드는 기존 로직 유지
+          if (window.DEBUG_MODE) console.log('[GameManager] 기타 게임 시간 초과 처리');
           this.endGame();
         }
         return;
@@ -762,7 +767,7 @@ class GameManager {
       game_over: window.DEBUG_MODE ? false : true, // 디버그 모드에서는 계속 진행
       saved_pokemon: this.saved_pokemon || [],
     };
-    if (!window.DEBUG_GAME) {
+    if (!window.DEBUG_GAME && this.onGameEnd) {
       this.onGameEnd(result); // 게임 종료 콜백 호출
     }
   }
