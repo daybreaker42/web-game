@@ -458,6 +458,40 @@ class BossGame extends GameManager {
     this.boss.currentPhase = 2;
     this.boss.color = "#8b0000"; // 보스 색깔 변경 (더 어두운 빨간색)
 
+    // Phase 2 이미지 경로 업데이트 (숫자 1을 2로 변경)
+    this.boss.imagePath = "../assets/images/game/boss/mewtwo_normal_2.png";
+    this.boss.imagePathHurt = "../assets/images/game/boss/mewtwo_hurt_2.png";
+    this.boss.imagePathAttack = "../assets/images/game/boss/mewtwo_attack_2.png";
+
+    // Phase 2 이미지 로드
+    this.boss.image.src = this.boss.imagePath;
+    this.boss.image.onload = () => {
+      this.boss.imageLoaded = true;
+      this.adjustBossImageSize(this.boss.image);
+      console.log("보스 Phase 2 일반 이미지 로드 완료.");
+    };
+    this.boss.image.onerror = () => {
+      console.error(`보스 Phase 2 일반 이미지 로드 실패: ${this.boss.imagePath}`);
+    };
+
+    this.boss.imageHurt.src = this.boss.imagePathHurt;
+    this.boss.imageHurt.onload = () => {
+      this.boss.imageHurtLoaded = true;
+      console.log("보스 Phase 2 피격 이미지 로드 완료.");
+    };
+    this.boss.imageHurt.onerror = () => {
+      console.error(`보스 Phase 2 피격 이미지 로드 실패: ${this.boss.imagePathHurt}`);
+    };
+
+    this.boss.imageAttack.src = this.boss.imagePathAttack;
+    this.boss.imageAttack.onload = () => {
+      this.boss.imageAttackLoaded = true;
+      console.log("보스 Phase 2 공격 이미지 로드 완료.");
+    };
+    this.boss.imageAttack.onerror = () => {
+      console.error(`보스 Phase 2 공격 이미지 로드 실패: ${this.boss.imagePathAttack}`);
+    };
+
     // 레이저 공격 발사
     this.shootLaserAttack();
 
@@ -860,18 +894,7 @@ class BossGame extends GameManager {
         this.boss.height,
       );
 
-      // 페이즈 2일 때 추가 효과 (외곽선 등)은 이미지 위에 그려질 수 있음
-      if (this.boss.currentPhase === 2 && !this.boss.isHurt) {
-        // 피격 시에는 외곽선 잠시 숨김 (선택사항)
-        this.ctx.strokeStyle = "#ff00ff";
-        this.ctx.lineWidth = 3;
-        this.ctx.strokeRect(
-          this.boss.x - this.boss.width / 2,
-          this.boss.y,
-          this.boss.width,
-          this.boss.height,
-        );
-      }
+      // Phase 2 보라색 테두리 제거 - 더 이상 그리지 않음
     } else {
       // 이미지가 로드되지 않았으면 기존 사각형 그리기 (폴백)
       this.ctx.fillStyle = this.boss.color;
@@ -892,17 +915,7 @@ class BossGame extends GameManager {
         this.boss.height,
       );
 
-      // 페이즈 2일 때 추가 효과
-      if (this.boss.currentPhase === 2) {
-        this.ctx.strokeStyle = "#ff00ff";
-        this.ctx.lineWidth = 2;
-        this.ctx.strokeRect(
-          this.boss.x - this.boss.width / 2 - 5,
-          this.boss.y - 5,
-          this.boss.width + 10,
-          this.boss.height + 10,
-        );
-      }
+      // Phase 2 보라색 테두리 제거 - 폴백 모드에서도 제거
     }
     this.ctx.globalAlpha = 1.0; // 투명도 복구
   }
