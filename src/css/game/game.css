@@ -75,10 +75,14 @@ canvas {
    2px -2px 0 black,
   -2px  2px 0 black,
    2px  2px 0 black;
+  text-align: left;
+  margin: 10px 0 0 10px;
 }
-.score-info {
-  display: flex;
+#game-info-indicator label {
+    width: 70px;
+    display: inline-block;
 }
+
 /* 반응형 디자인 */
 @media (max-width: 850px) {
   canvas {
