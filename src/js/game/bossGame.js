@@ -17,7 +17,8 @@ class BossGame extends GameManager {
     this.player = {
       x: this.canvas.width / 2,
       y: this.canvas.height - 50,
-      rotation: 0, // 라디안 단위
+      power: PLAYER_POWER, // 플레이어 공격력
+      rotation: Math.PI / 2, // 라디안 단위
       velocityX: 0,
       velocityY: 0,
       maxSpeed: 8,
@@ -194,8 +195,8 @@ class BossGame extends GameManager {
     if (window.DEBUG_MODE) console.log('[BossGame] initializeGame 호출'); // 디버깅용 로그 추가
     // 플레이어 초기 위치 설정
     this.player.x = this.canvas.width / 2;
-    this.player.y = this.canvas.height - 50;
-    this.player.rotation = 0;
+    this.player.y = this.canvas.height - 90;
+    this.player.rotation = -Math.PI / 2;
     this.player.velocityX = 0;
     this.player.velocityY = 0;
 
@@ -703,14 +704,7 @@ class BossGame extends GameManager {
         bullet.y <= this.boss.y + this.boss.height
       ) {
         // Y 좌표는 이미지 상단 기준        // 보스 체력 감소
-        this.boss.health -= 50;
-
-        // MARK: 전기타입 능력 적용 - 점수 2배
-        if (this.electricBoostActive) {
-          this.score += 100 * 2; // 점수 2배 증가
-        } else {
-          this.score += 100; // 기본 점수 증가
-        }
+        this.boss.health -= this.player.power;
 
         // 총알 제거
         this.playerBullets.splice(i, 1);
@@ -751,7 +745,7 @@ class BossGame extends GameManager {
 
       if (distance < bullet.radius + this.player.radius) {
         // 플레이어 생명 감소
-        this.lives -= 10;
+        this.lives -= BOSS_POWER.phase1;
 
         // 탄막 제거
         this.bossBullets.splice(i, 1);
@@ -767,7 +761,7 @@ class BossGame extends GameManager {
 
       if (distance < laser.radius + this.player.radius) {
         // 플레이어 생명 감소 (레이저는 더 강함)
-        this.lives -= laser.damage || 15;
+        this.lives -= BOSS_POWER.laser;
 
         // 레이저 제거
         this.laserBullets.splice(i, 1);

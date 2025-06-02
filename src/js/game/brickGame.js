@@ -28,6 +28,10 @@ class BrickGame extends GameManager {
     this.paddleImage = null;
     this.ballImage = null;
 
+    this.ballBounceSound = new Audio("../assets/sounds/sfx/ball-bounce.wav"); // 공 충돌 소리 경로 (벽돌/벽/패들 모든 충돌)
+    this.ballBounceSound.volume = 0.5; // 사운드 볼륨 설정 (0.0 ~ 1.0)
+    this.lastBallBounceSoundTime = 0; // 마지막 사운드 재생 시간 (throttling용, 0.3초)
+
     // 타입별 색상 매핑
     this.typeColorMap = {
       0: "#66BB6A", // 풀
@@ -38,6 +42,7 @@ class BrickGame extends GameManager {
     };
     this.totalPokemonCount = TOTAL_POKEMON_COUNT;
     this.specialPokemon = SPECIAL_POKEMON;
+
     // MARK: 포켓몬 능력 상태 관리 변수 추가 (주석 추가: 공 속도 버그 해결을 위한 상태 관리)
     this.fireBoostActive = false; // 불타입 능력 활성 상태
     this.originalBallSpeed = null; // 원본 공 속도 저장
@@ -359,15 +364,18 @@ class BrickGame extends GameManager {
       if (this.ball.x - this.ball.radius <= 0) {
         this.ball.speedX = -this.ball.speedX;
         this.ball.x = this.ball.radius;
+        this.playBallBounceSound(); // 벽 충돌 사운드 재생 추가
       } else if (this.ball.x + this.ball.radius >= this.canvas.width) {
         this.ball.speedX = -this.ball.speedX;
         this.ball.x = this.canvas.width - this.ball.radius;
+        this.playBallBounceSound(); // 벽 충돌 사운드 재생 추가
       }
 
       // 상단 벽 충돌
       if (this.ball.y - this.ball.radius <= 0) {
         this.ball.speedY = -this.ball.speedY;
         this.ball.y = this.ball.radius;
+        this.playBallBounceSound(); // 상단 벽 충돌 사운드 재생 추가
       }
     }
 
@@ -384,6 +392,7 @@ class BrickGame extends GameManager {
       let ballDistFromCenter = this.ball.x - paddleCenter;
       this.ball.speedX = (ballDistFromCenter / (this.paddle.width / 2)) * this.BALL_SPEED;
       this.ball.speedY = -Math.sqrt(this.BALL_SPEED * this.BALL_SPEED - this.ball.speedX * this.ball.speedX);
+      this.playBallBounceSound(); // 패들 충돌 사운드 재생 추가
     }
 
     // 벽돌과 공 충돌 (동적 조합 시스템으로 변경)
@@ -403,11 +412,25 @@ class BrickGame extends GameManager {
   }  
 
   /**
+   * MARK: 공 충돌 사운드 재생 (throttling 적용)
+   */
+  playBallBounceSound() {
+    const currentTime = performance.now(); // 현재 시간 측정
+    if (currentTime - this.lastBallBounceSoundTime > 300) { // 0.3초 간격으로 제한
+      this.ballBounceSound.currentTime = 0; // 사운드를 처음부터 재생
+      this.ballBounceSound.play().catch(error =>
+        console.error("Error playing ball bounce sound:", error)
+      );
+      this.lastBallBounceSoundTime = currentTime; // 마지막 사운드 재생 시간 업데이트
+    }
+  }
+
+  /**
    * MARK: 조합 시스템
    */
   updateCombinations(timeMultiplier) {
     if (window.DEBUG_MODE) console.log('[BrickGame] updateCombinations 호출', timeMultiplier); // 디버깅용 로그 추가
-    let currentTime = Date.now();
+    let currentTime = performance.now(); // Date.now()에서 performance.now()로 변경
 
     // 화면에 조합이 있는지 확인 (화면 경계 내에 조합이 있는지 체크) - 추가됨: 화면 내 조합 존재 여부 확인
     let hasActiveCombinationOnScreen = false;
@@ -499,7 +522,12 @@ class BrickGame extends GameManager {
             this.ball.speedX = -this.ball.speedX;
           } else {
             this.ball.speedY = -this.ball.speedY;
-          } brick.status = 0; // 벽돌 부서짐
+          }
+
+          brick.status = 0; // 벽돌 부서짐
+
+          // 공 충돌 사운드 재생 (벽돌 충돌 시에도 동일한 사운드)
+          this.playBallBounceSound();
 
           // 포켓몬 블록과 아이템 블록 처리 분리
           if (brick.blockType === 'pokemon') {
@@ -1059,7 +1087,7 @@ class BrickGame extends GameManager {
     if (this.isGameRunning) {
       if (!this.isPaused && this.fireBoostActive && this.fireBoostTimeout) {
         // 일시정지 시작 시: 불타입 능력 타이머 저장 및 정지 (주석 추가: 일시정지 중 타이머 관리)
-        this.fireBoostRemainingTime = this.fireBoostTimeout._idleStart + this.fireBoostTimeout._idleTimeout - Date.now();
+        this.fireBoostRemainingTime = this.fireBoostTimeout._idleStart + this.fireBoostTimeout._idleTimeout - performance.now(); // Date.now()에서 performance.now()로 변경
         clearTimeout(this.fireBoostTimeout);
         this.fireBoostTimeout = null;
         console.log(`일시정지: 불타입 능력 남은 시간 ${Math.max(0, this.fireBoostRemainingTime)}ms 저장`); // 주석 추가: 디버그용
