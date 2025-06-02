@@ -421,8 +421,6 @@ class GameManager {
       this.ctx.fillStyle = "#fff"; // 텍스트 색상
       this.ctx.textAlign = "left"; // 텍스트 정렬
       this.ctx.fillText(`X ${this.lives}`, textX, textY); // 남은 목숨 표시
-    } else {
-      this.ctx.fillText(`남은 목숨: ${this.lives}`, textX, textY); // 볼 아이콘이 로드되지 않았을 때 텍스트로 표시
     }
   }
   /**
