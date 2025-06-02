@@ -326,9 +326,9 @@ class BrickGame extends GameManager {
     // 조합 생성 및 이동 시스템 추가
     this.updateCombinations(timeMultiplier);
 
-    // 화면 밖 감지 조건 정의
-    let ballIsOutOfScreenLeft = this.ball.x <= -this.ball.radius;
-    let ballIsOutOfScreenTop = this.ball.y <= -this.ball.radius;
+    // MARK: 공 화면 밖 감지
+    let ballIsOutOfScreenLeft = this.ball.x < -this.ball.radius;
+    let ballIsOutOfScreenTop = this.ball.y < -this.ball.radius;
     let ballIsOutOfScreenRight = this.ball.x - this.ball.radius > this.canvas.width;
     let ballIsOutOfScreenBottom = this.ball.y + this.ball.radius > this.canvas.height;
     let isBallMissing = isNaN(this.ball.x) || isNaN(this.ball.y);
