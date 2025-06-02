@@ -297,7 +297,7 @@ class BrickGame extends GameManager {
   }
 
   /**
-   * MARK: 스테이지별 기본 포켓몬 슬롯 추가 메서드 추가
+   * MARK: 스테이지별 기본 포켓몬 슬롯 추가 메서드 수정
    */
   addDefaultPokemonByStage() {
     if (window.DEBUG_MODE) console.log('[BrickGame] addDefaultPokemonByStage 호출', this.stage);
@@ -305,19 +305,28 @@ class BrickGame extends GameManager {
     // 슬롯 초기화 먼저 수행
     this.clearPokemonSlots();
 
-    // 스테이지별 기본 포켓몬 설정 (주석 추가: constants.js의 SPECIAL_POKEMON 활용)
-    const defaultPokemonIndex = this.specialPokemon[this.stage - 1];
+    // 주석 추가: 스테이지별 기본 포켓몬 설정 (stage 2: 피카츄만, stage 3: 피카츄+펭도리)
+    let defaultPokemonIndices = [];
 
-    if (defaultPokemonIndex !== undefined) {
-      // 포켓몬 데이터 확인
-      const pokemonData = window.pokemon && window.pokemon[defaultPokemonIndex] ? window.pokemon[defaultPokemonIndex] : null;
+    if (this.stage === 2) {
+      // stage 2: 피카츄(105)만 추가
+      defaultPokemonIndices = [105];
+    } else if (this.stage === 3) {
+      // stage 3: 피카츄(105), 펭도리(106) 모두 추가
+      defaultPokemonIndices = [105, 106];
+    }
+
+    // 주석 추가: 설정된 포켓몬들을 순서대로 슬롯에 추가
+    for (let i = 0; i < defaultPokemonIndices.length && i < 4; i++) {
+      const pokemonIndex = defaultPokemonIndices[i];
+      const pokemonData = window.pokemon && window.pokemon[pokemonIndex] ? window.pokemon[pokemonIndex] : null;
 
       if (pokemonData) {
         // 이미지 경로 생성
-        const imagePath = `../assets/images/game/pokemon/${defaultPokemonIndex}.png`;
+        const imagePath = `../assets/images/game/pokemon/${pokemonIndex}.png`;
 
-        // 첫 번째 슬롯에 기본 포켓몬 추가 (주석 추가: 배열과 DOM 모두 업데이트)
-        const slot = document.getElementById("slot-0");
+        // i번째 슬롯에 포켓몬 추가 (주석 추가: 배열과 DOM 모두 업데이트)
+        const slot = document.getElementById(`slot-${i}`);
         if (slot) {
           // DOM 업데이트
           slot.style.backgroundImage = `url(${imagePath})`;
@@ -327,25 +336,29 @@ class BrickGame extends GameManager {
           slot.style.backgroundColor = color;
 
           // 배열 업데이트 (주석 추가: 기본 포켓몬 정보 저장)
-          this.slotPokemon[0] = {
-            index: defaultPokemonIndex,
+          this.slotPokemon[i] = {
+            index: pokemonIndex,
             type: pokemonData.type,
             name: pokemonData.name,
             imageSrc: imagePath
           };
 
-          // 첫 번째 슬롯 선택 상태로 설정 (주석 추가: 기본 포켓몬 슬롯을 선택된 상태로 초기화)
-          const firstFrame = document.getElementById("slot-frame-0");
-          if (firstFrame) {
-            firstFrame.classList.add("selected");
-          }
-
-          console.log(`스테이지 ${this.stage} 기본 포켓몬 추가: ${pokemonData.name} (인덱스: ${defaultPokemonIndex}, 타입: ${pokemonData.type})`);
+          console.log(`스테이지 ${this.stage} 기본 포켓몬 추가: ${pokemonData.name} (인덱스: ${pokemonIndex}, 타입: ${pokemonData.type}) - 슬롯 ${i}`);
         }
       } else {
-        console.warn(`스테이지 ${this.stage} 기본 포켓몬 데이터를 찾을 수 없습니다. 인덱스: ${defaultPokemonIndex}`);
+        console.warn(`스테이지 ${this.stage} 기본 포켓몬 데이터를 찾을 수 없습니다. 인덱스: ${pokemonIndex}`);
       }
-    } else {
+    }
+
+    // 주석 추가: 첫 번째 슬롯을 선택된 상태로 설정 (포켓몬이 추가된 경우에만)
+    if (defaultPokemonIndices.length > 0) {
+      const firstFrame = document.getElementById("slot-frame-0");
+      if (firstFrame) {
+        firstFrame.classList.add("selected");
+      }
+    }
+
+    if (defaultPokemonIndices.length === 0) {
       console.log(`스테이지 ${this.stage}에는 기본 포켓몬이 설정되지 않았습니다.`);
     }
   }
