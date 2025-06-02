@@ -415,7 +415,7 @@ class BrickGame extends GameManager {
   playBallBounceSound() {
     const currentTime = performance.now(); // 현재 시간 측정
     if (currentTime - this.lastBallBounceSoundTime > 300) { // 0.3초 간격으로 제한
-      this.ballBounceSound.currentTime = 0; // 사운드를 처음부터 재생
+      this.lastBallBounceSoundTime = 0; // 사운드를 처음부터 재생
       // this.ballBounceSound.play().catch(error =>
       //   console.error("Error playing ball bounce sound:", error)
       // );
