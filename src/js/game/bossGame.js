@@ -1053,26 +1053,39 @@ class BossGame extends GameManager {
     );
 
     // 보스 체력 텍스트
-    this.ctx.fillStyle = "#ffffff";
-    this.ctx.font = "16px Arial";
+    this.ctx.font = "23px DOSGothic";
     this.ctx.textAlign = "center";
-    this.ctx.fillText(
-      `뮤츠 : ${Math.max(0, this.boss.health)} / ${this.boss.maxHealth}`,
-      this.canvas.width / 2,
-      bossHealthBarY + bossHealthBarHeight + 20,
-    );
+    this.ctx.textBaseline = "middle";
+    
+    const bossText = `뮤츠 : ${Math.max(0, this.boss.health)} / ${this.boss.maxHealth}`;
+    const textX = this.canvas.width / 2;
+    const textY = bossHealthBarY + bossHealthBarHeight + 23;
+    
+    // 네 방향 검정 테두리
+    const shadowOffsets = [
+      [-2, -2], [2, -2], [-2, 2], [2, 2]
+    ];
+    this.ctx.fillStyle = "black";
+    shadowOffsets.forEach(([dx, dy]) => {
+      this.ctx.fillText(bossText, textX + dx, textY + dy);
+    });
+    
+    // 본문(흰색)
+    this.ctx.fillStyle = "white";
+    this.ctx.fillText(bossText, textX, textY);
+    
   }
 
   /**
    * MARK: 플레이어 체력바 그리기 (하단)
    */
   drawPlayerHealthBar() {
-    if (window.DEBUG_MODE) console.log('[BossGame] drawPlayerHealthBar 호출'); // 디버깅용 로그 추가
+    if (window.DEBUG_MODE) console.log('[BossGame] drawPlayerHealthBar 호출');
     const playerHealthBarWidth = 200;
     const playerHealthBarHeight = 15;
     const playerHealthBarX = (this.canvas.width - playerHealthBarWidth) / 2;
-    const playerHealthBarY = this.canvas.height - 50;
-
+    const playerHealthBarY = this.canvas.height - 30;
+  
     // 플레이어 체력바 배경
     this.ctx.fillStyle = "#333333";
     this.ctx.fillRect(
@@ -1081,7 +1094,7 @@ class BossGame extends GameManager {
       playerHealthBarWidth,
       playerHealthBarHeight,
     );
-
+  
     // 플레이어 체력바
     const playerHealthPercent = this.lives / this.totalLives;
     this.ctx.fillStyle = playerHealthPercent > 0.3 ? "#44ff44" : "#ffff44";
@@ -1091,7 +1104,7 @@ class BossGame extends GameManager {
       playerHealthBarWidth * playerHealthPercent,
       playerHealthBarHeight,
     );
-
+  
     // 플레이어 체력바 외곽선
     this.ctx.strokeStyle = "#ffffff";
     this.ctx.lineWidth = 1;
@@ -1101,18 +1114,28 @@ class BossGame extends GameManager {
       playerHealthBarWidth,
       playerHealthBarHeight,
     );
-
-    // 플레이어 체력 텍스트
-    this.ctx.fillStyle = "#ffffff";
-    this.ctx.font = "14px Arial";
+  
+    // ======= 플레이어 체력 텍스트 (네 방향 테두리 + 바 위에) =======
+    const text = `HP: ${this.lives} / ${this.totalLives}`;
+    this.ctx.font = "23px DOSGothic";
     this.ctx.textAlign = "center";
-    this.ctx.fillText(
-      `플레이어 HP: ${this.lives} / ${this.totalLives}`,
-      this.canvas.width / 2,
-      playerHealthBarY + playerHealthBarHeight + 20,
-    );
+    this.ctx.textBaseline = "bottom"; // 바 위에 붙도록
+  
+    const textX = this.canvas.width / 2;
+    const textY = playerHealthBarY - 10; // 바 바로 위, 여백 조절
+  
+    const shadowOffsets = [
+      [-2, -2], [2, -2], [-2, 2], [2, 2]
+    ];
+    this.ctx.fillStyle = "black";
+    shadowOffsets.forEach(([dx, dy]) => {
+      this.ctx.fillText(text, textX + dx, textY + dy);
+    });
+  
+    this.ctx.fillStyle = "white";
+    this.ctx.fillText(text, textX, textY);
   }
-
+  
   /**
    * 보스 이미지 크기 조정 공통 함수
    */
