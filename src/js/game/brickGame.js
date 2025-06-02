@@ -29,6 +29,8 @@ class BrickGame extends GameManager {
     this.ballImage = null;
 
     this.lastBallBounceSoundTime = 0; // 마지막 사운드 재생 시간 (throttling용, 0.3초)
+    // 주석 추가: 아이템 사용 사운드 throttling 변수 추가
+    this.lastItemSoundTime = 0; // 마지막 아이템 사운드 재생 시간 (throttling용, 1초)
 
     // 타입별 색상 매핑
     this.typeColorMap = {
@@ -492,6 +494,18 @@ class BrickGame extends GameManager {
   }
 
   /**
+   * MARK: 아이템 사용 사운드 재생 (throttling 적용)
+   */
+  playItemSound() {
+    const currentTime = performance.now(); // 현재 시간 측정
+    if (currentTime - this.lastItemSoundTime > 1000) { // 1초 간격으로 제한
+      this.lastItemSoundTime = 0; // 사운드를 처음부터 재생
+      playSfx(SFX.ITEM); // 아이템 사운드 재생
+      this.lastItemSoundTime = currentTime; // 마지막 사운드 재생 시간 업데이트
+    }
+  }
+
+  /**
    * MARK: 조합 시스템
    */
   updateCombinations(timeMultiplier) {
@@ -590,8 +604,7 @@ class BrickGame extends GameManager {
             this.ball.speedY = -this.ball.speedY;
           }
 
-          brick.status = 0; // 벽돌 부서짐
-
+          brick.status = 0;
           // 공 충돌 사운드 재생 (벽돌 충돌 시에도 동일한 사운드)
           this.playBallBounceSound();
 
@@ -630,9 +643,11 @@ class BrickGame extends GameManager {
               this.addPokemonToSlot(imagePath);
             }
           } else if (brick.blockType === 'item') {
-            // 아이템 블록 처리
+            // 주석 추가: 아이템 블록 충돌 시 사운드 재생
+            this.playItemSound(); // 아이템 사운드 재생 (1초 throttling)
+
+            // 아이템 사용 처리 (기존 로직)
             this.useItemOnSlot(brick.itemName);
-            // this.score += 5; // 아이템 획득 점수
           }
 
           if (!this.isGameClear) { 
