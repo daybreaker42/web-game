@@ -28,9 +28,9 @@ class BrickGame extends GameManager {
     this.paddleImage = null;
     this.ballImage = null;
 
-    this.brickHitSound = new Audio("../assets/sounds/sfx/ball-bounce.wav"); // 공 튀기기 소리 경로
-    this.brickHitSound.volume = 0.5; // 사운드 볼륨 설정 (0.0 ~ 1.0)
-    this.lastBrickHitSoundTime = 0; // 마지막 사운드 재생 시간 (throttling용, 0.3초)
+    this.ballBounceSound = new Audio("../assets/sounds/sfx/ball-bounce.wav"); // 공 충돌 소리 경로 (벽돌/벽/패들 모든 충돌)
+    this.ballBounceSound.volume = 0.5; // 사운드 볼륨 설정 (0.0 ~ 1.0)
+    this.lastBallBounceSoundTime = 0; // 마지막 사운드 재생 시간 (throttling용, 0.3초)
 
     // 타입별 색상 매핑
     this.typeColorMap = {
@@ -364,15 +364,18 @@ class BrickGame extends GameManager {
       if (this.ball.x - this.ball.radius <= 0) {
         this.ball.speedX = -this.ball.speedX;
         this.ball.x = this.ball.radius;
+        this.playBallBounceSound(); // 벽 충돌 사운드 재생 추가
       } else if (this.ball.x + this.ball.radius >= this.canvas.width) {
         this.ball.speedX = -this.ball.speedX;
         this.ball.x = this.canvas.width - this.ball.radius;
+        this.playBallBounceSound(); // 벽 충돌 사운드 재생 추가
       }
 
       // 상단 벽 충돌
       if (this.ball.y - this.ball.radius <= 0) {
         this.ball.speedY = -this.ball.speedY;
         this.ball.y = this.ball.radius;
+        this.playBallBounceSound(); // 상단 벽 충돌 사운드 재생 추가
       }
     }
 
@@ -389,6 +392,7 @@ class BrickGame extends GameManager {
       let ballDistFromCenter = this.ball.x - paddleCenter;
       this.ball.speedX = (ballDistFromCenter / (this.paddle.width / 2)) * this.BALL_SPEED;
       this.ball.speedY = -Math.sqrt(this.BALL_SPEED * this.BALL_SPEED - this.ball.speedX * this.ball.speedX);
+      this.playBallBounceSound(); // 패들 충돌 사운드 재생 추가
     }
 
     // 벽돌과 공 충돌 (동적 조합 시스템으로 변경)
@@ -408,16 +412,16 @@ class BrickGame extends GameManager {
   }  
 
   /**
-   * MARK: 벽돌 충돌 사운드 재생 (throttling 적용)
+   * MARK: 공 충돌 사운드 재생 (throttling 적용)
    */
-  playBrickHitSound() {
-    const currentTime = performance.now(); // Date.now()에서 performance.now()로 변경
-    if (currentTime - this.lastBrickHitSoundTime > 300) { // 0.3초 간격으로 제한
-      this.brickHitSound.currentTime = 0; // 사운드를 처음부터 재생
-      this.brickHitSound.play().catch(error =>
-        console.error("Error playing brick hit sound:", error)
+  playBallBounceSound() {
+    const currentTime = performance.now(); // 현재 시간 측정
+    if (currentTime - this.lastBallBounceSoundTime > 300) { // 0.3초 간격으로 제한
+      this.ballBounceSound.currentTime = 0; // 사운드를 처음부터 재생
+      this.ballBounceSound.play().catch(error =>
+        console.error("Error playing ball bounce sound:", error)
       );
-      this.lastBrickHitSoundTime = currentTime; // 마지막 사운드 재생 시간 업데이트
+      this.lastBallBounceSoundTime = currentTime; // 마지막 사운드 재생 시간 업데이트
     }
   }
 
@@ -522,8 +526,8 @@ class BrickGame extends GameManager {
 
           brick.status = 0; // 벽돌 부서짐
 
-          // 벽돌 충돌 사운드 재생 (함수로 분리) - 수정된 부분
-          this.playBrickHitSound();
+          // 공 충돌 사운드 재생 (벽돌 충돌 시에도 동일한 사운드)
+          this.playBallBounceSound();
 
           // 포켓몬 블록과 아이템 블록 처리 분리
           if (brick.blockType === 'pokemon') {
