@@ -542,13 +542,13 @@ class GameManager {
       this.updateUI();
       this.drawBackground(); // 게임 화면 표시만 처리
 
-      // 조작법 안내
+      // NOTE: 조작법 안내
       const howToPlayMessage = ('조작법: <br>' + (this.stage === 4
         ? "W A S D <br> ↑ ← ↓ →<br>주의: 마우스 사용 불가!"                // 보스전 조작법
         : "W A S D <br> ↑ ← ↓ → <br>마우스"));    // 벽돌 게임 조작법
       // 구분선
       const hr = '<br>---------------------</br>';
-      // 클리어 조건 메세지
+      // NOTE: 클리어 조건 메시지
       const clearInfoMessage = (`클리어 조건: ` + (this.stage === 4
         ? `${this.boss.name}을(를) 쓰러뜨려라!`                     // 보스전 클리어 조건
         : `${this.requiredScores[this.difficulty]}점을 넘겨라!`));  // 벽돌 게임 클리어 조건
@@ -785,7 +785,7 @@ class GameManager {
           if (this.score >= requiredScore) {
             // 최소 점수 달성 시 게임 클리어
             this.isGameClear = true;
-            this.showInGameMessage(`게임 클리어!! 잠시 후 다음 화면으로 넘어갑니다.`);
+            this.showInGameMessage(`게임 클리어!! 잠시 후 다음 화면으로 넘어갑니다.`, true);
             setTimeout(() => {
               this.endGame();
             }, 3000);
