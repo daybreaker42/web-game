@@ -253,6 +253,26 @@ class GameManager {
     // 게임이 실행 중이고 일시정지 상태가 아닐 때만 실행
     if (!this.isGameRunning || this.isPaused) return;
 
+    // 현재 선택된 슬롯 프레임 찾기 // 주석 추가: 현재 선택된 슬롯 확인 로직
+    let currentSelectedIndex = -1;
+    const selectedFrame = document.querySelector(".pokemon-slot-frame.selected");
+
+    if (selectedFrame) {
+      const frameId = selectedFrame.id;
+      const indexMatch = frameId.match(/slot-frame-(\d+)/);
+      if (indexMatch) {
+        currentSelectedIndex = parseInt(indexMatch[1]);
+      }
+    }
+
+    // 현재 선택된 슬롯과 키 입력이 다르면 슬롯 전환만 수행 // 주석 추가: 슬롯 전환 우선 로직
+    if (currentSelectedIndex !== slotIndex) {
+      // 슬롯 전환 로직
+      this.switchToSlot(slotIndex);
+      return; // 능력 사용하지 않고 종료
+    }
+
+    // 현재 선택된 슬롯과 키 입력이 같으면 능력 사용 로직 진행 // 주석 추가: 능력 사용 조건 확인
     const currentTime = performance.now();
 
     // Throttling 체크: 너무 빠른 연속 입력 방지
@@ -288,6 +308,31 @@ class GameManager {
 
     const pokemonIndex = parseInt(indexMatch[1]);
     this.usePokemonAbility(slotIndex, pokemonIndex);
+  }
+
+  // MARK: 슬롯 전환 메서드 추가
+  switchToSlot(targetSlotIndex) {
+    if (window.DEBUG_MODE) console.log('[GameManager] switchToSlot 호출', targetSlotIndex); // 주석 추가: 슬롯 전환 로직
+
+    // 해당 슬롯에 포켓몬이 있는지 확인
+    const slot = document.getElementById(`slot-${targetSlotIndex}`);
+    if (!slot || !slot.style.backgroundImage || slot.style.backgroundImage === "none") {
+      console.log(`슬롯 ${targetSlotIndex + 1}에 포켓몬이 없어 전환할 수 없습니다.`);
+      return;
+    }
+
+    // 기존에 선택된 프레임에서 selected 클래스 제거 // 주석 추가: 이전 선택 해제
+    const currentSelected = document.querySelector(".pokemon-slot-frame.selected");
+    if (currentSelected) {
+      currentSelected.classList.remove("selected");
+    }
+
+    // 새로운 슬롯 프레임에 selected 클래스 추가 // 주석 추가: 새 슬롯 선택
+    const targetFrame = document.getElementById(`slot-frame-${targetSlotIndex}`);
+    if (targetFrame) {
+      targetFrame.classList.add("selected");
+      console.log(`슬롯 ${targetSlotIndex + 1}로 전환되었습니다.`);
+    }
   }
 
   // MARK: 포켓몬 능력 사용 메서드
@@ -717,7 +762,7 @@ class GameManager {
           if (this.score >= requiredScore) {
             // 최소 점수 달성 시 게임 클리어
             this.isGameClear = true;
-            this.showInGameMessage(`⏰ 시간 종료! 목표 점수 ${requiredScore}점 달성으로 게임 클리어! 🎉`);
+            this.showInGameMessage(`게임 클리어!! 잠시 후 다음 화면으로 넘어갑니다.`);
             setTimeout(() => {
               this.endGame();
             }, 3000);
