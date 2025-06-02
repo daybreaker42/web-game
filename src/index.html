@@ -127,16 +127,20 @@
 
           <div id="game-info-indicator">
             <div id="score-info">
-                <label class="score-label">SCORE</label>
-                <span>: </span>
-                <span id="score">0</span>
+              <label class="score-label">SCORE</label>
+              <span>: </span>
+              <span id="score">0</span>
             </div>
             <div id="timer-container">
               <label class="timer-label">TIME</label>
-                <span>: </span>
-                <span id="timer">00:00</span>
+              <span>: </span>
+              <span id="timer">00:00</span>
             </div>
           </div>
+          <button id="pause-button" class="pixel-box" title="일시 정지">
+            &#10073;&#10073;
+          </button>
+
           <canvas id="game-canvas" width="800" height="533"></canvas>
           <div class="controls hidden">
             <button id="startButton" tabindex="-1">게임 시작</button>
@@ -151,15 +155,27 @@
             <div id="slot-frame-3" class="pokemon-slot-frame"></div>
           </div>
           <!-- 실제로 pokemon이 들어가는 slot -->
-          <div id="pokemon-slot-container" class="">
-            <div class="pokemon-slot" id="slot-0"></div>
-            <div class="pokemon-slot" id="slot-1"></div>
-            <div class="pokemon-slot" id="slot-2"></div>
-            <div class="pokemon-slot" id="slot-3"></div>
+          <div id="pokemon-slot-container">
+            <div class="pokemon-slot" id="slot-0">
+              <div class="pokemon-health-bar" id="health-bar-0"></div>
+            </div>
+            <div class="pokemon-slot" id="slot-1">
+              <div class="pokemon-health-bar" id="health-bar-1"></div>
+            </div>
+            <div class="pokemon-slot" id="slot-2">
+              <div class="pokemon-health-bar" id="health-bar-2"></div>
+            </div>
+            <div class="pokemon-slot" id="slot-3">
+              <div class="pokemon-health-bar" id="health-bar-3"></div>
+            </div>
           </div>
-          <button id="pause-button" class="pixel-box">일시정지</button>
+
           <!-- 포켓몬 구출 메시지 표시 컨테이너 -->
-          <div id="rescue-message-container"></div>
+          <div id="rescue-message-container">
+            <!-- <div class="rescue-message" > -->
+            <!-- 포켓몬을 구출했습니다! -->
+            <!-- </div> -->
+          </div>
         </div>
       </section>
 

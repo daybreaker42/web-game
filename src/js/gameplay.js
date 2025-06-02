@@ -3,46 +3,65 @@ let gameInstance;
 const canvas = document.getElementById("game-canvas");
 
 /**
- * playGame(mode, difficulty, stage, onGameEnd)
- * - mode: "story" | "score"
- * - difficulty: "easy" | "normal" | "hard"
- * - stage: 스토리 모드는 1 이상의 정수, 점수모드는 null/-1/미사용
- * - onGameEnd: 게임 종료 콜백
+ * playGame
+ * ------------------------------------------------------------------
+ *  ∘ mode        : "story" | "score"
+ *  ∘ difficulty  : "easy"  | "normal" | "hard"
+ *  ∘ stage       : 스토리일 때 1-4,  점수 모드일 때는 아무 값(null 포함)
+ *  ∘ onGameEnd   : (result:Object) => void     ─ 게임 종료 콜백
+ *
+ *  - 기존 gameInstance 가 있으면 destroy() 로 완전 정리
+ *  - 새 인스턴스를 만들면 GameManager 내부에서 입력 리스너를 스스로 붙임
+ * ------------------------------------------------------------------
  */
 function playGame(mode, difficulty, stage, onGameEnd) {
-  playBgm(BGM[`STAGE_${stage}`]);
+  // 0) 배경음
+  try {
+    playBgm(BGM[`STAGE_${stage}`]);
+  } catch (_) {
+    /* 없는 스테이지면 조용히 무시 */
+  }
+
   const canvas = document.getElementById("game-canvas");
+  console.log("[playGame] 시작:", { mode, difficulty, stage });
 
-  console.log("게임 시작:", mode, difficulty, stage);
+  /* ----------------------------------------------------------------
+       1) 기존 게임 clean-up
+    ---------------------------------------------------------------- */
+  if (gameInstance && typeof gameInstance.destroy === "function") {
+    gameInstance.destroy(); // ✨ GameManager.destroy() 안에서
+    //    이벤트/애니메이션/타이머 전부 해제
+  }
+  gameInstance = null;
 
-  window.onkeydown = null;
-  window.onkeyup = null;
-  canvas.onmousemove = null;
-
-  let gameInfo = {
-    mode,
-    difficulty,
-    stage,
-  };
-  if (window.DEBUG_MODE) console.log(`gameInfo: ${JSON.stringify(gameInfo)}`);
-
-  if (mode === "score") {
+  /* ----------------------------------------------------------------
+       2) 인스턴스 생성
+    ---------------------------------------------------------------- */
+  if (mode === "story") {
+    gameInstance =
+      stage === 4
+        ? new BossGame(canvas) // 보스전
+        : new BrickGame(canvas); // 벽돌깨기
+  } else if (mode === "score") {
     gameInstance = new BrickGame(canvas);
-  } else if (mode === "story") {
-    if (stage === 4) {
-      gameInstance = new BossGame(canvas);
-    } else {
-      gameInstance = new BrickGame(canvas);
-    }
   } else {
     alert("잘못된 게임 모드입니다.");
     return;
   }
-  gameInstance.setGameInfo(gameInfo);
-  gameInstance.setOnGameEnd(function (gameResult) {
-    setTimeout(() => onGameEnd(gameResult), 1800);
+
+  /* ----------------------------------------------------------------
+       3) 게임 정보 & 콜백 설정
+    ---------------------------------------------------------------- */
+  gameInstance.setGameInfo({ mode, difficulty, stage });
+
+  gameInstance.setOnGameEnd((result) => {
+    // 연출용 딜레이(1.8초) 뒤에 상위 콜백 호출
+    setTimeout(() => onGameEnd(result), 1800);
   });
 
+  /* ----------------------------------------------------------------
+       4) Go!
+    ---------------------------------------------------------------- */
   gameInstance.startGame();
 }
 

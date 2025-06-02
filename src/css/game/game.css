@@ -69,18 +69,28 @@ canvas {
   font-size: 30px;
   color: white;
   text-shadow:
-  -2px -2px 0 black,
-   2px -2px 0 black,
-  -2px  2px 0 black,
-   2px  2px 0 black;
+    -2px -2px 0 black,
+    2px -2px 0 black,
+    -2px 2px 0 black,
+    2px 2px 0 black;
   text-align: left;
   margin: 10px 0 0 10px;
 }
 #game-info-indicator label {
-    width: 70px;
-    display: inline-block;
+  width: 70px;
+  display: inline-block;
 }
-
+#message-container {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  width: 68%;
+  height: 85px;
+  margin-right: 0;
+  background-color: rgb(43, 43, 43);
+  align-items: right;
+  z-index: 0;
+}
 /* 반응형 디자인 */
 @media (max-width: 850px) {
   canvas {
@@ -99,30 +109,49 @@ canvas {
 /* pokemon slot container */
 #pokemon-slot-container {
   position: absolute;
-  bottom: 20px; /* 포켓몬 체력바 공간 확보를 위해 20px 위로 이동 */
+  bottom: 10px; /* 포켓몬 체력바 공간 확보를 위해 20px 위로 이동 */
   left: 0px;
-
+  background-color: rgba(255, 255, 255, 0.1);
   display: flex;
   width: calc(64px * 4);
   z-index: var(--z-index-slot);
 }
-/* pokemon slot */
 .pokemon-slot {
+  position: relative;
   width: 64px;
   height: 64px;
-  z-index: var(--z-index-slot);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pokemon-health-bar {
+  width:100%;
+  height: 12px; /* 원하는 두께 */
+  background: #333; /* 바 배경 */
+  border: 1px solid #848484; /* 흰색 테두리 */
+  position: absolute;
+  bottom: -12px; /* 슬롯 바로 아래 위치 */
+  overflow: hidden;
+}
+
+.pokemon-health-bar-inner {
+  height: 100%;
+  background: #4caf50;
 }
 
 /* pokemon slot frame container*/
 #pokemon-slot-frame-container {
+  /* 이미 있던 규칙에 한 줄 추가 */
   position: absolute;
-  bottom: 20px; /* 포켓몬 체력바 공간 확보를 위해 20px 위로 이동 */
-  left: 0px;
-
+  bottom: 10px;
+  left: 0;
   display: flex;
   width: calc(64px * 4);
   z-index: var(--z-index-slot-frame);
+  pointer-events: none; /* 클릭 막힘 방지 */
 }
+
 /* pokemon slot frame */
 .pokemon-slot-frame {
   width: 64px;
@@ -131,13 +160,11 @@ canvas {
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-  box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.2);
   z-index: var(--z-index-slot-frame);
 }
 
 .pokemon-slot-frame.selected {
   background-image: url(../../../assets/images/game/ui/slot_frame_selected.png);
-  box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.4);
 }
 
 /* pokemon slot 보스전에서 숨기기 */
@@ -155,69 +182,46 @@ canvas {
 
 /* 일시정지 버튼 */
 #pause-button {
-  width: 150px;
-  height: 50px;
+  width: 50px;
+  height: 45px;
   position: absolute;
-  bottom: 20px;
+  top: 20px;
   right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 픽셀감 강조하려면 폰트 조절 */
+  font-family: "DOSGothic", monospace;
+  cursor: pointer;
+  user-select: none;
 }
 
-/* 포켓몬 구출 메시지 컨테이너 */
+/* 컨테이너 */
 #rescue-message-container {
-  position: absolute;
-  bottom: 100px; /* 일시정지 버튼과 슬롯 사이 위치 */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 800px;
-  max-height: 200px;
-  z-index: var(--z-index-pause-button);
+  position: fixed;
+  bottom: 100px;
+  right: 0;
+  width: 100%;
+  z-index: 9999;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  pointer-events: none; /* 게임 플레이 방해하지 않도록 */
-  overflow-y: hidden; /* 메시지가 많을 경우 하단 바 가리는거 방지 */
+  pointer-events: none;
 }
 
-/* 개별 구출 메시지 스타일 */
 .rescue-message {
-  background: rgba(0, 0, 0, 0.8);
+  background: black;
+  border: white 1px solid;
   color: #fff;
   padding: 12px 20px;
-  border-radius: 8px;
+  border-radius: 10px;
   font-family: "DOSGothic", monospace;
   font-size: 16px;
   font-weight: bold;
   text-align: center;
-  box-shadow:
-    0 0 0 2px #fff,
-    0 0 10px rgba(0, 0, 0, 0.5);
-  text-shadow:
-    1px 1px 0 #000,
-    0 0 4px #fff;
   animation: rescueMessageShow 0.3s ease-out forwards;
   white-space: nowrap;
-}
-
-/* 구출 메시지 애니메이션 */
-@keyframes rescueMessageShow {
-  0% {
-    opacity: 0;
-    transform: translateY(20px) scale(0.8);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes rescueMessageHide {
-  0% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-20px) scale(0.8);
-  }
+  transform: scale(1);
+  opacity: 1;
+  transition: none !important; /* scale이 transition으로 부드럽게 변하는 걸 막음 */
 }
