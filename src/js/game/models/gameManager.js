@@ -678,39 +678,50 @@ class GameManager {
     const barY = this.canvas.height - 15; // 체력바 Y 위치 (슬롯 바로 아래)
 
     for (let i = 0; i < 4; i++) {
-      // 주석 추가: 슬롯에 포켓몬이 있는지 확인하여 빈 슬롯 HP바 표시 문제 해결
-      const slot = document.getElementById(`slot-${i}`);
-      if (!slot || !slot.style.backgroundImage || slot.style.backgroundImage === "none") {
-        continue; // 포켓몬이 없는 슬롯은 체력바를 그리지 않음
-      }
-
       const barX = i * 64 + 2; // 각 슬롯 위치에 맞춰 체력바 위치 계산
-      const healthPercentage = this.pokemonHealthSystem.currentHealth[i] / this.pokemonHealthSystem.maxHealth[i];
 
-      // 배경 (회색 바)
-      this.ctx.fillStyle = "#333333";
-      this.ctx.fillRect(barX, barY, barWidth, barHeight);
+      // 주석 추가: 슬롯에 포켓몬이 있는지 확인
+      const slot = document.getElementById(`slot-${i}`);
+      const hasPokemon = slot && slot.style.backgroundImage && slot.style.backgroundImage !== "none";
 
-      // 체력바 색상 결정 (체력에 따라 색상 변화)
-      let healthColor;
-      if (healthPercentage > 0.6) {
-        healthColor = "#4CAF50"; // 초록색 (양호)
-      } else if (healthPercentage > 0.3) {
-        healthColor = "#FF9800"; // 주황색 (주의)
+      if (hasPokemon) {
+        // 주석 추가: 포켓몬이 있는 슬롯의 체력바 (기존 로직)
+        const healthPercentage = this.pokemonHealthSystem.currentHealth[i] / this.pokemonHealthSystem.maxHealth[i];
+
+        // 배경 (회색 바)
+        this.ctx.fillStyle = "#333333";
+        this.ctx.fillRect(barX, barY, barWidth, barHeight);
+
+        // 체력바 색상 결정 (체력에 따라 색상 변화)
+        let healthColor;
+        if (healthPercentage > 0.6) {
+          healthColor = "#4CAF50"; // 초록색 (양호)
+        } else if (healthPercentage > 0.3) {
+          healthColor = "#FF9800"; // 주황색 (주의)
+        } else {
+          healthColor = "#F44336"; // 빨간색 (위험)
+        }
+
+        // 현재 체력바
+        if (healthPercentage > 0) {
+          this.ctx.fillStyle = healthColor;
+          this.ctx.fillRect(barX, barY, barWidth * healthPercentage, barHeight);
+        }
+
+        // 체력바 테두리
+        this.ctx.strokeStyle = "#FFFFFF";
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeRect(barX, barY, barWidth, barHeight);
       } else {
-        healthColor = "#F44336"; // 빨간색 (위험)
-      }
+        // 주석 추가: 포켓몬이 없는 슬롯의 기본 회색 체력바
+        this.ctx.fillStyle = "#666666"; // 어두운 회색 배경
+        this.ctx.fillRect(barX, barY, barWidth, barHeight);
 
-      // 현재 체력바
-      if (healthPercentage > 0) {
-        this.ctx.fillStyle = healthColor;
-        this.ctx.fillRect(barX, barY, barWidth * healthPercentage, barHeight);
+        // 빈 슬롯 테두리 (더 어두운 색상)
+        this.ctx.strokeStyle = "#444444";
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeRect(barX, barY, barWidth, barHeight);
       }
-
-      // 체력바 테두리
-      this.ctx.strokeStyle = "#FFFFFF";
-      this.ctx.lineWidth = 1;
-      this.ctx.strokeRect(barX, barY, barWidth, barHeight);
     }
   }
 
