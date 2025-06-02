@@ -34,7 +34,9 @@ const SFX = {
   GAME_OVER: "game-over.mp3",
   // game
   MEWTWO_HURT: 'mewtwo.ogg',
-  BALL_BOUNCE: 'ball-bounce.wav',
+  BALL_BOUNCE: 'ball-bounce.mp3',
+  ITEM: 'item.wav',
+  CLEAR: 'clear.wav',
 };
 
 // gameManager config
