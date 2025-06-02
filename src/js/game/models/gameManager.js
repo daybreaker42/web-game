@@ -465,21 +465,35 @@ class GameManager {
    */
   drawLives() {
     if (window.DEBUG_MODE) console.log('[GameManager] drawLives 호출');
-    const iconWidth = 30; // 아이콘 너비
-    const iconHeight = 30; // 아이콘 높이
-    const iconX = this.canvas.width - 100; // 아이콘 위치 (우측 여백 70px)
-    const iconY = 10; // 아이콘 위치 (상단 여백 10px)
-    const textX = iconX + iconWidth + 5; // 텍스트 위치 (아이콘 옆)
-    const textY = iconY + iconHeight / 2 + 5; // 텍스트 수직 정렬
+    const iconWidth = 30;
+    const iconHeight = 30; 
+    const iconX = this.canvas.width - 120;
+    const iconY = 15;
+    const textX = iconX + iconWidth + 5;
+    const textY = iconY + iconHeight / 2 + 5;
+  
     if (this.ballIconLoaded) {
-      this.ctx.drawImage(this.ballIcon, iconX, iconY, iconWidth, iconHeight); // 볼 아이콘 그리기
-
-      this.ctx.font = "20px DOSGothic"; // 폰트 설정
-      this.ctx.fillStyle = "#fff"; // 텍스트 색상
-      this.ctx.textAlign = "left"; // 텍스트 정렬
-      this.ctx.fillText(`X ${this.lives}`, textX, textY); // 남은 목숨 표시
+      this.ctx.drawImage(this.ballIcon, iconX - 10, iconY + 3, iconWidth, iconHeight); // 볼 아이콘 그리기
+  
+      const text = `x ${this.lives}`;
+      this.ctx.font = "30px DOSGothic";
+      this.ctx.textAlign = "left";
+      this.ctx.textBaseline = "middle";
+  
+      const shadowOffsets = [
+        [-2, -2], [2, -2], [-2, 2], [2, 2]
+      ];
+      this.ctx.fillStyle = "black";
+      shadowOffsets.forEach(([dx, dy]) => {
+        this.ctx.fillText(text, textX + dx, textY + dy);
+      });
+  
+      // 본문(흰색)
+      this.ctx.fillStyle = "white";
+      this.ctx.fillText(text, textX, textY);
     }
   }
+  
   /**
    * MARK: 점수 그리기
    */
