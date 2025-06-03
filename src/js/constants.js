@@ -1,4 +1,5 @@
 const GAME_TIME = 1000 * 60;
+const BOSS_TIME = 10000 * 60;
 
 const STORY_SCRIPTS = [
   window.story_chapter0_opening, // 0: START 스토리

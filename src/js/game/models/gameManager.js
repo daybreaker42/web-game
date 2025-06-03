@@ -954,10 +954,11 @@ class GameManager {
 
     // 게임이 실행 중이고 일시정지가 아닌 경우에만 업데이트
     if (this.isGameRunning && !this.isPaused) {
-      // 남은 시간 (ms)
+      // 남은 시간 (ms) - 주석 추가: 보스전은 BOSS_TIME, 그 외는 GAME_TIME 사용
       const elapsedTime =
         currentTime - this.gameStartTime - this.totalPauseDuration;
-      const timeLeft = Math.max(0, GAME_TIME - elapsedTime);
+      const gameTimeLimit = this.stage === 4 ? BOSS_TIME : GAME_TIME; // 주석 추가: 스테이지 4(보스전)일 때 BOSS_TIME 사용
+      const timeLeft = Math.max(0, gameTimeLimit - elapsedTime);
 
       // 분과 초 계산
       const minutes = Math.floor(timeLeft / 60000);
