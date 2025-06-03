@@ -647,6 +647,9 @@ class GameManager {
         cancelAnimationFrame(this.animationFrame);
       }
 
+      // 주석 추가: 게임 시작 전 모든 상태 완전 초기화
+      this.resetAllGameStates();
+
       this.isGameRunning = false;
       this.isPaused = false;
       this.score = 0;
@@ -932,6 +935,82 @@ class GameManager {
     } else {
       inner.style.background = "#F44336";
     }
+  }
+
+  /**
+   * MARK: 게임 상태 완전 초기화 메서드 추가 (주석 추가: 스테이지 시작 전 모든 상태 리셋)
+   */
+  resetAllGameStates() {
+    if (window.DEBUG_MODE) console.log("[GameManager] resetAllGameStates 호출");
+
+    // 포켓몬 슬롯 완전 초기화 (주석 추가: DOM과 스타일 모두 초기화)
+    for (let i = 0; i < 4; i++) {
+      const slot = document.getElementById(`slot-${i}`);
+      const frame = document.getElementById(`slot-frame-${i}`);
+
+      if (slot) {
+        slot.style.backgroundImage = "none";
+        slot.style.backgroundColor = "transparent";
+        slot.style.filter = "none"; // 기절 상태 흑백 효과 제거
+      }
+
+      if (frame) {
+        frame.classList.remove("selected"); // 선택 상태 제거
+      }
+    }
+
+    // 포켓몬 체력 시스템 완전 초기화 (주석 추가: 기절 상태 및 이미지 모두 리셋)
+    this.pokemonHealthSystem = {
+      maxHealth: [100, 100, 100, 100],
+      currentHealth: [100, 100, 100, 100],
+      healthConsumption: 20,
+      isDizzy: [false, false, false, false],
+      dizzyImages: [null, null, null, null],
+      originalImages: [null, null, null, null],
+    };
+
+    // 체력바 DOM 초기화 (주석 추가: 체력바 시각적 상태 리셋)
+    for (let i = 0; i < 4; i++) {
+      const healthBar = document.getElementById(`health-bar-${i}`);
+      if (healthBar) {
+        const inner = healthBar.querySelector(".pokemon-health-bar-inner");
+        if (inner) {
+          inner.style.width = "0%";
+          inner.style.background = "#444";
+        }
+      }
+    }
+
+    // 선택된 슬롯 화살표 숨기기 (주석 추가: 슬롯 선택 UI 초기화)
+    const arrow = document.getElementById("slot-arrow");
+    if (arrow) {
+      arrow.style.display = "none";
+    }
+    this.selectedSlotIndex = 0; // 선택된 슬롯 인덱스 초기화
+
+    // 게임 메시지 컨테이너 초기화 (주석 추가: 이전 메시지 제거)
+    const messageContainer = document.getElementById("rescue-message-container");
+    if (messageContainer) {
+      while (messageContainer.firstChild) {
+        messageContainer.removeChild(messageContainer.firstChild);
+      }
+    }
+
+    // 보스 모드 CSS 클래스 제거 (주석 추가: 이전 보스전 상태 정리)
+    document.body.classList.remove("boss-mode");
+
+    // 포켓몬 슬롯 컨테이너 표시 복구 (주석 추가: 보스전에서 숨겨진 슬롯 다시 표시)
+    const slotContainer = document.getElementById("pokemon-slot-container");
+    const slotFrameContainer = document.getElementById("pokemon-slot-frame-container");
+    if (slotContainer) slotContainer.style.display = "";
+    if (slotFrameContainer) slotFrameContainer.style.display = "";
+
+    // 주석 추가: BrickGame에서 사용하는 슬롯 포켓몬 배열 초기화 (있는 경우에만)
+    if (this.slotPokemon) {
+      this.slotPokemon = [null, null, null, null];
+    }
+
+    console.log("[GameManager] 모든 게임 상태가 초기화되었습니다.");
   }
 
   /**

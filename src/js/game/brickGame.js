@@ -388,11 +388,29 @@ class BrickGame extends GameManager {
   initializeGame() {
     if (window.DEBUG_MODE) console.log("[BrickGame] initializeGame 호출");
 
+    // 주석 추가: 포켓몬 능력 효과 상태 완전 초기화 (스테이지 시작 시)
+    this.electricBoostActive = false;
+    this.waterBoostActive = false;
+    this.iceBoostActive = false;
+    this.fireBoostActive = false;
+    this.originalBallSpeed = null;
+    this.fireBoostRemainingTime = 0;
+
+    // 주석 추가: 타이머 정리 (메모리 누수 방지)
+    if (this.fireBoostTimeout) {
+      clearTimeout(this.fireBoostTimeout);
+      this.fireBoostTimeout = null;
+    }
+
+    // 주석 추가: 조합 및 벽돌 시스템 완전 초기화
+    this.combinations = [];
+    this.leftBrick = 0;
+
     // 동적 조합 시스템 초기화
     this.initDynamicBrickSystem();
     this.totalLives = this.lives;
 
-    // 주석 추가: 스테이지별 기본 포켓몬 슬롯에 추가
+    // 주석 추가: 스테이지별 기본 포켓몬 슬롯에 추가 (완전 초기화 후)
     this.addDefaultPokemonByStage();
   }
 
@@ -1073,7 +1091,7 @@ class BrickGame extends GameManager {
     if (window.DEBUG_MODE) console.log("[BrickGame] restartGame 호출"); // 디버깅용 로그 추가
     this.clearPokemonSlots(); // 슬롯 초기화
 
-    // MARK: 포켓몬 능력 효과 상태 초기화
+    // MARK: 포켓몬 능력 효과 초기화
     this.electricBoostActive = false;
     this.waterBoostActive = false;
     this.iceBoostActive = false;
@@ -1452,5 +1470,20 @@ class BrickGame extends GameManager {
 
     // 부모 클래스의 일시정지 로직 실행
     super.togglePause();
+  }
+
+  /**
+   * MARK: BrickGame 정적 시작 메서드 (주석 추가: gameplay.js에서 이동)
+   */
+  static startBrickGame(gameInfo) {
+    if (window.DEBUG_MODE) console.log("[BrickGame] startBrickGame 호출", gameInfo);
+    const canvas = qs("#game-canvas");
+
+    currentGame = new BrickGame(canvas);
+    currentGame.setGameInfo(gameInfo);
+    currentGame.setOnGameEnd(onGameEnd);
+    currentGame.startGame();
+
+    return currentGame; // 주석 추가: 생성된 게임 인스턴스 반환
   }
 }

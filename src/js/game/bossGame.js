@@ -191,34 +191,39 @@ class BossGame extends GameManager {
    * MARK: 게임별 초기화
    */
   initializeGame() {
-    if (window.DEBUG_MODE) console.log("[BossGame] initializeGame 호출"); // 디버깅용 로그 추가
-    // 플레이어 초기 위치 설정
+    if (window.DEBUG_MODE) console.log("[BossGame] initializeGame 호출");
+    
+    // 주석 추가: 플레이어 초기 위치 및 상태 완전 리셋
     this.player.x = this.canvas.width / 2;
     this.player.y = this.canvas.height - 90;
     this.player.rotation = -Math.PI / 2;
     this.player.velocityX = 0;
     this.player.velocityY = 0;
 
-    // 보스 초기화
+    // 주석 추가: 보스 상태 완전 초기화
     this.boss.health = this.boss.maxHealth;
     this.boss.lastAttackTime = 0;
-    this.boss.currentPhase = 1; // 페이즈 1로 초기화
-    this.boss.phase2Triggered = false; // 2페이즈 전환 플래그 초기화
-    this.boss.lastMoveTime = 0; // 마지막 이동 시간 초기화
-    this.boss.isMoving = false; // 이동 상태 초기화
+    this.boss.currentPhase = 1;
+    this.boss.phase2Triggered = false;
+    this.boss.lastMoveTime = 0;
+    this.boss.isMoving = false;
+    this.boss.isHurt = false;
+    this.boss.isAttacking = false;
 
-    // 총알 배열 초기화
+    // 주석 추가: 총알 배열 완전 초기화
     this.playerBullets = [];
     this.bossBullets = [];
-    this.laserBullets = []; // 레이저 총알 배열 초기화
+    this.laserBullets = [];
     this.playerLastShotTime = 0;
+
+    // 주석 추가: 사운드 throttling 변수 초기화
+    this.lastHitSoundTime = 0;
+    this.lastHurtAnimationTime = 0;
 
     // 보스전에서 포켓몬 슬롯 숨기기
     document.body.classList.add("boss-mode");
     const slotContainer = document.getElementById("pokemon-slot-container");
-    const slotFrameContainer = document.getElementById(
-      "pokemon-slot-frame-container",
-    );
+    const slotFrameContainer = document.getElementById("pokemon-slot-frame-container");
     if (slotContainer) slotContainer.style.display = "none";
     if (slotFrameContainer) slotFrameContainer.style.display = "none";
   }
@@ -1210,6 +1215,21 @@ class BossGame extends GameManager {
       this.boss.height = newHeight; // 주석 추가
     } // 주석 추가
   } // 주석 추가
+
+  /**
+   * MARK: BossGame 정적 시작 메서드 (주석 추가: gameplay.js에서 이동)
+   */
+  static startBossGame(gameInfo) {
+    if (window.DEBUG_MODE) console.log("[BossGame] startBossGame 호출", gameInfo);
+    const canvas = qs("#game-canvas");
+
+    currentGame = new BossGame(canvas);
+    currentGame.setGameInfo(gameInfo);
+    currentGame.setOnGameEnd(onGameEnd);
+    currentGame.startGame();
+
+    return currentGame; // 주석 추가: 생성된 게임 인스턴스 반환
+  }
 
   //   // MARK: 포켓몬 능력 실행 오버라이드 (GameManager에서 상속)
   //   executePokemonAbility(slotIndex, pokemonIndex, pokemonType) {
