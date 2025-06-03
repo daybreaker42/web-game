@@ -1,4 +1,4 @@
-window.DEBUG_MODE = true;
+// window.DEBUG_MODE = true;
 
 let isStarted = false;
 let isCleared = false;
