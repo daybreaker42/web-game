@@ -939,18 +939,6 @@ class BossGame extends GameManager {
         this.boss.height,
       );
 
-      // 페이즈 2일 때 추가 효과 (외곽선 등)은 이미지 위에 그려질 수 있음
-      if (this.boss.currentPhase === 2 && !this.boss.isHurt) {
-        // 피격 시에는 외곽선 잠시 숨김 (선택사항)
-        this.ctx.strokeStyle = "#ff00ff";
-        this.ctx.lineWidth = 3;
-        this.ctx.strokeRect(
-          this.boss.x - this.boss.width / 2,
-          this.boss.y,
-          this.boss.width,
-          this.boss.height,
-        );
-      }
     } else {
       // 이미지가 로드되지 않았으면 기존 사각형 그리기 (폴백)
       this.ctx.fillStyle = this.boss.color;
@@ -970,18 +958,6 @@ class BossGame extends GameManager {
         this.boss.width,
         this.boss.height,
       );
-
-      // 페이즈 2일 때 추가 효과
-      if (this.boss.currentPhase === 2) {
-        this.ctx.strokeStyle = "#ff00ff";
-        this.ctx.lineWidth = 2;
-        this.ctx.strokeRect(
-          this.boss.x - this.boss.width / 2 - 5,
-          this.boss.y - 5,
-          this.boss.width + 10,
-          this.boss.height + 10,
-        );
-      }
     }
     this.ctx.globalAlpha = 1.0; // 투명도 복구
   }
