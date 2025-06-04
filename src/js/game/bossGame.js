@@ -689,6 +689,34 @@ class BossGame extends GameManager {
   }
 
   /**
+   * MARK: 보스 탄막 발사 (플레이어 조준)
+   */
+  shootTargetedBullets() {
+    if (window.DEBUG_MODE) console.log("[BossGame] shootTargetedBullets 호출"); // 디버깅용 로그 추가
+    const bulletCount = 5; // 탄막 개수 (성능 고려)
+    for (let i = 0; i < bulletCount; i++) {
+      // 플레이어 방향으로 각도 계산
+      const angle = Math.atan2(
+        this.player.y - (this.boss.y + this.boss.height / 2),
+        this.player.x - this.boss.x,
+      );
+
+      const speed = this.boss.bulletSpeed;
+      this.bossBullets.push({
+        x: this.boss.x,
+        y: this.boss.y + this.boss.height / 2,
+        velocityX: Math.cos(angle) * speed,
+        velocityY: Math.sin(angle) * speed,
+        radius: 5,
+        color: "#ffff00",
+      });
+    }
+    this.boss.isAttacking = true; // 공격 상태 설정
+    this.boss.attackAnimEndTime =
+      performance.now() + this.boss.attackAnimationDuration; // 공격 애니메이션 종료 시간 설정
+  }
+
+  /**
    * MARK: 보스 탄막 발사
    */
   shootBossBullets() {
