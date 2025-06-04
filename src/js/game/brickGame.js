@@ -685,16 +685,16 @@ class BrickGame extends GameManager {
    * MARK: 공 충돌 사운드 재생 (throttling 적용)
    */
   playBallBounceSound() {
-    const currentTime = performance.now(); // 현재 시간 측정
-    if (currentTime - this.lastBallBounceSoundTime > 300) {
-      // 0.3초 간격으로 제한
-      this.lastBallBounceSoundTime = 0; // 사운드를 처음부터 재생
-      // this.ballBounceSound.play().catch(error =>
-      //   console.error("Error playing ball bounce sound:", error)
-      // );
-      playSfx(SFX.BALL_BOUNCE); // SFX로 변경
-      this.lastBallBounceSoundTime = currentTime; // 마지막 사운드 재생 시간 업데이트
-    }
+    // const currentTime = performance.now(); // 현재 시간 측정 // 주석 처리: throttling 제거
+    // if (currentTime - this.lastBallBounceSoundTime > 300) { // 주석 처리: throttling 제거
+    //   this.lastBallBounceSoundTime = 0; // 사운드를 처음부터 재생 // 주석 처리: throttling 제거
+    //   // this.ballBounceSound.play().catch(error =>
+    //   //   console.error("Error playing ball bounce sound:", error)
+    //   // );
+    //   playSfx(SFX.BALL_BOUNCE); // SFX로 변경
+    //   this.lastBallBounceSoundTime = currentTime; // 마지막 사운드 재생 시간 업데이트 // 주석 처리: throttling 제거
+    // }
+    playSfx(SFX.BALL_BOUNCE); // 주석 추가: throttling 제거하고 항상 사운드 재생
   }
 
   /**
