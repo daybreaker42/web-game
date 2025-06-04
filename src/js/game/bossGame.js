@@ -106,6 +106,7 @@ class BossGame extends GameManager {
     this.playerBullets = []; // 플레이어가 발사한 총알
     this.bossBullets = []; // 보스가 발사한 탄막
     this.laserBullets = []; // 레이저 공격용 총알 배열 추가
+    this.laserBeams = []; // 주석 추가: 레이저 빔 배열 추가 (선 형태)
     this.playerLastShotTime = 0;
     this.playerShotCooldown = 500; // 0.5초마다 자동 발사
 
@@ -214,7 +215,7 @@ class BossGame extends GameManager {
     this.playerBullets = [];
     this.bossBullets = [];
     this.laserBullets = [];
-    this.playerLastShotTime = 0;
+    this.laserBeams = []; // 주석 추가: 레이저 빔 배열 초기화
 
     // 주석 추가: 사운드 throttling 변수 초기화
     this.lastHitSoundTime = 0;
@@ -239,6 +240,7 @@ class BossGame extends GameManager {
     this.updateBoss(timeMultiplier);
     this.updateBossBullets(timeMultiplier);
     this.updateLaserBullets(timeMultiplier); // 레이저 총알 업데이트 추가
+    this.updateLaserBeams(timeMultiplier); // 주석 추가: 레이저 빔 업데이트 추가
     this.checkCollisions();
     this.checkGameEnd();
 
@@ -248,6 +250,7 @@ class BossGame extends GameManager {
     this.drawPlayerBullets();
     this.drawBossBullets();
     this.drawLaserBullets(); // 레이저 총알 그리기 추가
+    this.drawLaserBeams(); // 주석 추가: 레이저 빔 그리기 추가
     this.drawHealthBars();
   }
 
@@ -427,11 +430,31 @@ class BossGame extends GameManager {
     }
   }
   /**
-   * MARK: 페이즈 2 업데이트 (순간이동 + 플레이어 조준 공격)
+   * MARK: 페이즈 2 업데이트 (순간이동 + 플레이어 조준 공격) - 주석 추가: 전환 연출 추가
    */
   updatePhase2(currentTime, timeMultiplier) {
     if (window.DEBUG_MODE)
       console.log("[BossGame] updatePhase2 호출", currentTime, timeMultiplier); // 디버깅용 로그 추가
+
+    // 주석 추가: 페이즈 전환 연출 처리
+    if (this.boss.isPhaseTransitioning) {
+      const elapsedTime = currentTime - this.boss.phaseTransitionStartTime;
+
+      // 레이저 발사 시점 체크
+      if (elapsedTime >= this.boss.laserFireTime && !this.boss.laserFired) {
+        this.shootLaserAttack(); // 레이저 공격 발사
+        this.boss.laserFired = true; // 레이저 발사 완료 플래그
+      }
+
+      // 전환 연출 완료 체크
+      if (elapsedTime >= this.boss.phaseTransitionDuration) {
+        this.boss.isPhaseTransitioning = false; // 전환 연출 종료
+        this.boss.laserFired = false; // 플래그 리셋
+        this.boss.lastMoveTime = currentTime; // 이동 타이머 리셋
+      }
+
+      return; // 전환 중에는 다른 동작 차단
+    }
 
     // MARK: 얼음타입 능력 적용 - 페이즈 2 이동 쿨다운도 증가
     const phase2MoveCooldown = this.iceBoostActive
@@ -456,25 +479,38 @@ class BossGame extends GameManager {
       !this.boss.isMoving &&
       currentTime - this.boss.lastAttackTime >= phase2AttackCooldown
     ) {
-      this.shootTargetedBullets(); // 플레이어 조준 공격
-      this.boss.lastAttackTime = currentTime;
+      // 페이즈 2에서 레이저 공격을 주기적으로 사용
+      if (Math.random() < 0.2) {
+        // 20% 확률로 레이저 공격
+        this.shootLaserAttack();
+        this.boss.lastAttackTime = currentTime;
+      } else {
+        this.shootTargetedBullets(); // 플레이어 조준 공격
+        this.boss.lastAttackTime = currentTime;
+      }
     }
   }
 
   /**
-   * MARK: 페이즈 2 전환 처리
+   * MARK: 페이즈 2 전환 처리 (주석 추가: 연출 개선)
    */
   triggerPhase2() {
     if (window.DEBUG_MODE) console.log("[BossGame] triggerPhase2 호출"); // 디버깅용 로그 추가
+
+    // 주석 추가: 페이즈 전환 준비 상태 설정
+    this.boss.isPhaseTransitioning = true; // 페이즈 전환 중 플래그
+    this.boss.phaseTransitionStartTime = performance.now(); // 전환 시작 시간
+    this.boss.phaseTransitionDuration = 3000; // 총 전환 지속 시간 (3초)
+    this.boss.laserPreparationTime = 1000; // 레이저 발사 전 대기 시간 (1초)
+    this.boss.laserFireTime = 1500; // 레이저 발사 시점 (1.5초)
+    this.boss.laserEndTime = 2500; // 레이저 종료 시점 (2.5초)
+
     this.boss.phase2Triggered = true;
     this.boss.currentPhase = 2;
     this.boss.color = "#8b0000"; // 보스 색깔 변경 (더 어두운 빨간색)
 
     // 주석 추가: 페이즈 2 전환 시 이미지 경로를 _2로 변경
     this.updateBossImagesToPhase2();
-
-    // 레이저 공격 발사
-    this.shootLaserAttack();
 
     // 페이즈 전환 메시지 표시
     this.showInGameMessage("보스 페이즈 2! 뮤츠가 더욱 강해집니다!", true);
@@ -625,55 +661,61 @@ class BossGame extends GameManager {
   }
 
   /**
-   * MARK: 레이저 공격 (페이즈 전환 시)
+   * MARK: 레이저 공격 (페이즈 전환 시) - 주석 추가: 선 형태 레이저로 변경
    */
   shootLaserAttack() {
     if (window.DEBUG_MODE) console.log("[BossGame] shootLaserAttack 호출"); // 디버깅용 로그 추가
-    const rayCount = 16; // 16방향으로 레이저 발사
+    const rayCount = 8; // 8방향으로 레이저 발사 (성능 고려하여 줄임)
     const angleStep = (Math.PI * 2) / rayCount;
+    const laserLength = 800; // 레이저 길이
+    const laserDuration = 1000; // 레이저 지속 시간 (1초)
 
     for (let i = 0; i < rayCount; i++) {
       const angle = i * angleStep;
-      const laserSpeed = 8; // 레이저는 더 빠르게
+      const endX = this.boss.x + Math.cos(angle) * laserLength;
+      const endY = this.boss.y + this.boss.height / 2 + Math.sin(angle) * laserLength;
 
-      this.laserBullets.push({
-        x: this.boss.x,
-        y: this.boss.y + this.boss.height / 2,
-        velocityX: Math.cos(angle) * laserSpeed,
-        velocityY: Math.sin(angle) * laserSpeed,
-        radius: 8, // 레이저는 더 크게
+      // 주석 추가: 선 형태 레이저 빔 생성
+      this.laserBeams.push({
+        startX: this.boss.x,
+        startY: this.boss.y + this.boss.height / 2,
+        endX: endX,
+        endY: endY,
+        width: 8, // 레이저 두께
         color: "#ff00ff", // 보라색 레이저
-        damage: 15, // 레이저는 더 강한 데미지
+        damage: 20, // 레이저 데미지
+        createdTime: performance.now(), // 생성 시간
+        duration: laserDuration, // 지속 시간
+        opacity: 1.0 // 투명도
       });
     }
+
     this.boss.isAttacking = true; // 공격 상태 설정
     this.boss.attackAnimEndTime =
       performance.now() + this.boss.attackAnimationDuration; // 공격 애니메이션 종료 시간 설정
   }
 
   /**
-   * MARK: 플레이어 조준 공격 (페이즈 2)
+   * MARK: 보스 탄막 발사 (플레이어 조준)
    */
   shootTargetedBullets() {
     if (window.DEBUG_MODE) console.log("[BossGame] shootTargetedBullets 호출"); // 디버깅용 로그 추가
-    // 플레이어 방향으로 3발 발사 (중앙 + 좌우 약간 벗어난 각도)
-    const dx = this.player.x - this.boss.x;
-    const dy = this.player.y - (this.boss.y + this.boss.height / 2);
-    const baseAngle = Math.atan2(dy, dx);
-    const bulletLifespan = 5000; // 총알 수명: 5000ms (5초)
+    const bulletCount = 5; // 탄막 개수 (성능 고려)
+    for (let i = 0; i < bulletCount; i++) {
+      // 플레이어 방향으로 각도 계산
+      const angle = Math.atan2(
+        this.player.y - (this.boss.y + this.boss.height / 2),
+        this.player.x - this.boss.x,
+      );
 
-    for (let i = -1; i <= 1; i++) {
-      const angle = baseAngle + i * 0.3; // 약 17도씩 벗어나게
-      const bulletSpeed = 5;
-
+      const speed = this.boss.bulletSpeed;
       this.bossBullets.push({
         x: this.boss.x,
         y: this.boss.y + this.boss.height / 2,
-        velocityX: Math.cos(angle) * bulletSpeed,
-        velocityY: Math.sin(angle) * bulletSpeed,
-        radius: 6,
-        color: "#ff4400", // 주황색으로 조준 공격 구분
-        lifespan: bulletLifespan, // 수명 속성 추가
+        velocityX: Math.cos(angle) * speed,
+        velocityY: Math.sin(angle) * speed,
+        radius: 5,
+        color: "#ffff00",
       });
     }
     this.boss.isAttacking = true; // 공격 상태 설정
@@ -686,20 +728,17 @@ class BossGame extends GameManager {
    */
   shootBossBullets() {
     if (window.DEBUG_MODE) console.log("[BossGame] shootBossBullets 호출"); // 디버깅용 로그 추가
-    const bulletCount = 8; // 8방향으로 탄막 발사
-    const angleStep = (Math.PI * 2) / bulletCount;
-    const bulletLifespan = 5000; // 총알 수명: 5000ms (5초)
-
+    const bulletCount = 20; // 탄막 개수
     for (let i = 0; i < bulletCount; i++) {
-      const angle = i * angleStep;
+      const angle = Math.random() * Math.PI * 2; // 랜덤한 각도
+      const speed = this.boss.bulletSpeed;
       this.bossBullets.push({
         x: this.boss.x,
         y: this.boss.y + this.boss.height / 2,
-        velocityX: Math.cos(angle) * this.boss.bulletSpeed,
-        velocityY: Math.sin(angle) * this.boss.bulletSpeed,
-        radius: 6,
-        color: "#ff8800",
-        lifespan: bulletLifespan, // 수명 속성 추가
+        velocityX: Math.cos(angle) * speed,
+        velocityY: Math.sin(angle) * speed,
+        radius: 5,
+        color: "#ffff00",
       });
     }
     this.boss.isAttacking = true; // 공격 상태 설정
@@ -708,36 +747,29 @@ class BossGame extends GameManager {
   }
 
   /**
-   * MARK: 보스 탄막 업데이트
+   * MARK: 레이저 빔 업데이트 (주석 추가: 선 형태 레이저 관리)
    */
-  updateBossBullets(timeMultiplier) {
+  updateLaserBeams(timeMultiplier) {
     if (window.DEBUG_MODE)
-      console.log("[BossGame] updateBossBullets 호출", timeMultiplier); // 디버깅용 로그 추가
-    const deltaTime = timeMultiplier * this.FRAME_DELAY; // 실제 경과 시간 계산
+      console.log("[BossGame] updateLaserBeams 호출", timeMultiplier); // 디버깅용 로그 추가
 
-    for (let i = this.bossBullets.length - 1; i >= 0; i--) {
-      const bullet = this.bossBullets[i];
+    const currentTime = performance.now();
 
-      // 탄막 이동
-      bullet.x += bullet.velocityX * timeMultiplier;
-      bullet.y += bullet.velocityY * timeMultiplier;
+    for (let i = this.laserBeams.length - 1; i >= 0; i--) {
+      const beam = this.laserBeams[i];
+      const elapsedTime = currentTime - beam.createdTime;
 
-      // 수명 감소
-      if (bullet.lifespan !== undefined) {
-        // lifespan 속성이 있는 경우에만 처리
-        bullet.lifespan -= deltaTime;
+      // 지속시간이 지나면 제거
+      if (elapsedTime >= beam.duration) {
+        this.laserBeams.splice(i, 1);
+        continue;
       }
 
-      // 화면 밖으로 나간 탄막 또는 수명이 다한 탄막 제거 // 주석 수정
-      if (
-        bullet.x < -50 ||
-        bullet.x > this.canvas.width + 50 ||
-        bullet.y < -50 ||
-        bullet.y > this.canvas.height + 50 ||
-        (bullet.lifespan !== undefined && bullet.lifespan <= 0)
-      ) {
-        // 수명 체크 조건 추가
-        this.bossBullets.splice(i, 1);
+      // 페이드 아웃 효과 (마지막 300ms 동안)
+      const fadeStartTime = beam.duration - 300;
+      if (elapsedTime >= fadeStartTime) {
+        const fadeProgress = (elapsedTime - fadeStartTime) / 300;
+        beam.opacity = 1.0 - fadeProgress;
       }
     }
   }
@@ -749,18 +781,18 @@ class BossGame extends GameManager {
     if (window.DEBUG_MODE)
       console.log("[BossGame] updateLaserBullets 호출", timeMultiplier); // 디버깅용 로그 추가
     for (let i = this.laserBullets.length - 1; i >= 0; i--) {
-      const bullet = this.laserBullets[i];
+      const laser = this.laserBullets[i];
 
-      // 레이저 이동
-      bullet.x += bullet.velocityX * timeMultiplier;
-      bullet.y += bullet.velocityY * timeMultiplier;
+      // 레이저 총알 이동 로직
+      laser.x += laser.velocityX * timeMultiplier;
+      laser.y += laser.velocityY * timeMultiplier;
 
-      // 화면 밖으로 나간 레이저 제거
+      // 화면 밖으로 나간 레이저 총알 제거
       if (
-        bullet.x < -100 ||
-        bullet.x > this.canvas.width + 100 ||
-        bullet.y < -100 ||
-        bullet.y > this.canvas.height + 100
+        laser.x < 0 ||
+        laser.x > this.canvas.width ||
+        laser.y < 0 ||
+        laser.y > this.canvas.height
       ) {
         this.laserBullets.splice(i, 1);
       }
@@ -768,78 +800,161 @@ class BossGame extends GameManager {
   }
 
   /**
-   * MARK: 충돌 감지
+   * MARK: 보스 탄막 업데이트
    */
-  checkCollisions() {
-    if (window.DEBUG_MODE) console.log("[BossGame] checkCollisions 호출"); // 디버깅용 로그 추가
-    // 플레이어 총알과 보스 충돌
-    for (let i = this.playerBullets.length - 1; i >= 0; i--) {
-      const bullet = this.playerBullets[i];
-
-      if (
-        bullet.x >= this.boss.x - this.boss.width / 2 &&
-        bullet.x <= this.boss.x + this.boss.width / 2 &&
-        bullet.y >= this.boss.y && // Y 좌표는 이미지 상단 기준
-        bullet.y <= this.boss.y + this.boss.height
-      ) {
-        // Y 좌표는 이미지 상단 기준        // 보스 체력 감소
-        this.boss.health -= this.player.power;
-
-        // 총알 제거
-        this.playerBullets.splice(i, 1);
-
-        const currentTime = performance.now();
-
-        // 피격 이미지 변경 처리 (0.2초 throttling)
-        if (
-          currentTime - this.lastHurtAnimationTime >
-          this.HURT_ANIMATION_THROTTLE_MS
-        ) {
-          // 주석 추가: 이미지 변경 throttling 조건
-          this.boss.isHurt = true; // 피격 상태로 설정
-          this.boss.hurtEndTime = currentTime + this.boss.hurtAnimationDuration; // 피격 애니메이션 종료 시간 설정
-          this.lastHurtAnimationTime = currentTime; // 마지막 이미지 변경 시간 업데이트
-        }
-
-        // 피격 사운드 재생 처리 (1초 throttling)
-        if (currentTime - this.lastHitSoundTime > this.HIT_SOUND_THROTTLE_MS) {
-          // 주석 추가: 사운드 재생 throttling 조건
-          this.lastHitSoundTime = 0; // 사운드를 처음부터 재생
-          playSfx(SFX.MEWTWO_HURT);
-          this.lastHitSoundTime = currentTime; // 마지막 사운드 재생 시간 업데이트
-        }
-      }
-    }
-
-    // 보스 탄막과 플레이어 충돌
+  updateBossBullets(timeMultiplier) {
+    if (window.DEBUG_MODE)
+      console.log("[BossGame] updateBossBullets 호출", timeMultiplier); // 디버깅용 로그 추가
     for (let i = this.bossBullets.length - 1; i >= 0; i--) {
       const bullet = this.bossBullets[i];
-      const distance = Math.sqrt(
-        (bullet.x - this.player.x) ** 2 + (bullet.y - this.player.y) ** 2,
-      );
 
-      if (distance < bullet.radius + this.player.radius) {
-        // 플레이어 생명 감소
-        this.lives -= BOSS_POWER.phase1;
+      // 탄막 이동
+      bullet.x += bullet.velocityX * timeMultiplier;
+      bullet.y += bullet.velocityY * timeMultiplier;
 
-        // 탄막 제거
+      // 화면 밖으로 나간 탄막 제거
+      if (
+        bullet.x < 0 ||
+        bullet.x > this.canvas.width ||
+        bullet.y < 0 ||
+        bullet.y > this.canvas.height
+      ) {
         this.bossBullets.splice(i, 1);
       }
     }
+  }
 
-    // 레이저와 플레이어 충돌 추가
-    for (let i = this.laserBullets.length - 1; i >= 0; i--) {
-      const laser = this.laserBullets[i];
-      const distance = Math.sqrt(
-        (laser.x - this.player.x) ** 2 + (laser.y - this.player.y) ** 2,
-      );
+  /**
+   * MARK: 충돌 체크
+   */
+  checkCollisions() {
+    if (window.DEBUG_MODE) console.log("[BossGame] checkCollisions 호출"); // 디버깅용 로그 추가
+    this.checkPlayerBulletHitBoss();
+    this.checkLaserBeamHitPlayer();
+    this.checkBossBulletHitPlayer();
+  }
 
-      if (distance < laser.radius + this.player.radius) {
-        // 플레이어 생명 감소 (레이저는 더 강함)
-        this.lives -= BOSS_POWER.laser;
+  /**
+   * MARK: 플레이어 총알 - 보스 충돌 체크
+   */
+  checkPlayerBulletHitBoss() {
+    if (window.DEBUG_MODE)
+      console.log("[BossGame] checkPlayerBulletHitBoss 호출"); // 디버깅용 로그 추가
+    for (let i = this.playerBullets.length - 1; i >= 0; i--) {
+      const bullet = this.playerBullets[i];
+      const dx = bullet.x - this.boss.x;
+      const dy = bullet.y - this.boss.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
 
-        // 레이저 제거
-        this.laserBullets.splice(i, 1);
+      if (
+        distance < this.boss.width / 2 + bullet.radius &&
+        !this.boss.isHurt
+      ) {
+        // 충돌 발생!
+        this.playerBullets.splice(i, 1); // 총알 제거
+
+        // 데미지 계산 (플레이어 공격력 기반)
+        const damage = this.player.power;
+        this.boss.health -= damage; // 보스 체력 감소
+
+        // 피격 애니메이션 및 상태 업데이트
+        this.boss.isHurt = true; // 피격 상태로 설정
+        this.boss.hurtEndTime =
+          performance.now() + this.boss.hurtAnimationDuration; // 피격 애니메이션 종료 시간 설정
+
+        // 사운드 재생 (throttling 적용)
+        const currentTime = performance.now();
+        if (currentTime - this.lastHitSoundTime > this.HIT_SOUND_THROTTLE_MS) {
+          playSfx(SFX.HIT); // 효과음 재생
+          this.lastHitSoundTime = currentTime; // 마지막 재생 시간 업데이트
+        }
+
+        // 보스 체력이 0 이하로 떨어지면 게임 종료
+        if (this.boss.health <= 0) {
+          this.boss.health = 0;
+          this.isGameClear = true;
+          this.showInGameMessage("보스 처치 성공! 게임 클리어!", true);
+          this.endGame();
+          return;
+        }
+      }
+    }
+  }
+
+  /**
+   * MARK: 레이저 빔 - 플레이어 충돌 체크 (선분과 원의 충돌)
+   */
+  checkLaserBeamHitPlayer() {
+    if (window.DEBUG_MODE)
+      console.log("[BossGame] checkLaserBeamHitPlayer 호출"); // 디버깅용 로그 추가
+
+    for (const beam of this.laserBeams) {
+      // 1. 플레이어의 중심에서 빔의 시작점까지의 벡터 계산
+      const px = this.player.x - beam.startX;
+      const py = this.player.y - beam.startY;
+
+      // 2. 빔의 방향 벡터 계산
+      const dx = beam.endX - beam.startX;
+      const dy = beam.endY - beam.startY;
+
+      // 3. 빔의 방향 벡터에 정규화된 플레이어-시작점 벡터를 투영하여 투영 길이(t) 계산
+      const beamLengthSquared = dx * dx + dy * dy;
+      let t = (px * dx + py * dy) / beamLengthSquared;
+
+      // 4. t 값을 0과 1 사이로 제한 (선분 내부)
+      t = Math.max(0, Math.min(1, t));
+
+      // 5. 빔에서 가장 가까운 점 찾기
+      const closestX = beam.startX + t * dx;
+      const closestY = beam.startY + t * dy;
+
+      // 6. 가장 가까운 점과 플레이어 중심 사이의 거리 계산
+      const distanceX = this.player.x - closestX;
+      const distanceY = this.player.y - closestY;
+      const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+
+      // 7. 충돌 여부 확인 (플레이어 반지름보다 가까운 경우)
+      if (distance <= this.player.radius) {
+        // 8. 충돌 처리: 플레이어 체력 감소 또는 게임 오버 처리
+        this.lives -= 1; // 레이저 빔에 맞을 때마다 생명력 1 감소
+
+        // 생명 <= 0이면 게임 끝내기
+        if (this.lives <= 0) {
+          if (window.DEBUG_MODE) console.log("[BossGame] 생명 0으로 게임 오버"); // 디버깅용 로그 추가
+          this.isGameClear = false;
+          this.showInGameMessage("게임 오버.. 뮤츠를 쓰러트리지 못했습니다.", true);
+          this.endGame();
+          return;
+        }
+      }
+    }
+  }
+
+  /**
+   * MARK: 보스 탄막 - 플레이어 충돌 체크
+   */
+  checkBossBulletHitPlayer() {
+    if (window.DEBUG_MODE)
+      console.log("[BossGame] checkBossBulletHitPlayer 호출"); // 디버깅용 로그 추가
+    for (let i = this.bossBullets.length - 1; i >= 0; i--) {
+      const bullet = this.bossBullets[i];
+      const dx = bullet.x - this.player.x;
+      const dy = bullet.y - this.player.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < this.player.radius + bullet.radius) {
+        // 충돌 발생!
+        this.bossBullets.splice(i, 1); // 탄막 제거
+        this.lives -= 1; // 플레이어 생명력 감소
+
+        // 생명 <= 0이면 게임 끝내기
+        if (this.lives <= 0) {
+          if (window.DEBUG_MODE) console.log("[BossGame] 생명 0으로 게임 오버"); // 디버깅용 로그 추가
+          this.isGameClear = false;
+          this.showInGameMessage("게임 오버.. 뮤츠를 쓰러트리지 못했습니다.", true);
+          this.endGame();
+          return;
+        }
       }
     }
   }
@@ -849,23 +964,40 @@ class BossGame extends GameManager {
    */
   checkGameEnd() {
     if (window.DEBUG_MODE) console.log("[BossGame] checkGameEnd 호출"); // 디버깅용 로그 추가
-    // 보스 체력이 0 이하이면 승리
-    if (this.boss.health <= 0) {
-      this.isGameClear = true;
-      this.showInGameMessage("뮤츠를 쓰러트렸다!", "success", true);
+    if (this.isGameClear) {
+      // 보스 처치 성공 시
+      this.showInGameMessage("보스 처치 성공! 게임 클리어!", true);
+      this.endGame();
+    } else if (this.lives <= 0) {
+      // 플레이어 생명력 0 이하 시
+      this.showInGameMessage("게임 오버.. 뮤츠를 쓰러트리지 못했습니다.", true);
       this.endGame();
     }
+  }
 
-    // 플레이어 생명이 0 이하이면 패배
-    if (this.lives <= 0) {
-      this.isGameClear = false;
-      this.showInGameMessage(
-        "게임 오버.. 뮤츠에게 패배했습니다.",
-        "error",
-        true,
-      );
-      this.endGame();
-    }
+  /**
+   * MARK: 게임별 업데이트 로직
+   */
+  updateGame(timeMultiplier) {
+    if (window.DEBUG_MODE)
+      console.log("[BossGame] updateGame 호출", timeMultiplier); // 디버깅용 로그 추가
+    this.updatePlayer(timeMultiplier);
+    this.updatePlayerBullets(timeMultiplier);
+    this.updateBoss(timeMultiplier);
+    this.updateBossBullets(timeMultiplier);
+    this.updateLaserBullets(timeMultiplier); // 레이저 총알 업데이트 추가
+    this.updateLaserBeams(timeMultiplier); // 주석 추가: 레이저 빔 업데이트 추가
+    this.checkCollisions();
+    this.checkGameEnd();
+
+    // 모든 객체 그리기
+    this.drawPlayer();
+    this.drawBoss();
+    this.drawPlayerBullets();
+    this.drawBossBullets();
+    this.drawLaserBullets(); // 레이저 총알 그리기 추가
+    this.drawLaserBeams(); // 주석 추가: 레이저 빔 그리기 추가
+    this.drawHealthBars();
   }
 
   /**
@@ -1007,6 +1139,42 @@ class BossGame extends GameManager {
       this.ctx.restore();
     });
   }
+  /**
+   * MARK: 레이저 빔 그리기 (주석 추가: 선 형태 레이저 렌더링)
+   */
+  drawLaserBeams() {
+    if (window.DEBUG_MODE) console.log("[BossGame] drawLaserBeams 호출"); // 디버깅용 로그 추가
+
+    this.laserBeams.forEach((beam) => {
+      this.ctx.save();
+      this.ctx.globalAlpha = beam.opacity;
+
+      // 레이저 글로우 효과
+      this.ctx.shadowColor = beam.color;
+      this.ctx.shadowBlur = 15;
+
+      // 레이저 빔 그리기 (선)
+      this.ctx.beginPath();
+      this.ctx.moveTo(beam.startX, beam.startY);
+      this.ctx.lineTo(beam.endX, beam.endY);
+      this.ctx.strokeStyle = beam.color;
+      this.ctx.lineWidth = beam.width;
+      this.ctx.lineCap = 'round'; // 둥근 끝
+      this.ctx.stroke();
+
+      // 중앙 밝은 부분 (더 얇은 선)
+      this.ctx.shadowBlur = 5;
+      this.ctx.beginPath();
+      this.ctx.moveTo(beam.startX, beam.startY);
+      this.ctx.lineTo(beam.endX, beam.endY);
+      this.ctx.strokeStyle = "#ffffff";
+      this.ctx.lineWidth = beam.width / 3;
+      this.ctx.stroke();
+
+      this.ctx.restore();
+    });
+  }
+
   /**
    * MARK: 체력바 그리기
    */
