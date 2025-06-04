@@ -42,6 +42,7 @@ const SFX = {
   PAUSE: "pause.wav",
   // brickGame
   FALL: "Stat Fall Down.mp3",
+  ITEM: "Safeguard.mp3",
   // pokemon ability
   FIRE_SFX: "Rage.mp3",
   WATER_SFX: "Spark.mp3",
