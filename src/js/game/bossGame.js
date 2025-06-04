@@ -479,8 +479,15 @@ class BossGame extends GameManager {
       !this.boss.isMoving &&
       currentTime - this.boss.lastAttackTime >= phase2AttackCooldown
     ) {
-      this.shootTargetedBullets(); // 플레이어 조준 공격
-      this.boss.lastAttackTime = currentTime;
+      // 페이즈 2에서 레이저 공격을 주기적으로 사용
+      if (Math.random() < 0.2) {
+        // 20% 확률로 레이저 공격
+        this.shootLaserAttack();
+        this.boss.lastAttackTime = currentTime;
+      } else {
+        this.shootTargetedBullets(); // 플레이어 조준 공격
+        this.boss.lastAttackTime = currentTime;
+      }
     }
   }
 
