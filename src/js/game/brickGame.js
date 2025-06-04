@@ -714,13 +714,14 @@ class BrickGame extends GameManager {
    * MARK: 공이 바닥에 떨어졌을 때 사운드 재생 (throttling 적용)
    */
   playBallFallSound() {
-    const currentTime = performance.now(); // 현재 시간 측정
-    if (currentTime - this.lastBallFallSoundTime > 1000) {
-      // 1초 간격으로 제한
-      this.lastBallFallSoundTime = 0; // 사운드를 처음부터 재생
-      playSfx(SFX.FALL); // 공이 떨어지는 사운드 재생
-      this.lastBallFallSoundTime = currentTime; // 마지막 사운드 재생 시간 업데이트
-    }
+    // const currentTime = performance.now(); // 현재 시간 측정
+    // if (currentTime - this.lastBallFallSoundTime > 1000) {
+    //   // 1초 간격으로 제한
+    //   this.lastBallFallSoundTime = 0; // 사운드를 처음부터 재생
+    //   playSfx(SFX.FALL); // 공이 떨어지는 사운드 재생
+    //   this.lastBallFallSoundTime = currentTime; // 마지막 사운드 재생 시간 업데이트
+    // }
+    playSfx(SFX.FALL); // 공이 떨어지는 사운드 재생
   }
 
   /**
