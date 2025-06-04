@@ -40,6 +40,14 @@ const SFX = {
   ITEM: "item.wav",
   CLEAR: "clear.wav",
   PAUSE: "pause.wav",
+  // brickGame
+  FALL: "Stat Fall Down.mp3",
+  // pokemon ability
+  FIRE_SFX: "Rage.mp3",
+  WATER_SFX: "Spark.mp3",
+  GRASS_SFX: "Recover.mp3",
+  ELECTRIC_SFX: "Teleport.mp3",
+  ICE_SFX: "Ice Beam.mp3",
 };
 
 // gameManager config
