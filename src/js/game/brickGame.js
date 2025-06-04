@@ -252,13 +252,17 @@ class BrickGame extends GameManager {
       let availableGeneralPokemon = [];
       for (let i = 0; i < this.totalPokemonCount; i++) {
         const pkmn = window.pokemon[i];
+        // 주석 추가: 슬롯에 있는 포켓몬은 블록 조합에 등장하지 않도록 필터링
+        const isPokemonInSlot = this.slotPokemon.some(
+          (slotPokemon) => slotPokemon && slotPokemon.index === i,
+        );
         if (
           pkmn &&
           pkmn.type !== 5 && // 전설(타입 5) 제외
           !this.saved_pokemon.includes(i) && // 이미 구출된 포켓몬 제외
-          !addedIndicesThisCombination.has(i)
+          !addedIndicesThisCombination.has(i) && // 현재 조합에 이미 추가된 포켓몬 제외
+          !isPokemonInSlot // 슬롯에 있는 포켓몬 제외
         ) {
-          // 현재 조합에 이미 추가된 포켓몬 제외
           availableGeneralPokemon.push(i);
         }
       }
