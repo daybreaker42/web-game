@@ -31,6 +31,13 @@ class BrickGame extends GameManager {
     this.lastBallBounceSoundTime = 0; // 마지막 사운드 재생 시간 (throttling용, 0.3초)
     // 주석 추가: 아이템 사용 사운드 throttling 변수 추가
     this.lastItemSoundTime = 0; // 마지막 아이템 사운드 재생 시간 (throttling용, 1초)
+    this.lastBallFallSoundTime = 0; // 마지막 공이 바닥에 떨어졌을 때 사운드 재생 시간 (throttling용, 1초)
+    // 주석 추가: 포켓몬 타입별 능력 사운드 throttling 변수 추가
+    this.lastGrassSoundTime = 0;
+    this.lastFireSoundTime = 0;
+    this.lastElectricSoundTime = 0;
+    this.lastWaterSoundTime = 0;
+    this.lastIceSoundTime = 0;
 
     // 타입별 색상 매핑
     this.typeColorMap = {
@@ -597,6 +604,9 @@ class BrickGame extends GameManager {
         return;
       }
 
+      // 주석 추가: 공이 바닥에 떨어졌을 때 사운드 재생
+      this.playBallFallSound();
+
       // 공 위치 및 속도 초기화
       this.ball.x = this.ballInitialX;
       this.ball.y = this.ballInitialY;
@@ -697,6 +707,19 @@ class BrickGame extends GameManager {
       this.lastItemSoundTime = 0; // 사운드를 처음부터 재생
       playSfx(SFX.ITEM); // 아이템 사운드 재생
       this.lastItemSoundTime = currentTime; // 마지막 사운드 재생 시간 업데이트
+    }
+  }
+
+  /**
+   * MARK: 공이 바닥에 떨어졌을 때 사운드 재생 (throttling 적용)
+   */
+  playBallFallSound() {
+    const currentTime = performance.now(); // 현재 시간 측정
+    if (currentTime - this.lastBallFallSoundTime > 1000) {
+      // 1초 간격으로 제한
+      this.lastBallFallSoundTime = 0; // 사운드를 처음부터 재생
+      playSfx(SFX.FALL); // 공이 떨어지는 사운드 재생
+      this.lastBallFallSoundTime = currentTime; // 마지막 사운드 재생 시간 업데이트
     }
   }
 
@@ -1190,6 +1213,9 @@ class BrickGame extends GameManager {
     this.lives = Math.min(this.totalLives, this.lives + healAmount);
     this.showInGameMessage(`풀타입 능력: 생명력 ${healAmount} 회복!`, true);
     console.log(`풀타입 능력 사용: 생명력 ${healAmount} 회복`);
+
+    // 주석 추가: 풀타입 능력 사용 시 사운드 재생
+    this.playGrassSound();
   }
   /**
    * MARK: 불타입 능력 - 공 속도 증가
@@ -1245,6 +1271,9 @@ class BrickGame extends GameManager {
       this.fireBoostActive = false; // 능력 비활성화 (주석 추가: 상태 초기화)
       this.originalBallSpeed = null; // 원본 속도 초기화 (주석 추가: 메모리 정리)
     }, duration);
+
+    // 주석 추가: 불타입 능력 사용 시 사운드 재생
+    this.playFireSound();
   }
 
   /**
@@ -1266,6 +1295,9 @@ class BrickGame extends GameManager {
         console.log("전기타입 능력 효과 종료: 점수 2배 해제");
       }, duration);
     }
+
+    // 주석 추가: 전기타입 능력 사용 시 사운드 재생
+    this.playElectricSound();
   }
 
   /**
@@ -1290,6 +1322,9 @@ class BrickGame extends GameManager {
         console.log("물타입 능력 효과 종료: 패들 크기 원상복구");
       }, duration);
     }
+
+    // 주석 추가: 물타입 능력 사용 시 사운드 재생
+    this.playWaterSound();
   }
 
   /**
@@ -1314,7 +1349,75 @@ class BrickGame extends GameManager {
         console.log("얼음타입 능력 효과 종료: 조합 이동 속도 원상복구");
       }, duration);
     }
+    // 주석 추가: 얼음타입 능력 사용 시 사운드 재생
+    this.playIceSound();
   }
+
+  /**
+   * MARK: 풀타입 능력 사운드 재생 (throttling 적용)
+   */
+  playGrassSound() {
+    const currentTime = performance.now(); // 현재 시간 측정
+    if (currentTime - this.lastGrassSoundTime > 1000) {
+      // 1초 간격으로 제한
+      this.lastGrassSoundTime = 0; // 사운드를 처음부터 재생
+      playSfx(SFX.GRASS_SFX); // 풀타입 능력 사운드 재생
+      this.lastGrassSoundTime = currentTime; // 마지막 사운드 재생 시간 업데이트
+    }
+  }
+
+  /**
+   * MARK: 불타입 능력 사운드 재생 (throttling 적용)
+   */
+  playFireSound() {
+    const currentTime = performance.now(); // 현재 시간 측정
+    if (currentTime - this.lastFireSoundTime > 1000) {
+      // 1초 간격으로 제한
+      this.lastFireSoundTime = 0; // 사운드를 처음부터 재생
+      playSfx(SFX.FIRE_SFX); // 불타입 능력 사운드 재생
+      this.lastFireSoundTime = currentTime; // 마지막 사운드 재생 시간 업데이트
+    }
+  }
+
+  /**
+   * MARK: 전기타입 능력 사운드 재생 (throttling 적용)
+   */
+  playElectricSound() {
+    const currentTime = performance.now(); // 현재 시간 측정
+    if (currentTime - this.lastElectricSoundTime > 1000) {
+      // 1초 간격으로 제한
+      this.lastElectricSoundTime = 0; // 사운드를 처음부터 재생
+      playSfx(SFX.ELECTRIC_SFX); // 전기타입 능력 사운드 재생
+      this.lastElectricSoundTime = currentTime; // 마지막 사운드 재생 시간 업데이트
+    }
+  }
+
+  /**
+   * MARK: 물타입 능력 사운드 재생 (throttling 적용)
+   */
+  playWaterSound() {
+    const currentTime = performance.now(); // 현재 시간 측정
+    if (currentTime - this.lastWaterSoundTime > 1000) {
+      // 1초 간격으로 제한
+      this.lastWaterSoundTime = 0; // 사운드를 처음부터 재생
+      playSfx(SFX.WATER_SFX); // 물타입 능력 사운드 재생
+      this.lastWaterSoundTime = currentTime; // 마지막 사운드 재생 시간 업데이트
+    }
+  }
+
+  /**
+   * MARK: 얼음타입 능력 사운드 재생 (throttling 적용)
+   */
+  playIceSound() {
+    const currentTime = performance.now(); // 현재 시간 측정
+    if (currentTime - this.lastIceSoundTime > 1000) {
+      // 1초 간격으로 제한
+      this.lastIceSoundTime = 0; // 사운드를 처음부터 재생
+      playSfx(SFX.ICE_SFX); // 얼음타입 능력 사운드 재생
+      this.lastIceSoundTime = currentTime; // 마지막 사운드 재생 시간 업데이트
+    }
+  }
+
   /**
    * MARK: 아이템 사용 메서드 - 현재 선택된 슬롯에 적용
    */
