@@ -252,13 +252,17 @@ class BrickGame extends GameManager {
       let availableGeneralPokemon = [];
       for (let i = 0; i < this.totalPokemonCount; i++) {
         const pkmn = window.pokemon[i];
+        // 주석 추가: 슬롯에 있는 포켓몬은 블록 조합에 등장하지 않도록 필터링
+        const isPokemonInSlot = this.slotPokemon.some(
+          (slotPokemon) => slotPokemon && slotPokemon.index === i,
+        );
         if (
           pkmn &&
           pkmn.type !== 5 && // 전설(타입 5) 제외
           !this.saved_pokemon.includes(i) && // 이미 구출된 포켓몬 제외
-          !addedIndicesThisCombination.has(i)
+          !addedIndicesThisCombination.has(i) && // 현재 조합에 이미 추가된 포켓몬 제외
+          !isPokemonInSlot // 슬롯에 있는 포켓몬 제외
         ) {
-          // 현재 조합에 이미 추가된 포켓몬 제외
           availableGeneralPokemon.push(i);
         }
       }
@@ -388,7 +392,7 @@ class BrickGame extends GameManager {
   initializeGame() {
     if (window.DEBUG_MODE) console.log("[BrickGame] initializeGame 호출");
 
-    // 주석 추가: 포켓몬 능력 효과 상태 완전 초기화 (스테이지 시작 시)
+    // 주석 추가: 포켓몬 능력 효과 완전 초기화 (스테이지 시작 시)
     this.electricBoostActive = false;
     this.waterBoostActive = false;
     this.iceBoostActive = false;
@@ -786,85 +790,63 @@ class BrickGame extends GameManager {
       for (let j = 0; j < combination.bricks.length; j++) {
         let brick = combination.bricks[j];
         if (brick.status === 1 && brick.isBrickHit(this.ball)) {
-          // 겹침 영역 계산을 통한 방향 감지
-          let overlapLeft = this.ball.x + this.ball.radius - brick.x;
-          let overlapRight =
-            brick.x + this.BRICK_WIDTH - (this.ball.x - this.ball.radius);
-          let overlapTop = this.ball.y + this.ball.radius - brick.y;
-          let overlapBottom =
-            brick.y + this.BRICK_HEIGHT - (this.ball.y - this.ball.radius);
-
-          let minOverlap = Math.min(
-            overlapLeft,
-            overlapRight,
-            overlapTop,
-            overlapBottom,
-          );
-
-          if (minOverlap === overlapLeft || minOverlap === overlapRight) {
-            this.ball.speedX = -this.ball.speedX;
-          } else {
-            this.ball.speedY = -this.ball.speedY;
-          }
-
-          brick.status = 0;
-          // 공 충돌 사운드 재생 (벽돌 충돌 시에도 동일한 사운드)
-          this.playBallBounceSound();
-
-          // 포켓몬 블록과 아이템 블록 처리 분리
-          if (brick.blockType === "pokemon") {
-            // 포켓몬 블록 처리 (기존 로직)
-            let pokemon = window.pokemon[brick.pokeIndex];
-            let baseScore = 0;
-
-            if (pokemon && pokemon.type === 5) {
-              // 전설의 포켓몬 - 점수 더 많이 줌
-              baseScore = 50;
-            } else {
-              // 일반 포켓몬 - 10점
-              baseScore = 10;
-            }
-
-            // MARK: 전기타입 능력 적용 - 점수 2배
-            if (this.electricBoostActive) {
-              this.score += baseScore * 2;
-            } else {
-              this.score += baseScore;
-            }
-
-            // 모든 포켓몬을 구출 리스트에 추가 (중복 방지)
-            if (!this.saved_pokemon.includes(brick.pokeIndex)) {
-              this.saved_pokemon.push(brick.pokeIndex);
-              let pokemonName = pokemon ? pokemon.name : "포켓몬";
-              // 화면에 구출 메시지 표시
-              this.showInGameMessage(pokemonName);
-            }
-
-            // 타겟 포켓몬인 경우 슬롯에 추가
-            if (brick.isTarget && window.pokemon[brick.pokeIndex]) {
-              console.log(
-                `타겟 포켓몬 ${window.pokemon[brick.pokeIndex].name} 슬롯에 추가됨`,
-              );
-              let imagePath =
-                "../assets/images/game/pokemon/potrait/normal/" +
-                brick.pokeIndex +
-                ".png";
-              this.addPokemonToSlot(imagePath);
-            }
-          } else if (brick.blockType === "item") {
-            // 주석 추가: 아이템 블록 충돌 시 사운드 재생
-            this.playItemSound(); // 아이템 사운드 재생 (1초 throttling)
-
-            // 아이템 사용 처리 (기존 로직)
-            this.useItemOnSlot(brick.itemName);
-          }
-
-          if (!this.isGameClear) {
-            this.checkWin();
-          }
-          return; // 한 프레임에 하나의 벽돌만 처리
+          this.handleBrickCollision(brick);
         }
       }
+    }
+  }
+
+  /**
+   * MARK: 벽돌 충돌 처리
+   */
+  handleBrickCollision(brick) {
+    // 겹침 영역 계산
+    let overlapLeft = this.ball.x + this.ball.radius - brick.x;
+    let overlapRight = brick.x + this.BRICK_WIDTH - (this.ball.x - this.ball.radius);
+    let overlapTop = this.ball.y + this.ball.radius - brick.y;
+    let overlapBottom = brick.y + this.BRICK_HEIGHT - (this.ball.y - this.ball.radius);
+
+    // 최소 겹침 영역 찾기
+    let minOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
+
+    // 충돌한 면에 따라 속도 방향 변경
+    if (minOverlap === overlapLeft) {
+      this.ball.speedX = -Math.abs(this.ball.speedX); // 왼쪽 충돌
+    } else if (minOverlap === overlapRight) {
+      this.ball.speedX = Math.abs(this.ball.speedX); // 오른쪽 충돌
+    } else if (minOverlap === overlapTop) {
+      this.ball.speedY = -Math.abs(this.ball.speedY); // 위쪽 충돌
+    } else if (minOverlap === overlapBottom) {
+      this.ball.speedY = Math.abs(this.ball.speedY); // 아래쪽 충돌
+    }
+
+    brick.status = 0;
+    this.playBallBounceSound();
+
+    // 포켓몬 블록과 아이템 블록 처리 분리
+    if (brick.blockType === "pokemon") {
+      let pokemon = window.pokemon[brick.pokeIndex];
+      let baseScore = pokemon && pokemon.type === 5 ? 50 : 10;
+      this.score += this.electricBoostActive ? baseScore * 2 : baseScore;
+
+      if (!this.saved_pokemon.includes(brick.pokeIndex)) {
+        this.saved_pokemon.push(brick.pokeIndex);
+        let pokemonName = pokemon ? pokemon.name : "포켓몬";
+        this.showInGameMessage(pokemonName);
+      }
+
+      if (brick.isTarget && window.pokemon[brick.pokeIndex]) {
+        console.log(`타겟 포켓몬 ${window.pokemon[brick.pokeIndex].name} 슬롯에 추가됨`);
+        let imagePath = "../assets/images/game/pokemon/potrait/normal/" + brick.pokeIndex + ".png";
+        this.addPokemonToSlot(imagePath);
+      }
+    } else if (brick.blockType === "item") {
+      this.playItemSound();
+      this.useItemOnSlot(brick.itemName);
+    }
+
+    if (!this.isGameClear) {
+      this.checkWin();
     }
   }
 
