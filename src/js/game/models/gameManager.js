@@ -659,6 +659,8 @@ class GameManager {
       this.totalPauseDuration = 0;
 
       this.initializeGameObjects();
+      // MARK: 벽돌 위치 초기화 추가
+      this.resetBricksPosition();
 
       if (this.initializeGame) {
         this.initializeGame();
@@ -1011,6 +1013,20 @@ class GameManager {
     }
 
     console.log("[GameManager] 모든 게임 상태가 초기화되었습니다.");
+  }
+
+  /**
+   * MARK: 벽돌 위치 초기화 메서드 추가
+   */
+  resetBricksPosition() {
+    if (window.DEBUG_MODE) console.log("[GameManager] resetBricksPosition 호출");
+    // 벽돌 위치 초기화 로직 구현 (필요한 경우)
+    // 예: 모든 벽돌을 초기 위치로 되돌리는 코드
+    if (this.bricks && Array.isArray(this.bricks)) {
+      while (this.bricks.length > 0) {
+        this.bricks.pop();
+      }
+    }
   }
 
   /**
