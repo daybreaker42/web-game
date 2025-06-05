@@ -872,6 +872,19 @@ class BrickGame extends GameManager {
     if (!this.isGameClear) {
       this.checkWin();
     }
+
+    // MARK: 조합 내 모든 블록이 파괴되었는지 확인하고 추가 점수 부여
+    if (brick.combination) {
+      const allBricksBroken = brick.combination.bricks.every(
+        (b) => b.status !== 1,
+      );
+      if (allBricksBroken) {
+        const combinationBonus = 30; // 조합 보너스 점수
+        this.score += combinationBonus;
+        this.showInGameMessage(`조합 완성 보너스: ${combinationBonus}점 획득!`, true);
+        console.log(`조합 완성 보너스 ${combinationBonus}점 획득!`);
+      }
+    }
   }
 
   /**
