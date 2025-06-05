@@ -78,7 +78,7 @@ const POKEMON_HEALTH_SYSTEM = {
 const BRICK_WIDTH = 80;
 const BRICK_HEIGHT = 80;
 const BRICK_PADDING = 10;
-const BRICK_OFFSET_TOP = 60;
+const BRICK_OFFSET_TOP = 20;
 const BRICK_OFFSET_LEFT = 30;
 
 // 난이도별 최소 점수

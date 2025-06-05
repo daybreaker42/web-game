@@ -1103,13 +1103,7 @@ class BrickGame extends GameManager {
    * MARK: 기존 조합과 겹치지 않는 Y 위치 찾기 메서드 - 추가됨: 조합 겹침 방지
    */
   findNonOverlappingY(minY, maxY, patternHeight) {
-    if (window.DEBUG_MODE)
-      console.log(
-        "[BrickGame] findNonOverlappingY 호출",
-        minY,
-        maxY,
-        patternHeight,
-      ); // 디버깅용 로그 추가
+    if (window.DEBUG_MODE) console.log("[BrickGame] findNonOverlappingY 호출", minY, maxY, patternHeight); // 디버깅용 로그 추가
     let attempts = 0;
     let maxAttempts = 10; // 최대 시도 횟수
     let safeMargin = 20; // 조합 간 안전 여백
@@ -1132,12 +1126,7 @@ class BrickGame extends GameManager {
           let candidateBottom = candidateY + patternHeight;
 
           // Y축 겹침 확인 (안전 여백 포함)
-          if (
-            !(
-              candidateBottom + safeMargin < existingTop ||
-              candidateTop - safeMargin > existingBottom
-            )
-          ) {
+          if (!(candidateBottom + safeMargin < existingTop || candidateTop - safeMargin > existingBottom)) {
             isOverlapping = true;
             break;
           }
