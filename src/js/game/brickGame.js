@@ -851,7 +851,7 @@ class BrickGame extends GameManager {
     // 포켓몬 블록과 아이템 블록 처리 분리
     if (brick.blockType === "pokemon") {
       let pokemon = window.pokemon[brick.pokeIndex];
-      let baseScore = pokemon && pokemon.type === 5 ? 50 : 10;
+      let baseScore = pokemon && pokemon.type === 5 ? LEGENDARY_POKEMON_SCORE : BRICK_SCORE;
       this.score += this.electricBoostActive ? baseScore * 2 : baseScore;
 
       if (!this.saved_pokemon.includes(brick.pokeIndex)) {
@@ -879,8 +879,7 @@ class BrickGame extends GameManager {
         (b) => b.status !== 1,
       );
       if (allBricksBroken) {
-        const combinationBonus = 30; // 조합 보너스 점수
-        this.score += combinationBonus;
+        this.score += COMBINATION_SCORE;
         this.showInGameMessage(`조합 완성 보너스: ${combinationBonus}점 획득!`, true);
         console.log(`조합 완성 보너스 ${combinationBonus}점 획득!`);
       }

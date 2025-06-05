@@ -81,6 +81,10 @@ const BRICK_PADDING = 10;
 const BRICK_OFFSET_TOP = 60;
 const BRICK_OFFSET_LEFT = 30;
 
+const BRICK_SCORE = 10;
+const LEGENDARY_POKEMON_SCORE = 50;
+const COMBINATION_SCORE = 30;
+
 // 난이도별 최소 점수
 const MIN_REQUIRED_SCORE = {
   easy: 30,
