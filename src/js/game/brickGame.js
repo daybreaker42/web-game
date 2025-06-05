@@ -880,8 +880,8 @@ class BrickGame extends GameManager {
       );
       if (allBricksBroken) {
         this.score += COMBINATION_SCORE;
-        this.showInGameMessage(`조합 완성 보너스: ${combinationBonus}점 획득!`, true);
-        console.log(`조합 완성 보너스 ${combinationBonus}점 획득!`);
+        this.showInGameMessage(`조합 완성 보너스: ${COMBINATION_SCORE}점 획득!`, true);
+        console.log(`조합 완성 보너스 ${COMBINATION_SCORE}점 획득!`);
       }
     }
   }
