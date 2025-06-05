@@ -436,8 +436,10 @@ class BrickGame extends GameManager {
     this.initDynamicBrickSystem();
     this.totalLives = this.lives;
 
-    // 스테이지별 기본 포켓몬 슬롯에 추가 (완전 초기화 후)
-    this.addDefaultPokemonByStage();
+    // story 모드일 때만 기본 포켓몬 슬롯에 추가
+    if (this.mode === "story") { // <-- story 모드일 때만 실행되도록 조건 추가
+      this.addDefaultPokemonByStage();
+    }
   }
 
   /**
