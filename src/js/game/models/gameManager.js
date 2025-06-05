@@ -128,6 +128,11 @@ class GameManager {
     this.mode = data.mode;
     this.difficulty = data.difficulty;
     this.stage = data.stage;
+    // if (this.mode === 'score' && !this.stage) {
+    //   // score모드 - stage null임 -> random으로 하나 설정
+    //   console.log(`스코어 모드 - stage random하게 설정`);
+    //   this.stage = Math.floor(Math.random() * 3 + 1);
+    // }
 
     // 스테이지별 배경 이미지 로드 (추가된 기능)
     this.loadStageBackground(data.stage);
@@ -152,10 +157,15 @@ class GameManager {
 
     // 스테이지 번호 유효성 검사
     if (stage < 1 || stage > 4) {
+      // if (this.mode === "story") {
       console.warn(
         `유효하지 않은 스테이지 번호: ${stage}. 기본 배경을 사용합니다.`,
       );
       return;
+      // } else {
+      //   // 스코어 모드인데 배경 없을 때 - 배경 랜덤으로 하나 지정해서 사용
+      //   this.stage = Math.floor(Math.random() * 3) + 1;
+      // }
     }
 
     // CSS background-image로 배경 설정
