@@ -87,6 +87,7 @@ function startGameScoreMode(difficulty) {
   selectedDifficulty = difficulty;
   stopCloudAnimation();
   hide(qs("#menu-screen"));
+  // FIXME 스코어 모드에서 stage null로 보내면 이후 음악이나 배경 선택 불가! 여기서 stage random으로 일단 보내줌. 이후 로직 수정 필요 - 성준, 6/5
   const stageNum = Math.floor(Math.random() * 3) + 1;
   playGame("score", selectedDifficulty, stageNum, (gameResult) => {
     showWithFade(qs("#game-result-screen"));
