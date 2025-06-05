@@ -87,7 +87,8 @@ function startGameScoreMode(difficulty) {
   selectedDifficulty = difficulty;
   stopCloudAnimation();
   hide(qs("#menu-screen"));
-  playGame("score", selectedDifficulty, null, (gameResult) => {
+  const stageNum = Math.floor(Math.random() * 3) + 1;
+  playGame("score", selectedDifficulty, stageNum, (gameResult) => {
     showWithFade(qs("#game-result-screen"));
     renderGameResult(gameResult);
   });
