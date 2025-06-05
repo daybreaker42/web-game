@@ -387,7 +387,7 @@ class BrickGame extends GameManager {
     }
 
     this.combinations.push(combination);
-    console.log("새로운 조합 생성: " + combination.bricks.length + "개 블록");
+    if (window.DEBUG_MODE) console.log("새로운 조합 생성: " + combination.bricks.length + "개 블록");
     // console.log(`조합 내 brick들 좌표 : `);
     // combination.bricks.forEach((brick, index)=>{
     //   console.log(`brick ${index} : ${brick.x}, ${brick.y}`);
@@ -478,14 +478,10 @@ class BrickGame extends GameManager {
             imageSrc: imagePath,
           };
 
-          console.log(
-            `스테이지 ${this.stage} 기본 포켓몬 추가: ${pokemonData.name} (인덱스: ${pokemonIndex}, 타입: ${pokemonData.type}) - 슬롯 ${i}`,
-          );
+          if (window.DEBUG_MODE) console.log(`스테이지 ${this.stage} 기본 포켓몬 추가: ${pokemonData.name} (인덱스: ${pokemonIndex}, 타입: ${pokemonData.type}) - 슬롯 ${i}`);
         }
       } else {
-        console.warn(
-          `스테이지 ${this.stage} 기본 포켓몬 데이터를 찾을 수 없습니다. 인덱스: ${pokemonIndex}`,
-        );
+        console.warn(`스테이지 ${this.stage} 기본 포켓몬 데이터를 찾을 수 없습니다. 인덱스: ${pokemonIndex}`);
       }
     }
 
@@ -499,9 +495,7 @@ class BrickGame extends GameManager {
     }
 
     if (defaultPokemonIndices.length === 0) {
-      console.log(
-        `스테이지 ${this.stage}에는 기본 포켓몬이 설정되지 않았습니다.`,
-      );
+      if (window.DEBUG_MODE) console.log(`스테이지 ${this.stage}에는 기본 포켓몬이 설정되지 않았습니다.`);
     }
   }
 
@@ -509,8 +503,7 @@ class BrickGame extends GameManager {
    * MARK: 동적 벽돌 시스템 초기화
    */
   initDynamicBrickSystem() {
-    if (window.DEBUG_MODE)
-      console.log("[BrickGame] initDynamicBrickSystem 호출"); // 디버깅용 로그 추가
+    if (window.DEBUG_MODE) console.log("[BrickGame] initDynamicBrickSystem 호출"); // 디버깅용 로그 추가
     // 타겟 포켓몬 설정 로직은 generatePokemonForCombination으로 이동됨
     // 조합 시스템 관련 변수 초기화
     this.combinations = [];
@@ -521,23 +514,16 @@ class BrickGame extends GameManager {
     this.appearedTargetPokemonTypes.clear();
 
     if (this.specialPokemon[this.stage] !== undefined) {
-      console.log(
-        "특별 포켓몬 (Stage " +
-          this.stage +
-          "): " +
-          this.specialPokemon[this.stage],
-      );
+      if (window.DEBUG_MODE) console.log("특별 포켓몬 (Stage " + this.stage + "): " + this.specialPokemon[this.stage]);
     } else {
-      console.log("특별 포켓몬 (Stage " + this.stage + "): 없음");
+      if (window.DEBUG_MODE) console.log("특별 포켓몬 (Stage " + this.stage + "): 없음");
     }
   }
 
   // BrickGame 내부 (어디든 메서드로)
   drawSlotArrowCanvas() {
     // 선택된 슬롯 DOM 좌표 → 캔버스 좌표로 변환
-    const frame = document.getElementById(
-      `slot-frame-${this.selectedSlotIndex}`,
-    );
+    const frame = document.getElementById(`slot-frame-${this.selectedSlotIndex}`);
     if (!frame) return;
     const slotRect = frame.getBoundingClientRect();
     const canvasRect = this.canvas.getBoundingClientRect();
@@ -861,7 +847,6 @@ class BrickGame extends GameManager {
       }
 
       if (brick.isTarget && window.pokemon[brick.pokeIndex]) {
-        console.log(`타겟 포켓몬 ${window.pokemon[brick.pokeIndex].name} 슬롯에 추가됨`);
         let imagePath = "../assets/images/game/pokemon/potrait/normal/" + brick.pokeIndex + ".png";
         this.addPokemonToSlot(imagePath);
       }
@@ -955,9 +940,7 @@ class BrickGame extends GameManager {
             imageSrc: imageSrc,
           };
 
-          console.log(
-            `포켓몬 슬롯에 추가됨: ${pokemonData.name} (타입 ${pokemonData.type}) - 슬롯 ${i}`,
-          );
+          if (window.DEBUG_MODE) console.log(`포켓몬 슬롯에 추가됨: ${pokemonData.name} (타입 ${pokemonData.type}) - 슬롯 ${i}`);
           return;
         }
       }

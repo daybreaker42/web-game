@@ -165,7 +165,7 @@ class GameManager {
     this.canvas.style.backgroundPosition = "center"; // 중앙 정렬
     this.canvas.style.backgroundRepeat = "no-repeat"; // 반복 방지
 
-    console.log(`배경 이미지 CSS 설정 완료: ${imagePath}`);
+    if (window.DEBUG_MODE) console.log(`배경 이미지 CSS 설정 완료: ${imagePath}`);
 
     // 기존 배경 이미지 관련 변수들 정리 (더 이상 사용하지 않음)
     this.backgroundImage = null;
@@ -1012,7 +1012,7 @@ class GameManager {
       this.slotPokemon = [null, null, null, null];
     }
 
-    console.log("[GameManager] 모든 게임 상태가 초기화되었습니다.");
+    if (window.DEBUG_MODE) console.log("[GameManager] 모든 게임 상태가 초기화되었습니다.");
   }
 
   /**
@@ -1026,6 +1026,8 @@ class GameManager {
       while (this.bricks.length > 0) {
         this.bricks.pop();
       }
+    } else {
+      // console.log(`no blocks found`);
     }
   }
 
