@@ -29,10 +29,10 @@ class BrickGame extends GameManager {
     this.ballImage = null;
 
     this.lastBallBounceSoundTime = 0; // 마지막 사운드 재생 시간 (throttling용, 0.3초)
-    // 주석 추가: 아이템 사용 사운드 throttling 변수 추가
+    // 아이템 사용 사운드 throttling 변수 추가
     this.lastItemSoundTime = 0; // 마지막 아이템 사운드 재생 시간 (throttling용, 1초)
     this.lastBallFallSoundTime = 0; // 마지막 공이 바닥에 떨어졌을 때 사운드 재생 시간 (throttling용, 1초)
-    // 주석 추가: 포켓몬 타입별 능력 사운드 throttling 변수 추가
+    // 포켓몬 타입별 능력 사운드 throttling 변수 추가
     this.lastGrassSoundTime = 0;
     this.lastFireSoundTime = 0;
     this.lastElectricSoundTime = 0;
@@ -50,11 +50,11 @@ class BrickGame extends GameManager {
     this.totalPokemonCount = TOTAL_POKEMON_COUNT;
     this.specialPokemon = SPECIAL_POKEMON;
 
-    // MARK: 포켓몬 능력 상태 관리 변수 추가 (주석 추가: 공 속도 버그 해결을 위한 상태 관리)
+    // MARK: 포켓몬 능력 상태 관리 변수 추가  공 속도 버그 해결을 위한 상태 관리)
     this.fireBoostActive = false; // 불타입 능력 활성 상태
     this.originalBallSpeed = null; // 원본 공 속도 저장
     this.fireBoostTimeout = null; // 불타입 능력 타이머 ID
-    this.fireBoostRemainingTime = 0; // 일시정지 시 남은 시간 저장 (주석 추가: 일시정지 중 타이머 관리)
+    this.fireBoostRemainingTime = 0; // 일시정지 시 남은 시간 저장  일시정지 중 타이머 관리)
 
     // MARK: 포켓몬 능력 효과 상태 변수 추가
     this.electricBoostActive = false;
@@ -65,7 +65,7 @@ class BrickGame extends GameManager {
     this.appearedTargetPokemonTypes = new Set(); // 이번 게임/스테이지에서 등장한 목표 포켓몬 타입을 기록
     this.TARGET_POKEMON_SPAWN_CHANCE = TARGET_POKEMON_SPAWN_CHANCE;
 
-    // MARK: 포켓몬 슬롯 관리 배열 추가 (주석 추가: 배경 이미지 파싱 방식 대신 배열로 관리)
+    // MARK: 포켓몬 슬롯 관리 배열 추가  배경 이미지 파싱 방식 대신 배열로 관리)
     this.slotPokemon = [null, null, null, null]; // 각 슬롯에 저장된 포켓몬 정보 (null = 빈 슬롯)
   }
 
@@ -76,7 +76,7 @@ class BrickGame extends GameManager {
     if (window.DEBUG_MODE) console.log("[BrickGame] getCurrentSlotTypes 호출"); // 디버깅용 로그 추가
     const slotTypes = new Set();
 
-    // 주석 추가: 배열 기반으로 타입 확인 (기존 DOM 파싱 방식 대신)
+    // 배열 기반으로 타입 확인 (기존 DOM 파싱 방식 대신)
     for (let i = 0; i < 4; i++) {
       const pokemonInfo = this.slotPokemon[i];
       if (pokemonInfo && window.pokemon && window.pokemon[pokemonInfo.index]) {
@@ -195,14 +195,15 @@ class BrickGame extends GameManager {
             Math.floor(Math.random() * availableTargetTypes.length)
           ];
         let candidatePokemons = [];
+        const allSpecialPokemonIndices = Object.values(this.specialPokemon); // 모든 스테이지의 특별 포켓몬 인덱스 목록 가져오기
+
         for (let i = 0; i < this.totalPokemonCount; i++) {
           const pkmn = window.pokemon[i];
           if (
             pkmn &&
             pkmn.type === selectedType && // 타입 일치
             !this.saved_pokemon.includes(i) && // 이미 구출된 포켓몬 제외
-            (this.specialPokemon[this.stage] === undefined ||
-              i !== this.specialPokemon[this.stage])
+            !allSpecialPokemonIndices.includes(i) // 현재 포켓몬이 '모든' 스테이지의 특별 포켓몬 중 하나가 아닌 경우
           ) {
             // 스테이지 특별 포켓몬과 다른 경우
             candidatePokemons.push(i);
@@ -225,7 +226,7 @@ class BrickGame extends GameManager {
     }
 
     // 2. 현재 스테이지의 특별 포켓몬 (예: 보스급 또는 주요 구출 대상)
-    const currentStageSpecialPokemon = this.specialPokemon[this.stage];
+    const currentStageSpecialPokemon = this.specialPokemon[this.stage]; // this.specialPokemon은 constants.js의 SPECIAL_POKEMON 값으로 초기화됩니다.
     if (
       combinationList.length < totalPatternSlots &&
       currentStageSpecialPokemon !== undefined &&
@@ -234,7 +235,7 @@ class BrickGame extends GameManager {
     ) {
       combinationList.push({
         type: "pokemon",
-        index: currentStageSpecialPokemon,
+        index: currentStageSpecialPokemon, // 현재 스테이지의 특별 포켓몬 인덱스
       });
       addedIndicesThisCombination.add(currentStageSpecialPokemon);
     }
@@ -259,7 +260,7 @@ class BrickGame extends GameManager {
       let availableGeneralPokemon = [];
       for (let i = 0; i < this.totalPokemonCount; i++) {
         const pkmn = window.pokemon[i];
-        // 주석 추가: 슬롯에 있는 포켓몬은 블록 조합에 등장하지 않도록 필터링
+        // 슬롯에 있는 포켓몬은 블록 조합에 등장하지 않도록 필터링
         const isPokemonInSlot = this.slotPokemon.some(
           (slotPokemon) => slotPokemon && slotPokemon.index === i,
         );
@@ -399,7 +400,7 @@ class BrickGame extends GameManager {
   initializeGame() {
     if (window.DEBUG_MODE) console.log("[BrickGame] initializeGame 호출");
 
-    // 주석 추가: 포켓몬 능력 효과 완전 초기화 (스테이지 시작 시)
+    // 포켓몬 능력 효과 완전 초기화 (스테이지 시작 시)
     this.electricBoostActive = false;
     this.waterBoostActive = false;
     this.iceBoostActive = false;
@@ -407,13 +408,13 @@ class BrickGame extends GameManager {
     this.originalBallSpeed = null;
     this.fireBoostRemainingTime = 0;
 
-    // 주석 추가: 타이머 정리 (메모리 누수 방지)
+    // 타이머 정리 (메모리 누수 방지)
     if (this.fireBoostTimeout) {
       clearTimeout(this.fireBoostTimeout);
       this.fireBoostTimeout = null;
     }
 
-    // 주석 추가: 조합 및 벽돌 시스템 완전 초기화
+    // 조합 및 벽돌 시스템 완전 초기화
     this.combinations = [];
     this.leftBrick = 0;
 
@@ -421,7 +422,7 @@ class BrickGame extends GameManager {
     this.initDynamicBrickSystem();
     this.totalLives = this.lives;
 
-    // 주석 추가: 스테이지별 기본 포켓몬 슬롯에 추가 (완전 초기화 후)
+    // 스테이지별 기본 포켓몬 슬롯에 추가 (완전 초기화 후)
     this.addDefaultPokemonByStage();
   }
 
@@ -435,7 +436,7 @@ class BrickGame extends GameManager {
     // 슬롯 초기화 먼저 수행
     this.clearPokemonSlots();
 
-    // 주석 추가: 스테이지별 기본 포켓몬 설정 (stage 2: 피카츄만, stage 3: 피카츄+펭도리)
+    // 스테이지별 기본 포켓몬 설정 (stage 2: 피카츄만, stage 3: 피카츄+펭도리)
     let defaultPokemonIndices = [];
 
     if (this.stage === 2) {
@@ -446,7 +447,7 @@ class BrickGame extends GameManager {
       defaultPokemonIndices = [105, 106];
     }
 
-    // 주석 추가: 설정된 포켓몬들을 순서대로 슬롯에 추가
+    // 설정된 포켓몬들을 순서대로 슬롯에 추가
     for (let i = 0; i < defaultPokemonIndices.length && i < 4; i++) {
       const pokemonIndex = defaultPokemonIndices[i];
       const pokemonData =
@@ -459,7 +460,7 @@ class BrickGame extends GameManager {
         const imagePath = `../assets/images/game/pokemon/potrait/normal/${pokemonIndex}.png`;
         // const imagePath = `../assets/images/game/pokemon/${pokemonIndex}.png`;
 
-        // i번째 슬롯에 포켓몬 추가 (주석 추가: 배열과 DOM 모두 업데이트)
+        // i번째 슬롯에 포켓몬 추가  배열과 DOM 모두 업데이트)
         const slot = document.getElementById(`slot-${i}`);
         if (slot) {
           // DOM 업데이트
@@ -469,7 +470,7 @@ class BrickGame extends GameManager {
           const color = this.typeColorMap[pokemonData.type] || "#eee";
           slot.style.backgroundColor = color;
 
-          // 배열 업데이트 (주석 추가: 기본 포켓몬 정보 저장)
+          // 배열 업데이트  기본 포켓몬 정보 저장)
           this.slotPokemon[i] = {
             index: pokemonIndex,
             type: pokemonData.type,
@@ -488,7 +489,7 @@ class BrickGame extends GameManager {
       }
     }
 
-    // 주석 추가: 첫 번째 슬롯을 선택된 상태로 설정 (포켓몬이 추가된 경우에만)
+    // 첫 번째 슬롯을 선택된 상태로 설정 (포켓몬이 추가된 경우에만)
     if (defaultPokemonIndices.length > 0) {
       const firstFrame = document.getElementById("slot-frame-0");
       if (firstFrame) {
@@ -604,7 +605,7 @@ class BrickGame extends GameManager {
         return;
       }
 
-      // 주석 추가: 공이 바닥에 떨어졌을 때 사운드 재생
+      // 공이 바닥에 떨어졌을 때 사운드 재생
       this.playBallFallSound();
 
       // 공 위치 및 속도 초기화
@@ -694,7 +695,7 @@ class BrickGame extends GameManager {
     //   playSfx(SFX.BALL_BOUNCE); // SFX로 변경
     //   this.lastBallBounceSoundTime = currentTime; // 마지막 사운드 재생 시간 업데이트 // 주석 처리: throttling 제거
     // }
-    playSfx(SFX.BALL_BOUNCE); // 주석 추가: throttling 제거하고 항상 사운드 재생
+    playSfx(SFX.BALL_BOUNCE); // throttling 제거하고 항상 사운드 재생
   }
 
   /**
@@ -881,7 +882,7 @@ class BrickGame extends GameManager {
     if (window.DEBUG_MODE)
       console.log("[BrickGame] addPokemonToSlot 호출", imageSrc); // 디버깅용 로그 추가
 
-    // 포켓몬 인덱스 추출 (주석 추가: 한 번만 파싱하여 배열에 저장)
+    // 포켓몬 인덱스 추출  한 번만 파싱하여 배열에 저장)
     let indexMatch = imageSrc.match(/(\d+)\.png/);
     if (!indexMatch || !indexMatch[1]) {
       console.error(
@@ -910,7 +911,7 @@ class BrickGame extends GameManager {
       return;
     }
 
-    // 중복 방지: 이미 슬롯에 들어가 있는 경우 무시 (주석 추가: 배열에서 중복 확인)
+    // 중복 방지: 이미 슬롯에 들어가 있는 경우 무시  배열에서 중복 확인)
     for (let i = 0; i < 4; i++) {
       const existingPokemon = this.slotPokemon[i];
       if (existingPokemon && existingPokemon.index === index) {
@@ -918,7 +919,7 @@ class BrickGame extends GameManager {
       }
     }
 
-    // 타입 중복 방지: 같은 타입의 포켓몬이 이미 슬롯에 있는지 확인 (주석 추가: 배열에서 타입 중복 확인)
+    // 타입 중복 방지: 같은 타입의 포켓몬이 이미 슬롯에 있는지 확인  배열에서 타입 중복 확인)
     for (let i = 0; i < 4; i++) {
       const existingPokemon = this.slotPokemon[i];
       if (
@@ -933,7 +934,7 @@ class BrickGame extends GameManager {
       }
     }
 
-    // 빈 슬롯 찾아서 추가 (주석 추가: 배열과 DOM 모두 업데이트)
+    // 빈 슬롯 찾아서 추가  배열과 DOM 모두 업데이트)
     for (let i = 0; i < 4; i++) {
       if (!this.slotPokemon[i]) {
         // 배열에서 빈 슬롯 확인
@@ -946,7 +947,7 @@ class BrickGame extends GameManager {
           let color = this.typeColorMap[pokemonData.type] || "#eee";
           slot.style.backgroundColor = color;
 
-          // 배열 업데이트 (주석 추가: 포켓몬 정보 객체로 저장)
+          // 배열 업데이트  포켓몬 정보 객체로 저장)
           this.slotPokemon[i] = {
             index: index,
             type: pokemonData.type,
@@ -969,7 +970,7 @@ class BrickGame extends GameManager {
   clearPokemonSlots() {
     if (window.DEBUG_MODE) console.log("[BrickGame] clearPokemonSlots 호출"); // 디버깅용 로그 추가
 
-    // 배열 초기화 (주석 추가: 배열과 DOM 모두 초기화)
+    // 배열 초기화  배열과 DOM 모두 초기화)
     this.slotPokemon = [null, null, null, null];
 
     // DOM 초기화
@@ -1101,12 +1102,12 @@ class BrickGame extends GameManager {
     this.electricBoostActive = false;
     this.waterBoostActive = false;
     this.iceBoostActive = false;
-    // 불타입 능력 상태 초기화 추가 (주석 추가: 공 속도 버그 해결)
+    // 불타입 능력 상태 초기화 추가  공 속도 버그 해결)
     this.fireBoostActive = false;
     this.originalBallSpeed = null;
-    this.fireBoostRemainingTime = 0; // 일시정지 관련 변수도 초기화 (주석 추가: 완전한 상태 초기화)
+    this.fireBoostRemainingTime = 0; // 일시정지 관련 변수도 초기화  완전한 상태 초기화)
 
-    // 타이머 정리 (주석 추가: 메모리 누수 방지 및 상태 정리)
+    // 타이머 정리  메모리 누수 방지 및 상태 정리)
     if (this.fireBoostTimeout) {
       clearTimeout(this.fireBoostTimeout);
       this.fireBoostTimeout = null;
@@ -1215,7 +1216,7 @@ class BrickGame extends GameManager {
     this.showInGameMessage(`풀타입 능력: 생명력 ${healAmount} 회복!`, true);
     console.log(`풀타입 능력 사용: 생명력 ${healAmount} 회복`);
 
-    // 주석 추가: 풀타입 능력 사용 시 사운드 재생
+    // 풀타입 능력 사용 시 사운드 재생
     this.playGrassSound();
   }
   /**
@@ -1226,15 +1227,15 @@ class BrickGame extends GameManager {
     const speedBoost = 2; // 속도 증가량
     const duration = 5000; // 지속시간 5초
 
-    // 중복 사용 방지: 이미 불타입 능력이 활성화되어 있으면 리턴 (주석 추가: 공 속도 중복 증가 버그 해결)
+    // 중복 사용 방지: 이미 불타입 능력이 활성화되어 있으면 리턴  공 속도 중복 증가 버그 해결)
     if (this.fireBoostActive) {
       console.log("불타입 능력이 이미 활성화되어 있습니다.");
       return;
     }
 
-    this.fireBoostActive = true; // 불타입 능력 활성 상태 플래그 설정 (주석 추가: 중복 사용 방지)
+    this.fireBoostActive = true; // 불타입 능력 활성 상태 플래그 설정  중복 사용 방지)
 
-    // 원본 속도 저장 (처음 능력 사용 시에만) (주석 추가: 정확한 속도 복구를 위한 원본 저장)
+    // 원본 속도 저장 (처음 능력 사용 시에만)  정확한 속도 복구를 위한 원본 저장)
     if (!this.originalBallSpeed) {
       this.originalBallSpeed = {
         x: this.ball.speedX,
@@ -1242,7 +1243,7 @@ class BrickGame extends GameManager {
       };
     }
 
-    // 공 속도를 절대값으로 설정하여 안전하게 증가 (주석 추가: 기하급수적 증가 방지)
+    // 공 속도를 절대값으로 설정하여 안전하게 증가  기하급수적 증가 방지)
     const currentSpeed = Math.sqrt(
       this.ball.speedX ** 2 + this.ball.speedY ** 2,
     );
@@ -1258,22 +1259,22 @@ class BrickGame extends GameManager {
     this.showInGameMessage("불타입 능력: 공 속도 증가!", true);
     console.log(
       `불타입 능력 사용: 공 속도 ${currentSpeed.toFixed(2)} → ${boostedSpeed} (디버그 출력 추가)`,
-    ); // 주석 추가: 디버그용 속도 출력
+    ); // 디버그용 속도 출력
 
-    // 일정 시간 후 속도 원상복구 (주석 추가: 원본 속도로 정확히 복구)
+    // 일정 시간 후 속도 원상복구  원본 속도로 정확히 복구)
     this.fireBoostTimeout = setTimeout(() => {
       if (this.originalBallSpeed) {
         this.ball.speedX = this.originalBallSpeed.x;
         this.ball.speedY = this.originalBallSpeed.y;
         console.log(
           `불타입 능력 효과 종료: 공 속도 원상복구 (${this.originalBallSpeed.x}, ${this.originalBallSpeed.y}) (디버그 출력 추가)`,
-        ); // 주석 추가: 복구 확인용
+        ); // 복구 확인용
       }
-      this.fireBoostActive = false; // 능력 비활성화 (주석 추가: 상태 초기화)
-      this.originalBallSpeed = null; // 원본 속도 초기화 (주석 추가: 메모리 정리)
+      this.fireBoostActive = false; // 능력 비활성화  상태 초기화)
+      this.originalBallSpeed = null; // 원본 속도 초기화  메모리 정리)
     }, duration);
 
-    // 주석 추가: 불타입 능력 사용 시 사운드 재생
+    // 불타입 능력 사용 시 사운드 재생
     this.playFireSound();
   }
 
@@ -1297,7 +1298,7 @@ class BrickGame extends GameManager {
       }, duration);
     }
 
-    // 주석 추가: 전기타입 능력 사용 시 사운드 재생
+    // 전기타입 능력 사용 시 사운드 재생
     this.playElectricSound();
   }
 
@@ -1324,7 +1325,7 @@ class BrickGame extends GameManager {
       }, duration);
     }
 
-    // 주석 추가: 물타입 능력 사용 시 사운드 재생
+    // 물타입 능력 사용 시 사운드 재생
     this.playWaterSound();
   }
 
@@ -1350,7 +1351,7 @@ class BrickGame extends GameManager {
         console.log("얼음타입 능력 효과 종료: 조합 이동 속도 원상복구");
       }, duration);
     }
-    // 주석 추가: 얼음타입 능력 사용 시 사운드 재생
+    // 얼음타입 능력 사용 시 사운드 재생
     this.playIceSound();
   }
 
@@ -1438,14 +1439,14 @@ class BrickGame extends GameManager {
       if (indexMatch) {
         const selectedIndex = parseInt(indexMatch[1]);
 
-        // 주석 추가: 배열에서 포켓몬 존재 여부 확인 (DOM 파싱 대신)
+        // 배열에서 포켓몬 존재 여부 확인 (DOM 파싱 대신)
         if (this.slotPokemon[selectedIndex]) {
           targetSlotIndex = selectedIndex;
         }
       }
     }
 
-    // 선택된 슬롯에 포켓몬이 없는 경우, 첫 번째 포켓몬이 있는 슬롯으로 폴백 (주석 추가: 배열에서 검색)
+    // 선택된 슬롯에 포켓몬이 없는 경우, 첫 번째 포켓몬이 있는 슬롯으로 폴백  배열에서 검색)
     if (targetSlotIndex === -1) {
       for (let i = 0; i < 4; i++) {
         if (this.slotPokemon[i]) {
@@ -1503,7 +1504,7 @@ class BrickGame extends GameManager {
       true,
     );
 
-    // 주석 추가: 배열에서 포켓몬 이름 가져오기 (DOM 파싱 대신)
+    // 배열에서 포켓몬 이름 가져오기 (DOM 파싱 대신)
     const pokemonName = this.slotPokemon[targetSlotIndex]
       ? this.slotPokemon[targetSlotIndex].name
       : "포켓몬";
@@ -1520,7 +1521,7 @@ class BrickGame extends GameManager {
 
     if (this.isGameRunning) {
       if (!this.isPaused && this.fireBoostActive && this.fireBoostTimeout) {
-        // 일시정지 시작 시: 불타입 능력 타이머 저장 및 정지 (주석 추가: 일시정지 중 타이머 관리)
+        // 일시정지 시작 시: 불타입 능력 타이머 저장 및 정지  일시정지 중 타이머 관리)
         this.fireBoostRemainingTime =
           this.fireBoostTimeout._idleStart +
           this.fireBoostTimeout._idleTimeout -
@@ -1529,27 +1530,27 @@ class BrickGame extends GameManager {
         this.fireBoostTimeout = null;
         console.log(
           `일시정지: 불타입 능력 남은 시간 ${Math.max(0, this.fireBoostRemainingTime)}ms 저장`,
-        ); // 주석 추가: 디버그용
+        ); // 디버그용
       } else if (
         this.isPaused &&
         this.fireBoostActive &&
         this.fireBoostRemainingTime > 0
       ) {
-        // 일시정지 해제 시: 남은 시간으로 타이머 재시작 (주석 추가: 정확한 타이머 복구)
+        // 일시정지 해제 시: 남은 시간으로 타이머 재시작  정확한 타이머 복구)
         this.fireBoostTimeout = setTimeout(() => {
           if (this.originalBallSpeed) {
             this.ball.speedX = this.originalBallSpeed.x;
             this.ball.speedY = this.originalBallSpeed.y;
             console.log(
               `불타입 능력 효과 종료: 공 속도 원상복구 (일시정지 후)`,
-            ); // 주석 추가: 복구 확인용
+            ); // 복구 확인용
           }
           this.fireBoostActive = false;
           this.originalBallSpeed = null;
         }, this.fireBoostRemainingTime);
         console.log(
           `일시정지 해제: 불타입 능력 ${this.fireBoostRemainingTime}ms 후 종료 예정`,
-        ); // 주석 추가: 디버그용
+        ); // 디버그용
         this.fireBoostRemainingTime = 0;
       }
     }
@@ -1559,7 +1560,7 @@ class BrickGame extends GameManager {
   }
 
   /**
-   * MARK: BrickGame 정적 시작 메서드 (주석 추가: gameplay.js에서 이동)
+   * MARK: BrickGame 정적 시작 메서드  gameplay.js에서 이동)
    */
   static startBrickGame(gameInfo) {
     if (window.DEBUG_MODE) console.log("[BrickGame] startBrickGame 호출", gameInfo);
@@ -1570,6 +1571,6 @@ class BrickGame extends GameManager {
     currentGame.setOnGameEnd(onGameEnd);
     currentGame.startGame();
 
-    return currentGame; // 주석 추가: 생성된 게임 인스턴스 반환
+    return currentGame; // 생성된 게임 인스턴스 반환
   }
 }
