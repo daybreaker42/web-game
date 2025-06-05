@@ -631,7 +631,32 @@ class GameManager {
           console.log("[GameManager] togglePause() - 게임 paused");
         this.pauseStartTime = performance.now();
         cancelAnimationFrame(this.animationFrame);
-        this.showInGameMessage("게임 일시정지", true);
+        // 기존 메시지 대신 모달 표시
+        // --- 일시정지 모달 표시 추가 ---
+        showUniModal("게임이 일시정지되었습니다.", {
+          buttons: [
+            {
+              label: "계속하기",
+              callback: () => {
+                // "계속하기"를 누르면 일시정지 해제
+                this.togglePause(); // 주석: 다시 togglePause 호출로 재개
+              },
+            },
+            {
+              label: "메뉴로 가기",
+              callback: () => {
+                // "메뉴로 가기"를 누르면 타이틀/메뉴로 이동
+                if (typeof handleReturnToTitleScreen === "function") {
+                  handleReturnToTitleScreen();
+                } else {
+                  // fallback: location.reload();
+                  window.location.reload();
+                }
+              },
+            },
+          ],
+        });
+        // --- 끝 ---
       } else {
         // 일시정지 해제 시 - 일시정지 지속 시간 계산하여 누적
         if (window.DEBUG_MODE)
