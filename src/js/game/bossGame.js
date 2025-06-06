@@ -126,19 +126,6 @@ class BossGame extends GameManager {
     this.HURT_ANIMATION_THROTTLE_MS = 200; // 피격 애니메이션 최소 간격 (밀리초)
   }
 
-  /**
-   * 키보드 입력 처리 오버라이드
-   */
-  // keyDownHandler(e) {
-  //   if (window.DEBUG_MODE) console.log("[BossGame] keyDownHandler 호출", e.key); // 디버깅용 로그 추가
-  //   super.keyDownHandler(e); // 부모 클래스의 기본 처리 먼저 수행        // 보스전 전용 키 처리
-  //   if (e.key === "ArrowUp" || e.key === "w" || e.key === "W") {
-  //     this.keys.upPressed = true;
-  //   } else if (e.key === "ArrowDown" || e.key === "s" || e.key === "S") {
-  //     this.keys.downPressed = true;
-  //   }
-  //   // 스페이스바 발사 기능 제거 - 자동 발사로 변경
-  // }
 
   /**
    * 키보드 키 눌림 이벤트 처리 (WASD 키 지원 추가)
