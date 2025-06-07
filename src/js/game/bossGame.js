@@ -706,7 +706,7 @@ class BossGame extends GameManager {
         velocityX: Math.cos(angle) * speed,
         velocityY: Math.sin(angle) * speed,
         radius: 5,
-        color: "#ffff00",
+        color: "#ff00ff", // 보라색으로 변경
       });
     }
     this.boss.isAttacking = true; // 공격 상태 설정
@@ -730,7 +730,7 @@ class BossGame extends GameManager {
         velocityX: Math.cos(angle) * speed,
         velocityY: Math.sin(angle) * speed,
         radius: 5,
-        color: "#ffff00",
+        color: "#ff00ff", // 보라색으로 변경
       });
     }
     this.boss.isAttacking = true; // 공격 상태 설정
