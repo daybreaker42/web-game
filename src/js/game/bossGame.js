@@ -332,7 +332,7 @@ class BossGame extends GameManager {
       });
       this.playerLastShotTime = currentTime;
 
-      playSfx(SFX.PLAYER_ATTACK); // 플레이어 총알 발사 사운드
+      playSfx(SFX.PLAYER_ATTACK, sfxVolume * 0.3); // 플레이어 총알 발사 사운드
     }
   }
 
