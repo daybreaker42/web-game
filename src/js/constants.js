@@ -35,7 +35,6 @@ const SFX = {
   CRT_OFF: "crt-off.mp3",
   GAME_OVER: "game-over.mp3",
   // game
-  MEWTWO_HURT: "mewtwo.ogg",
   BALL_BOUNCE: "ball-bounce.mp3",
   ITEM: "item.wav",
   CLEAR: "clear.wav",
@@ -49,6 +48,12 @@ const SFX = {
   GRASS_SFX: "Recover.mp3",
   ELECTRIC_SFX: "Teleport.mp3",
   ICE_SFX: "Ice Beam.mp3",
+  // bossGame
+  MEWTWO_HURT: "mewtwo.ogg",
+  BOSS_ATTACK_1: "boss-attack-1.mp3",
+  BOSS_ATTACK_2: "boss-attack-2.mp3",
+  BOSS_LASER: "Psybeam.mp3",
+  PLAYER_ATTACK: "Quick Attack.mp3",
 };
 
 // gameManager config
