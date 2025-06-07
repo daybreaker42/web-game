@@ -16,7 +16,7 @@ const difficultyKor = { easy: "쉬움", normal: "보통", hard: "어려움" };
 // STAFF 정보
 // ========================
 const STAFFS = [
-  { name: "한성준", role: "???", pokemon: 1 },
+  { name: "한성준", role: "보스전 및 벽돌깨기 게임 메인 개발", pokemon: 25 },
   {
     name: "김연하",
     role: "메인 로직 / 시나리오 / UI / 그래픽 및 사운드",
