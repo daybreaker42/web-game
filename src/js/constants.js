@@ -50,8 +50,8 @@ const SFX = {
   ICE_SFX: "Ice Beam.mp3",
   // bossGame
   MEWTWO_HURT: "mewtwo.ogg",
-  BOSS_ATTACK_1: "boss-attack-1.mp3",
-  BOSS_ATTACK_2: "boss-attack-2.mp3",
+  BOSS_ATTACK_1: "Self Destruct.mp3",
+  BOSS_ATTACK_2: "Fake Out.mp3",
   BOSS_LASER: "Psybeam.mp3",
   PLAYER_ATTACK: "Quick Attack.mp3",
 };

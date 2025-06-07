@@ -331,6 +331,8 @@ class BossGame extends GameManager {
         color: "#ffff00",
       });
       this.playerLastShotTime = currentTime;
+
+      playSfx(SFX.PLAYER_ATTACK); // 플레이어 총알 발사 사운드
     }
   }
 
@@ -680,6 +682,8 @@ class BossGame extends GameManager {
     this.boss.isAttacking = true; // 공격 상태 설정
     this.boss.attackAnimEndTime =
       performance.now() + this.boss.attackAnimationDuration; // 공격 애니메이션 종료 시간 설정
+
+    playSfx(SFX.BOSS_LASER); // 레이저 공격 사운드 재생 // 사운드 추가
   }
 
   /**
@@ -708,6 +712,7 @@ class BossGame extends GameManager {
     this.boss.isAttacking = true; // 공격 상태 설정
     this.boss.attackAnimEndTime =
       performance.now() + this.boss.attackAnimationDuration; // 공격 애니메이션 종료 시간 설정
+    playSfx(SFX.BOSS_ATTACK_2); // 일반 공격 사운드 재생 // 사운드 추가
   }
 
   /**
@@ -731,6 +736,7 @@ class BossGame extends GameManager {
     this.boss.isAttacking = true; // 공격 상태 설정
     this.boss.attackAnimEndTime =
       performance.now() + this.boss.attackAnimationDuration; // 공격 애니메이션 종료 시간 설정
+    playSfx(SFX.BOSS_ATTACK_1); // 페이즈 1 공격 사운드 재생 // 사운드 추가
   }
 
   /**
