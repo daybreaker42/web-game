@@ -180,42 +180,13 @@ function startCreditsScroll(onCreditsEnd) {
   }, 16);
 }
 
-// ========================
-// 버튼/누름 이벤트 (PC, 모바일 대응)
-// ========================
 function setupCreditsBtn() {
-  const btn = elById("btn-skip-credits");
-  const modal = elById("confirm-skip-modal");
-  const yes = elById("skip-confirm-yes");
-  const no = elById("skip-confirm-no");
-
-  if (btn && modal) {
-    btn.onclick = () => modal.showModal();
+    const btn = elById("btn-fast-credits");
+  
+    if (btn) {
+      btn.onmousedown = () => { creditsFastOn = true; };
+      btn.onmouseup = () => { creditsFastOn = false; };
+      btn.onmouseleave = () => { creditsFastOn = false; };
+    }
   }
-  if (yes) {
-    yes.onclick = () => {
-      modal.close();
-      if (typeof onCreditsEnd === "function") onCreditsEnd();
-    };
-  }
-  if (no && modal) {
-    no.onclick = () => modal.close();
-  }
-
-  // ====== (아래는 누르고 있을 때 fast 스크롤 코드 유지) ======
-  const enableFast = () => {
-    creditsFastOn = true;
-  };
-  const disableFast = () => {
-    creditsFastOn = false;
-  };
-
-  document.addEventListener("mousedown", enableFast);
-  document.addEventListener("mouseup", disableFast);
-  document.addEventListener("mouseleave", disableFast);
-  window.addEventListener("blur", disableFast);
-
-  document.addEventListener("touchstart", enableFast, { passive: true });
-  document.addEventListener("touchend", disableFast);
-  document.addEventListener("touchcancel", disableFast);
-}
+  
