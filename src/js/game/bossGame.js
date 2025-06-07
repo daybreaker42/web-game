@@ -18,7 +18,7 @@ class BossGame extends GameManager {
       x: this.canvas.width / 2,
       y: this.canvas.height - 50,
       power: PLAYER_POWER, // 플레이어 공격력
-      rotation: Math.PI / 2, // 라디안 단위
+      rotation: 0, // 라디안 단위 -> initializeGame에서 다시 설정
       velocityX: 0,
       velocityY: 0,
       maxSpeed: 8,
@@ -184,7 +184,7 @@ class BossGame extends GameManager {
     // 주석 추가: 플레이어 초기 위치 및 상태 완전 리셋
     this.player.x = this.canvas.width / 2;
     this.player.y = this.canvas.height - 90;
-    this.player.rotation = -Math.PI / 2;
+    this.player.rotation = -Math.PI / 2; // 초기 회전 방향 (위쪽)
     this.player.velocityX = 0;
     this.player.velocityY = 0;
 
@@ -1002,18 +1002,41 @@ class BossGame extends GameManager {
     this.ctx.translate(this.player.x, this.player.y);
     this.ctx.rotate(this.player.rotation);
 
-    // 플레이어를 삼각형으로 그리기
-    this.ctx.beginPath();
-    this.ctx.moveTo(this.player.radius, 0);
-    this.ctx.lineTo(-this.player.radius / 2, -this.player.radius / 2);
-    this.ctx.lineTo(-this.player.radius / 2, this.player.radius / 2);
-    this.ctx.closePath();
+    // 플레이어 이미지 로드
+    if (!this.playerImage) {
+      this.playerImage = new Image();
+      this.playerImage.src = "../assets/images/game/object/pikachu-airplain.png";
+    }
 
-    this.ctx.fillStyle = this.player.color;
-    this.ctx.fill();
-    this.ctx.strokeStyle = "#ffffff";
-    this.ctx.lineWidth = 2;
-    this.ctx.stroke();
+    // 이미지가 로드되었는지 확인 후 그리기
+    if (this.playerImage.complete) {
+      // 이미지 크기 및 위치 조정
+      const imageWidth = this.player.radius * 2.5; // 이미지 너비 (기존 삼각형 크기 기반)
+      const imageHeight = this.player.radius * 2.5; // 이미지 높이 (기존 삼각형 크기 기반)
+      const imageX = -imageWidth / 2; // 이미지 X 위치 (중앙 정렬)
+      const imageY = -imageHeight / 2; // 이미지 Y 위치 (중앙 정렬)
+
+      this.ctx.drawImage(
+        this.playerImage,
+        imageX,
+        imageY,
+        imageWidth,
+        imageHeight,
+      );
+    } else {
+      // 이미지가 로드되지 않았을 경우 폴백(fallback)으로 삼각형 그리기
+      this.ctx.beginPath();
+      this.ctx.moveTo(this.player.radius, 0);
+      this.ctx.lineTo(-this.player.radius / 2, -this.player.radius / 2);
+      this.ctx.lineTo(-this.player.radius / 2, this.player.radius / 2);
+      this.ctx.closePath();
+
+      this.ctx.fillStyle = this.player.color;
+      this.ctx.fill();
+      this.ctx.strokeStyle = "#ffffff";
+      this.ctx.lineWidth = 2;
+      this.ctx.stroke();
+    }
 
     this.ctx.restore();
   }
