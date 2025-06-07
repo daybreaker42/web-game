@@ -19,10 +19,10 @@ const STAFFS = [
   { name: "한성준", role: "보스전 및 벽돌깨기 게임 메인 개발", pokemon: 25 },
   {
     name: "김연하",
-    role: "메인 로직 / 시나리오 / UI / 그래픽 및 사운드",
-    pokemon: 2,
+    role: "메인 로직 / 시나리오 / UI / 그래픽",
+    pokemon: 106,
   },
-  { name: "오찬영", role: "???", pokemon: 3 },
+  { name: "오찬영", role: "???", pokemon: 5 },
   { name: "한지훈", role: "???", pokemon: 4 },
 ];
 
@@ -30,7 +30,7 @@ const STAFFS = [
 // 크레딧 데이터 구조
 // ========================
 const CREDITS_TEXT = [
-  { type: "title", content: "~ The Lost Pokemons ~<br>Staff Roll" },
+//   { type: "title", content: "Staff Roll" },
   { type: "info", label: "모드", valueKey: "mode", translate: modeKor },
   {
     type: "info",
@@ -76,6 +76,17 @@ const CREDITS_TEXT = [
       </div>
     `,
   },
+  {
+    type: "demo-info",
+    content: `
+      <div class="credit-section credit-demo-info">
+        <strong>[ 데모 버전 안내 ]</strong><br><br>
+        시연된 것은 데모 버전입니다.<br>
+        종강 후인 6월 말 즈음,<br><strong>정식 버전</strong>을 배포할 예정입니다.<br>
+        관심 있으신 분은 "<i>팀장 한성준</i>"에게 <br>문의해주세요!
+      </div>
+    `
+  }
 ];
 
 // ========================
@@ -83,75 +94,90 @@ const CREDITS_TEXT = [
 // ========================
 
 function showCredits(gameResult, onCreditsEnd) {
-  gameResult = gameResult || TEST_CREDITS_DATA;
-  hideAllFade(qsa(".screen"));
-  showWithFade(elById("credits-screen"));
-  createCreditsContent(gameResult);
-  startCreditsScroll(onCreditsEnd);
-  setupCreditsBtn(onCreditsEnd);
-  playBgm(BGM.CREDITS);
-}
+    gameResult = gameResult || TEST_CREDITS_DATA;
+    hideAllFade(qsa(".screen"));
+    showWithFade(elById("credits-screen"));
+    createCreditsContent(gameResult);
+  
+    // 스크롤 애니메이션 시작을 1.4초 뒤로 지연!
+    setTimeout(() => {
+      startCreditsScroll(onCreditsEnd);
+    }, 1400);
+  
+    setupCreditsBtn(onCreditsEnd);
+    playBgm(BGM.CREDITS);
+  }
+  
 
 // ========================
 // 크레딧 화면 내용 생성
 // ========================
 function createCreditsContent(data) {
-  const scroll = elById("credits-scroll");
-  let html = "";
-
-  CREDITS_TEXT.forEach((entry) => {
-    if (entry.type === "title") {
-      html += `<div class="credit-title">${entry.content}</div>`;
-    } else if (entry.type === "info") {
-      let value = data[entry.valueKey];
-      if (entry.translate) value = entry.translate[value] || value;
-      if (entry.formatter) value = entry.formatter(value);
-      html += `<div class="credit-section"><strong>${entry.label}</strong> ${value}</div>`;
-    } else if (entry.type === "section" && entry.id === "pokemon-list") {
-      html += `<div class="credit-section">${entry.content}</div>`;
-      html += `<div id="pokemon-list"></div>`;
-    } else if (entry.type === "staff-list") {
-      html += `<div class="credit-section" style="margin-top:60px;"><strong>STAFF</strong>`;
-      entry.staff.forEach((member) => {
-        html += `
-            <div class="staff-member" style="display:flex;align-items:center;gap:14px;margin:10px 0;">
-              <img src="../assets/images/game/pokemon/${member.pokemon}.png"
-                   alt="${member.pokemon}" style="width:34px;height:34px;border-radius:8px;border:1px solid #eee;box-shadow:0 2px 4px #0002;">
+    const scroll = elById("credits-scroll");
+    let html = "";
+  
+    // [1] 로고
+    html += `
+      <div class="credit-logo-area">
+        <img class="credit-logo-img"
+             src="../assets/images/logo.png"
+             alt="게임 로고">
+      </div>
+    `;
+  
+    // [2] 각 섹션 처리
+    CREDITS_TEXT.forEach((entry) => {
+      if (entry.type === "title") {
+        html += `<div class="credit-title">${entry.content}</div>`;
+      } else if (entry.type === "info") {
+        let value = data[entry.valueKey];
+        if (entry.translate) value = entry.translate[value] || value;
+        if (entry.formatter) value = entry.formatter(value);
+        html += `<div class="credit-info"><span class="credit-type-name">${entry.label}</span> ${value}</div>`;
+      } else if (entry.type === "section" && entry.id === "pokemon-list") {
+        html += `<div class="credit-section-title">${entry.content}</div>`;
+        html += `<div id="credits-pokemon-list"></div>`;
+      } else if (entry.type === "staff-list") {
+        html += `<div class="credit-section credit-staff-list"><div class="credit-section-title">STAFF</div>`;
+        entry.staff.forEach((member) => {
+          html += `
+            <div class="staff-member">
+              <img class="staff-pokemon" src="../assets/images/game/pokemon/${member.pokemon}.png" alt="${member.pokemon}">
               <div>
-                <strong>${member.name}</strong>
-                <span style="color:#777;font-size:0.97em;">(${member.role})</span>
+                <span class="credit-type-name staff-name">${member.name}</span>
+                <span class="staff-role">(${member.role})</span>
               </div>
             </div>
           `;
-      });
-      html += `</div>`;
-    } else if (entry.type === "thanks") {
-      html += `<div class="credit-section" style="margin-top:38px;">${entry.content}</div>`;
-    } else if (entry.type === "copyright") {
-      html += `<div class="credit-section" style="margin-top:36px; font-size:0.95em; color:#bbb;">${entry.content}</div>`;
-    }
-  });
-  html += `<div style="height:100px;"></div>`;
-  scroll.innerHTML = html;
-
-  // 구출한 포켓몬 이미지 리스트
-  const list = elById("pokemon-list");
-  if (list && Array.isArray(data.saved_pokemon)) {
-    data.saved_pokemon.forEach((id) => {
-      const img = document.createElement("img");
-      img.className = "pokemon-img";
-      img.src = `../assets/images/game/pokemon/${id}.png`;
-      img.alt = `포켓몬 ${id}`;
-      img.style.margin = "0 6px";
-      img.style.width = "42px";
-      img.style.height = "42px";
-      img.style.borderRadius = "8px";
-      img.style.border = "1px solid #eee";
-      img.style.background = "#f7f7fa";
-      list.appendChild(img);
+        });
+        html += `</div>`;
+      } else if (entry.type === "thanks") {
+        html += `<div class="credit-section credit-thanks">${entry.content}</div>`;
+      } else if (entry.type === "copyright") {
+        html += `<div class="credit-section credit-copyright">${entry.content}</div>`;
+      }
+      else if (entry.type === "demo-info") {
+        html += entry.content;
+      }
     });
+  
+    html += `<div class="credit-bottom-space"></div>`;
+    scroll.innerHTML = html;
+    scroll.style.transform = `translateY(${window.innerHeight + 700}px)`;
+
+    // [3] 구출한 포켓몬 이미지 리스트
+    const list = elById("credits-pokemon-list");
+    if (list && Array.isArray(data.saved_pokemon)) {
+      data.saved_pokemon.forEach((id) => {
+        const img = document.createElement("img");
+        img.className = "credits-pokemon-img";
+        img.src = `../assets/images/game/pokemon/${id}.png`;
+        img.alt = `포켓몬 ${id}`;
+        list.appendChild(img);
+      });
+    }
   }
-}
+  
 
 // ========================
 // 크레딧 스크롤 애니메이션
@@ -163,7 +189,7 @@ let creditsSpeed = 1.1,
 
 function startCreditsScroll(onCreditsEnd) {
   const scroll = elById("credits-scroll");
-  let pos = window.innerHeight;
+  let pos = window.innerHeight + 700;
   scroll.style.transform = `translateY(${pos}px)`;
 
   if (creditsIntv) clearInterval(creditsIntv);
@@ -180,42 +206,13 @@ function startCreditsScroll(onCreditsEnd) {
   }, 16);
 }
 
-// ========================
-// 버튼/누름 이벤트 (PC, 모바일 대응)
-// ========================
 function setupCreditsBtn() {
-  const btn = elById("btn-skip-credits");
-  const modal = elById("confirm-skip-modal");
-  const yes = elById("skip-confirm-yes");
-  const no = elById("skip-confirm-no");
-
-  if (btn && modal) {
-    btn.onclick = () => modal.showModal();
+    const btn = elById("btn-fast-credits");
+  
+    if (btn) {
+      btn.onmousedown = () => { creditsSpeed = 4; }; 
+      btn.onmouseup = () => { creditsSpeed = 0; };
+      btn.onmouseleave = () => { creditsFastOn = false; };
+    }
   }
-  if (yes) {
-    yes.onclick = () => {
-      modal.close();
-      if (typeof onCreditsEnd === "function") onCreditsEnd();
-    };
-  }
-  if (no && modal) {
-    no.onclick = () => modal.close();
-  }
-
-  // ====== (아래는 누르고 있을 때 fast 스크롤 코드 유지) ======
-  const enableFast = () => {
-    creditsFastOn = true;
-  };
-  const disableFast = () => {
-    creditsFastOn = false;
-  };
-
-  document.addEventListener("mousedown", enableFast);
-  document.addEventListener("mouseup", disableFast);
-  document.addEventListener("mouseleave", disableFast);
-  window.addEventListener("blur", disableFast);
-
-  document.addEventListener("touchstart", enableFast, { passive: true });
-  document.addEventListener("touchend", disableFast);
-  document.addEventListener("touchcancel", disableFast);
-}
+  

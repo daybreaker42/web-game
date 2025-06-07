@@ -195,6 +195,26 @@ function showStorySceneNormal(scene, onDone) {
   advanceLine();
 }
 
+// ─────────────────────────────────────────────────────────────
+// BUG FIX: 타이핑 타이머 관리 (추후 리팩토링 예정)
+// ─────────────────────────────────────────────────────────────
+const typingTimers = new Set();
+
+function setTypingTimeout(fn, delay) {
+  const id = setTimeout(() => {
+    typingTimers.delete(id); // 끝난 타이머는 정리
+    fn();
+  }, delay);
+  typingTimers.add(id);
+  return id;
+}
+
+function clearAllTypingTimers() {
+  typingTimers.forEach(clearTimeout);
+  typingTimers.clear();
+}
+
+
 function showStorySceneConsole(scene, onDone) {
   const crtScreen = qs("#crt-console-screen");
   const crtText = qs("#crt-console-text");
@@ -210,18 +230,21 @@ function showStorySceneConsole(scene, onDone) {
   let skipped = false;
 
   const crtSkipBtn = crtScreen.querySelector("#btn-skip-story");
-  if (crtSkipBtn && !crtSkipBtn.hasAttribute("data-crt")) {
-    crtSkipBtn.onclick = () => {
-      showStorySkipConfirm(() => {
-        skipped = true;
-        crtScreen.classList.add("hidden");
-        stopSfx();
-        if (typeof currentOnSkip === "function") currentOnSkip();
-      });
-    };
-    crtSkipBtn.setAttribute("data-crt", "true");
+  if (crtSkipBtn) {
+    if (!crtSkipBtn.hasAttribute("data-crt")) {
+      crtSkipBtn.onclick = () => {
+        showStorySkipConfirm(() => {
+          skipped = true;
+          crtScreen.classList.add("hidden");
+          clearAllTypingTimers();
+          stopSfx();
+          if (typeof currentOnSkip === "function") currentOnSkip();
+        });
+      };
+      crtSkipBtn.setAttribute("data-crt", "true");
+    }
   }
-
+  
   stopBgm();
   playSfx(SFX.CRT_ON);
 
@@ -247,7 +270,7 @@ function showStorySceneConsole(scene, onDone) {
           crtText.textContent = text.slice(0, i);
           if (i && text[i - 1] !== " ") playSfx(SFX.CRT_TYPE);
           i++;
-          setTimeout(typeChar, 46);
+          setTypingTimeout(typeChar, 46);
         } else {
           idx++;
           setTimeout(typeNextLine, 500);
@@ -265,13 +288,6 @@ function showStorySceneConsole(scene, onDone) {
     crtText.textContent = "";
     if (onDone) onDone();
   }
-
-  const originalYes = btnYes.onclick;
-  btnYes.onclick = () => {
-    skipped = true;
-    crtScreen.classList.add("hidden");
-    originalYes();
-  };
 }
 
 // ============================================================================
