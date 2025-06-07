@@ -858,7 +858,7 @@ class BossGame extends GameManager {
         // 사운드 재생 (throttling 적용)
         const currentTime = performance.now();
         if (currentTime - this.lastHitSoundTime > this.HIT_SOUND_THROTTLE_MS) {
-          playSfx(SFX.HIT); // 효과음 재생
+          playSfx(SFX.MEWTWO_HURT); // 효과음 재생
           this.lastHitSoundTime = currentTime; // 마지막 재생 시간 업데이트
         }
 
