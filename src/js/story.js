@@ -230,19 +230,21 @@ function showStorySceneConsole(scene, onDone) {
   let skipped = false;
 
   const crtSkipBtn = crtScreen.querySelector("#btn-skip-story");
-  if (crtSkipBtn && !crtSkipBtn.hasAttribute("data-crt")) {
-    crtSkipBtn.onclick = () => {
-      showStorySkipConfirm(() => {
-        skipped = true;
-        crtScreen.classList.add("hidden");
-        stopSfx();
-        clearAllTypingTimers(); 
-        if (typeof currentOnSkip === "function") currentOnSkip();
-      });
-    };
-    crtSkipBtn.setAttribute("data-crt", "true");
+  if (crtSkipBtn) {
+    if (!crtSkipBtn.hasAttribute("data-crt")) {
+      crtSkipBtn.onclick = () => {
+        showStorySkipConfirm(() => {
+          skipped = true;
+          crtScreen.classList.add("hidden");
+          clearAllTypingTimers();
+          stopSfx();
+          if (typeof currentOnSkip === "function") currentOnSkip();
+        });
+      };
+      crtSkipBtn.setAttribute("data-crt", "true");
+    }
   }
-
+  
   stopBgm();
   playSfx(SFX.CRT_ON);
 
@@ -286,13 +288,6 @@ function showStorySceneConsole(scene, onDone) {
     crtText.textContent = "";
     if (onDone) onDone();
   }
-
-  const originalYes = btnYes.onclick;
-  btnYes.onclick = () => {
-    skipped = true;
-    crtScreen.classList.add("hidden");
-    originalYes();
-  };
 }
 
 // ============================================================================
