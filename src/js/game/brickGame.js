@@ -859,13 +859,13 @@ class BrickGame extends GameManager {
         this.combinations.splice(i, 1);
         continue;
       }
-      for (let j = 0; j < combination.bricks.length; j++) {
-        let brick = combination.bricks[j];
-        if (brick.status === 0) {
-          combination.bricks.splice(j, 1);
-          j--;
-        }
-      }
+      // for (let j = 0; j < combination.bricks.length; j++) {
+      //   let brick = combination.bricks[j];
+      //   if (brick.status === 0) {
+      //     combination.bricks.splice(j, 1);
+      //     j--;
+      //   }
+      // }
 
       // 조합의 벽돌이 모두 파괴된 경우 조합 제거
       if (combination.bricks.length === 0) {
