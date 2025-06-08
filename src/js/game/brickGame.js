@@ -1227,7 +1227,6 @@ class BrickGame extends GameManager {
    */
   executeFireAbility() {
     if (window.DEBUG_MODE) console.log("[BrickGame] executeFireAbility 호출");
-    // const speedBoost = FIRE_SPEED_BOOST; // 속도 증가량
     const duration = 5000; // 지속시간 5초
 
     // 중복 사용 방지: 이미 불타입 능력이 활성화되어 있으면 리턴  공 속도 중복 증가 버그 해결)
@@ -1245,14 +1244,6 @@ class BrickGame extends GameManager {
         y: this.ball.speedY,
       };
     }
-
-    // 공 속도를 절대값으로 설정하여 안전하게 증가 기하급수적 증가 방지)
-    // const currentSpeed = Math.sqrt(this.ball.speedX * this.ball.speedX + this.ball.speedY * this.ball.speedY);
-    // const direction = {
-    //   x: this.ball.speedX / currentSpeed,
-    //   y: this.ball.speedY / currentSpeed,
-    // };
-    // const boostedSpeed = this.BALL_SPEED + speedBoost; // 기본 속도 + 증가량
 
     this.ball.speedX = this.ball.speedX * FIRE_SPEED_BOOST;
     this.ball.speedY = this.ball.speedY * FIRE_SPEED_BOOST; 
