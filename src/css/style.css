@@ -15,3 +15,7 @@
 @import url("./credits.css");
 @import url("./game-result.css");
 @import url("./game/game.css");
+/* user option */
+.user-option-radio .option img.selected {
+  outline: 2px solid #ff0;
+}

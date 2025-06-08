@@ -45,7 +45,7 @@ class GameManager {
     this.backgroundImageLoaded = false;
     // MARK: 목숨 아이콘 이미지 추가
     this.ballIcon = new Image();
-    this.ballIcon.src = "../assets/images/game/object/ball.png"; // 볼 아이콘 경로 설정
+    this.ballIcon.src = "../assets/images/game/object/ball1.png"; // 볼 아이콘 경로 설정
     this.ballIconLoaded = false;
     this.ballIcon.onload = () => {
       this.ballIconLoaded = true; // 볼 아이콘 로드 완료 플래그

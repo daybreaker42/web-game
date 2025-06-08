@@ -1029,7 +1029,11 @@ class BrickGame extends GameManager {
     // 이미지 객체 생성 및 캐싱
     if (!this.ballImage) {
       this.ballImage = new Image();
-      this.ballImage.src = "../assets/images/game/object/ball.png";
+      if (userOption.ballType !== 1 && userOption.ballType !== 2 && userOption.ballType !== 3) {
+        console.error(`balltype - ${userOption.ballType}, type - ${typeof userOption.ballType}`);
+        throw Error("userOption이 1~3 범위 내의 값이 아닙니다.");
+      }
+      this.ballImage.src = `../assets/images/game/object/ball${userOption.ballType}.png`;
     }
 
     // 이미지가 로드되었는지 확인
@@ -1060,7 +1064,8 @@ class BrickGame extends GameManager {
     // 이미지 객체 생성 및 캐싱을 위한 정적 변수 사용
     if (!this.paddleImage) {
       this.paddleImage = new Image();
-      this.paddleImage.src = "../assets/images/game/object/bar.png";
+      if (userOption.playerType !== 1 && userOption.playerType !== 2) throw Error("userOption.playerType not in range 1~2");
+      this.paddleImage.src = `../assets/images/game/object/bar${userOption.playerType}.png`;
     }
 
     // 이미지가 로드되었는지 확인

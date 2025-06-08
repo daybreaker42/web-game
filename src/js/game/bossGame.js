@@ -1005,7 +1005,7 @@ class BossGame extends GameManager {
     // 플레이어 이미지 로드
     if (!this.playerImage) {
       this.playerImage = new Image();
-      this.playerImage.src = "../assets/images/game/object/pikachu-airplain.png";
+      this.playerImage.src = userOption.playerType === 1 ? "../assets/images/game/object/pikachu-airplain.png" : "../assets/images/game/object/pengdori-airplain.png";
     }
 
     // 이미지가 로드되었는지 확인 후 그리기
