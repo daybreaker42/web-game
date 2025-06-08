@@ -214,7 +214,6 @@ function clearAllTypingTimers() {
   typingTimers.clear();
 }
 
-
 function showStorySceneConsole(scene, onDone) {
   const crtScreen = qs("#crt-console-screen");
   const crtText = qs("#crt-console-text");
@@ -244,7 +243,7 @@ function showStorySceneConsole(scene, onDone) {
       crtSkipBtn.setAttribute("data-crt", "true");
     }
   }
-  
+
   stopBgm();
   playSfx(SFX.CRT_ON);
 

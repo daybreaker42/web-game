@@ -30,7 +30,7 @@ const STAFFS = [
 // 크레딧 데이터 구조
 // ========================
 const CREDITS_TEXT = [
-//   { type: "title", content: "Staff Roll" },
+  //   { type: "title", content: "Staff Roll" },
   { type: "info", label: "모드", valueKey: "mode", translate: modeKor },
   {
     type: "info",
@@ -85,8 +85,8 @@ const CREDITS_TEXT = [
         종강 후인 6월 말 즈음,<br><strong>정식 버전</strong>을 배포할 예정입니다.<br>
         관심 있으신 분은 "<i>팀장 한성준</i>"에게 <br>문의해주세요!
       </div>
-    `
-  }
+    `,
+  },
 ];
 
 // ========================
@@ -94,53 +94,52 @@ const CREDITS_TEXT = [
 // ========================
 
 function showCredits(gameResult, onCreditsEnd) {
-    gameResult = gameResult || TEST_CREDITS_DATA;
-    hideAllFade(qsa(".screen"));
-    showWithFade(elById("credits-screen"));
-    createCreditsContent(gameResult);
-  
-    // 스크롤 애니메이션 시작을 1.4초 뒤로 지연!
-    setTimeout(() => {
-      startCreditsScroll(onCreditsEnd);
-    }, 1400);
-  
-    setupCreditsBtn(onCreditsEnd);
-    playBgm(BGM.CREDITS);
-  }
-  
+  gameResult = gameResult || TEST_CREDITS_DATA;
+  hideAllFade(qsa(".screen"));
+  showWithFade(elById("credits-screen"));
+  createCreditsContent(gameResult);
+
+  // 스크롤 애니메이션 시작을 1.4초 뒤로 지연!
+  setTimeout(() => {
+    startCreditsScroll(onCreditsEnd);
+  }, 1400);
+
+  setupCreditsBtn(onCreditsEnd);
+  playBgm(BGM.CREDITS);
+}
 
 // ========================
 // 크레딧 화면 내용 생성
 // ========================
 function createCreditsContent(data) {
-    const scroll = elById("credits-scroll");
-    let html = "";
-  
-    // [1] 로고
-    html += `
+  const scroll = elById("credits-scroll");
+  let html = "";
+
+  // [1] 로고
+  html += `
       <div class="credit-logo-area">
         <img class="credit-logo-img"
              src="../assets/images/logo.png"
              alt="게임 로고">
       </div>
     `;
-  
-    // [2] 각 섹션 처리
-    CREDITS_TEXT.forEach((entry) => {
-      if (entry.type === "title") {
-        html += `<div class="credit-title">${entry.content}</div>`;
-      } else if (entry.type === "info") {
-        let value = data[entry.valueKey];
-        if (entry.translate) value = entry.translate[value] || value;
-        if (entry.formatter) value = entry.formatter(value);
-        html += `<div class="credit-info"><span class="credit-type-name">${entry.label}</span> ${value}</div>`;
-      } else if (entry.type === "section" && entry.id === "pokemon-list") {
-        html += `<div class="credit-section-title">${entry.content}</div>`;
-        html += `<div id="credits-pokemon-list"></div>`;
-      } else if (entry.type === "staff-list") {
-        html += `<div class="credit-section credit-staff-list"><div class="credit-section-title">STAFF</div>`;
-        entry.staff.forEach((member) => {
-          html += `
+
+  // [2] 각 섹션 처리
+  CREDITS_TEXT.forEach((entry) => {
+    if (entry.type === "title") {
+      html += `<div class="credit-title">${entry.content}</div>`;
+    } else if (entry.type === "info") {
+      let value = data[entry.valueKey];
+      if (entry.translate) value = entry.translate[value] || value;
+      if (entry.formatter) value = entry.formatter(value);
+      html += `<div class="credit-info"><span class="credit-type-name">${entry.label}</span> ${value}</div>`;
+    } else if (entry.type === "section" && entry.id === "pokemon-list") {
+      html += `<div class="credit-section-title">${entry.content}</div>`;
+      html += `<div id="credits-pokemon-list"></div>`;
+    } else if (entry.type === "staff-list") {
+      html += `<div class="credit-section credit-staff-list"><div class="credit-section-title">STAFF</div>`;
+      entry.staff.forEach((member) => {
+        html += `
             <div class="staff-member">
               <img class="staff-pokemon" src="../assets/images/game/pokemon/${member.pokemon}.png" alt="${member.pokemon}">
               <div>
@@ -149,35 +148,33 @@ function createCreditsContent(data) {
               </div>
             </div>
           `;
-        });
-        html += `</div>`;
-      } else if (entry.type === "thanks") {
-        html += `<div class="credit-section credit-thanks">${entry.content}</div>`;
-      } else if (entry.type === "copyright") {
-        html += `<div class="credit-section credit-copyright">${entry.content}</div>`;
-      }
-      else if (entry.type === "demo-info") {
-        html += entry.content;
-      }
-    });
-  
-    html += `<div class="credit-bottom-space"></div>`;
-    scroll.innerHTML = html;
-    scroll.style.transform = `translateY(${window.innerHeight + 700}px)`;
-
-    // [3] 구출한 포켓몬 이미지 리스트
-    const list = elById("credits-pokemon-list");
-    if (list && Array.isArray(data.saved_pokemon)) {
-      data.saved_pokemon.forEach((id) => {
-        const img = document.createElement("img");
-        img.className = "credits-pokemon-img";
-        img.src = `../assets/images/game/pokemon/${id}.png`;
-        img.alt = `포켓몬 ${id}`;
-        list.appendChild(img);
       });
+      html += `</div>`;
+    } else if (entry.type === "thanks") {
+      html += `<div class="credit-section credit-thanks">${entry.content}</div>`;
+    } else if (entry.type === "copyright") {
+      html += `<div class="credit-section credit-copyright">${entry.content}</div>`;
+    } else if (entry.type === "demo-info") {
+      html += entry.content;
     }
+  });
+
+  html += `<div class="credit-bottom-space"></div>`;
+  scroll.innerHTML = html;
+  scroll.style.transform = `translateY(${window.innerHeight + 700}px)`;
+
+  // [3] 구출한 포켓몬 이미지 리스트
+  const list = elById("credits-pokemon-list");
+  if (list && Array.isArray(data.saved_pokemon)) {
+    data.saved_pokemon.forEach((id) => {
+      const img = document.createElement("img");
+      img.className = "credits-pokemon-img";
+      img.src = `../assets/images/game/pokemon/${id}.png`;
+      img.alt = `포켓몬 ${id}`;
+      list.appendChild(img);
+    });
   }
-  
+}
 
 // ========================
 // 크레딧 스크롤 애니메이션
@@ -207,12 +204,17 @@ function startCreditsScroll(onCreditsEnd) {
 }
 
 function setupCreditsBtn() {
-    const btn = elById("btn-fast-credits");
-  
-    if (btn) {
-      btn.onmousedown = () => { creditsSpeed = 4; }; 
-      btn.onmouseup = () => { creditsSpeed = 0; };
-      btn.onmouseleave = () => { creditsFastOn = false; };
-    }
+  const btn = elById("btn-fast-credits");
+
+  if (btn) {
+    btn.onmousedown = () => {
+      creditsSpeed = 4;
+    };
+    btn.onmouseup = () => {
+      creditsSpeed = 0;
+    };
+    btn.onmouseleave = () => {
+      creditsFastOn = false;
+    };
   }
-  
+}
