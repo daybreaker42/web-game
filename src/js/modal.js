@@ -170,18 +170,18 @@ function showOptionsModal() {
   const modal = qs("#options-modal");
   if (modal) {
     // 옵션에서 공, 바, 플레이어 모양 선택된 값 미리 선택
-    const ballSelectInputList = qsa('#ball-selector input');
-    const barSelectInputList = qsa('#bar-selector input');
-    const playerSelectInputList = qsa('#player-selector input');
+    const ballSelectInputList = qsa("#ball-selector input");
+    const barSelectInputList = qsa("#bar-selector input");
+    const playerSelectInputList = qsa("#player-selector input");
 
     ballSelectInputList.forEach((inputEle, index) => {
-      inputEle.checked = (index + 1 === userOption.ballType);
+      inputEle.checked = index + 1 === userOption.ballType;
     });
     barSelectInputList.forEach((inputEle, index) => {
-      inputEle.checked = (index + 1 === userOption.barType);
+      inputEle.checked = index + 1 === userOption.barType;
     });
     playerSelectInputList.forEach((inputEle, index) => {
-      inputEle.checked = (index + 1 === userOption.playerType);
+      inputEle.checked = index + 1 === userOption.playerType;
     });
 
     modal.showModal();

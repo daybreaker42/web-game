@@ -404,7 +404,8 @@ class BrickGame extends GameManager {
     }
 
     this.combinations.push(combination);
-    if (window.DEBUG_MODE) console.log("새로운 조합 생성: " + combination.bricks.length + "개 블록");
+    if (window.DEBUG_MODE)
+      console.log("새로운 조합 생성: " + combination.bricks.length + "개 블록");
     // console.log(`조합 내 brick들 좌표 : `);
     // combination.bricks.forEach((brick, index)=>{
     //   console.log(`brick ${index} : ${brick.x}, ${brick.y}`);
@@ -436,7 +437,8 @@ class BrickGame extends GameManager {
     this.totalLives = this.lives;
 
     // story 모드일 때만 기본 포켓몬 슬롯에 추가
-    if (this.mode === "story") { // <-- story 모드일 때만 실행되도록 조건 추가
+    if (this.mode === "story") {
+      // <-- story 모드일 때만 실행되도록 조건 추가
       this.addDefaultPokemonByStage();
     }
   }
@@ -493,10 +495,15 @@ class BrickGame extends GameManager {
             imageSrc: imagePath,
           };
 
-          if (window.DEBUG_MODE) console.log(`스테이지 ${this.stage} 기본 포켓몬 추가: ${pokemonData.name} (인덱스: ${pokemonIndex}, 타입: ${pokemonData.type}) - 슬롯 ${i}`);
+          if (window.DEBUG_MODE)
+            console.log(
+              `스테이지 ${this.stage} 기본 포켓몬 추가: ${pokemonData.name} (인덱스: ${pokemonIndex}, 타입: ${pokemonData.type}) - 슬롯 ${i}`,
+            );
         }
       } else {
-        console.warn(`스테이지 ${this.stage} 기본 포켓몬 데이터를 찾을 수 없습니다. 인덱스: ${pokemonIndex}`);
+        console.warn(
+          `스테이지 ${this.stage} 기본 포켓몬 데이터를 찾을 수 없습니다. 인덱스: ${pokemonIndex}`,
+        );
       }
     }
 
@@ -510,7 +517,10 @@ class BrickGame extends GameManager {
     }
 
     if (defaultPokemonIndices.length === 0) {
-      if (window.DEBUG_MODE) console.log(`스테이지 ${this.stage}에는 기본 포켓몬이 설정되지 않았습니다.`);
+      if (window.DEBUG_MODE)
+        console.log(
+          `스테이지 ${this.stage}에는 기본 포켓몬이 설정되지 않았습니다.`,
+        );
     }
   }
 
@@ -518,7 +528,8 @@ class BrickGame extends GameManager {
    * MARK: 동적 벽돌 시스템 초기화
    */
   initDynamicBrickSystem() {
-    if (window.DEBUG_MODE) console.log("[BrickGame] initDynamicBrickSystem 호출");
+    if (window.DEBUG_MODE)
+      console.log("[BrickGame] initDynamicBrickSystem 호출");
     // 타겟 포켓몬 설정 로직은 generatePokemonForCombination으로 이동됨
     // 조합 시스템 관련 변수 초기화
     this.combinations = [];
@@ -529,16 +540,25 @@ class BrickGame extends GameManager {
     this.appearedTargetPokemonTypes.clear();
 
     if (this.specialPokemon[this.stage] !== undefined) {
-      if (window.DEBUG_MODE) console.log("특별 포켓몬 (Stage " + this.stage + "): " + this.specialPokemon[this.stage]);
+      if (window.DEBUG_MODE)
+        console.log(
+          "특별 포켓몬 (Stage " +
+            this.stage +
+            "): " +
+            this.specialPokemon[this.stage],
+        );
     } else {
-      if (window.DEBUG_MODE) console.log("특별 포켓몬 (Stage " + this.stage + "): 없음");
+      if (window.DEBUG_MODE)
+        console.log("특별 포켓몬 (Stage " + this.stage + "): 없음");
     }
   }
 
   // BrickGame 내부 (어디든 메서드로)
   drawSlotArrowCanvas() {
     // 선택된 슬롯 DOM 좌표 → 캔버스 좌표로 변환
-    const frame = document.getElementById(`slot-frame-${this.selectedSlotIndex}`);
+    const frame = document.getElementById(
+      `slot-frame-${this.selectedSlotIndex}`,
+    );
     if (!frame) return;
     const slotRect = frame.getBoundingClientRect();
     const canvasRect = this.canvas.getBoundingClientRect();
@@ -592,10 +612,16 @@ class BrickGame extends GameManager {
       this.ball.y + this.ball.radius > this.canvas.height;
     let isBallMissing = isNaN(this.ball.x) || isNaN(this.ball.y);
 
-    if (ballIsOutOfScreenLeft || ballIsOutOfScreenRight || ballIsOutOfScreenTop || ballIsOutOfScreenBottom || isBallMissing) {
+    if (
+      ballIsOutOfScreenLeft ||
+      ballIsOutOfScreenRight ||
+      ballIsOutOfScreenTop ||
+      ballIsOutOfScreenBottom ||
+      isBallMissing
+    ) {
       // 공이 화면 밖으로 나간 경우: 생명 감소 및 위치/속도 초기화
       if (window.DEBUG_MODE) {
-        console.log('[BrickGame] 공이 화면 밖으로 나감');
+        console.log("[BrickGame] 공이 화면 밖으로 나감");
         console.log(`ballIsOutOfScreenLeft: ${ballIsOutOfScreenLeft}`);
         console.log(`ballIsOutOfScreenRight: ${ballIsOutOfScreenRight}`);
         console.log(`ballIsOutOfScreenTop: ${ballIsOutOfScreenTop}`);
@@ -657,11 +683,19 @@ class BrickGame extends GameManager {
     if (isHit(this.ball, this.paddle)) {
       let paddleCenter = this.paddle.x + this.paddle.width / 2;
       let ballDistFromCenter = this.ball.x - paddleCenter;
-      ballDistFromCenter = Math.max(-this.paddle.width / 2 * 0.9, Math.min(this.paddle.width / 2 * 0.9, ballDistFromCenter));
-      this.ball.speedX = (ballDistFromCenter / (this.paddle.width / 2)) * this.BALL_SPEED;
-      this.ball.speedY = -Math.sqrt(this.BALL_SPEED * this.BALL_SPEED - this.ball.speedX * this.ball.speedX); // speedY는 항상 음수로, 공의 속도는 항상 BALL_SPEED가 되게 한다
+      ballDistFromCenter = Math.max(
+        (-this.paddle.width / 2) * 0.9,
+        Math.min((this.paddle.width / 2) * 0.9, ballDistFromCenter),
+      );
+      this.ball.speedX =
+        (ballDistFromCenter / (this.paddle.width / 2)) * this.BALL_SPEED;
+      this.ball.speedY = -Math.sqrt(
+        this.BALL_SPEED * this.BALL_SPEED - this.ball.speedX * this.ball.speedX,
+      ); // speedY는 항상 음수로, 공의 속도는 항상 BALL_SPEED가 되게 한다
       if (window.DEBUG_MODE) {
-        console.log(`paddleCenter - ${paddleCenter} / ballDistFromCenter - ${ballDistFromCenter} / ball.speedX - ${this.ball.speedX} / ball.speedY - ${this.ball.speedY}`);
+        console.log(
+          `paddleCenter - ${paddleCenter} / ballDistFromCenter - ${ballDistFromCenter} / ball.speedX - ${this.ball.speedX} / ball.speedY - ${this.ball.speedY}`,
+        );
       }
       if (this.fireBoostActive) {
         // 불 능력 활성화됐을 땐 FIRE_SPEED_BOOST 곱해 x, y속도 구함
@@ -863,12 +897,19 @@ class BrickGame extends GameManager {
   handleBrickCollision(brick) {
     // 겹침 영역 계산
     let overlapLeft = this.ball.x + this.ball.radius - brick.x;
-    let overlapRight = brick.x + this.BRICK_WIDTH - (this.ball.x - this.ball.radius);
+    let overlapRight =
+      brick.x + this.BRICK_WIDTH - (this.ball.x - this.ball.radius);
     let overlapTop = this.ball.y + this.ball.radius - brick.y;
-    let overlapBottom = brick.y + this.BRICK_HEIGHT - (this.ball.y - this.ball.radius);
+    let overlapBottom =
+      brick.y + this.BRICK_HEIGHT - (this.ball.y - this.ball.radius);
 
     // 최소 겹침 영역 찾기
-    let minOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
+    let minOverlap = Math.min(
+      overlapLeft,
+      overlapRight,
+      overlapTop,
+      overlapBottom,
+    );
 
     // 충돌한 면에 따라 속도 방향 변경
     if (minOverlap === overlapLeft) {
@@ -887,7 +928,8 @@ class BrickGame extends GameManager {
     // 포켓몬 블록과 아이템 블록 처리 분리
     if (brick.blockType === "pokemon") {
       let pokemon = window.pokemon[brick.pokeIndex];
-      let baseScore = pokemon && pokemon.type === 5 ? LEGENDARY_POKEMON_SCORE : BRICK_SCORE;
+      let baseScore =
+        pokemon && pokemon.type === 5 ? LEGENDARY_POKEMON_SCORE : BRICK_SCORE;
       this.score += this.electricBoostActive ? baseScore * 2 : baseScore;
 
       if (!this.saved_pokemon.includes(brick.pokeIndex)) {
@@ -897,7 +939,10 @@ class BrickGame extends GameManager {
       }
 
       if (brick.isTarget && window.pokemon[brick.pokeIndex]) {
-        let imagePath = "../assets/images/game/pokemon/potrait/normal/" + brick.pokeIndex + ".png";
+        let imagePath =
+          "../assets/images/game/pokemon/potrait/normal/" +
+          brick.pokeIndex +
+          ".png";
         this.addPokemonToSlot(imagePath);
       }
     } else if (brick.blockType === "item") {
@@ -916,7 +961,10 @@ class BrickGame extends GameManager {
       );
       if (allBricksBroken) {
         this.score += COMBINATION_SCORE;
-        this.showInGameMessage(`조합 완성 보너스: ${COMBINATION_SCORE}점 획득!`, true);
+        this.showInGameMessage(
+          `조합 완성 보너스: ${COMBINATION_SCORE}점 획득!`,
+          true,
+        );
         console.log(`조합 완성 보너스 ${COMBINATION_SCORE}점 획득!`);
       }
     }
@@ -1002,7 +1050,10 @@ class BrickGame extends GameManager {
             imageSrc: imageSrc,
           };
 
-          if (window.DEBUG_MODE) console.log(`포켓몬 슬롯에 추가됨: ${pokemonData.name} (타입 ${pokemonData.type}) - 슬롯 ${i}`);
+          if (window.DEBUG_MODE)
+            console.log(
+              `포켓몬 슬롯에 추가됨: ${pokemonData.name} (타입 ${pokemonData.type}) - 슬롯 ${i}`,
+            );
           return;
         }
       }
@@ -1063,8 +1114,14 @@ class BrickGame extends GameManager {
     // 이미지 객체 생성 및 캐싱
     if (!this.ballImage) {
       this.ballImage = new Image();
-      if (userOption.ballType !== 1 && userOption.ballType !== 2 && userOption.ballType !== 3) {
-        console.error(`balltype - ${userOption.ballType}, type - ${typeof userOption.ballType}`);
+      if (
+        userOption.ballType !== 1 &&
+        userOption.ballType !== 2 &&
+        userOption.ballType !== 3
+      ) {
+        console.error(
+          `balltype - ${userOption.ballType}, type - ${typeof userOption.ballType}`,
+        );
         throw Error("userOption이 1~3 범위 내의 값이 아닙니다.");
       }
       this.ballImage.src = `../assets/images/game/object/ball${userOption.ballType}.png`;
@@ -1098,7 +1155,8 @@ class BrickGame extends GameManager {
     // 이미지 객체 생성 및 캐싱을 위한 정적 변수 사용
     if (!this.paddleImage) {
       this.paddleImage = new Image();
-      if (userOption.playerType !== 1 && userOption.playerType !== 2) throw Error("userOption.playerType not in range 1~2");
+      if (userOption.playerType !== 1 && userOption.playerType !== 2)
+        throw Error("userOption.playerType not in range 1~2");
       this.paddleImage.src = `../assets/images/game/object/bar${userOption.playerType}.png`;
     }
 
@@ -1167,7 +1225,13 @@ class BrickGame extends GameManager {
    * 불타입 능력의 지속시간이 지났는지 체크하는 메서드
    */
   findNonOverlappingY(minY, maxY, patternHeight) {
-    if (window.DEBUG_MODE) console.log("[BrickGame] findNonOverlappingY 호출", minY, maxY, patternHeight);
+    if (window.DEBUG_MODE)
+      console.log(
+        "[BrickGame] findNonOverlappingY 호출",
+        minY,
+        maxY,
+        patternHeight,
+      );
     let attempts = 0;
     let maxAttempts = 10; // 최대 시도 횟수
     let safeMargin = 20; // 조합 간 안전 여백
@@ -1190,7 +1254,12 @@ class BrickGame extends GameManager {
           let candidateBottom = candidateY + patternHeight;
 
           // Y축 겹침 확인 (안전 여백 포함)
-          if (!(candidateBottom + safeMargin < existingTop || candidateTop - safeMargin > existingBottom)) {
+          if (
+            !(
+              candidateBottom + safeMargin < existingTop ||
+              candidateTop - safeMargin > existingBottom
+            )
+          ) {
             isOverlapping = true;
             break;
           }
@@ -1288,7 +1357,7 @@ class BrickGame extends GameManager {
     this.fireBoostStartTime = currentTime - this.gameStartTime - this.totalPauseDuration;
 
     this.ball.speedX = this.ball.speedX * FIRE_SPEED_BOOST;
-    this.ball.speedY = this.ball.speedY * FIRE_SPEED_BOOST; 
+    this.ball.speedY = this.ball.speedY * FIRE_SPEED_BOOST;
 
     this.showInGameMessage("불타입 능력: 공 속도 증가!", true);
     console.log(`불타입 능력 사용: 공 속도 증가 (${this.fireBoostDuration / 1000}초간 지속)`);
@@ -1558,7 +1627,8 @@ class BrickGame extends GameManager {
    * MARK: BrickGame 정적 시작 메서드  gameplay.js에서 이동)
    */
   static startBrickGame(gameInfo) {
-    if (window.DEBUG_MODE) console.log("[BrickGame] startBrickGame 호출", gameInfo);
+    if (window.DEBUG_MODE)
+      console.log("[BrickGame] startBrickGame 호출", gameInfo);
     const canvas = qs("#game-canvas");
 
     currentGame = new BrickGame(canvas);

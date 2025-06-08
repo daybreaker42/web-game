@@ -175,7 +175,8 @@ class GameManager {
     this.canvas.style.backgroundPosition = "center"; // 중앙 정렬
     this.canvas.style.backgroundRepeat = "no-repeat"; // 반복 방지
 
-    if (window.DEBUG_MODE) console.log(`배경 이미지 CSS 설정 완료: ${imagePath}`);
+    if (window.DEBUG_MODE)
+      console.log(`배경 이미지 CSS 설정 완료: ${imagePath}`);
 
     // 기존 배경 이미지 관련 변수들 정리 (더 이상 사용하지 않음)
     this.backgroundImage = null;
@@ -1026,7 +1027,9 @@ class GameManager {
     this.selectedSlotIndex = 0; // 선택된 슬롯 인덱스 초기화
 
     // 게임 메시지 컨테이너 초기화 (주석 추가: 이전 메시지 제거)
-    const messageContainer = document.getElementById("rescue-message-container");
+    const messageContainer = document.getElementById(
+      "rescue-message-container",
+    );
     if (messageContainer) {
       while (messageContainer.firstChild) {
         messageContainer.removeChild(messageContainer.firstChild);
@@ -1038,7 +1041,9 @@ class GameManager {
 
     // 포켓몬 슬롯 컨테이너 표시 복구 (주석 추가: 보스전에서 숨겨진 슬롯 다시 표시)
     const slotContainer = document.getElementById("pokemon-slot-container");
-    const slotFrameContainer = document.getElementById("pokemon-slot-frame-container");
+    const slotFrameContainer = document.getElementById(
+      "pokemon-slot-frame-container",
+    );
     if (slotContainer) slotContainer.style.display = "";
     if (slotFrameContainer) slotFrameContainer.style.display = "";
 
@@ -1047,14 +1052,16 @@ class GameManager {
       this.slotPokemon = [null, null, null, null];
     }
 
-    if (window.DEBUG_MODE) console.log("[GameManager] 모든 게임 상태가 초기화되었습니다.");
+    if (window.DEBUG_MODE)
+      console.log("[GameManager] 모든 게임 상태가 초기화되었습니다.");
   }
 
   /**
    * MARK: 벽돌 위치 초기화 메서드 추가
    */
   resetBricksPosition() {
-    if (window.DEBUG_MODE) console.log("[GameManager] resetBricksPosition 호출");
+    if (window.DEBUG_MODE)
+      console.log("[GameManager] resetBricksPosition 호출");
     // 벽돌 위치 초기화 로직 구현 (필요한 경우)
     // 예: 모든 벽돌을 초기 위치로 되돌리는 코드
     if (this.bricks && Array.isArray(this.bricks)) {
