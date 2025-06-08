@@ -225,26 +225,3 @@ canvas {
   opacity: 1;
   transition: none !important; /* scale이 transition으로 부드럽게 변하는 걸 막음 */
 }
-
-
-/* user-option 관련 */
-div.user-option-radio{
-  display: block;
-}
-div.user-option-radio > input{
-  display: block;
-}
-div.option{
-  display: flex;
-  align-items:center;
-  gap: 12px;
-}
-div.option > img{
-  max-width: 40px;
-  max-height: 40px;
-  object-fit: cover;
-}
-/* 마지막 child의 이미지는 오른쪽으로 90도 회전된 모습을 보여줘야 함 */
-img.r-90{
-  transform: rotate(90deg);
-}

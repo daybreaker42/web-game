@@ -68,3 +68,81 @@ input[type="range"]:focus {
   outline: none;
   /* box-shadow: 0 0 0 3px #ff3636; */
 }
+
+#ball-selector {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+}
+
+#bar-selector {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+
+#player-selector {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+  }
+  .user-option-radio {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 12px;
+  }
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    cursor: pointer;
+    position: relative;
+  }
+  .option input[type="radio"] {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+  }
+  .pixel-radio-box {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1.5px #333;
+    image-rendering: pixelated;
+    position: relative;
+    margin-right: 2px;
+    transition: border 0.12s;
+    background-color: white;
+  }
+  
+  /* 체크됐을 때 검은 네모 */
+  .option input[type="radio"]:checked + .pixel-radio-box::after {
+    content: "";
+    display: block;
+    width: 8px;
+    height: 8px;
+    background: #111;
+    box-shadow: 0 0 0 1px #222;
+    position: absolute;
+    left: 2px;
+    top: 2px;
+  }
+  
+
+label.option{
+    display: flex;
+    align-items:center;
+    gap: 12px;
+  }
+  label.option > img{
+    max-width: 40px;
+    max-height: 40px;
+    object-fit: cover;
+  }
+  /* 마지막 child의 이미지는 오른쪽으로 90도 회전된 모습을 보여줘야 함 */
+  img.r-90{
+    transform: rotate(90deg);
+}
