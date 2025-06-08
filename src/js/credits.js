@@ -22,8 +22,8 @@ const STAFFS = [
     role: "메인 로직 / 시나리오 / UI / 그래픽",
     pokemon: 106,
   },
-  { name: "오찬영", role: "???", pokemon: 5 },
-  { name: "한지훈", role: "???", pokemon: 4 },
+  { name: "오찬영", role: "포켓몬 능력 및 슬롯 구현", pokemon: 5 },
+  { name: "한지훈", role: "벽돌깨기 게임 개발/테스트 및 디버그", pokemon: 4 },
 ];
 
 // ========================
