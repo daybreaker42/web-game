@@ -106,6 +106,14 @@ const SPECIAL_POKEMON = {
 };
 
 const TARGET_POKEMON_SPAWN_CHANCE = 1; // 목표 포켓몬 등장 확률 (20%)
+const BALL_SPEED = 5;     // 기본 공 속도
+
+// 포켓몬 능력 별 상수
+const FIRE_SPEED_BOOST = 1.4;     // 불 속성 능력 속도 증가량
+const ICE_SPEED_DELAY = 0.3;      // 얼음 속성 블록 속도 감소
+const GRASS_HEALTH_RESTORE = 1;   // 풀 속성 회복
+const WATER_PADDLE_EXTEND = 40;  // 물 속성 패들 크기 증가량
+// const ELEC_POINT_BOOST = 2;       // 전기 - 점수 2배
 
 // bossGame config
 const PLAYER_POWER = 30; // 플레이어 공격력

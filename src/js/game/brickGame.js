@@ -648,22 +648,15 @@ class BrickGame extends GameManager {
     }
 
     // 패들과 공 충돌
-    if (
-      isHit(
-        this.ball,
-        this.paddle.x,
-        this.paddle.y,
-        this.paddle.width,
-        this.paddle.height,
-      )
-    ) {
+    if (isHit(this.ball, this.paddle)) {
       let paddleCenter = this.paddle.x + this.paddle.width / 2;
       let ballDistFromCenter = this.ball.x - paddleCenter;
-      this.ball.speedX =
-        (ballDistFromCenter / (this.paddle.width / 2)) * this.BALL_SPEED;
-      this.ball.speedY = -Math.sqrt(
-        this.BALL_SPEED * this.BALL_SPEED - this.ball.speedX * this.ball.speedX,
-      );
+      this.ball.speedX = (ballDistFromCenter / (this.paddle.width / 2)) * this.BALL_SPEED;
+      this.ball.speedY = -Math.sqrt(this.BALL_SPEED * this.BALL_SPEED - this.ball.speedX * this.ball.speedX); // speedY는 항상 음수로, 공의 속도는 항상 BALL_SPEED가 되게 한다
+      if (this.fireBoostActive) {
+        this.ball.speedX *= FIRE_SPEED_BOOST;
+        this.ball.speedY = -Math.sqrt(this.BALL_SPEED * this.BALL_SPEED - this.ball.speedX * this.ball.speedX);
+      }
       this.playBallBounceSound(); // 패들 충돌 사운드 재생 추가
     }
 
@@ -1216,7 +1209,7 @@ class BrickGame extends GameManager {
    */
   executeGrassAbility() {
     if (window.DEBUG_MODE) console.log("[BrickGame] executeGrassAbility 호출"); // 디버깅용 로그 추가
-    const healAmount = 1; // 회복량
+    const healAmount = GRASS_HEALTH_RESTORE; // 회복량
     this.lives = Math.min(this.totalLives, this.lives + healAmount);
     this.showInGameMessage(`풀타입 능력: 생명력 ${healAmount} 회복!`, true);
     console.log(`풀타입 능력 사용: 생명력 ${healAmount} 회복`);
@@ -1229,7 +1222,7 @@ class BrickGame extends GameManager {
    */
   executeFireAbility() {
     if (window.DEBUG_MODE) console.log("[BrickGame] executeFireAbility 호출"); // 디버깅용 로그 추가
-    const speedBoost = 2; // 속도 증가량
+    // const speedBoost = FIRE_SPEED_BOOST; // 속도 증가량
     const duration = 5000; // 지속시간 5초
 
     // 중복 사용 방지: 이미 불타입 능력이 활성화되어 있으면 리턴  공 속도 중복 증가 버그 해결)
@@ -1248,18 +1241,16 @@ class BrickGame extends GameManager {
       };
     }
 
-    // 공 속도를 절대값으로 설정하여 안전하게 증가  기하급수적 증가 방지)
-    const currentSpeed = Math.sqrt(
-      this.ball.speedX ** 2 + this.ball.speedY ** 2,
-    );
-    const direction = {
-      x: this.ball.speedX / currentSpeed,
-      y: this.ball.speedY / currentSpeed,
-    };
-    const boostedSpeed = this.BALL_SPEED + speedBoost; // 기본 속도 + 증가량
+    // 공 속도를 절대값으로 설정하여 안전하게 증가 기하급수적 증가 방지)
+    // const currentSpeed = Math.sqrt(this.ball.speedX * this.ball.speedX + this.ball.speedY * this.ball.speedY);
+    // const direction = {
+    //   x: this.ball.speedX / currentSpeed,
+    //   y: this.ball.speedY / currentSpeed,
+    // };
+    // const boostedSpeed = this.BALL_SPEED + speedBoost; // 기본 속도 + 증가량
 
-    this.ball.speedX = direction.x * boostedSpeed;
-    this.ball.speedY = direction.y * boostedSpeed;
+    this.ball.speedX = this.ball.speedX * FIRE_SPEED_BOOST;
+    this.ball.speedY = this.ball.speedY * FIRE_SPEED_BOOST; 
 
     this.showInGameMessage("불타입 능력: 공 속도 증가!", true);
     console.log(
@@ -1271,12 +1262,10 @@ class BrickGame extends GameManager {
       if (this.originalBallSpeed) {
         this.ball.speedX = this.originalBallSpeed.x;
         this.ball.speedY = this.originalBallSpeed.y;
-        console.log(
-          `불타입 능력 효과 종료: 공 속도 원상복구 (${this.originalBallSpeed.x}, ${this.originalBallSpeed.y}) (디버그 출력 추가)`,
-        ); // 복구 확인용
+        if (window.DEBUG_MODE) console.log(`불타입 능력 효과 종료: 공 속도 원상복구 (${this.originalBallSpeed.x}, ${this.originalBallSpeed.y}) (디버그 출력 추가)`); // 복구 확인용
       }
-      this.fireBoostActive = false; // 능력 비활성화  상태 초기화)
-      this.originalBallSpeed = null; // 원본 속도 초기화  메모리 정리)
+      this.fireBoostActive = false; // 능력 비활성화 - 상태 초기화
+      this.originalBallSpeed = null; // 원본 속도 초기화 - 메모리 정리
     }, duration);
 
     // 불타입 능력 사용 시 사운드 재생
@@ -1312,7 +1301,7 @@ class BrickGame extends GameManager {
    */
   executeWaterAbility() {
     if (window.DEBUG_MODE) console.log("[BrickGame] executeWaterAbility 호출"); // 디버깅용 로그 추가
-    const sizeIncrease = 40; // 패들 크기 증가량
+    const sizeIncrease = WATER_PADDLE_EXTEND; // 패들 크기 증가량
     const duration = 7000; // 지속시간 7초
 
     if (!this.waterBoostActive) {
@@ -1339,7 +1328,7 @@ class BrickGame extends GameManager {
    */
   executeIceAbility() {
     if (window.DEBUG_MODE) console.log("[BrickGame] executeIceAbility 호출"); // 디버깅용 로그 추가
-    const slowFactor = 0.3; // 속도 감소 비율 (70% 감소)
+    const slowFactor = ICE_SPEED_DELAY; // 속도 감소 비율 (70% 감소)
     const duration = 6000; // 지속시간 6초
 
     if (!this.iceBoostActive) {
