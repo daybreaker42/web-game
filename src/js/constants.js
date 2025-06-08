@@ -1,5 +1,5 @@
-const GAME_TIME = 1000 * 60;
-const BOSS_TIME = 10000 * 60;
+const GAME_TIME = 1000 * 60;      // 1분
+const BOSS_TIME = 1000 * 60 * 10; // 10분
 
 const STORY_SCRIPTS = [
   window.story_chapter0_opening, // 0: START 스토리
@@ -94,8 +94,8 @@ const COMBINATION_SCORE = 30;
 // 난이도별 최소 점수
 const MIN_REQUIRED_SCORE = {
   easy: 30,
-  normal: 500,
-  hard: 800,
+  normal: 50,
+  hard: 80,
 };
 
 const TOTAL_POKEMON_COUNT = 107;
