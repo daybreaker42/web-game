@@ -1,5 +1,5 @@
-const GAME_TIME = 1000 * 60;
-const BOSS_TIME = 10000 * 60;
+const GAME_TIME = 1000 * 60; // 1분
+const BOSS_TIME = 1000 * 60 * 10; // 10분
 
 const STORY_SCRIPTS = [
   window.story_chapter0_opening, // 0: START 스토리
@@ -35,7 +35,6 @@ const SFX = {
   CRT_OFF: "crt-off.mp3",
   GAME_OVER: "game-over.mp3",
   // game
-  MEWTWO_HURT: "mewtwo.ogg",
   BALL_BOUNCE: "ball-bounce.mp3",
   ITEM: "item.wav",
   CLEAR: "clear.wav",
@@ -49,6 +48,13 @@ const SFX = {
   GRASS_SFX: "Recover.mp3",
   ELECTRIC_SFX: "Teleport.mp3",
   ICE_SFX: "Ice Beam.mp3",
+  // bossGame
+  MEWTWO_HURT: "mewtwo.ogg",
+  // BOSS_ATTACK_1: "Self Destruct.mp3",
+  BOSS_ATTACK_1: "Fake Out.mp3",
+  BOSS_ATTACK_2: "Fake Out.mp3",
+  BOSS_LASER: "Psybeam.mp3",
+  PLAYER_ATTACK: "Quick Attack.mp3",
 };
 
 // gameManager config
@@ -88,11 +94,11 @@ const COMBINATION_SCORE = 30;
 // 난이도별 최소 점수
 const MIN_REQUIRED_SCORE = {
   easy: 30,
-  normal: 500,
-  hard: 800,
+  normal: 50,
+  hard: 80,
 };
 
-const TOTAL_POKEMON_COUNT = 107;
+const TOTAL_POKEMON_COUNT = 105;  // 피카츄, 펭도리 제외
 
 const SPECIAL_POKEMON = {
   1: 105, // stage1: 피카츄
@@ -100,6 +106,14 @@ const SPECIAL_POKEMON = {
 };
 
 const TARGET_POKEMON_SPAWN_CHANCE = 1; // 목표 포켓몬 등장 확률 (20%)
+const BALL_SPEED = 5; // 기본 공 속도
+
+// 포켓몬 능력 별 상수
+const FIRE_SPEED_BOOST = 1.4; // 불 속성 능력 속도 증가량
+const ICE_SPEED_DELAY = 0.3; // 얼음 속성 블록 속도 감소
+const GRASS_HEALTH_RESTORE = 1; // 풀 속성 회복
+const WATER_PADDLE_EXTEND = 40; // 물 속성 패들 크기 증가량
+// const ELEC_POINT_BOOST = 2;       // 전기 - 점수 2배
 
 // bossGame config
 const PLAYER_POWER = 30; // 플레이어 공격력

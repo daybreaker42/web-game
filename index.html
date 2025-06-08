@@ -110,7 +110,7 @@
         <div id="credits-root">
           <div id="credits-inner-border">
             <div id="credits-scroll"></div>
-            <button id="btn-skip-credits" class="btn-skip">> Skip</button>
+            <button id="btn-fast-credits" class="btn-skip">> Fast!</button>
           </div>
         </div>
       </section>
@@ -137,7 +137,12 @@
               <span id="timer">00:00</span>
             </div>
           </div>
-          <button id="pause-button" class="pixel-box" title="일시 정지" tabindex="-1">
+          <button
+            id="pause-button"
+            class="pixel-box"
+            title="일시 정지"
+            tabindex="-1"
+          >
             &#10073;&#10073;
           </button>
 
@@ -241,6 +246,62 @@
           value="0.5"
         />
       </label>
+      <label>
+        공&nbsp;모양
+        <div id="ball-selector" class="user-option-radio">
+          <label class="option">
+            <input type="radio" name="ballType" value="1" />
+            <span class="pixel-radio-box"></span>
+            <img src="../assets/images/game/object/ball1.png" />
+          </label>
+          <label class="option">
+            <input type="radio" name="ballType" value="2" />
+            <span class="pixel-radio-box"></span>
+            <img src="../assets/images/game/object/ball2.png" />
+          </label>
+          <label class="option">
+            <input type="radio" name="ballType" value="3" />
+            <span class="pixel-radio-box"></span>
+            <img src="../assets/images/game/object/ball3.png" />
+          </label>
+        </div>
+      </label>
+      <label>
+        바&nbsp;모양
+        <div id="bar-selector" class="user-option-radio">
+          <label class="option">
+            <input type="radio" name="barType" value="1" />
+            <span class="pixel-radio-box"></span>
+            <img src="../assets/images/game/object/bar1.png" />
+          </label>
+          <label class="option">
+            <input type="radio" name="barType" value="2" />
+            <span class="pixel-radio-box"></span>
+            <img src="../assets/images/game/object/bar2.png" />
+          </label>
+        </div>
+      </label>
+      <label>
+        플레이어&nbsp;모양
+        <div id="player-selector" class="user-option-radio">
+          <label class="option">
+            <input type="radio" name="playerType" value="1" />
+            <span class="pixel-radio-box"></span>
+            <img
+              class="r-90"
+              src="../assets/images/game/object/pikachu-airplain.png"
+            />
+          </label>
+          <label class="option">
+            <input type="radio" name="playerType" value="2" />
+            <span class="pixel-radio-box"></span>
+            <img
+              class="r-90"
+              src="../assets/images/game/object/pengdori-airplain.png"
+            />
+          </label>
+        </div>
+      </label>
       <button id="modal-close" class="pixel-box modal-inner-button">X</button>
     </dialog>
 
@@ -252,6 +313,7 @@
     <script src="src/js/test-data.js"></script>
     <script src="src/js/helpers.js"></script>
     <script src="src/js/constants.js"></script>
+    <script src="src/js/variables.js"></script>
     <script src="src/js/audio.js"></script>
     <script src="src/js/animation.js"></script>
     <script src="src/js/modal.js"></script>

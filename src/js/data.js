@@ -634,7 +634,6 @@ window.story_chapter3 = [
     ],
   },
   {
-    image: "stage2_terminal",
     lines: [
       "단말기를 작동시킨다.",
       "화면에 '실험일지'라는 제목의 파일이 보인다.",
@@ -645,7 +644,6 @@ window.story_chapter3 = [
   },
   {
     CRT_style: true,
-    image: "lab-diary-page",
     lines: [
       "[실험일지 - 19XX년 XX월 XX일]",
       "요즘 들어 상부의 압박이 심해진다. 점점 실험이 본격화될 기미가 보인다.\n... 정말 이 길이 옳은 걸까?",

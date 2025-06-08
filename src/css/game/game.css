@@ -126,7 +126,7 @@ canvas {
 }
 
 .pokemon-health-bar {
-  width:100%;
+  width: 100%;
   height: 12px; /* 원하는 두께 */
   background: #333; /* 바 배경 */
   border: 1px solid #848484; /* 흰색 테두리 */

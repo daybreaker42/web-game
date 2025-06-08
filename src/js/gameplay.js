@@ -23,7 +23,8 @@ function playGame(mode, difficulty, stage, onGameEnd) {
   }
 
   const canvas = document.getElementById("game-canvas");
-  if (window.DEBUG_MODE) console.log("[playGame] 시작:", { mode, difficulty, stage });
+  if (window.DEBUG_MODE)
+    console.log("[playGame] 시작:", { mode, difficulty, stage });
 
   /* ----------------------------------------------------------------
        1) 기존 게임 clean-up

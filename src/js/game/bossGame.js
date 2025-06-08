@@ -18,7 +18,7 @@ class BossGame extends GameManager {
       x: this.canvas.width / 2,
       y: this.canvas.height - 50,
       power: PLAYER_POWER, // 플레이어 공격력
-      rotation: Math.PI / 2, // 라디안 단위
+      rotation: 0, // 라디안 단위 -> initializeGame에서 다시 설정
       velocityX: 0,
       velocityY: 0,
       maxSpeed: 8,
@@ -126,7 +126,6 @@ class BossGame extends GameManager {
     this.HURT_ANIMATION_THROTTLE_MS = 200; // 피격 애니메이션 최소 간격 (밀리초)
   }
 
-
   /**
    * 키보드 키 눌림 이벤트 처리 (WASD 키 지원 추가)
    */
@@ -180,11 +179,11 @@ class BossGame extends GameManager {
    */
   initializeGame() {
     if (window.DEBUG_MODE) console.log("[BossGame] initializeGame 호출");
-    
+
     // 주석 추가: 플레이어 초기 위치 및 상태 완전 리셋
     this.player.x = this.canvas.width / 2;
     this.player.y = this.canvas.height - 90;
-    this.player.rotation = -Math.PI / 2;
+    this.player.rotation = -Math.PI / 2; // 초기 회전 방향 (위쪽)
     this.player.velocityX = 0;
     this.player.velocityY = 0;
 
@@ -211,7 +210,9 @@ class BossGame extends GameManager {
     // 보스전에서 포켓몬 슬롯 숨기기
     document.body.classList.add("boss-mode");
     const slotContainer = document.getElementById("pokemon-slot-container");
-    const slotFrameContainer = document.getElementById("pokemon-slot-frame-container");
+    const slotFrameContainer = document.getElementById(
+      "pokemon-slot-frame-container",
+    );
     if (slotContainer) slotContainer.style.display = "none";
     if (slotFrameContainer) slotFrameContainer.style.display = "none";
   }
@@ -331,6 +332,8 @@ class BossGame extends GameManager {
         color: "#ffff00",
       });
       this.playerLastShotTime = currentTime;
+
+      playSfx(SFX.PLAYER_ATTACK, sfxVolume * 0.3); // 플레이어 총알 발사 사운드
     }
   }
 
@@ -660,7 +663,8 @@ class BossGame extends GameManager {
     for (let i = 0; i < rayCount; i++) {
       const angle = i * angleStep;
       const endX = this.boss.x + Math.cos(angle) * laserLength;
-      const endY = this.boss.y + this.boss.height / 2 + Math.sin(angle) * laserLength;
+      const endY =
+        this.boss.y + this.boss.height / 2 + Math.sin(angle) * laserLength;
 
       // 주석 추가: 선 형태 레이저 빔 생성
       this.laserBeams.push({
@@ -673,13 +677,15 @@ class BossGame extends GameManager {
         damage: 20, // 레이저 데미지
         createdTime: performance.now(), // 생성 시간
         duration: laserDuration, // 지속 시간
-        opacity: 1.0 // 투명도
+        opacity: 1.0, // 투명도
       });
     }
 
     this.boss.isAttacking = true; // 공격 상태 설정
     this.boss.attackAnimEndTime =
       performance.now() + this.boss.attackAnimationDuration; // 공격 애니메이션 종료 시간 설정
+
+    playSfx(SFX.BOSS_LASER); // 레이저 공격 사운드 재생 // 사운드 추가
   }
 
   /**
@@ -702,12 +708,13 @@ class BossGame extends GameManager {
         velocityX: Math.cos(angle) * speed,
         velocityY: Math.sin(angle) * speed,
         radius: 5,
-        color: "#ffff00",
+        color: "#ff00ff", // 보라색으로 변경
       });
     }
     this.boss.isAttacking = true; // 공격 상태 설정
     this.boss.attackAnimEndTime =
       performance.now() + this.boss.attackAnimationDuration; // 공격 애니메이션 종료 시간 설정
+    playSfx(SFX.BOSS_ATTACK_2); // 일반 공격 사운드 재생 // 사운드 추가
   }
 
   /**
@@ -725,12 +732,13 @@ class BossGame extends GameManager {
         velocityX: Math.cos(angle) * speed,
         velocityY: Math.sin(angle) * speed,
         radius: 5,
-        color: "#ffff00",
+        color: "#ff00ff", // 보라색으로 변경
       });
     }
     this.boss.isAttacking = true; // 공격 상태 설정
     this.boss.attackAnimEndTime =
       performance.now() + this.boss.attackAnimationDuration; // 공격 애니메이션 종료 시간 설정
+    playSfx(SFX.BOSS_ATTACK_1); // 페이즈 1 공격 사운드 재생 // 사운드 추가
   }
 
   /**
@@ -833,10 +841,7 @@ class BossGame extends GameManager {
       const dy = bullet.y - this.boss.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
-      if (
-        distance < this.boss.width / 2 + bullet.radius &&
-        !this.boss.isHurt
-      ) {
+      if (distance < this.boss.width / 2 + bullet.radius && !this.boss.isHurt) {
         // 충돌 발생!
         this.playerBullets.splice(i, 1); // 총알 제거
 
@@ -852,7 +857,7 @@ class BossGame extends GameManager {
         // 사운드 재생 (throttling 적용)
         const currentTime = performance.now();
         if (currentTime - this.lastHitSoundTime > this.HIT_SOUND_THROTTLE_MS) {
-          playSfx(SFX.HIT); // 효과음 재생
+          playSfx(SFX.MEWTWO_HURT); // 효과음 재생
           this.lastHitSoundTime = currentTime; // 마지막 재생 시간 업데이트
         }
 
@@ -909,7 +914,10 @@ class BossGame extends GameManager {
         if (this.lives <= 0) {
           if (window.DEBUG_MODE) console.log("[BossGame] 생명 0으로 게임 오버"); // 디버깅용 로그 추가
           this.isGameClear = false;
-          this.showInGameMessage("게임 오버.. 뮤츠를 쓰러트리지 못했습니다.", true);
+          this.showInGameMessage(
+            "게임 오버.. 뮤츠를 쓰러트리지 못했습니다.",
+            true,
+          );
           this.endGame();
           return;
         }
@@ -938,7 +946,10 @@ class BossGame extends GameManager {
         if (this.lives <= 0) {
           if (window.DEBUG_MODE) console.log("[BossGame] 생명 0으로 게임 오버"); // 디버깅용 로그 추가
           this.isGameClear = false;
-          this.showInGameMessage("게임 오버.. 뮤츠를 쓰러트리지 못했습니다.", true);
+          this.showInGameMessage(
+            "게임 오버.. 뮤츠를 쓰러트리지 못했습니다.",
+            true,
+          );
           this.endGame();
           return;
         }
@@ -996,18 +1007,44 @@ class BossGame extends GameManager {
     this.ctx.translate(this.player.x, this.player.y);
     this.ctx.rotate(this.player.rotation);
 
-    // 플레이어를 삼각형으로 그리기
-    this.ctx.beginPath();
-    this.ctx.moveTo(this.player.radius, 0);
-    this.ctx.lineTo(-this.player.radius / 2, -this.player.radius / 2);
-    this.ctx.lineTo(-this.player.radius / 2, this.player.radius / 2);
-    this.ctx.closePath();
+    // 플레이어 이미지 로드
+    if (!this.playerImage) {
+      this.playerImage = new Image();
+      this.playerImage.src =
+        userOption.playerType === 1
+          ? "../assets/images/game/object/pikachu-airplain.png"
+          : "../assets/images/game/object/pengdori-airplain.png";
+    }
 
-    this.ctx.fillStyle = this.player.color;
-    this.ctx.fill();
-    this.ctx.strokeStyle = "#ffffff";
-    this.ctx.lineWidth = 2;
-    this.ctx.stroke();
+    // 이미지가 로드되었는지 확인 후 그리기
+    if (this.playerImage.complete) {
+      // 이미지 크기 및 위치 조정
+      const imageWidth = this.player.radius * 2.5; // 이미지 너비 (기존 삼각형 크기 기반)
+      const imageHeight = this.player.radius * 2.5; // 이미지 높이 (기존 삼각형 크기 기반)
+      const imageX = -imageWidth / 2; // 이미지 X 위치 (중앙 정렬)
+      const imageY = -imageHeight / 2; // 이미지 Y 위치 (중앙 정렬)
+
+      this.ctx.drawImage(
+        this.playerImage,
+        imageX,
+        imageY,
+        imageWidth,
+        imageHeight,
+      );
+    } else {
+      // 이미지가 로드되지 않았을 경우 폴백(fallback)으로 삼각형 그리기
+      this.ctx.beginPath();
+      this.ctx.moveTo(this.player.radius, 0);
+      this.ctx.lineTo(-this.player.radius / 2, -this.player.radius / 2);
+      this.ctx.lineTo(-this.player.radius / 2, this.player.radius / 2);
+      this.ctx.closePath();
+
+      this.ctx.fillStyle = this.player.color;
+      this.ctx.fill();
+      this.ctx.strokeStyle = "#ffffff";
+      this.ctx.lineWidth = 2;
+      this.ctx.stroke();
+    }
 
     this.ctx.restore();
   }
@@ -1057,7 +1094,6 @@ class BossGame extends GameManager {
         this.boss.width,
         this.boss.height,
       );
-
     } else {
       // 이미지가 로드되지 않았으면 기존 사각형 그리기 (폴백)
       this.ctx.fillStyle = this.boss.color;
@@ -1146,7 +1182,7 @@ class BossGame extends GameManager {
       this.ctx.lineTo(beam.endX, beam.endY);
       this.ctx.strokeStyle = beam.color;
       this.ctx.lineWidth = beam.width;
-      this.ctx.lineCap = 'round'; // 둥근 끝
+      this.ctx.lineCap = "round"; // 둥근 끝
       this.ctx.stroke();
 
       // 중앙 밝은 부분 (더 얇은 선)
@@ -1351,7 +1387,8 @@ class BossGame extends GameManager {
    * MARK: BossGame 정적 시작 메서드 (주석 추가: gameplay.js에서 이동)
    */
   static startBossGame(gameInfo) {
-    if (window.DEBUG_MODE) console.log("[BossGame] startBossGame 호출", gameInfo);
+    if (window.DEBUG_MODE)
+      console.log("[BossGame] startBossGame 호출", gameInfo);
     const canvas = qs("#game-canvas");
 
     currentGame = new BossGame(canvas);

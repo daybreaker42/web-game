@@ -5,32 +5,30 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 50; /* 게임 내 다른 화면보다 위에 오도록 */
-  /* background: white; → 삭제, 오버레이 느낌으로 변경 */
+  z-index: 50;
+  /* 오버레이 */
 }
 
 #credits-root {
   position: relative;
   width: 560px;
   height: 100%;
-  background: #03040b;
   color: #fff;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  /* 가장자리(바깥)에는 border 없음! */
   padding: 0;
+  background: radial-gradient(ellipse at 50% 30%, #22283a 0%, #161629 90%);
 }
 
 .credits-inner-border {
-  /* 실제 '네모 안쪽에' border가 들어가는 부분 */
   height: 100%;
   width: 100%;
-  border: 2.5px solid #ffffff; /* 이게 네모 안쪽에 생김! */
+  border: 2.5px solid #fff;
   border-radius: 13px;
   box-sizing: border-box;
-  padding: 0 28px; /* 안쪽에 패딩 */
-  background: inherit; /* 배경색 그대로 상속 */
+  padding: 0 28px;
+  background: inherit;
 }
 
 #credits-scroll {
@@ -40,56 +38,151 @@
   bottom: -100%;
   will-change: transform;
   padding: 0 30px;
-  /* 스크롤되는 영역이 패널 내에서 움직임 */
 }
 
+/* ---------- LOGO AREA ---------- */
+.credit-logo-area {
+  text-align: center;
+  margin-bottom: 67px;
+}
+.credit-logo-img {
+  max-width: 400px;
+  height: auto;
+  display: inline-block;
+  filter: drop-shadow(0 2px 18px #0006);
+  image-rendering: pixelated;
+}
+
+/* ---------- TITLE ---------- */
 .credit-title {
-  text-align: center;
-  font-size: 2rem;
-  color: #00ffe1; /* 네온 청록 */
-  margin: 56px 0 36px 0;
-  letter-spacing: 2px;
-  font-family: "DOSGothic", sans-serif;
+  margin-top: 12px;
+  font-family: "DOSGothic", monospace;
+  font-size: 2em;
+  color: white;
   text-shadow:
-    0 0 12px #00ffe1a0,
-    0 0 36px #00ffe155;
-}
-
-.credit-section {
-  margin: 20px 0 16px 0;
-  font-size: 1.22rem;
+    0 0 36px #2078ff99,
+    /* 파랑 glow */ 0 2px 2px #153,
+    0 1px 10px #000c;
+  letter-spacing: 2.5px;
   text-align: center;
-  color: #ffd700; /* 골드 */
-  text-shadow: 0 0 8px #ffd70066;
+  animation: staff-glow 2s infinite alternate;
+}
+@keyframes staff-glow {
+  0% {
+    text-shadow:
+      0 0 24px #2078ff77,
+      0 2px 2px #153,
+      0 1px 10px #000a;
+  }
+  100% {
+    text-shadow:
+      0 0 60px #2078ffcc,
+      0 2px 2px #153,
+      0 1px 18px #000e;
+  }
 }
 
-.credit-section strong {
-  color: #ff4d80; /* 강조 핑크/레드 */
+/* ---------- SECTION ---------- */
+.credit-info {
+  margin: 28px 0 14px 0;
+  font-size: 1.19rem;
+  text-align: center;
+  color: #fff; /* 기본 흰색 */
+  text-shadow: 0 0 7px #0006;
 }
 
-#pokemon-list {
+.credit-section-title {
+  color: #ff6f6f;
+  font-size: 1.6rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin: 80px 0 10px 0;
+}
+
+.credit-type-name {
+  color: #ffd700;
+  font-weight: bold;
+  text-shadow: 0 0 6px #ff3c2850;
+  letter-spacing: 1px;
+}
+
+/* ---------- 포켓몬 리스트 ---------- */
+#credits-pokemon-list {
   display: flex;
   justify-content: center;
-  gap: 7px;
+  gap: 8px;
   flex-wrap: wrap;
-  margin: 26px 0 20px 0;
+  margin: 32px 0;
 }
-
-.pokemon-img {
-  width: 34px;
-  height: 34px;
-  object-fit: contain;
+.credits-pokemon-img {
+  width: 42px;
+  height: 42px;
   border-radius: 8px;
-  background: #222;
-  border: 1.5px solid #00ffe1; /* 네온 청록 */
-  box-shadow: 0 0 7px #00ffe177;
+  background: #f7f7fa;
+  border: 2px solid black;
+  margin: 0 6px;
+  object-fit: contain;
 }
 
-/* ======= Staff Info ======= */
-.credit-staff {
-  /* flex 등 기존 유지 */
+/* ---------- STAFF ---------- */
+.credit-staff-list {
+  margin-top: 40px;
+}
+
+.staff-member {
   display: flex;
+  align-items: center;
+  margin: 10px 0;
   justify-content: center;
-  align-items: baseline;
-  gap: 1.3e;
+}
+.staff-pokemon {
+  width: 64px;
+  height: 64px;
+}
+.staff-role {
+  color: #fff;
+  font-size: 0.97em;
+  margin-left: 7px;
+}
+
+/* ---------- SPECIAL THANKS & COPYRIGHT ---------- */
+.credit-thanks {
+  font-size: 1.2rem;
+  margin-top: 38px;
+  color: #fff9;
+  text-shadow:
+    0 0 12px #217aff55,
+    0 1px 10px #000b;
+}
+
+.credit-thanks strong {
+  color: #ff6f6f;
+  font-weight: bold;
+}
+
+.credit-copyright {
+  margin-top: 36px;
+  font-size: 0.98em;
+  color: #bbb;
+  text-shadow: 0 0 4px #fff5;
+}
+
+.credit-bottom-space {
+  height: 100px;
+}
+
+.credit-demo-info {
+  font-size: 1.5em;
+  color: #fff;
+  text-align: center;
+  margin-top: 200px;
+  border: 2px #ffffff dotted;
+  padding: 20px;
+  background: rgba(124, 144, 255, 0.6);
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+.credit-demo-info i {
+  color: #f8ff27;
 }
