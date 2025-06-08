@@ -1405,7 +1405,7 @@ class BrickGame extends GameManager {
     if (currentTime - this.lastIceSoundTime > 1000) {
       // 1초 간격으로 제한
       this.lastIceSoundTime = 0; // 사운드를 처음부터 재생
-      playSfx(SFX.ICE_SFX); // 얼음타입 능력 사운드 재생
+      playSfx(SFX.ICE_SFX, sfxVolume * 1.5); // 얼음타입 능력 사운드 재생
       this.lastIceSoundTime = currentTime; // 마지막 사운드 재생 시간 업데이트
     }
   }

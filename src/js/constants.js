@@ -98,7 +98,7 @@ const MIN_REQUIRED_SCORE = {
   hard: 80,
 };
 
-const TOTAL_POKEMON_COUNT = 107;
+const TOTAL_POKEMON_COUNT = 105;  // 피카츄, 펭도리 제외
 
 const SPECIAL_POKEMON = {
   1: 105, // stage1: 피카츄
