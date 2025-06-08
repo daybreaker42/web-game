@@ -283,7 +283,7 @@ class BrickGame extends GameManager {
         );
         if (
           pkmn &&
-          pkmn.type !== 5 && // 전설(타입 5) 제외
+          // pkmn.type !== 5 && // 전설(타입 5) 제외
           !this.saved_pokemon.includes(i) && // 이미 구출된 포켓몬 제외
           !addedIndicesThisCombination.has(i) && // 현재 조합에 이미 추가된 포켓몬 제외
           !isPokemonInSlot // 슬롯에 있는 포켓몬 제외
