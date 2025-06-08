@@ -1,19 +1,5 @@
 function setupOptionModal() {
   function openOptions() {
-    // 선택된 값 미리 선택
-    const ballSelectInputList = qsa('#ball-selector input');
-    const barSelectInputList = qsa('#bar-selector input');
-    const playerSelectInputList = qsa('#player-selector input');
-    ballSelectInputList.forEach((inputEle, index) => {
-      inputEle.checked = (index + 1 === userOption.ballType);
-    });
-    barSelectInputList.forEach((inputEle, index) => {
-      inputEle.checked = (index + 1 === userOption.barType);
-    });
-    playerSelectInputList.forEach((inputEle, index) => {
-      inputEle.checked = (index + 1 === userOption.playerType);
-    });
-
     qs("#options-modal").showModal();
   }
   document
