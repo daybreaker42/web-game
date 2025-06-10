@@ -1090,7 +1090,7 @@ class BossGame extends GameManager {
       this.ctx.drawImage(
         currentImage, // 현재 상태에 맞는 이미지
         this.boss.x - this.boss.width / 2,
-        this.boss.y,
+        this.boss.y - this.boss.height / 2,
         this.boss.width,
         this.boss.height,
       );
@@ -1099,7 +1099,7 @@ class BossGame extends GameManager {
       this.ctx.fillStyle = this.boss.color;
       this.ctx.fillRect(
         this.boss.x - this.boss.width / 2,
-        this.boss.y,
+        this.boss.y - this.boss.height / 2,
         this.boss.width,
         this.boss.height,
       );
