@@ -1103,17 +1103,8 @@ class BossGame extends GameManager {
         this.boss.width,
         this.boss.height,
       );
-
-      // 보스 외곽선
-      this.ctx.strokeStyle = "#ffffff";
-      this.ctx.lineWidth = 3;
-      this.ctx.strokeRect(
-        this.boss.x - this.boss.width / 2,
-        this.boss.y,
-        this.boss.width,
-        this.boss.height,
-      );
     }
+
     this.ctx.globalAlpha = 1.0; // 투명도 복구
   }
 
