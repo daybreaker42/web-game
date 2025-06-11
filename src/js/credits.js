@@ -208,10 +208,10 @@ function setupCreditsBtn() {
 
   if (btn) {
     btn.onmousedown = () => {
-      creditsSpeed = 4;
+      creditsSpeed = 5
     };
     btn.onmouseup = () => {
-      creditsSpeed = 0;
+      creditsSpeed = 1.1;
     };
     btn.onmouseleave = () => {
       creditsFastOn = false;
