@@ -54,10 +54,7 @@ class BrickGame extends GameManager {
     this.fireBoostActive = false; // 불타입 능력 활성 상태
     this.originalBallSpeed = null; // 원본 공 속도 저장
     this.fireBoostStartTime = null; // 불 능력 사용 시작 시각
-    this.fireBoostDuration = 5000; // 불타입 능력 지속시간 (5초)
-    // 기존 timeout 관련 변수들 제거
-    // this.fireBoostTimeout = null; // 제거됨
-    // this.fireBoostRemainingTime = 0; // 제거됨
+    this.fireBoostDuration = FIRE_BOOST_DURATION; // 불타입 능력 지속시간
 
     // MARK: 포켓몬 능력 효과 상태 변수 추가
     this.electricBoostActive = false;
@@ -283,7 +280,6 @@ class BrickGame extends GameManager {
         );
         if (
           pkmn &&
-          // pkmn.type !== 5 && // 전설(타입 5) 제외
           !this.saved_pokemon.includes(i) && // 이미 구출된 포켓몬 제외
           !addedIndicesThisCombination.has(i) && // 현재 조합에 이미 추가된 포켓몬 제외
           !isPokemonInSlot // 슬롯에 있는 포켓몬 제외
@@ -334,7 +330,7 @@ class BrickGame extends GameManager {
     let combination = {
       pattern: randomPattern,
       bricks: [],
-      x: -200, // 화면 왼쪽 밖에서 시작
+      x: -COMBINATION_SCREEN_OFFSET, // 화면 왼쪽 밖에서 시작
       y: randomY, // 패들 위쪽 영역에서 랜덤 높이
       speed: this.combinationSpeed,
     };
@@ -406,10 +402,6 @@ class BrickGame extends GameManager {
     this.combinations.push(combination);
     if (window.DEBUG_MODE)
       console.log("새로운 조합 생성: " + combination.bricks.length + "개 블록");
-    // console.log(`조합 내 brick들 좌표 : `);
-    // combination.bricks.forEach((brick, index)=>{
-    //   console.log(`brick ${index} : ${brick.x}, ${brick.y}`);
-    // });
   }
   /**
    * MARK: 게임별 초기화
@@ -752,7 +744,7 @@ class BrickGame extends GameManager {
    */
   playItemSound() {
     const currentTime = performance.now(); // 현재 시간 측정
-    if (currentTime - this.lastItemSoundTime > 1000) {
+    if (currentTime - this.lastItemSoundTime > SOUND_THROTTLE_INTERVAL) {
       // 1초 간격으로 제한
       this.lastItemSoundTime = 0; // 사운드를 처음부터 재생
       playSfx(SFX.ITEM); // 아이템 사운드 재생
@@ -845,13 +837,8 @@ class BrickGame extends GameManager {
         }
       });
 
-      // // 화면을 벗어난 조합 제거
-      // if (combination.x > this.canvas.width + 200) {
-      //   this.combinations.splice(i, 1);
-      //   continue;
-      // }
       // 화면을 벗어난 조합에서 목표 포켓몬 타입 제거 로직 추가
-      if (combination.x > this.canvas.width + 200) {
+      if (combination.x > this.canvas.width + COMBINATION_SCREEN_OFFSET) {
         combination.bricks.forEach((brick) => {
           // 파괴되지 않은 목표 포켓몬 블록이 있는지 확인
           if (
@@ -1379,7 +1366,7 @@ class BrickGame extends GameManager {
 
     this.showInGameMessage("불타입 능력: 공 속도 증가!", true);
     console.log(
-      `불타입 능력 사용: 공 속도 증가 (${this.fireBoostDuration / 1000}초간 지속)`,
+      `불타입 능력 사용: 공 속도 증가 (${this.fireBoostDuration / SOUND_THROTTLE_INTERVAL}초간 지속)`,
     );
 
     // 불타입 능력 사용 시 사운드 재생
@@ -1477,7 +1464,7 @@ class BrickGame extends GameManager {
    */
   playGrassSound() {
     const currentTime = performance.now(); // 현재 시간 측정
-    if (currentTime - this.lastGrassSoundTime > 1000) {
+    if (currentTime - this.lastGrassSoundTime > SOUND_THROTTLE_INTERVAL) {
       // 1초 간격으로 제한
       this.lastGrassSoundTime = 0; // 사운드를 처음부터 재생
       playSfx(SFX.GRASS_SFX); // 풀타입 능력 사운드 재생
@@ -1490,7 +1477,7 @@ class BrickGame extends GameManager {
    */
   playFireSound() {
     const currentTime = performance.now(); // 현재 시간 측정
-    if (currentTime - this.lastFireSoundTime > 1000) {
+    if (currentTime - this.lastFireSoundTime > SOUND_THROTTLE_INTERVAL) {
       // 1초 간격으로 제한
       this.lastFireSoundTime = 0; // 사운드를 처음부터 재생
       playSfx(SFX.FIRE_SFX); // 불타입 능력 사운드 재생
@@ -1503,7 +1490,7 @@ class BrickGame extends GameManager {
    */
   playElectricSound() {
     const currentTime = performance.now(); // 현재 시간 측정
-    if (currentTime - this.lastElectricSoundTime > 1000) {
+    if (currentTime - this.lastElectricSoundTime > SOUND_THROTTLE_INTERVAL) {
       // 1초 간격으로 제한
       this.lastElectricSoundTime = 0; // 사운드를 처음부터 재생
       playSfx(SFX.ELECTRIC_SFX); // 전기타입 능력 사운드 재생
@@ -1516,7 +1503,7 @@ class BrickGame extends GameManager {
    */
   playWaterSound() {
     const currentTime = performance.now(); // 현재 시간 측정
-    if (currentTime - this.lastWaterSoundTime > 1000) {
+    if (currentTime - this.lastWaterSoundTime > SOUND_THROTTLE_INTERVAL) {
       // 1초 간격으로 제한
       this.lastWaterSoundTime = 0; // 사운드를 처음부터 재생
       playSfx(SFX.WATER_SFX); // 물타입 능력 사운드 재생
@@ -1529,7 +1516,7 @@ class BrickGame extends GameManager {
    */
   playIceSound() {
     const currentTime = performance.now(); // 현재 시간 측정
-    if (currentTime - this.lastIceSoundTime > 1000) {
+    if (currentTime - this.lastIceSoundTime > SOUND_THROTTLE_INTERVAL) {
       // 1초 간격으로 제한
       this.lastIceSoundTime = 0; // 사운드를 처음부터 재생
       playSfx(SFX.ICE_SFX, sfxVolume * 1.5); // 얼음타입 능력 사운드 재생

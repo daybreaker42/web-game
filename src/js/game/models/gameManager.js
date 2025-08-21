@@ -493,53 +493,72 @@ class GameManager {
     }
   }
   /**
-   * MARK: 포켓몬 구출 메시지 표시 메서드 추가
+   * MARK: 포켓몬 구출 메시지 표시 메서드
    */
-  // TODO: 리팩토링 필요
   showInGameMessage(message, isNotice = false) {
     if (window.DEBUG_MODE)
       console.log("[GameManager] showInGameMessage 호출", message, isNotice);
-    const messageContainer = document.getElementById(
-      "rescue-message-container",
-    );
+    
+    const messageContainer = this.getMessageContainer();
+    this.clearExistingMessages(messageContainer);
+    
+    const messageElement = this.createMessageElement(message, isNotice);
+    messageContainer.appendChild(messageElement);
+    
+    this.animateMessageDisappearance(messageElement);
+  }
 
-    // 기존 메시지 모두 제거
-    while (messageContainer.firstChild) {
-      messageContainer.removeChild(messageContainer.firstChild);
+  /**
+   * 메시지 컨테이너 요소 반환
+   */
+  getMessageContainer() {
+    return document.getElementById("rescue-message-container");
+  }
+
+  /**
+   * 기존 메시지들 정리
+   */
+  clearExistingMessages(container) {
+    while (container.firstChild) {
+      container.removeChild(container.firstChild);
     }
+  }
 
-    // 메시지 엘리먼트 생성
+  /**
+   * 메시지 엘리먼트 생성
+   */
+  createMessageElement(message, isNotice) {
     const messageElement = document.createElement("div");
     messageElement.className = "rescue-message";
-    if (isNotice) {
-      messageElement.textContent = message;
-    } else {
-      messageElement.textContent = `${message}을(를) 구출했습니다!`;
-    }
-    messageContainer.appendChild(messageElement);
+    messageElement.textContent = isNotice 
+      ? message 
+      : `${message}을(를) 구출했습니다!`;
+    return messageElement;
+  }
 
-    // 크기 단계 값 지정 (레트로 느낌)
-    const scaleSteps = [1, 0.85, 0.7, 0.55, 0.4];
-    const duration = 500; // 총 애니메이션 시간(ms)
-    const delay = 3000; // 3초 후 시작
-
+  /**
+   * 메시지 사라지는 애니메이션 실행
+   */
+  animateMessageDisappearance(messageElement) {
+    const { SCALE_STEPS, DURATION, DELAY } = MESSAGE_ANIMATION;
+    
     setTimeout(() => {
       let step = 0;
-      const stepTime = duration / (scaleSteps.length - 1);
+      const stepTime = DURATION / (SCALE_STEPS.length - 1);
 
-      // 크기 줄이기 (뚝뚝 끊기는 효과)
       const scaleInterval = setInterval(() => {
         step++;
-        messageElement.style.transform = `scale(${scaleSteps[step]})`;
-        messageElement.style.opacity = 1 - step / (scaleSteps.length - 1);
-        if (step >= scaleSteps.length - 1) {
+        messageElement.style.transform = `scale(${SCALE_STEPS[step]})`;
+        messageElement.style.opacity = 1 - step / (SCALE_STEPS.length - 1);
+        
+        if (step >= SCALE_STEPS.length - 1) {
           clearInterval(scaleInterval);
           if (messageElement.parentNode) {
             messageElement.parentNode.removeChild(messageElement);
           }
         }
       }, stepTime);
-    }, delay);
+    }, DELAY);
   }
 
   /**
@@ -572,20 +591,20 @@ class GameManager {
    */
   drawLives() {
     if (window.DEBUG_MODE) console.log("[GameManager] drawLives 호출");
-    const iconWidth = 30;
-    const iconHeight = 30;
-    const iconX = this.canvas.width - 200;
-    const iconY = 30;
-    const textX = iconX + iconWidth + 5;
-    const textY = iconY + iconHeight / 2 + 5;
+    const { LIVES_ICON_WIDTH, LIVES_ICON_HEIGHT, LIVES_ICON_X_OFFSET, LIVES_ICON_Y, LIVES_TEXT_OFFSET } = UI_LAYOUT;
+    
+    const iconX = this.canvas.width - LIVES_ICON_X_OFFSET;
+    const iconY = LIVES_ICON_Y;
+    const textX = iconX + LIVES_ICON_WIDTH + LIVES_TEXT_OFFSET;
+    const textY = iconY + LIVES_ICON_HEIGHT / 2 + LIVES_TEXT_OFFSET;
 
     if (this.ballIconLoaded) {
       this.ctx.drawImage(
         this.ballIcon,
         iconX - 10,
         iconY + 3,
-        iconWidth,
-        iconHeight,
+        LIVES_ICON_WIDTH,
+        LIVES_ICON_HEIGHT,
       ); // 볼 아이콘 그리기
 
       const text = `x ${this.lives}`;
