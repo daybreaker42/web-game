@@ -590,7 +590,9 @@ class BrickGame extends GameManager {
   updateGame(timeMultiplier) {
     if (window.DEBUG_MODE) {
       console.log("[BrickGame] updateGame 호출", timeMultiplier);
-      console.log(`공 속도: x - ${this.ball.speedX}, y - ${this.ball.speedY}, 총 속도 - ${Math.sqrt(this.ball.speedX * this.ball.speedX + this.ball.speedY * this.ball.speedY)}`)
+      console.log(
+        `공 속도: x - ${this.ball.speedX}, y - ${this.ball.speedY}, 총 속도 - ${Math.sqrt(this.ball.speedX * this.ball.speedX + this.ball.speedY * this.ball.speedY)}`,
+      );
     }
 
     // 불타입 능력 지속시간 체크 (일시정지 시간 제외한 게임 경과 시간 기반)
@@ -626,7 +628,9 @@ class BrickGame extends GameManager {
         console.log(`ballIsOutOfScreenRight: ${ballIsOutOfScreenRight}`);
         console.log(`ballIsOutOfScreenTop: ${ballIsOutOfScreenTop}`);
         console.log(`ballIsOutOfScreenBottom: ${ballIsOutOfScreenBottom}`);
-        console.log(`isBallMissing: ${isBallMissing}, ${this.ball.x}, ${this.ball.y}`);
+        console.log(
+          `isBallMissing: ${isBallMissing}, ${this.ball.x}, ${this.ball.y}`,
+        );
       }
       this.lives -= 1;
 
@@ -700,7 +704,12 @@ class BrickGame extends GameManager {
       if (this.fireBoostActive) {
         // 불 능력 활성화됐을 땐 FIRE_SPEED_BOOST 곱해 x, y속도 구함
         this.ball.speedX *= FIRE_SPEED_BOOST;
-        this.ball.speedY = -Math.sqrt((this.BALL_SPEED * FIRE_SPEED_BOOST) * (this.BALL_SPEED * FIRE_SPEED_BOOST) - this.ball.speedX * this.ball.speedX);
+        this.ball.speedY = -Math.sqrt(
+          this.BALL_SPEED *
+            FIRE_SPEED_BOOST *
+            (this.BALL_SPEED * FIRE_SPEED_BOOST) -
+            this.ball.speedX * this.ball.speedX,
+        );
       }
       this.playBallBounceSound(); // 패들 충돌 사운드 재생 추가
     }
@@ -843,14 +852,21 @@ class BrickGame extends GameManager {
       // }
       // 화면을 벗어난 조합에서 목표 포켓몬 타입 제거 로직 추가
       if (combination.x > this.canvas.width + 200) {
-        combination.bricks.forEach(brick => {
+        combination.bricks.forEach((brick) => {
           // 파괴되지 않은 목표 포켓몬 블록이 있는지 확인
-          if (brick.status === 1 && brick.blockType === "pokemon" && brick.isTarget) {
-            const pokemonData = window.pokemon && window.pokemon[brick.pokeIndex];
+          if (
+            brick.status === 1 &&
+            brick.blockType === "pokemon" &&
+            brick.isTarget
+          ) {
+            const pokemonData =
+              window.pokemon && window.pokemon[brick.pokeIndex];
             if (pokemonData) {
               this.appearedTargetPokemonTypes.delete(pokemonData.type);
               if (window.DEBUG_MODE) {
-                console.log(`화면을 벗어난 조합에서 목표 포켓몬 타입 ${pokemonData.type} 제거됨 (포켓몬: ${pokemonData.name})`);
+                console.log(
+                  `화면을 벗어난 조합에서 목표 포켓몬 타입 ${pokemonData.type} 제거됨 (포켓몬: ${pokemonData.name})`,
+                );
               }
             }
           }
@@ -1329,7 +1345,8 @@ class BrickGame extends GameManager {
     if (this.fireBoostActive && this.fireBoostStartTime !== null) {
       // 현재 게임 경과 시간 계산 (일시정지 시간 제외)
       const currentTime = performance.now();
-      const gameElapsedTime = currentTime - this.gameStartTime - this.totalPauseDuration;
+      const gameElapsedTime =
+        currentTime - this.gameStartTime - this.totalPauseDuration;
       const fireAbilityElapsedTime = gameElapsedTime - this.fireBoostStartTime;
 
       // 지속시간이 지났는지 확인
@@ -1354,25 +1371,28 @@ class BrickGame extends GameManager {
 
     // 현재 게임 경과 시간을 기준으로 시작 시간 저장 (일시정지 시간 제외)
     const currentTime = performance.now();
-    this.fireBoostStartTime = currentTime - this.gameStartTime - this.totalPauseDuration;
+    this.fireBoostStartTime =
+      currentTime - this.gameStartTime - this.totalPauseDuration;
 
     this.ball.speedX = this.ball.speedX * FIRE_SPEED_BOOST;
     this.ball.speedY = this.ball.speedY * FIRE_SPEED_BOOST;
 
     this.showInGameMessage("불타입 능력: 공 속도 증가!", true);
-    console.log(`불타입 능력 사용: 공 속도 증가 (${this.fireBoostDuration / 1000}초간 지속)`);
+    console.log(
+      `불타입 능력 사용: 공 속도 증가 (${this.fireBoostDuration / 1000}초간 지속)`,
+    );
 
     // 불타입 능력 사용 시 사운드 재생
     this.playFireSound();
-
   }
 
   endFireAbility() {
-    if (window.DEBUG_MODE) console.log(`불타입 능력 효과 종료: 공 속도 원상복구`);
+    if (window.DEBUG_MODE)
+      console.log(`불타입 능력 효과 종료: 공 속도 원상복구`);
     this.ball.speedX /= FIRE_SPEED_BOOST;
     this.ball.speedY /= FIRE_SPEED_BOOST;
-  this.fireBoostActive = false; // 능력 비활성화 - 상태 초기화
-  this.fireBoostStartTime = null; // 시작 시간 초기화
+    this.fireBoostActive = false; // 능력 비활성화 - 상태 초기화
+    this.fireBoostStartTime = null; // 시작 시간 초기화
   }
 
   /**

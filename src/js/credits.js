@@ -208,7 +208,7 @@ function setupCreditsBtn() {
 
   if (btn) {
     btn.onmousedown = () => {
-      creditsSpeed = 5
+      creditsSpeed = 5;
     };
     btn.onmouseup = () => {
       creditsSpeed = 1.1;
