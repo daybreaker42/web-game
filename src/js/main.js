@@ -31,10 +31,7 @@ function debugMode() {
   hideAllFade(qsa(".screen"));
 
   // NOTE: Write your test code here (e.g. Screen)
-  //   testGameResultScreen();
   testGame();
-  //   testMainLogic();
-  //   testCredits();
 }
 
 function handleReturnToTitleScreen() {
@@ -52,7 +49,7 @@ function handleReturnToTitleScreen() {
     }
     document.addEventListener("keydown", handleStartFromTitle, { once: true });
     document.addEventListener("click", handleStartFromTitle, { once: true });
-  }, 1000);
+  }, PRESS_ANY_RESET_DELAY);
 }
 
 function handleStartFromTitle(e) {
@@ -69,11 +66,11 @@ function handleStartFromTitle(e) {
       void pressAny.offsetWidth; // 강제 리플로우
       pressAny.classList.add("flash-twice");
     }
-  }, 100);
+  }, ANIMATION_DELAY);
 
   setTimeout(() => {
     showMainMenuScreen();
-  }, 1100);
+  }, TITLE_SCREEN_DELAY);
 }
 
 function showMainMenuScreen() {

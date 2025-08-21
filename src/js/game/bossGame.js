@@ -14,40 +14,41 @@ class BossGame extends GameManager {
     this.bossHealth = this.bossMaxHealth;
 
     // MARK: 플레이어 설정
+    const { PLAYER, BOSS } = BOSS_GAME_CONFIG;
     this.player = {
       x: this.canvas.width / 2,
-      y: this.canvas.height - 50,
+      y: this.canvas.height - PLAYER.Y_OFFSET,
       power: PLAYER_POWER, // 플레이어 공격력
       rotation: 0, // 라디안 단위 -> initializeGame에서 다시 설정
       velocityX: 0,
       velocityY: 0,
-      maxSpeed: 8,
-      acceleration: 0.3,
-      rotationSpeed: 0.08,
-      friction: 0.95,
-      radius: 15,
+      maxSpeed: PLAYER.MAX_SPEED,
+      acceleration: PLAYER.ACCELERATION,
+      rotationSpeed: PLAYER.ROTATION_SPEED,
+      friction: PLAYER.FRICTION,
+      radius: PLAYER.RADIUS,
       color: "#00ff00",
     };
 
     // MARK: 보스 설정
     this.boss = {
       x: this.canvas.width / 2,
-      y: 100,
-      width: 120, // 초기 너비, 이미지 로드 후 변경될 수 있음
-      height: 80, // 초기 높이, 이미지 로드 후 변경될 수 있음
+      y: BOSS.Y_POSITION,
+      width: BOSS.INITIAL_WIDTH, // 초기 너비, 이미지 로드 후 변경될 수 있음
+      height: BOSS.INITIAL_HEIGHT, // 초기 높이, 이미지 로드 후 변경될 수 있음
       health: this.bossMaxHealth,
       maxHealth: this.bossMaxHealth,
       color: "#ff0000", // 이미지 로드 실패 시 폴백 색상
       lastAttackTime: 0,
-      attackCooldown: 1000, // 1초마다 공격
-      bulletSpeed: 3,
+      attackCooldown: BOSS.ATTACK_COOLDOWN, // 1초마다 공격
+      bulletSpeed: BOSS.BULLET_SPEED,
       name: "뮤츠",
       description: "전설의 포켓몬, 강력한 정신 공격을 사용합니다.",
       // 페이즈 시스템 추가
       currentPhase: 1, // 현재 페이즈 (1 또는 2)
       phase2Triggered: false, // 2페이즈 전환 여부
       lastMoveTime: 0, // 마지막 이동 시간
-      moveCooldown: 3000, // 3초마다 이동
+      moveCooldown: BOSS.MOVE_COOLDOWN, // 3초마다 이동
       isMoving: false, // 이동 중인지 여부
       moveStartTime: 0, // 이동 시작 시간
       moveDuration: 500, // 이동 지속 시간 (0.5초)
