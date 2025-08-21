@@ -10,7 +10,6 @@ class BrickGame extends GameManager {
     super(canvas);
 
     // MARK: 벽돌깨기 전용 설정
-    this.leftBrick = 0;
 
     // MARK: 벽돌 관련 설정
     this.BRICK_WIDTH = BRICK_WIDTH;
@@ -23,7 +22,6 @@ class BrickGame extends GameManager {
     this.combinationSpeed = 2;
     this.combinationSpawnInterval = 6000;
     this.combinationSpawnDelayWhenActive = 3000;
-    this.requiredCombinations = 10; // 사용 여부 확인 필요
 
     this.paddleImage = null;
     this.ballImage = null;
@@ -422,7 +420,6 @@ class BrickGame extends GameManager {
 
     // 조합 및 벽돌 시스템 완전 초기화
     this.combinations = [];
-    this.leftBrick = 0;
 
     // 동적 조합 시스템 초기화
     this.initDynamicBrickSystem();
@@ -526,7 +523,6 @@ class BrickGame extends GameManager {
     // 조합 시스템 관련 변수 초기화
     this.combinations = [];
     this.lastCombinationSpawn = 0;
-    this.leftBrick = 0; // 사용 여부 확인 필요
 
     // 게임/스테이지 시작 시 등장한 목표 포켓몬 타입 기록 초기화
     this.appearedTargetPokemonTypes.clear();

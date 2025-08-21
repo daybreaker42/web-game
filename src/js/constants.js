@@ -127,7 +127,7 @@ const COMBINATION_SCREEN_OFFSET = 200; // 조합이 화면을 벗어나는 기�
 
 const MESSAGE_ANIMATION = {
   SCALE_STEPS: [1, 0.85, 0.7, 0.55, 0.4],
-  DURATION: 500, // 총 애니메이션 시간(ms)  
+  DURATION: 500, // 총 애니메이션 시간(ms)
   DELAY: 3000, // 3초 후 시작
 };
 
@@ -146,4 +146,24 @@ const BOSS_POWER = {
   phase1: 10,
   laser: 20,
   phase2: 15,
+};
+
+// 보스전 전용 상수
+const BOSS_GAME_CONFIG = {
+  PLAYER: {
+    Y_OFFSET: 50, // 화면 하단에서의 거리
+    MAX_SPEED: 8,
+    ACCELERATION: 0.3,
+    ROTATION_SPEED: 0.08,
+    FRICTION: 0.95,
+    RADIUS: 15,
+  },
+  BOSS: {
+    Y_POSITION: 100,
+    INITIAL_WIDTH: 120,
+    INITIAL_HEIGHT: 80,
+    ATTACK_COOLDOWN: 1000, // 1초마다 공격
+    BULLET_SPEED: 3,
+    MOVE_COOLDOWN: 3000, // 3초마다 이동
+  },
 };

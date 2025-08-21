@@ -7,7 +7,7 @@ let accumulatedGameResult = {
 
 function proceedToStage(stageIdx) {
   currentStageIndex = stageIdx;
-  console.log(`Proceeding to stage ${stageIdx}`);
+  if (window.DEBUG_MODE) console.log(`Proceeding to stage ${stageIdx}`);
 
   // stage 1 시작 전 누적 데이터 초기화
   if (stageIdx === 1) {
@@ -59,7 +59,8 @@ function onStageClear(gameResult) {
     isCleared = true;
     playStory(N_STAGES + 1, () => {
       accumulateGameResult(gameResult);
-      console.log("Accumulated Game Result:", accumulatedGameResult);
+      if (window.DEBUG_MODE)
+        console.log("Accumulated Game Result:", accumulatedGameResult);
       showCredits(accumulatedGameResult, () => {
         showGameResultScreen(accumulatedGameResult);
       });

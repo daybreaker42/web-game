@@ -498,13 +498,13 @@ class GameManager {
   showInGameMessage(message, isNotice = false) {
     if (window.DEBUG_MODE)
       console.log("[GameManager] showInGameMessage 호출", message, isNotice);
-    
+
     const messageContainer = this.getMessageContainer();
     this.clearExistingMessages(messageContainer);
-    
+
     const messageElement = this.createMessageElement(message, isNotice);
     messageContainer.appendChild(messageElement);
-    
+
     this.animateMessageDisappearance(messageElement);
   }
 
@@ -530,8 +530,8 @@ class GameManager {
   createMessageElement(message, isNotice) {
     const messageElement = document.createElement("div");
     messageElement.className = "rescue-message";
-    messageElement.textContent = isNotice 
-      ? message 
+    messageElement.textContent = isNotice
+      ? message
       : `${message}을(를) 구출했습니다!`;
     return messageElement;
   }
@@ -541,7 +541,7 @@ class GameManager {
    */
   animateMessageDisappearance(messageElement) {
     const { SCALE_STEPS, DURATION, DELAY } = MESSAGE_ANIMATION;
-    
+
     setTimeout(() => {
       let step = 0;
       const stepTime = DURATION / (SCALE_STEPS.length - 1);
@@ -550,7 +550,7 @@ class GameManager {
         step++;
         messageElement.style.transform = `scale(${SCALE_STEPS[step]})`;
         messageElement.style.opacity = 1 - step / (SCALE_STEPS.length - 1);
-        
+
         if (step >= SCALE_STEPS.length - 1) {
           clearInterval(scaleInterval);
           if (messageElement.parentNode) {
@@ -591,8 +591,14 @@ class GameManager {
    */
   drawLives() {
     if (window.DEBUG_MODE) console.log("[GameManager] drawLives 호출");
-    const { LIVES_ICON_WIDTH, LIVES_ICON_HEIGHT, LIVES_ICON_X_OFFSET, LIVES_ICON_Y, LIVES_TEXT_OFFSET } = UI_LAYOUT;
-    
+    const {
+      LIVES_ICON_WIDTH,
+      LIVES_ICON_HEIGHT,
+      LIVES_ICON_X_OFFSET,
+      LIVES_ICON_Y,
+      LIVES_TEXT_OFFSET,
+    } = UI_LAYOUT;
+
     const iconX = this.canvas.width - LIVES_ICON_X_OFFSET;
     const iconY = LIVES_ICON_Y;
     const textX = iconX + LIVES_ICON_WIDTH + LIVES_TEXT_OFFSET;
